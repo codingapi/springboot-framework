@@ -20,7 +20,7 @@
 见springboot-example 完善中...
 
 ## youtube
-欢迎订阅我的youtube账号 codingapi,带你从0到1落地springboot与领域驱动设计
+欢迎订阅我的youtube账号 [codingapi](https://www.youtube.com/channel/UCdAsCAxh453D7MfLfYWj0Eg),带你从0到1落地springboot与领域驱动设计
 
 ## books
 实战书籍正在编写中...
