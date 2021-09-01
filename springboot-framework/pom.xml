@@ -13,7 +13,6 @@
 
 	<name>springboot-framework</name>
 	<description>springboot-framework project for Spring Boot</description>
-	<modules></modules>
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
