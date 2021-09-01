@@ -35,7 +35,6 @@
 
 
 	<dependencies>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
@@ -73,37 +72,37 @@
 	</build>
 
 
-	<distributionManagement>
+      <distributionManagement>
         <repository>
             <id>ossrh</id>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
-    </distributionManagement>
+      </distributionManagement>
 
 	<scm>
 		<connection>scm:git:https://github.com/codingapi/springboot-framework.git</connection>
 		<developerConnection>scm:git:https://github.com/codingapi/springboot-framework.git</developerConnection>
 		<url>https://github.com/codingapi/springboot-framework</url>
 		<tag>v${project.version}</tag>
-    </scm>
+        </scm>
 
 	<licenses>
-        <license>
-            <name>The Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
+		<license>
+		    <name>The Apache License, Version 2.0</name>
+		    <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+       </licenses>
 
 	<developers>
-        <developer>
-            <name>lorne</name>
-            <email>wangliang@codingapi.com</email>
-            <roles>
-                <role>developer</role>
-            </roles>
-            <timezone>+8</timezone>
-        </developer>
-    </developers>
+		<developer>
+		    <name>lorne</name>
+		    <email>wangliang@codingapi.com</email>
+		    <roles>
+			<role>developer</role>
+		    </roles>
+		    <timezone>+8</timezone>
+		</developer>
+       </developers>
 
     <profiles>
         <profile>
@@ -157,7 +156,8 @@
 			</build>
         </profile>
 
-		<profile>
+	<profile>
+	    <!--  mvn clean deploy -P ossrh  --> 	
             <id>ossrh</id>
 
             <properties>
