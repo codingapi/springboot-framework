@@ -2,8 +2,8 @@ package com.codingapi.springboot.framework.handler;
 
 import com.codingapi.springboot.framework.event.IEvent;
 
-public interface IHandler {
+public interface IHandler<T extends IEvent> {
 
-    void handler(IEvent event);
+    void handler(T event);
     
 }

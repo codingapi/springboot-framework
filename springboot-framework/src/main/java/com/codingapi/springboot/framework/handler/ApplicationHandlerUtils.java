@@ -8,7 +8,7 @@ import com.codingapi.springboot.framework.event.IEvent;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ApplicationHandlerUtils implements IHandler{
+public class ApplicationHandlerUtils implements IHandler<IEvent>{
 
     private static ApplicationHandlerUtils instance;
 
@@ -30,16 +30,16 @@ public class ApplicationHandlerUtils implements IHandler{
     }
 
 
-    private List<IHandler> handleres;
+    private List<IHandler<IEvent>> handleres;
 
-    public void addHandlers(List<IHandler> handleres){
+    public void addHandlers(List<IHandler<IEvent>> handleres){
         if(handleres!=null){
             handleres.addAll(handleres);
         }
     }
 
 
-    public void addHandler(IHandler handler){
+    public void addHandler(IHandler<IEvent> handler){
         if(handler!=null){
             handleres.add(handler);
         }
@@ -48,7 +48,7 @@ public class ApplicationHandlerUtils implements IHandler{
 
     @Override
     public void handler(IEvent event) {
-        for(IHandler handler:handleres){
+        for(IHandler<IEvent> handler:handleres){
             try{
                 handler.handler(event);
             }catch(Exception e){

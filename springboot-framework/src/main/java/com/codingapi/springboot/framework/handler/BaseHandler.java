@@ -4,12 +4,12 @@ import java.lang.reflect.ParameterizedType;
 
 import com.codingapi.springboot.framework.event.IEvent;
 
-public abstract class AbsHandler<T extends IEvent> implements IHandler{
+public abstract class BaseHandler<T extends IEvent> implements IHandler<IEvent>{
 
-    private final Class<T> clazz;
+    private final Class<?> clazz;
 
-    public AbsHandler(){
-        this. clazz = (Class<T>)((ParameterizedType)(getClass().getGenericSuperclass())).getActualTypeArguments()[0];
+    public BaseHandler(){
+        this.clazz = (Class<?>)((ParameterizedType)(getClass().getGenericSuperclass())).getActualTypeArguments()[0];
         ApplicationHandlerUtils.getInstance().addHandler(this);        
     }
 

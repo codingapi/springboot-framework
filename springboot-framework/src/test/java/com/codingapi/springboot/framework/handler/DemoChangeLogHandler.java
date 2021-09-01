@@ -5,7 +5,7 @@ import com.codingapi.springboot.framework.event.DemoChangeEvent;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class DemoChangeLogHandler extends AbsHandler<DemoChangeEvent>{
+public class DemoChangeLogHandler extends BaseHandler<DemoChangeEvent>{
 
     @Override
     public void handler0(DemoChangeEvent event) {
