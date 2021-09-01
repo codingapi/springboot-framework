@@ -2,6 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<packaging>pom</packaging>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -11,7 +12,8 @@
 	<groupId>com.codingapi.springboot</groupId>
 	<artifactId>springboot-framework-parent</artifactId>
 	<version>0.0.1</version>
-	<packaging>pom</packaging>
+	
+	<url>https://github.com/codingapi/springboot-framewrok</url>
 	<name>springboot-framework-parent</name>
 	<description>springboot-framework-parent project for Spring Boot</description>
 	<modules>
@@ -25,9 +27,13 @@
         <maven.compile.target>1.8</maven.compile.target>
         <maven.source.plugin>3.0.1</maven.source.plugin>
         <maven-compiler-plugin.version>3.6.0</maven-compiler-plugin.version>
+		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven.javadoc.plugin>2.10.3</maven.javadoc.plugin>
-        <nexus.staging.maven.plugin>1.6.3</nexus.staging.maven.plugin>
+		<nexus.staging.maven.plugin>1.6.3</nexus.staging.maven.plugin>
+
 	</properties>
+
+
 	<dependencies>
 
 		<dependency>
@@ -65,7 +71,40 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
+
+	<distributionManagement>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+	<scm>
+		<connection>scm:git:https://github.com/codingapi/springboot-framework.git</connection>
+		<developerConnection>scm:git:https://github.com/codingapi/springboot-framework.git</developerConnection>
+		<url>https://github.com/codingapi/springboot-framework</url>
+		<tag>v${project.version}</tag>
+    </scm>
+
+	<licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+	<developers>
+        <developer>
+            <name>lorne</name>
+            <email>wangliang@codingapi.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+    </developers>
+
     <profiles>
         <profile>
             <id>dev</id>
@@ -117,6 +156,98 @@
 				</plugins>
 			</build>
         </profile>
+
+		<profile>
+            <id>ossrh</id>
+
+            <properties>
+                <repository.id>ossrh</repository.id>
+                <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
+                <maven.compile.source>1.8</maven.compile.source>
+                <maven.compile.target>1.8</maven.compile.target>
+                <maven.source.plugin>3.0.1</maven.source.plugin>
+                <nexus.staging.maven.plugin>1.6.3</nexus.staging.maven.plugin>
+                <maven-compiler-plugin.version>3.6.0</maven-compiler-plugin.version>
+                <maven.javadoc.plugin>2.10.3</maven.javadoc.plugin>
+                <maven.gpg.plugin>1.6</maven.gpg.plugin>
+            </properties>
+            <build>
+                <plugins>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <source>${maven.compile.source}</source>
+                            <target>${maven.compile.target}</target>
+                            <encoding>${project.build.sourceEncoding}</encoding>
+                            <compilerArgument>-Xlint:deprecation</compilerArgument>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <additionalOptions>
+                                <additionalOption>-Xdoclint:none</additionalOption>
+                            </additionalOptions>
+                        </configuration>
+                    </plugin>
+
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+
+
     </profiles>
 
 </project>
