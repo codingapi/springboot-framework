@@ -13,8 +13,8 @@ public abstract class BaseHandler<T extends IEvent> implements IHandler<IEvent>{
         ApplicationHandlerUtils.getInstance().addHandler(this);        
     }
 
-
     @Override
+    @SuppressWarnings("unchecked")
     public void handler(IEvent event) {        
         if(event!=null){
             if(event.getClass().equals(clazz)){
