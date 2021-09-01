@@ -43,6 +43,25 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	
+      <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <boot.profile>dev</boot.profile>
+            </properties>
+        </profile>
+        <profile>
+            <id>travis</id>
+            <properties>
+                <boot.profile>travis</boot.profile>
+            </properties>
+        </profile>
+       
+    </profiles>
 
 
 </project>
