@@ -7,9 +7,10 @@
 		<artifactId>springboot-framework-parent</artifactId>
 		<version>0.0.1</version>
 	</parent>
-	<groupId>com.codingapi.architecture</groupId>
+	<groupId>com.codingapi.springboot</groupId>
 	<artifactId>springboot-framework</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
+
 	<name>springboot-framework</name>
 	<description>springboot-framework project for Spring Boot</description>
 	<modules></modules>
