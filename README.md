@@ -5,7 +5,9 @@
 
 # springboot-framework | Springboot领域驱动开发
 
-> 框架基于springboot为提供领域驱动设计与事件风暴开发范式的开源框架。
+> 当你无意间推开这一扇门，会感叹原来生活可以如此的美好。
+
+本框架基于springboot为提供领域驱动设计与事件风暴开发落地，提供的范式开源框架。
 
 ## maven install
 ```
