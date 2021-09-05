@@ -24,6 +24,9 @@
 ## youtube
 欢迎订阅我的youtube账号 [codingapi](https://www.youtube.com/channel/UCdAsCAxh453D7MfLfYWj0Eg),带你从0到1落地springboot与领域驱动设计
 
+[领域驱动设计001--了解为什么采用领域驱动设计开发](https://www.youtube.com/watch?v=09uP_sMvhY8).  
+
+
 ## books
 实战书籍正在编写中...
 
