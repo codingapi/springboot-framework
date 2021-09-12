@@ -15,11 +15,7 @@
 	<url>https://github.com/codingapi/springboot-framewrok</url>
 	<name>springboot-framework-parent</name>
 	<description>springboot-framework-parent project for Spring Boot</description>
-	<modules>
-		<module>springboot-framework</module>
-		<module>springboot-example</module>
-		<module>springboot-data-permission</module>
-	</modules>
+
 	<properties>
 		<java.version>1.8</java.version>
 
@@ -112,17 +108,22 @@
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
-			<properties>
-				<boot.profile>dev</boot.profile>
-			</properties>
+			<modules>
+				<module>springboot-framework</module>
+				<module>springboot-example</module>
+				<module>springboot-data-permission</module>
+			</modules>
 		</profile>
 
 		<!-- mvn clean test -P travis-->
 		<profile>
 			<id>travis</id>
-			<properties>
-				<boot.profile>travis</boot.profile>
-			</properties>
+
+			<modules>
+				<module>springboot-framework</module>
+				<module>springboot-example</module>
+				<module>springboot-data-permission</module>
+			</modules>
 
 			<build>
 				<plugins>
@@ -163,6 +164,12 @@
 		<profile>
 			<!--  mvn clean deploy -P ossrh  -->
 			<id>ossrh</id>
+
+			<modules>
+				<module>springboot-framework</module>
+				<module>springboot-data-permission</module>
+			</modules>
+
 
 			<properties>
 				<repository.id>ossrh</repository.id>
