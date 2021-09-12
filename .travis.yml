@@ -10,7 +10,7 @@ before_install:
   - pip install --user codecov
 
 script:
-  - mvn clean install -DskipTests=false -P travis
+  - mvn clean test -P travis
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

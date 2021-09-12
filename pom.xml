@@ -116,6 +116,8 @@
 				<boot.profile>dev</boot.profile>
 			</properties>
 		</profile>
+
+		<!-- mvn clean test -P travis-->
 		<profile>
 			<id>travis</id>
 			<properties>
