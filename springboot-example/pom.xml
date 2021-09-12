@@ -36,11 +36,11 @@
 			<version>0.0.1</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.codingapi.springboot</groupId>
-			<artifactId>springboot-data-permission</artifactId>
-			<version>0.0.1</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>com.codingapi.springboot</groupId>-->
+<!--			<artifactId>springboot-data-permission</artifactId>-->
+<!--			<version>0.0.1</version>-->
+<!--		</dependency>-->
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
