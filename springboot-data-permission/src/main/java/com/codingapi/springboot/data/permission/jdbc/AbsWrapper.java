@@ -24,17 +24,17 @@ public class AbsWrapper implements Wrapper {
         } else if (iface.isAssignableFrom(delegate.getClass())) {
             // if the proxied object directly implements the interface or extends it, return
             // the proxied object
-            result = unwrapP6SpyProxy();
+            result = unwrapProxy();
         } else if (Wrapper.class.isAssignableFrom(delegate.getClass())) {
             // if the proxied object implements the wrapper interface, then
             // return the result of it's unwrap method.
-            result = ((Wrapper) unwrapP6SpyProxy()).unwrap(iface);
+            result = ((Wrapper) unwrapProxy()).unwrap(iface);
         } else {
-      /*
-         This line of code can only be reached when the underlying object does not implement the wrapper
-         interface.  This would mean that either the JDBC driver or the wrapper of the underlying object
-         does not implement the JDBC 4.0 API.
-       */
+          /*
+             This line of code can only be reached when the underlying object does not implement the wrapper
+             interface.  This would mean that either the JDBC driver or the wrapper of the underlying object
+             does not implement the JDBC 4.0 API.
+           */
             throw new SQLException("Can not unwrap to " + iface.getName());
         }
         return iface.cast(result);
@@ -51,7 +51,7 @@ public class AbsWrapper implements Wrapper {
         } else if (Wrapper.class.isAssignableFrom(delegate.getClass())) {
             // if the proxied object implements the wrapper interface, then
             // return the result of it's isWrapperFor method.
-            return ((Wrapper) unwrapP6SpyProxy()).isWrapperFor(iface);
+            return ((Wrapper) unwrapProxy()).isWrapperFor(iface);
         }
         return false;
     }
@@ -62,7 +62,7 @@ public class AbsWrapper implements Wrapper {
         return delegate.hashCode();
     }
 
-    public Object unwrapP6SpyProxy() {
+    public Object unwrapProxy() {
         return delegate;
     }
 

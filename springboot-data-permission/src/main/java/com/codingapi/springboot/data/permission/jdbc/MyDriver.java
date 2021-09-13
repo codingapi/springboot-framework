@@ -15,13 +15,13 @@ public class MyDriver implements Driver {
 
     private final static String DRIVER_FLAG="my-driver:";
 
-    private static Driver instance = new MyDriver();
+    private final static Driver instance = new MyDriver();
 
     static {
         try {
             DriverManager.registerDriver(instance);
         } catch (SQLException e) {
-            throw new IllegalStateException("Could not register P6SpyDriver with DriverManager", e);
+            throw new IllegalStateException("Could not register MyDriver with DriverManager", e);
         }
     }
 
@@ -60,24 +60,18 @@ public class MyDriver implements Driver {
         if (url == null) {
             throw new SQLException("url is required");
         }
-
         if( !acceptsURL(url) ) {
             return null;
         }
-
         // find the real driver for the URL
         Driver passThru = findDriverByUrl(url);
 
-        final Connection conn;
-
+        Connection conn;
         try {
             conn =  passThru.connect(extractRealUrl(url), properties);
-
         } catch (SQLException e) {
-
             throw e;
         }
-
         return new MyConnection(conn);
     }
 

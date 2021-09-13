@@ -22,7 +22,6 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
@@ -35,11 +34,12 @@
 			<version>0.0.10</version>
 		</dependency>
 
-<!--		<dependency>-->
-<!--			<groupId>com.codingapi.springboot</groupId>-->
-<!--			<artifactId>springboot-data-permission</artifactId>-->
-<!--			<version>0.0.10</version>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>com.codingapi.springboot</groupId>
+			<artifactId>springboot-data-permission</artifactId>
+			<version>0.0.10</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
