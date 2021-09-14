@@ -1,6 +1,8 @@
 package com.codingapi.springboot.data.permission.jdbc;
 
 import com.codingapi.springboot.data.permission.sql.JdbcSql;
+import com.codingapi.springboot.data.permission.sql.event.JdbcExecuteEvent;
+import com.codingapi.springboot.framework.event.ApplicationEventUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.InputStream;
@@ -35,8 +37,7 @@ public class MyPreparedStatement extends AbsWrapper implements PreparedStatement
     @Override
     public int executeUpdate() throws SQLException {
         log.info("jdbcSql:{}",jdbcSql.getExecuteSql());
-        //todo test: set user_id = 1
-        delegate.setInt(2,1);
+        ApplicationEventUtils.getInstance().push(new JdbcExecuteEvent(delegate,jdbcSql));
         return delegate.executeUpdate();
     }
 

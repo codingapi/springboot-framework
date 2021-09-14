@@ -33,7 +33,6 @@ class ExampleApplicationTests {
 			log.info("demo:{}",demo);
 			Assert.isTrue(demo.getUserId()==1,"update user_id error.");
 		});
-
 	}
 
 	@Test
