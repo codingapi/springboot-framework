@@ -5,6 +5,7 @@ jdk: openjdk8
 branches:
   only:
     - main
+    - dev
 
 before_install:
   - pip install --user codecov
