@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.codingapi.springboot.data.permission.AutoConfiguration
+com.codingapi.springboot.data.permission.AutoConfiguration,\
+com.codingapi.springboot.data.permission.sql.analyze.SqlAnalyzerConfiguration

@@ -37,4 +37,14 @@ public class Demo extends BaseEntity{
 
         ApplicationEventUtils.getInstance().push(new DemoNameChangeEvent(oldName,name));
     }
+
+    @Override
+    public String toString() {
+        return "Demo{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", userId=" + getUserId() + "" +
+                ", createTime=" + getCreateTime() + "" +
+                '}';
+    }
 }

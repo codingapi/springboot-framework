@@ -13,7 +13,7 @@ import java.util.Date;
 @Setter
 @Getter
 @MappedSuperclass
-public class BaseEntity {
+public abstract class BaseEntity {
 
     private int userId;
 

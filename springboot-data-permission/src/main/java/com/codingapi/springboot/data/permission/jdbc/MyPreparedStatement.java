@@ -1,5 +1,8 @@
 package com.codingapi.springboot.data.permission.jdbc;
 
+import com.codingapi.springboot.data.permission.sql.JdbcSql;
+import com.codingapi.springboot.data.permission.sql.event.JdbcExecuteEvent;
+import com.codingapi.springboot.framework.event.ApplicationEventUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.InputStream;
@@ -8,8 +11,6 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.*;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author lorne
@@ -18,15 +19,14 @@ import java.util.Map;
 @Slf4j
 public class MyPreparedStatement extends AbsWrapper implements PreparedStatement{
 
-    private PreparedStatement delegate;
+    private final PreparedStatement delegate;
 
-    private Map<Integer,Object> parameterValues = new HashMap<>();
-    private String sql;
+    private final JdbcSql jdbcSql;
 
     public MyPreparedStatement(PreparedStatement delegate,String sql) throws SQLException{
         super(delegate);
         this.delegate = delegate;
-        this.sql = sql;
+        this.jdbcSql = new JdbcSql(sql);
     }
 
     @Override
@@ -36,112 +36,112 @@ public class MyPreparedStatement extends AbsWrapper implements PreparedStatement
 
     @Override
     public int executeUpdate() throws SQLException {
-        log.info("MyPreparedStatement.executeUpdate():int sql:{}",sql);
-        log.info("parameterValues:{}",parameterValues);
+        log.info("jdbcSql:{}",jdbcSql.getExecuteSql());
+        ApplicationEventUtils.getInstance().push(new JdbcExecuteEvent(delegate,jdbcSql));
         return delegate.executeUpdate();
     }
 
     @Override
     public void setNull(int parameterIndex, int sqlType) throws SQLException {
         delegate.setNull(parameterIndex, sqlType);
-        parameterValues.put(parameterIndex,null);
+        jdbcSql.put(parameterIndex,null);
     }
 
     @Override
     public void setBoolean(int parameterIndex, boolean x) throws SQLException {
         delegate.setBoolean(parameterIndex, x);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setByte(int parameterIndex, byte x) throws SQLException {
         delegate.setByte(parameterIndex, x);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setShort(int parameterIndex, short x) throws SQLException {
         delegate.setShort(parameterIndex, x);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setInt(int parameterIndex, int x) throws SQLException {
         delegate.setInt(parameterIndex, x);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setLong(int parameterIndex, long x) throws SQLException {
         delegate.setLong(parameterIndex, x);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setFloat(int parameterIndex, float x) throws SQLException {
         delegate.setFloat(parameterIndex, x);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setDouble(int parameterIndex, double x) throws SQLException {
         delegate.setDouble(parameterIndex, x);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setBigDecimal(int parameterIndex, BigDecimal x) throws SQLException {
         delegate.setBigDecimal(parameterIndex, x);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setString(int parameterIndex, String x) throws SQLException {
         delegate.setString(parameterIndex, x);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setBytes(int parameterIndex, byte[] x) throws SQLException {
         delegate.setBytes(parameterIndex, x);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setDate(int parameterIndex, Date x) throws SQLException {
         delegate.setDate(parameterIndex, x);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setTime(int parameterIndex, Time x) throws SQLException {
         delegate.setTime(parameterIndex, x);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setTimestamp(int parameterIndex, Timestamp x) throws SQLException {
         delegate.setTimestamp(parameterIndex, x);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setAsciiStream(int parameterIndex, InputStream x, int length) throws SQLException {
         delegate.setAsciiStream(parameterIndex, x, length);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     @Deprecated
     public void setUnicodeStream(int parameterIndex, InputStream x, int length) throws SQLException {
         delegate.setUnicodeStream(parameterIndex, x, length);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setBinaryStream(int parameterIndex, InputStream x, int length) throws SQLException {
         delegate.setBinaryStream(parameterIndex, x, length);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
@@ -152,13 +152,13 @@ public class MyPreparedStatement extends AbsWrapper implements PreparedStatement
     @Override
     public void setObject(int parameterIndex, Object x, int targetSqlType) throws SQLException {
         delegate.setObject(parameterIndex, x, targetSqlType);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setObject(int parameterIndex, Object x) throws SQLException {
         delegate.setObject(parameterIndex, x);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
@@ -174,31 +174,31 @@ public class MyPreparedStatement extends AbsWrapper implements PreparedStatement
     @Override
     public void setCharacterStream(int parameterIndex, Reader reader, int length) throws SQLException {
         delegate.setCharacterStream(parameterIndex, reader, length);
-        parameterValues.put(parameterIndex,reader);
+        jdbcSql.put(parameterIndex,reader);
     }
 
     @Override
     public void setRef(int parameterIndex, Ref x) throws SQLException {
         delegate.setRef(parameterIndex, x);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setBlob(int parameterIndex, Blob x) throws SQLException {
         delegate.setBlob(parameterIndex, x);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setClob(int parameterIndex, Clob x) throws SQLException {
         delegate.setClob(parameterIndex, x);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setArray(int parameterIndex, Array x) throws SQLException {
         delegate.setArray(parameterIndex, x);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
@@ -209,31 +209,31 @@ public class MyPreparedStatement extends AbsWrapper implements PreparedStatement
     @Override
     public void setDate(int parameterIndex, Date x, Calendar cal) throws SQLException {
         delegate.setDate(parameterIndex, x, cal);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setTime(int parameterIndex, Time x, Calendar cal) throws SQLException {
         delegate.setTime(parameterIndex, x, cal);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setTimestamp(int parameterIndex, Timestamp x, Calendar cal) throws SQLException {
         delegate.setTimestamp(parameterIndex, x, cal);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setNull(int parameterIndex, int sqlType, String typeName) throws SQLException {
         delegate.setNull(parameterIndex, sqlType, typeName);
-        parameterValues.put(parameterIndex,null);
+        jdbcSql.put(parameterIndex,null);
     }
 
     @Override
     public void setURL(int parameterIndex, URL x) throws SQLException {
         delegate.setURL(parameterIndex, x);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
@@ -244,115 +244,115 @@ public class MyPreparedStatement extends AbsWrapper implements PreparedStatement
     @Override
     public void setRowId(int parameterIndex, RowId x) throws SQLException {
         delegate.setRowId(parameterIndex, x);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setNString(int parameterIndex, String value) throws SQLException {
         delegate.setNString(parameterIndex, value);
-        parameterValues.put(parameterIndex,value);
+        jdbcSql.put(parameterIndex,value);
     }
 
     @Override
     public void setNCharacterStream(int parameterIndex, Reader value, long length) throws SQLException {
         delegate.setNCharacterStream(parameterIndex, value, length);
-        parameterValues.put(parameterIndex,value);
+        jdbcSql.put(parameterIndex,value);
     }
 
     @Override
     public void setNClob(int parameterIndex, NClob value) throws SQLException {
         delegate.setNClob(parameterIndex, value);
-        parameterValues.put(parameterIndex,value);
+        jdbcSql.put(parameterIndex,value);
     }
 
     @Override
     public void setClob(int parameterIndex, Reader reader, long length) throws SQLException {
         delegate.setClob(parameterIndex, reader, length);
-        parameterValues.put(parameterIndex,reader);
+        jdbcSql.put(parameterIndex,reader);
     }
 
     @Override
     public void setBlob(int parameterIndex, InputStream inputStream, long length) throws SQLException {
         delegate.setBlob(parameterIndex, inputStream, length);
-        parameterValues.put(parameterIndex,inputStream);
+        jdbcSql.put(parameterIndex,inputStream);
     }
 
     @Override
     public void setNClob(int parameterIndex, Reader reader, long length) throws SQLException {
         delegate.setNClob(parameterIndex, reader, length);
-        parameterValues.put(parameterIndex,reader);
+        jdbcSql.put(parameterIndex,reader);
     }
 
     @Override
     public void setSQLXML(int parameterIndex, SQLXML xmlObject) throws SQLException {
         delegate.setSQLXML(parameterIndex, xmlObject);
-        parameterValues.put(parameterIndex,xmlObject);
+        jdbcSql.put(parameterIndex,xmlObject);
     }
 
     @Override
     public void setObject(int parameterIndex, Object x, int targetSqlType, int scaleOrLength) throws SQLException {
         delegate.setObject(parameterIndex, x, targetSqlType, scaleOrLength);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setAsciiStream(int parameterIndex, InputStream x, long length) throws SQLException {
         delegate.setAsciiStream(parameterIndex, x, length);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setBinaryStream(int parameterIndex, InputStream x, long length) throws SQLException {
         delegate.setBinaryStream(parameterIndex, x, length);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setCharacterStream(int parameterIndex, Reader reader, long length) throws SQLException {
         delegate.setCharacterStream(parameterIndex, reader, length);
-        parameterValues.put(parameterIndex,reader);
+        jdbcSql.put(parameterIndex,reader);
     }
 
     @Override
     public void setAsciiStream(int parameterIndex, InputStream x) throws SQLException {
         delegate.setAsciiStream(parameterIndex, x);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setBinaryStream(int parameterIndex, InputStream x) throws SQLException {
         delegate.setBinaryStream(parameterIndex, x);
-        parameterValues.put(parameterIndex,x);
+        jdbcSql.put(parameterIndex,x);
     }
 
     @Override
     public void setCharacterStream(int parameterIndex, Reader reader) throws SQLException {
         delegate.setCharacterStream(parameterIndex, reader);
-        parameterValues.put(parameterIndex,reader);
+        jdbcSql.put(parameterIndex,reader);
     }
 
     @Override
     public void setNCharacterStream(int parameterIndex, Reader value) throws SQLException {
         delegate.setNCharacterStream(parameterIndex, value);
-        parameterValues.put(parameterIndex,value);
+        jdbcSql.put(parameterIndex,value);
     }
 
     @Override
     public void setClob(int parameterIndex, Reader reader) throws SQLException {
         delegate.setClob(parameterIndex, reader);
-        parameterValues.put(parameterIndex,reader);
+        jdbcSql.put(parameterIndex,reader);
     }
 
     @Override
     public void setBlob(int parameterIndex, InputStream inputStream) throws SQLException {
         delegate.setBlob(parameterIndex, inputStream);
-        parameterValues.put(parameterIndex,inputStream);
+        jdbcSql.put(parameterIndex,inputStream);
     }
 
     @Override
     public void setNClob(int parameterIndex, Reader reader) throws SQLException {
         delegate.setNClob(parameterIndex, reader);
-        parameterValues.put(parameterIndex,reader);
+        jdbcSql.put(parameterIndex,reader);
     }
 
 
