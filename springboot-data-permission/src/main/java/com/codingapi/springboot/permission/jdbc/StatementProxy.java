@@ -1,6 +1,8 @@
 package com.codingapi.springboot.permission.jdbc;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class StatementProxy extends BaseStatement implements Statement {
 

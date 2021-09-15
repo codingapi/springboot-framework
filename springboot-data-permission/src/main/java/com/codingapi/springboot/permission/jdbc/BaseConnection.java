@@ -15,6 +15,12 @@ public abstract class BaseConnection extends AbsWrapper implements Connection{
     }
 
     @Override
+    public String nativeSQL(String sql) throws SQLException {
+        return delegate.nativeSQL(sql);
+    }
+
+
+    @Override
     public Clob createClob() throws SQLException {
         return delegate.createClob();
     }

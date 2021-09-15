@@ -7,7 +7,7 @@ import java.sql.Wrapper;
  * @author lorne
  * @since 1.0.0
  */
-public class AbsWrapper implements Wrapper {
+public abstract class AbsWrapper implements Wrapper {
 
     private final Object delegate;
 

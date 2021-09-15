@@ -34,20 +34,12 @@ public class ConnectionProxy extends BaseConnection {
     public CallableStatement prepareCall(String sql) throws SQLException {
         SqlAnalyzer sqlAnalyzer = new SqlAnalyzer(sql);
         SQL executeSql = sqlAnalyzer.getSql();
-        return delegate.prepareCall(executeSql.getSql());
+        return new CallableStatementProxy(delegate.prepareCall(executeSql.getSql()),executeSql);
     }
-
-    @Override
-    public String nativeSQL(String sql) throws SQLException {
-        SqlAnalyzer sqlAnalyzer = new SqlAnalyzer(sql);
-        SQL executeSql = sqlAnalyzer.getSql();
-        return delegate.nativeSQL(executeSql.getSql());
-    }
-
 
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
-        return delegate.createStatement(resultSetType, resultSetConcurrency);
+        return new StatementProxy(delegate.createStatement(resultSetType, resultSetConcurrency));
     }
 
     @Override
@@ -59,13 +51,14 @@ public class ConnectionProxy extends BaseConnection {
 
     @Override
     public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
-        //todo MyCallableStatement
-        return delegate.prepareCall(sql, resultSetType, resultSetConcurrency);
+        SqlAnalyzer sqlAnalyzer = new SqlAnalyzer(sql);
+        SQL executeSql = sqlAnalyzer.getSql();
+        return new CallableStatementProxy(delegate.prepareCall(executeSql.getSql(), resultSetType, resultSetConcurrency),executeSql);
     }
 
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
-        return delegate.createStatement(resultSetType, resultSetConcurrency, resultSetHoldability);
+        return new StatementProxy(delegate.createStatement(resultSetType, resultSetConcurrency, resultSetHoldability));
     }
 
     @Override
@@ -77,8 +70,9 @@ public class ConnectionProxy extends BaseConnection {
 
     @Override
     public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
-        //todo MyCallableStatement
-        return delegate.prepareCall(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
+        SqlAnalyzer sqlAnalyzer = new SqlAnalyzer(sql);
+        SQL executeSql = sqlAnalyzer.getSql();
+        return new CallableStatementProxy(delegate.prepareCall(executeSql.getSql(), resultSetType, resultSetConcurrency, resultSetHoldability),executeSql);
     }
 
     @Override
