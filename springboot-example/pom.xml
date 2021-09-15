@@ -34,13 +34,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.codingapi.springboot</groupId>
-			<artifactId>springboot-data-permission</artifactId>
-			<version>0.0.10</version>
-		</dependency>
-
-
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
