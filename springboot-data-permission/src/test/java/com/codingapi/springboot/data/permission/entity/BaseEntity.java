@@ -1,4 +1,4 @@
-package com.codingapi.springboot.example.domain;
+package com.codingapi.springboot.data.permission.entity;
 
 import lombok.Getter;
 import lombok.Setter;

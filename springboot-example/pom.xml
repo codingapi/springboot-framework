@@ -6,7 +6,6 @@
 		<artifactId>springboot-framework-parent</artifactId>
 		<version>0.0.10</version>
 	</parent>
-	<groupId>com.codingapi.architecture</groupId>
 	<artifactId>springboot-example</artifactId>
 	<version>0.0.10</version>
 

@@ -24,15 +24,6 @@ class ExampleApplicationTests {
 		Demo demo = new Demo("xiaoming");
 		demoRepository.save(demo);
 		Assert.isTrue(demo.getId()>0,"demoRepository save error.");
-
-	}
-
-	@Test
-	void changeJdbcTest(){
-		demoRepository.findById(1).ifPresent(demo -> {
-			log.info("demo:{}",demo);
-			Assert.isTrue(demo.getUserId()==1,"update user_id error.");
-		});
 	}
 
 	@Test
