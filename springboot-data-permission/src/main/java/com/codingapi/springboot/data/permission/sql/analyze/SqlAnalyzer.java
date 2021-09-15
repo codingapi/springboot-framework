@@ -1,20 +1,22 @@
 package com.codingapi.springboot.data.permission.sql.analyze;
 
+import com.codingapi.springboot.data.permission.sql.SQL;
+
 import java.util.List;
 
 public class SqlAnalyzer {
 
-    private final String sql;
+    private final SQL sql;
 
     public SqlAnalyzer(String sql) {
-        this.sql = sql;
+        this.sql = new SQL(sql);
     }
 
-    public String getSql() {
-        String sql = this.sql;
+
+    public SQL getSql() {
         List<SqlAnalyzerFilter> filters =  AnalyzerFilterContext.getInstance().getFilters();
         for(SqlAnalyzerFilter filter:filters){
-            sql = filter.doFilter(sql);
+            filter.doFilter(sql);
         }
         return sql;
     }
