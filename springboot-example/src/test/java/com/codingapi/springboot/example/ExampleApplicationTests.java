@@ -27,14 +27,6 @@ class ExampleApplicationTests {
 	}
 
 	@Test
-	void changeJdbcTest(){
-		demoRepository.findById(1).ifPresent(demo -> {
-			log.info("demo:{}",demo);
-			Assert.isTrue(demo.getUserId()==1,"update user_id error.");
-		});
-	}
-
-	@Test
 	void swap(){
 		Demo demo1 = new Demo("demo1");
 		Demo demo2 = new Demo("demo2");

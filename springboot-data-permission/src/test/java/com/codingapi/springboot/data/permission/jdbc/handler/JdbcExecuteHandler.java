@@ -1,4 +1,4 @@
-package com.codingapi.springboot.example.jdbc.handler;
+package com.codingapi.springboot.data.permission.jdbc.handler;
 
 import com.codingapi.springboot.data.permission.sql.event.JdbcExecuteEvent;
 import com.codingapi.springboot.framework.handler.BaseHandler;

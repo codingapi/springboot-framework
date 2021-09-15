@@ -1,4 +1,4 @@
-package com.codingapi.springboot.example.jdbc.analyze;
+package com.codingapi.springboot.data.permission.jdbc.analyze;
 
 import com.codingapi.springboot.data.permission.sql.SQL;
 import com.codingapi.springboot.data.permission.sql.analyze.SqlAnalyzerFilter;

@@ -21,16 +21,28 @@ public class SQL {
         INSERT,DELETE,UPDATE,SELECT
     }
 
+    //jdbc sql type
+    private SQLType sqlType;
+
+    // jdbc sql
+    @Getter
     private String sql;
+
+    // jdbc sql to char arrays.
+    @Getter
     private char[] sqlChars;
 
+    //jdbc sql parameter key and values,for example insert into t_demo(id,name) values(?,?), keys:id,name value:1,2
     private final Map<String,Integer> parameterKeys = new HashMap<>();
 
-    private final Map<String,Integer> parameters = new HashMap<>();
+    // init jdbc sql parameterKeys
+    private final Map<String,Integer> initParameters = new HashMap<>();
 
+    // remove keys index values
     @Getter
     private final List<Integer> removeIndexes = new ArrayList<>();
 
+    //Pattern
     private static final Pattern INSERT_PATTERN = Pattern.compile("(\\([\\sa-zA-Z0-9_,|?]*\\s*[?]+\\s*[\\sa-zA-Z0-9_,|?]*\\s*\\))");
 
     private static final Pattern INSERT_PATTERN_KEY = Pattern.compile("(\\([\\sa-zA-Z0-9_]+[,][\\sa-zA-Z0-9_,]*\\))");
@@ -45,7 +57,6 @@ public class SQL {
 
     private static final Pattern CURD_SELECT_PATTERN = Pattern.compile("(^\\s*(select).*)",Pattern.CASE_INSENSITIVE);
 
-    private SQLType sqlType;
 
     public SQL(String sql) {
         this.sql = sql;
@@ -62,11 +73,14 @@ public class SQL {
         Integer value = parameterKeys.get(key);
         if(value!=null){
             if (sqlType == SQLType.INSERT) {
-                sql = sql.replaceFirst("\\s*" + key + "\\s*[,]?", "");
+                //for example : insert into t_demo(id,name) values(?,?),delete id will get result: insert into t_demo(name) values(?)
+                sql = sql.replaceFirst(String.format("\\s*%s\\s*[,]?",key), "");
                 sql = sql.replaceFirst("\\?\\s*[,]?", "");
             }
-            sql = sql.replaceFirst("\\s*" + key + "\\s*=\\s*\\?\\s*[,]?", "");
+            //for example : update t_demo set name = ?, age = ? where id = ? , delete name will get result:update t_demo set age = ? where id = ?
+            sql = sql.replaceFirst(String.format("\\s*%s\\s*=\\s*\\?\\s*[,]?",key), "");
             sql = sql.trim();
+            //when endsWith where will append 1=1
             if(sql.toUpperCase().endsWith("WHERE")){
                 sql = sql+" 1=1";
             }
@@ -113,7 +127,7 @@ public class SQL {
                 }
             }
         }
-        log.info("parameterKeys:{}",parameterKeys);
+        log.debug("parameterKeys:{}",parameterKeys);
     }
 
     public int getSqlParameterCount(){
@@ -128,25 +142,18 @@ public class SQL {
 
     private void copyParameter(){
         for(String key:parameterKeys.keySet()){
-            parameters.put(key,parameterKeys.get(key));
+            initParameters.put(key,parameterKeys.get(key));
         }
     }
 
     public int getIndex(String parameterKey){
-        Integer value = parameters.get(parameterKey);
+        Integer value = initParameters.get(parameterKey);
         if(value==null){
             return 0;
         }
         return value;
     }
 
-    public String getSql() {
-        return sql.toString();
-    }
-
-    public char[] getSqlChars() {
-        return sqlChars;
-    }
 
     public String[] split(Pattern pattern){
         Matcher matcher =  pattern.matcher(sql);

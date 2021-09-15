@@ -5,6 +5,7 @@ import com.codingapi.springboot.framework.event.ApplicationEventUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,7 +20,8 @@ import javax.persistence.Id;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Demo extends BaseEntity{
+@ToString
+public class Demo{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,13 +40,4 @@ public class Demo extends BaseEntity{
         ApplicationEventUtils.getInstance().push(new DemoNameChangeEvent(oldName,name));
     }
 
-    @Override
-    public String toString() {
-        return "Demo{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", userId=" + getUserId() + "" +
-                ", createTime=" + getCreateTime() + "" +
-                '}';
-    }
 }
