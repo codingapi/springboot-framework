@@ -12,7 +12,7 @@ import java.sql.SQLException;
  * @since 1.0.0
  */
 @AllArgsConstructor
-public class JdbcExecuteEvent implements IEvent {
+public class JdbcPreparedStatementExecuteEvent implements IEvent {
 
     private final PreparedStatement preparedStatement;
     private final JdbcSql jdbcSql;
