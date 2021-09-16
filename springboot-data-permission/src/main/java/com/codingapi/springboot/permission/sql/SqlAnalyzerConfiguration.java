@@ -16,12 +16,6 @@ public class SqlAnalyzerConfiguration {
 
     static class SqlAnalyzerFilterBeanInit {
         public SqlAnalyzerFilterBeanInit(List<SqlAnalyzerFilter> filters) {
-
-            AnalyzerFilterContext.getInstance().addFilter(new CurdInsertSqlAnalyzer());
-            AnalyzerFilterContext.getInstance().addFilter(new CurdSelectSqlAnalyzer());
-            AnalyzerFilterContext.getInstance().addFilter(new CurdDeleteSqlAnalyzer());
-            AnalyzerFilterContext.getInstance().addFilter(new CurdUpdateSqlAnalyzer());
-
             if(filters!=null&&filters.size()>0) {
                 AnalyzerFilterContext.getInstance().addFilters(filters);
             }

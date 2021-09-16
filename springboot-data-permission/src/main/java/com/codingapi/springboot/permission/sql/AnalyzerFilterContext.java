@@ -15,6 +15,11 @@ public class AnalyzerFilterContext {
 
     private AnalyzerFilterContext(){
         this.filters = new ArrayList<>();
+
+        filters.add(new CurdInsertSqlAnalyzer());
+        filters.add(new CurdSelectSqlAnalyzer());
+        filters.add(new CurdDeleteSqlAnalyzer());
+        filters.add(new CurdUpdateSqlAnalyzer());
     }
 
     public static AnalyzerFilterContext getInstance() {
