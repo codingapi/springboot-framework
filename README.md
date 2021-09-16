@@ -19,7 +19,12 @@
 ```
 
 ## CONTRIBUTING
-[CONTRIBUTING](./CONTRIBUTING.MD)
+
+Welcome to springboot-framework ! This document is a guideline about how to contribute to springboot-framework.
+If you find something incorrect or missing, please leave comments / suggestions.
+
+[CONTRIBUTING](./CONTRIBUTING.md)
+
 
 ## example
 见springboot-example 完善中...
