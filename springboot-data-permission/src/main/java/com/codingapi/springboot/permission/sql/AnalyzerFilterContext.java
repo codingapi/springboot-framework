@@ -1,4 +1,4 @@
-package com.codingapi.springboot.permission.analyze;
+package com.codingapi.springboot.permission.sql;
 
 import java.util.ArrayList;
 import java.util.List;
