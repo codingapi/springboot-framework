@@ -18,6 +18,9 @@
     </dependency>
 ```
 
+## CONTRIBUTING
+[CONTRIBUTING](./CONTRIBUTING.MD)
+
 ## example
 见springboot-example 完善中...
 
