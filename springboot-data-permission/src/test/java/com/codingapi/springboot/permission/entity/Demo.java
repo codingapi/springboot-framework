@@ -11,7 +11,7 @@ import javax.persistence.Id;
 
 @Setter
 @Getter
-@Entity
+@Entity(name = "T_DEMO")
 @NoArgsConstructor
 public class Demo extends BaseEntity{
 
