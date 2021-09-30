@@ -1,4 +1,4 @@
-package com.codingapi.springboot.permission.sql;
+package com.codingapi.springboot.permission.analyzer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

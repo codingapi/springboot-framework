@@ -1,4 +1,4 @@
-package com.codingapi.springboot.permission.sql;
+package com.codingapi.springboot.permission.analyzer;
 
 import java.util.List;
 import java.util.regex.Pattern;

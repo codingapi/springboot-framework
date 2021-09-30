@@ -1,7 +1,7 @@
 package com.codingapi.springboot.permission.jdbc;
 
-import com.codingapi.springboot.permission.sql.JdbcSql;
-import com.codingapi.springboot.permission.sql.SQL;
+import com.codingapi.springboot.permission.analyzer.JdbcSql;
+import com.codingapi.springboot.permission.analyzer.SQL;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.InputStream;

@@ -1,7 +1,7 @@
 package com.codingapi.springboot.permission.event;
 
 import com.codingapi.springboot.framework.event.IEvent;
-import com.codingapi.springboot.permission.sql.SQL;
+import com.codingapi.springboot.permission.analyzer.SQL;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

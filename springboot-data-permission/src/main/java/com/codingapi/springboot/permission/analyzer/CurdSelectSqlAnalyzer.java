@@ -1,4 +1,4 @@
-package com.codingapi.springboot.permission.sql;
+package com.codingapi.springboot.permission.analyzer;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -7,16 +7,17 @@ import java.util.regex.Pattern;
  * @author lorne
  * @since 1.0.0
  */
-public class CurdDeleteSqlAnalyzer extends BaseAnalyzerFilter implements SqlAnalyzerFilter{
+public class CurdSelectSqlAnalyzer extends BaseAnalyzerFilter implements SqlAnalyzerFilter{
 
     //Pattern
     private static final Pattern EQUAL_PATTERN = Pattern.compile("([a-zA-Z0-9_\\.]*\\s*[=]\\s*[?])");
 
-    private static final Pattern CURD_DELETE_PATTERN = Pattern.compile("(^\\s*(delete).*)",Pattern.CASE_INSENSITIVE);
+    private static final Pattern CURD_SELECT_PATTERN = Pattern.compile("(^\\s*(select).*)",Pattern.CASE_INSENSITIVE);
+
 
     @Override
     public boolean match(SQL sql) {
-        return match(CURD_DELETE_PATTERN,sql.getSql());
+        return match(CURD_SELECT_PATTERN,sql.getSql());
     }
 
     @Override

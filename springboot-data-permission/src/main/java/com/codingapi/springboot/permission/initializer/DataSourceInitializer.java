@@ -6,7 +6,6 @@ import org.apache.commons.dbutils.QueryRunner;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.util.List;
 
 /**
  * @author lorne
@@ -26,8 +25,8 @@ public class DataSourceInitializer {
 
     private void init() throws SQLException {
         DBTable dbTable = new DBTable(dataSource.getConnection());
-        List<String> tableNames =  dbTable.tableNames();
-        log.info("tableNames :{}",tableNames);
+        dbTable.scanner();
+        dbTable.close();
     }
 
 }
