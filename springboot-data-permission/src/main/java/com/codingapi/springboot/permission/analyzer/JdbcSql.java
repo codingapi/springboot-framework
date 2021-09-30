@@ -1,4 +1,4 @@
-package com.codingapi.springboot.permission.sql;
+package com.codingapi.springboot.permission.analyzer;
 
 import java.sql.SQLException;
 import java.util.HashMap;

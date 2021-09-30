@@ -1,4 +1,4 @@
-package com.codingapi.springboot.permission.sql;
+package com.codingapi.springboot.permission.analyzer;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

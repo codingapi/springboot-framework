@@ -2,7 +2,7 @@ package com.codingapi.springboot.permission.jdbc;
 
 import com.codingapi.springboot.framework.event.ApplicationEventUtils;
 import com.codingapi.springboot.permission.event.JdbcPreparedStatementSqlCreatedEvent;
-import com.codingapi.springboot.permission.sql.SQL;
+import com.codingapi.springboot.permission.analyzer.SQL;
 
 import java.sql.*;
 
