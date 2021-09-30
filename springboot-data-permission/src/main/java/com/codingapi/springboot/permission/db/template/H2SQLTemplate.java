@@ -19,12 +19,6 @@ public class H2SQLTemplate implements SQLTemplate{
     }
 
     @Override
-    public String insert() {
-        //todo insert sql
-        return null;
-    }
-
-    @Override
     public String create(String tableName) {
         return String.format(BASE_CREATE_SQL,tableName);
     }
