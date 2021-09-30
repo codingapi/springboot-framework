@@ -12,8 +12,11 @@ public interface SQLTemplate {
      */
     boolean match(String driverName);
 
-    String insert();
-
+    /**
+     * create table sql
+     * @param tableName table name
+     * @return create sql
+     */
     String create(String tableName);
 
 }
