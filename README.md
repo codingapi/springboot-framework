@@ -34,7 +34,8 @@ If you find something incorrect or missing, please leave comments / suggestions.
 
 [领域驱动设计001--了解为什么采用领域驱动设计开发](https://www.youtube.com/watch?v=09uP_sMvhY8)     
 [领域驱动设计002--SpringBoot DDD Example HelloWorld](https://www.youtube.com/watch?v=d7LnYy8rTYI&t=149s)    
-[领域驱动设计003--事件风暴](https://www.youtube.com/watch?v=EiMvgIKT46I)   
+[领域驱动设计003--事件风暴](https://www.youtube.com/watch?v=EiMvgIKT46I) 
+[领域驱动设计004--领域边界](https://www.youtube.com/watch?v=l80I3LkvGdE)   
 
 
 ## books
