@@ -1,7 +1,7 @@
 package com.codingapi.springboot.permission.jdbc.handler;
 
+import com.codingapi.springboot.framework.handler.IHandler;
 import com.codingapi.springboot.permission.event.JdbcPreparedStatementExecuteEvent;
-import com.codingapi.springboot.framework.handler.BaseHandler;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -12,11 +12,11 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-public class JdbcExecuteHandler extends BaseHandler<JdbcPreparedStatementExecuteEvent> {
+public class JdbcExecuteHandler implements IHandler<JdbcPreparedStatementExecuteEvent> {
 
     @SneakyThrows
     @Override
-    public void handler0(JdbcPreparedStatementExecuteEvent event) {
+    public void handler(JdbcPreparedStatementExecuteEvent event) {
         event.put("user_id",1);
     }
 }

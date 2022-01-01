@@ -1,19 +1,17 @@
 package com.codingapi.springboot.framework.handler;
 
-import java.util.List;
-
-import com.codingapi.springboot.framework.event.IEvent;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 @Configuration
 public class SpringHandlerConfiguration {
 
-
     @Bean
-    public SpringEventHandler springEventHandler(List<IHandler<IEvent>> handleres){
-        return new SpringEventHandler(handleres);
+    public SpringEventHandler springEventHandler(@Autowired(required = false) List<IHandler> handlers){
+        return new SpringEventHandler(handlers);
     }
-    
+
 }
