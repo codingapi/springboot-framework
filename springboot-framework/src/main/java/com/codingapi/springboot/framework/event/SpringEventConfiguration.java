@@ -14,7 +14,7 @@ public class SpringEventConfiguration {
 
     @PostConstruct
     public void init(){
-        ApplicationEventUtils.getInstance().initContext(context);
+        DomainEventContext.getInstance().initContext(context);
     }
     
 }

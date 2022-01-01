@@ -1,7 +1,7 @@
 package com.codingapi.springboot.example.domain;
 
 import com.codingapi.springboot.example.domain.event.DemoNameChangeEvent;
-import com.codingapi.springboot.framework.event.ApplicationEventUtils;
+import com.codingapi.springboot.framework.event.EventPusher;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -37,7 +37,7 @@ public class Demo{
         String oldName = this.name;
         this.name = name;
 
-        ApplicationEventUtils.getInstance().push(new DemoNameChangeEvent(oldName,name));
+        EventPusher.asyncPush(new DemoNameChangeEvent(oldName,name));
     }
 
 }

@@ -56,7 +56,8 @@ class ApplicationHandlerUtils implements IHandler<IEvent>{
                     handler.handler(event);
                 }
             }catch(Exception e){
-                log.error("handler exception", e);
+                log.warn("handler exception", e);
+                handler.error(e);
             }
         }    
     }
