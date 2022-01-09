@@ -1,6 +1,7 @@
 package com.codingapi.springboot.example.domain;
 
 import com.codingapi.springboot.example.domain.event.DemoNameChangeEvent;
+import com.codingapi.springboot.framework.persistence.IPersistence;
 import com.codingapi.springboot.framework.event.EventPusher;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +22,7 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @Entity
 @ToString
-public class Demo{
+public class Demo implements IPersistence {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

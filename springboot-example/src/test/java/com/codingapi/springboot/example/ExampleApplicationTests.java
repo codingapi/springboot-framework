@@ -2,27 +2,26 @@ package com.codingapi.springboot.example;
 
 import com.codingapi.springboot.example.domain.Demo;
 import com.codingapi.springboot.example.domain.service.DemoSwapService;
-import com.codingapi.springboot.example.repository.DemoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.Assert;
 
+import javax.transaction.Transactional;
+
 @SpringBootTest
 @Slf4j
 class ExampleApplicationTests {
 
 	@Autowired
-	private DemoRepository demoRepository;
-
-	@Autowired
 	private DemoSwapService demoSwapService;
 
 	@Test
+	@Transactional
 	void save() {
 		Demo demo = new Demo("xiaoming");
-		demoRepository.save(demo);
+		demo.persistence();
 		Assert.isTrue(demo.getId()>0,"demoRepository save error.");
 	}
 

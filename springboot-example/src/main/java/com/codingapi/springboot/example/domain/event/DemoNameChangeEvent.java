@@ -1,6 +1,6 @@
 package com.codingapi.springboot.example.domain.event;
 
-import com.codingapi.springboot.framework.event.IEvent;
+import com.codingapi.springboot.framework.event.IAsyncEvent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @AllArgsConstructor
-public class DemoNameChangeEvent implements IEvent {
+public class DemoNameChangeEvent implements IAsyncEvent {
 
     private String oldName;
 
