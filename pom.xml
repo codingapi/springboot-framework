@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.codingapi.springboot</groupId>
 	<artifactId>springboot-framework-parent</artifactId>
-	<version>0.0.13</version>
+	<version>0.0.14</version>
 
 	<url>https://github.com/codingapi/springboot-framewrok</url>
 	<name>springboot-framework-parent</name>
