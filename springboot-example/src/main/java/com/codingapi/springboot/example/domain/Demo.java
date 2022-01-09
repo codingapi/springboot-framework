@@ -37,7 +37,7 @@ public class Demo{
         String oldName = this.name;
         this.name = name;
 
-        EventPusher.asyncPush(new DemoNameChangeEvent(oldName,name));
+        EventPusher.push(new DemoNameChangeEvent(oldName,name));
     }
 
 }

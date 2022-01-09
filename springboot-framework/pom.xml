@@ -10,10 +10,10 @@
     <parent>
 		<groupId>com.codingapi.springboot</groupId>
 		<artifactId>springboot-framework-parent</artifactId>
-		<version>0.0.12</version>
+		<version>0.0.13</version>
 	</parent>
 	<artifactId>springboot-framework</artifactId>
-	<version>0.0.12</version>
+	<version>0.0.13</version>
 
 	<name>springboot-framework</name>
 	<description>springboot-framework project for Spring Boot</description>

@@ -1,12 +1,9 @@
 package com.codingapi.springboot.framework.event;
 
-
 /**
- *
- * 默认同步事件
+ * 异步事件
  */
-public interface IEvent {
+public interface IAsyncEvent extends IEvent{
 
 
-    
 }

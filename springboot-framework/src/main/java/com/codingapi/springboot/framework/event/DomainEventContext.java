@@ -39,28 +39,15 @@ public class DomainEventContext {
      */
     @Deprecated
     public void push(IEvent event){
-        this.syncPush(event);
+        if(event instanceof IAsyncEvent) {
+            this.push(event, false);
+        }else if(event instanceof ISyncEvent) {
+            this.push(event, true);
+        }else{
+            this.push(event, true);
+        }
     }
 
-    /**
-     * @see EventPusher
-     * 同步事件
-     * @param event
-     */
-    @Deprecated
-    public void syncPush(IEvent event){
-        this.push(event,true);
-    }
-
-    /**
-     * @see EventPusher
-     * 异步事件
-     * @param event
-     */
-    @Deprecated
-    public void asyncPush(IEvent event){
-        this.push(event,false);
-    }
 
     protected void initContext(ApplicationContext context){
         this.context = context;
