@@ -4,10 +4,10 @@
 	<parent>
 		<groupId>com.codingapi.springboot</groupId>
 		<artifactId>springboot-framework-parent</artifactId>
-		<version>0.0.14</version>
+		<version>0.0.15</version>
 	</parent>
 	<artifactId>springboot-example</artifactId>
-	<version>0.0.14</version>
+	<version>0.0.15</version>
 
 	<name>springboot-example</name>
 	<description>springboot-example project for Spring Boot</description>
@@ -24,18 +24,17 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.4.200</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.codingapi.springboot</groupId>
 			<artifactId>springboot-framework</artifactId>
-			<version>0.0.14</version>
+			<version>0.0.15</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
 	</dependencies>
