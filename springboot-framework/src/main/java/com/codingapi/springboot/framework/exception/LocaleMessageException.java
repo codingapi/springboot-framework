@@ -2,7 +2,7 @@ package com.codingapi.springboot.framework.exception;
 
 import lombok.Getter;
 
-public class MessageException extends RuntimeException{
+public class LocaleMessageException extends RuntimeException{
 
     @Getter
     private final String errCode;
@@ -11,26 +11,26 @@ public class MessageException extends RuntimeException{
     private final String errMessage;
 
 
-    public MessageException(String errCode, String errMessage, Throwable cause) {
+    public LocaleMessageException(String errCode, String errMessage, Throwable cause) {
         super(errMessage, cause);
         this.errCode = errCode;
         this.errMessage = errMessage;
     }
 
-    public MessageException(String errCode,  Throwable cause) {
-        super(ExceptionMessageContext.getInstance().getErrorMsg(errCode), cause);
+    public LocaleMessageException(String errCode, Throwable cause) {
+        super(MessageContext.getInstance().getErrorMsg(errCode), cause);
         this.errCode = errCode;
         this.errMessage = getMessage();
     }
 
-    public MessageException(String errCode, String errMessage) {
+    public LocaleMessageException(String errCode, String errMessage) {
         super(errMessage);
         this.errCode = errCode;
         this.errMessage = errMessage;
     }
 
-    public MessageException(String errCode) {
-        super(ExceptionMessageContext.getInstance().getErrorMsg(errCode));
+    public LocaleMessageException(String errCode) {
+        super(MessageContext.getInstance().getErrorMsg(errCode));
         this.errCode = errCode;
         this.errMessage = getMessage();
     }

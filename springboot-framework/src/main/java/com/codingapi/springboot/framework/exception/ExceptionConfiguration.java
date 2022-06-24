@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 public class ExceptionConfiguration {
 
     @Bean(initMethod = "init")
-    public ExceptionLocaleMessage exceptionLocaleMessage(MessageSource messageSource){
-        return new ExceptionLocaleMessage(messageSource);
+    public LocaleMessage exceptionLocaleMessage(MessageSource messageSource){
+        return new LocaleMessage(messageSource);
     }
 
 }

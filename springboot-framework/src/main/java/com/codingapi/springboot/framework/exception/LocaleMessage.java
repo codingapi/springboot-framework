@@ -5,16 +5,16 @@ import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.util.Locale;
 
-class ExceptionLocaleMessage {
+class LocaleMessage {
 
     private final MessageSource messageSource;
 
-    public ExceptionLocaleMessage(MessageSource messageSource) {
+    public LocaleMessage(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 
     public void init(){
-        ExceptionMessageContext.getInstance().setExceptionLocaleMessage(this);
+        MessageContext.getInstance().setExceptionLocaleMessage(this);
     }
 
     public String getMessage(String code){
