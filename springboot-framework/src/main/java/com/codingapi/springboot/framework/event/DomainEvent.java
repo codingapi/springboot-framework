@@ -3,7 +3,9 @@ package com.codingapi.springboot.framework.event;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
-
+/**
+ * Event包装对象
+ */
 public class DomainEvent extends ApplicationEvent{
 
     @Getter

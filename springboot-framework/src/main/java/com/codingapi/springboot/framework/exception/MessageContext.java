@@ -1,7 +1,7 @@
 package com.codingapi.springboot.framework.exception;
 
 
-public class MessageContext {
+class MessageContext {
 
     private static MessageContext context;
 

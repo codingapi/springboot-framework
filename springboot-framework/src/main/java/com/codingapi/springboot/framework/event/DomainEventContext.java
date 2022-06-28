@@ -2,7 +2,7 @@ package com.codingapi.springboot.framework.event;
 
 import org.springframework.context.ApplicationContext;
 
-public class DomainEventContext {
+class DomainEventContext {
 
     private static DomainEventContext instance;
 
@@ -37,7 +37,6 @@ public class DomainEventContext {
      * @param event
      *
      */
-    @Deprecated
     public void push(IEvent event){
         if(event instanceof IAsyncEvent) {
             this.push(event, false);

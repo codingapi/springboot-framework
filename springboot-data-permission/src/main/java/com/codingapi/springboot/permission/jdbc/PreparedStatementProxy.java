@@ -1,9 +1,9 @@
 package com.codingapi.springboot.permission.jdbc;
 
+import com.codingapi.springboot.framework.event.EventPusher;
 import com.codingapi.springboot.permission.analyzer.JdbcSql;
 import com.codingapi.springboot.permission.analyzer.SQL;
 import com.codingapi.springboot.permission.event.JdbcPreparedStatementExecuteEvent;
-import com.codingapi.springboot.framework.event.DomainEventContext;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.InputStream;
@@ -33,21 +33,21 @@ public class PreparedStatementProxy extends StatementProxy implements PreparedSt
     @Override
     public ResultSet executeQuery() throws SQLException {
         log.debug("jdbcSql:{}",jdbcSql.getExecuteSql());
-        DomainEventContext.getInstance().push(new JdbcPreparedStatementExecuteEvent(delegate,jdbcSql));
+        EventPusher.push(new JdbcPreparedStatementExecuteEvent(delegate,jdbcSql));
         return delegate.executeQuery();
     }
 
     @Override
     public int executeUpdate() throws SQLException {
         log.debug("jdbcSql:{}",jdbcSql.getExecuteSql());
-        DomainEventContext.getInstance().push(new JdbcPreparedStatementExecuteEvent(delegate,jdbcSql));
+        EventPusher.push(new JdbcPreparedStatementExecuteEvent(delegate,jdbcSql));
         return delegate.executeUpdate();
     }
 
     @Override
     public boolean execute() throws SQLException {
         log.debug("jdbcSql:{}",jdbcSql.getExecuteSql());
-        DomainEventContext.getInstance().push(new JdbcPreparedStatementExecuteEvent(delegate,jdbcSql));
+        EventPusher.push(new JdbcPreparedStatementExecuteEvent(delegate,jdbcSql));
         return delegate.execute();
     }
 

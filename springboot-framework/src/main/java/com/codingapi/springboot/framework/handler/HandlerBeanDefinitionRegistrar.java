@@ -15,6 +15,9 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
+/**
+ * handler bean注册器
+ */
 @Slf4j
 @Configuration
 public class HandlerBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar {
