@@ -1,8 +1,8 @@
 package com.codingapi.springboot.example.domain;
 
 import com.codingapi.springboot.example.domain.event.DemoNameChangeEvent;
-import com.codingapi.springboot.framework.persistence.IPersistence;
 import com.codingapi.springboot.framework.event.EventPusher;
+import com.codingapi.springboot.framework.persistence.IPersistence;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
