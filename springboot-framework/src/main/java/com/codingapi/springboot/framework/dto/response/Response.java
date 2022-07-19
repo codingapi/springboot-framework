@@ -1,9 +1,8 @@
 package com.codingapi.springboot.framework.dto.response;
 
+import com.codingapi.springboot.framework.serializable.JsonSerializable;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.io.Serializable;
 
 /**
  * @author lorne
@@ -12,9 +11,9 @@ import java.io.Serializable;
  */
 @Setter
 @Getter
-public class Response implements Serializable {
+public class Response implements JsonSerializable {
 
-    private boolean isSuccess;
+    private boolean success;
 
     private String errCode;
 
