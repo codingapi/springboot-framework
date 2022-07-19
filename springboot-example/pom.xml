@@ -4,10 +4,10 @@
 	<parent>
 		<groupId>com.codingapi.springboot</groupId>
 		<artifactId>springboot-framework-parent</artifactId>
-		<version>1.0.1</version>
+		<version>1.0.2</version>
 	</parent>
 	<artifactId>springboot-example</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 
 	<name>springboot-example</name>
 	<description>springboot-example project for Spring Boot</description>
@@ -29,7 +29,7 @@
 		<dependency>
 			<groupId>com.codingapi.springboot</groupId>
 			<artifactId>springboot-framework</artifactId>
-			<version>1.0.1</version>
+			<version>1.0.2</version>
 		</dependency>
 
 		<dependency>

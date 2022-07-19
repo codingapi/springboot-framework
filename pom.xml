@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.codingapi.springboot</groupId>
 	<artifactId>springboot-framework-parent</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 
 	<url>https://github.com/codingapi/springboot-framewrok</url>
 	<name>springboot-framework-parent</name>
@@ -28,6 +28,8 @@
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 		<maven.javadoc.plugin>2.10.3</maven.javadoc.plugin>
 		<nexus.staging.maven.plugin>1.6.3</nexus.staging.maven.plugin>
+
+		<fastjson.version>2.0.7</fastjson.version>
 
 	</properties>
 
@@ -53,6 +55,16 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>fastjson</artifactId>
+				<version>${fastjson.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<build>
 		<plugins>
