@@ -13,14 +13,8 @@ import java.util.List;
 @Configuration
 public class SQLTemplateConfiguration {
 
-    static class SQLTemplateInitializer{
-        public SQLTemplateInitializer(List<SQLTemplate> templateList) {
-            SQLTemplateContext.getInstance().addSQLTemplates(templateList);
-        }
-    }
-
-    @Autowired(required = false)
-    public SQLTemplateInitializer sqlTemplateInitializer(List<SQLTemplate> templateList) {
+    @Bean
+    public SQLTemplateInitializer sqlTemplateInitializer(@Autowired(required = false) List<SQLTemplate> templateList) {
         return new SQLTemplateInitializer(templateList);
     }
 
