@@ -8,9 +8,10 @@
 		<version>2.7.1</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>com.codingapi.springboot</groupId>
 	<artifactId>springboot-parent</artifactId>
-	<version>0.0.1</version>
+	<version>0.1.0</version>
 
 	<url>https://github.com/codingapi/springboot-framewrok</url>
 	<name>springboot-parent</name>
