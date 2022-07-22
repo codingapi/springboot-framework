@@ -21,4 +21,12 @@ public class SingleResponse<T> extends Response {
     }
 
 
+    public static <T> SingleResponse<T> empty(){
+        SingleResponse<T> singleResponse = new SingleResponse<>();
+        singleResponse.setSuccess(true);
+        singleResponse.setData(null);
+        return singleResponse;
+    }
+
+
 }

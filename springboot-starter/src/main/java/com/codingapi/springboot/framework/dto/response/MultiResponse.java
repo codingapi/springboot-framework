@@ -32,6 +32,15 @@ public class MultiResponse<T> extends Response {
     }
 
 
+    public static <T> MultiResponse<T> empty() {
+        MultiResponse<T> multiResponse = new MultiResponse<>();
+        multiResponse.setSuccess(true);
+        multiResponse.setData(null);
+        multiResponse.setTotal(0);
+        return multiResponse;
+    }
+
+
     public static <T> MultiResponse<T> of(Collection<T> data) {
         MultiResponse<T> multiResponse = new MultiResponse<>();
         multiResponse.setSuccess(true);
