@@ -1,4 +1,4 @@
-package com.codingapi.springboot.example.domain.event;
+package com.codingapi.springboot.example.event;
 
 import com.codingapi.springboot.framework.event.IAsyncEvent;
 import lombok.AllArgsConstructor;

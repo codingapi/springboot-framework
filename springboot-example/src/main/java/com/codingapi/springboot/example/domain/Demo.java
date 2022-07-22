@@ -1,6 +1,6 @@
 package com.codingapi.springboot.example.domain;
 
-import com.codingapi.springboot.example.domain.event.DemoNameChangeEvent;
+import com.codingapi.springboot.example.event.DemoNameChangeEvent;
 import com.codingapi.springboot.framework.event.EventPusher;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,8 +19,8 @@ import javax.persistence.Id;
 @Setter
 @Getter
 @NoArgsConstructor
-@Entity
 @ToString
+@Entity(name = "t_demo")
 public class Demo  {
 
     @Id

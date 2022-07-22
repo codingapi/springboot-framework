@@ -1,4 +1,4 @@
-package com.codingapi.springboot.example.domain.service;
+package com.codingapi.springboot.example.service;
 
 import com.codingapi.springboot.example.domain.Demo;
 import com.codingapi.springboot.example.repository.DemoRepository;

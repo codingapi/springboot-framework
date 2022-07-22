@@ -2,13 +2,13 @@ package com.codingapi.springboot.framework.dto.response;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
 
 import java.util.Collection;
 
 /**
  * @author lorne
  * @date 2020/12/17
- * @description
  */
 @Setter
 @Getter
@@ -24,6 +24,11 @@ public class MultiResponse<T> extends Response {
         multiResponse.setData(data);
         multiResponse.setTotal(total);
         return multiResponse;
+    }
+
+
+    public static <T> MultiResponse<T> of(Page<T> page) {
+       return of(page.getContent(), page.getTotalElements());
     }
 
 

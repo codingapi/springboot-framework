@@ -1,7 +1,7 @@
 package com.codingapi.springboot.example;
 
 import com.codingapi.springboot.example.domain.Demo;
-import com.codingapi.springboot.example.domain.service.DemoService;
+import com.codingapi.springboot.example.service.DemoService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

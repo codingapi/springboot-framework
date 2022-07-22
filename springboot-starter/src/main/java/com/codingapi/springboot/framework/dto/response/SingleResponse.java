@@ -6,7 +6,6 @@ import lombok.Setter;
 /**
  * @author lorne
  * @date 2020/12/17
- * @description
  */
 @Setter
 @Getter
