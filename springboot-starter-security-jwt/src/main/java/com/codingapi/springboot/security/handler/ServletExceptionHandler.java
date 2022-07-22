@@ -16,7 +16,7 @@ public class ServletExceptionHandler implements HandlerExceptionResolver {
 
     @Override
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        log.warn("controller exception:{}",ex.getLocalizedMessage());
+        log.warn("controller exception:{}",ex.getLocalizedMessage(),ex);
 
         MappingJackson2JsonView view = new MappingJackson2JsonView();
         ModelAndView mv = new ModelAndView(view);
