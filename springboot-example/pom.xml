@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.codingapi.springboot</groupId>
-		<artifactId>springboot-framework-parent</artifactId>
+		<artifactId>springboot-parent</artifactId>
 		<version>0.0.1</version>
 	</parent>
 	<artifactId>springboot-example</artifactId>
