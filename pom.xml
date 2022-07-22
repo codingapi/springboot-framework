@@ -29,10 +29,10 @@
 		<maven.javadoc.plugin>2.10.3</maven.javadoc.plugin>
 		<nexus.staging.maven.plugin>1.6.3</nexus.staging.maven.plugin>
 
-		<fastjson.version>2.0.7</fastjson.version>
+		<codingapi.framework.version>${project.version}</codingapi.framework.version>
+		<fastjson.version>2.0.9</fastjson.version>
 		<jsonwebtoken.jjwt.version>0.11.5</jsonwebtoken.jjwt.version>
-		<codingapi.framework.version>0.0.1</codingapi.framework.version>
-		<commons-io.version>2.7</commons-io.version>
+		<commons-io.version>2.11.0</commons-io.version>
 		<commons-dbutils.version>1.7</commons-dbutils.version>
 
 	</properties>
