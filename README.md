@@ -13,9 +13,21 @@
 ```
     <dependency>
         <groupId>com.codingapi.springboot</groupId>
-        <artifactId>springboot-framework</artifactId>
+        <artifactId>springboot-starter</artifactId>
         <version>${last.version}</version>
     </dependency>
+    
+     <dependency>
+        <groupId>com.codingapi.springboot</groupId>
+        <artifactId>springboot-starter-security-jwt</artifactId>
+        <version>${last.version}</version>
+     </dependency>
+     
+     <dependency>
+        <groupId>com.codingapi.springboot</groupId>
+        <artifactId>springboot-starter-data-permission</artifactId>
+        <version>${last.version}</version>
+     </dependency>
 ```
 
 ## CONTRIBUTING
@@ -67,3 +79,18 @@ JPA是ORM框架，可以非常简单的与领域对象相关联。 https://sprin
 StartUML是UML设计软件。https://staruml.io/
 ### Mural
 Mural 是用于画事件风暴图的软件。https://www.mural.co/ 
+
+
+## Reference Documentation
+
+For further reference, please consider the following sections:
+
+* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
+* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.7.1/maven-plugin/reference/html/)
+* [Create an OCI image](https://docs.spring.io/spring-boot/docs/2.7.1/maven-plugin/reference/html/#build-image)
+* [Spring Security](https://docs.spring.io/spring-boot/docs/2.7.1/reference/htmlsingle/#web.security)
+* [Spring Configuration Processor](https://docs.spring.io/spring-boot/docs/2.7.1/reference/htmlsingle/#appendix.configuration-metadata.annotation-processor)
+* [Spring Web](https://docs.spring.io/spring-boot/docs/2.7.1/reference/htmlsingle/#web)
+* [securing-web](https://spring.io/guides/gs/securing-web/)
+* [spring-security-without-the-websecurityconfigureradapter](https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter)
+* [springboot-security&jwt](https://blog.csdn.net/u014553029/article/details/112759382)  

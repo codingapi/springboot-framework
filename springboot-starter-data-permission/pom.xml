@@ -5,11 +5,11 @@
     <parent>
         <artifactId>springboot-framework-parent</artifactId>
         <groupId>com.codingapi.springboot</groupId>
-        <version>1.0.5</version>
+        <version>0.0.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>springboot-data-permission</artifactId>
+    <artifactId>springboot-starter-data-permission</artifactId>
 
     <properties>
         <java.version>1.8</java.version>
@@ -20,7 +20,6 @@
         <dependency>
             <groupId>commons-dbutils</groupId>
             <artifactId>commons-dbutils</artifactId>
-            <version>1.7</version>
         </dependency>
 
 
@@ -31,8 +30,7 @@
 
         <dependency>
             <groupId>com.codingapi.springboot</groupId>
-            <artifactId>springboot-framework</artifactId>
-            <version>1.0.5</version>
+            <artifactId>springboot-starter</artifactId>
         </dependency>
 
         <dependency>
