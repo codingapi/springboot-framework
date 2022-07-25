@@ -26,7 +26,8 @@ public class SecurityJwtProperties {
     /**
      * 权限拦截URL
      */
-    private String authenticatedUrl  = "/api/**";
+    private String authenticatedUrls  = "/api/**";
+
 
     /**
      * 登录接口地址
@@ -41,5 +42,14 @@ public class SecurityJwtProperties {
     /**
      * 放开接口地址
      */
-    private String ignoreUrl = "/open/**";
+    private String ignoreUrls = "/open/**";
+
+
+    public String[] getIgnoreUrls(){
+        return ignoreUrls.split(",");
+    }
+
+    public String[] getAuthenticatedUrls(){
+        return authenticatedUrls.split(",");
+    }
 }

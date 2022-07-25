@@ -15,7 +15,7 @@ public class WebSecurityConfigurer implements WebSecurityCustomizer {
     @Override
     public void customize(WebSecurity web) {
         //ignoring security filters request url
-        web.ignoring().antMatchers(securityJwtProperties.getIgnoreUrl());
+        web.ignoring().antMatchers(securityJwtProperties.getIgnoreUrls());
     }
 
 }

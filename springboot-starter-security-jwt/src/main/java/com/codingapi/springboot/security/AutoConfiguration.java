@@ -78,7 +78,7 @@ public class AutoConfiguration {
                 .accessDeniedHandler(new MyAccessDeniedHandler())
                 .and()
             .authorizeRequests()
-                .antMatchers(properties.getAuthenticatedUrl()).authenticated()
+                .antMatchers(properties.getAuthenticatedUrls()).authenticated()
                 .and()
              //default login url :/login
             .formLogin()
