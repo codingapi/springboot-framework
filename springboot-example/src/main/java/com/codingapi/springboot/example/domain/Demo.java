@@ -2,13 +2,14 @@ package com.codingapi.springboot.example.domain;
 
 import com.codingapi.springboot.example.event.DemoNameChangeEvent;
 import com.codingapi.springboot.framework.event.EventPusher;
-import com.codingapi.springboot.leaf.LeafIdGenerate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
@@ -20,16 +21,16 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @ToString
 @Entity(name = "t_demo")
-public class Demo implements LeafIdGenerate {
+public class Demo  {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     private String name;
 
     public Demo(String name) {
         this.name = name;
-        this.id = generateIntId();
     }
 
     public void changeName(String name){
