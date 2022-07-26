@@ -39,6 +39,7 @@
 		<commons-io.version>2.11.0</commons-io.version>
 		<commons-dbutils.version>1.7</commons-dbutils.version>
 		<org.reflections.version>0.10.2</org.reflections.version>
+		<perf4j.version>0.9.16</perf4j.version>
 
 	</properties>
 
@@ -72,6 +73,12 @@
 				<groupId>org.reflections</groupId>
 				<artifactId>reflections</artifactId>
 				<version>${org.reflections.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.perf4j</groupId>
+				<artifactId>perf4j</artifactId>
+				<version>${perf4j.version}</version>
 			</dependency>
 
 			<dependency>

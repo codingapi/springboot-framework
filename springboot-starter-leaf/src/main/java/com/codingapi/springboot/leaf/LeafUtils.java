@@ -1,6 +1,7 @@
 package com.codingapi.springboot.leaf;
 
 import lombok.Setter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Set;
@@ -50,7 +51,8 @@ public class LeafUtils {
     }
 
 
-     boolean push(String key,int step,int maxId){
+     @SneakyThrows
+     boolean push(String key, int step, int maxId){
         if(leafClient==null){
             throw new RuntimeException("springboot init finish then to running.");
         }
