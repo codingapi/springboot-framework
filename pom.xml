@@ -2,6 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<packaging>pom</packaging>
+    <modules>
+        <module>springboot-starter-leaf</module>
+    </modules>
     <parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -35,6 +38,7 @@
 		<jsonwebtoken.jjwt.version>0.11.5</jsonwebtoken.jjwt.version>
 		<commons-io.version>2.11.0</commons-io.version>
 		<commons-dbutils.version>1.7</commons-dbutils.version>
+		<org.reflections.version>0.10.2</org.reflections.version>
 
 	</properties>
 
@@ -63,6 +67,13 @@
 
 	<dependencyManagement>
 		<dependencies>
+
+			<dependency>
+				<groupId>org.reflections</groupId>
+				<artifactId>reflections</artifactId>
+				<version>${org.reflections.version}</version>
+			</dependency>
+
 			<dependency>
 				<groupId>com.alibaba</groupId>
 				<artifactId>fastjson</artifactId>
@@ -106,6 +117,11 @@
 				<version>${codingapi.framework.version}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>com.codingapi.springboot</groupId>
+				<artifactId>springboot-starter-leaf</artifactId>
+				<version>${codingapi.framework.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>commons-dbutils</groupId>
