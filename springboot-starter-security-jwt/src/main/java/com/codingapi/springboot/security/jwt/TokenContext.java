@@ -7,6 +7,6 @@ public class TokenContext {
     private TokenContext(){}
 
     public static Token current(){
-        return (Token)SecurityContextHolder.getContext().getAuthentication().getCredentials();
+        return (Token) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }
