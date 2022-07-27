@@ -8,6 +8,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
+import java.io.IOException;
 import java.security.Key;
 import java.util.List;
 
@@ -23,10 +24,10 @@ public class Jwt {
         this.jwtRestTime = jwtRestTime;
     }
 
-    public Token create(String username,List<String> authorities){
-        Token token = new Token(username,authorities,jwtTime,jwtRestTime);
-        String id = Jwts.builder().setSubject(token.toJson()).signWith(key).compact();
-        token.setToken(id);
+    public Token create(String username,String password,List<String> authorities) throws IOException {
+        Token token = new Token(username,password,authorities,jwtTime,jwtRestTime);
+        String jwt = Jwts.builder().setSubject(token.toJson()).signWith(key).compact();
+        token.setToken(jwt);
         return token;
     }
 

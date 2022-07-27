@@ -1,13 +1,15 @@
 package com.codingapi.springboot.security.jwt;
 
-import com.codingapi.springboot.security.exception.TokenExpiredException;
+import com.codingapi.springboot.framework.crypto.AESUtils;
 import com.codingapi.springboot.framework.serializable.JsonSerializable;
+import com.codingapi.springboot.security.exception.TokenExpiredException;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.beans.Transient;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -17,17 +19,19 @@ import java.util.List;
 public class Token implements JsonSerializable {
 
     private String username;
+    private String password;
+    private String token;
     private List<String> authorities;
     private long expireTime;
-
     private long remindTime;
-    private String token;
+
 
     public Token() {
     }
 
-    public Token(String username,List<String> authorities, int expireValue, int remindValue) {
+    public Token(String username,String password,List<String> authorities, int expireValue, int remindValue) throws IOException {
         this.username = username;
+        this.password = AESUtils.getInstance().encodeToBase64(password);
         this.authorities = authorities;
         this.expireTime = System.currentTimeMillis()+expireValue;
         this.remindTime = System.currentTimeMillis()+remindValue;
@@ -44,6 +48,7 @@ public class Token implements JsonSerializable {
         return expireTime <= System.currentTimeMillis();
     }
 
+
     public boolean canRestToken() {
         return !isExpire() && remindTime <= System.currentTimeMillis();
     }
@@ -55,7 +60,7 @@ public class Token implements JsonSerializable {
         for(String authority:authorities){
             simpleGrantedAuthorities.add(new SimpleGrantedAuthority(authority));
         }
-        return new UsernamePasswordAuthenticationToken(username,token,simpleGrantedAuthorities);
+        return new UsernamePasswordAuthenticationToken(this,password,simpleGrantedAuthorities);
     }
 
 

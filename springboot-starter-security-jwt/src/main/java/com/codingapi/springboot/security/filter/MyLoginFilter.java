@@ -61,8 +61,9 @@ public class MyLoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         log.debug("login success authentication ~");
         User user = (User) authResult.getPrincipal();
+        LoginRequest loginRequest =  LoginRequestContext.getInstance().get();
 
-        Token token =  jwt.create(user.getUsername(),user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
+        Token token =  jwt.create(user.getUsername(),loginRequest.getPassword(),user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
 
         LoginResponse login = new LoginResponse();
         login.setUsername(user.getUsername());

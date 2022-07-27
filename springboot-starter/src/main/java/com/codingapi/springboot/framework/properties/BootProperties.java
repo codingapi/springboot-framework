@@ -1,10 +1,20 @@
 package com.codingapi.springboot.framework.properties;
 
 import com.codingapi.springboot.framework.dto.request.PageRequest;
+import lombok.Getter;
+import lombok.Setter;
 
 public class BootProperties {
 
     private int pageCurrentFixValue = 1;
+
+    @Setter
+    @Getter
+    private String aseKey = "ACDX$%^&*$#XCZas";
+
+    @Setter
+    @Getter
+    private String aseIv = "ACXFGH@EDS#XCZas";
 
 
     public int getPageCurrentFixValue() {
