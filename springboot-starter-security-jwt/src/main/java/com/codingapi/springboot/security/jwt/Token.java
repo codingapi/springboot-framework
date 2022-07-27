@@ -49,6 +49,10 @@ public class Token implements JsonSerializable {
     }
 
 
+    public String getPassword() throws IOException {
+        return AESUtils.getInstance().decodeToBase64(password);
+    }
+
     public boolean canRestToken() {
         return !isExpire() && remindTime <= System.currentTimeMillis();
     }
