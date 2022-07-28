@@ -1,10 +1,11 @@
 package com.codingapi.springboot.leaf;
 
+import com.codingapi.springboot.leaf.properties.LeafProperties;
 import com.sankuai.inf.leaf.IDGen;
 import com.sankuai.inf.leaf.segment.SegmentIDGenImpl;
 import com.sankuai.inf.leaf.segment.dao.IDAllocDao;
 import com.sankuai.inf.leaf.segment.dao.impl.IDAllocDaoImpl;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,9 +13,14 @@ import org.springframework.context.annotation.Configuration;
 public class AutoConfiguration {
 
     @Bean
-    @ConditionalOnMissingBean
-    public IDAllocDao allocDao(){
-        return new IDAllocDaoImpl("jdbc:h2:mem:leaf;DB_CLOSE_DELAY=-1");
+    @ConfigurationProperties(prefix = "codingapi.leaf")
+    public LeafProperties leafProperties(){
+        return new LeafProperties();
+    }
+
+    @Bean
+    public IDAllocDao allocDao(LeafProperties leafProperties){
+        return new IDAllocDaoImpl(leafProperties.getJdbcUrl());
     }
 
 
