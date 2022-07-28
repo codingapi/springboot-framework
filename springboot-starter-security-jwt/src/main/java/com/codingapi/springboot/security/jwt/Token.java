@@ -49,7 +49,12 @@ public class Token implements JsonSerializable {
     }
 
 
-    public String getPassword() throws IOException {
+    public String getPassword(){
+        return password;
+    }
+
+    @Transient
+    public String getDecodePassword() throws IOException {
         return AESUtils.getInstance().decodeToBase64(password);
     }
 
