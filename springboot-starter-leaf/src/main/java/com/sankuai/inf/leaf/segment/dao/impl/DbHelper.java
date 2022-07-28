@@ -2,7 +2,6 @@ package com.sankuai.inf.leaf.segment.dao.impl;
 
 import com.sankuai.inf.leaf.exception.DbException;
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.ResultSetHandler;
 import org.h2.jdbcx.JdbcDataSource;
 
 import java.sql.Connection;
@@ -12,7 +11,6 @@ public class DbHelper<T> {
 
     private final JdbcDataSource dataSource;
     private final QueryRunner queryRunner;
-    private final ResultSetHandler<T> handler;
 
 
     interface IExecute{
@@ -31,13 +29,10 @@ public class DbHelper<T> {
         default T query(Connection connection,QueryRunner queryRunner) throws SQLException{return null;}
     }
 
-    public DbHelper(ResultSetHandler<T> handler,String jdbcUrl) {
+    public DbHelper(String jdbcUrl) {
         this.dataSource = new JdbcDataSource();
         this.queryRunner = new QueryRunner();
-        this.handler = handler;
-
-        dataSource.setURL(jdbcUrl);
-
+        this.dataSource.setURL(jdbcUrl);
     }
 
 

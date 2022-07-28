@@ -30,7 +30,7 @@ public class IDAllocDaoImpl implements IDAllocDao {
             }
             return list;
         };
-        this.dbHelper = new DbHelper<>(handler,jdbcUrl);
+        this.dbHelper = new DbHelper<>(jdbcUrl);
         this.init();
     }
 
@@ -79,11 +79,12 @@ public class IDAllocDaoImpl implements IDAllocDao {
         return dbHelper.update(new DbHelper.IUpdate() {
             @Override
             public int update(Connection connection, QueryRunner queryRunner) throws SQLException {
-                String sql = "INSERT INTO LEAF_ALLOC (MAX_ID, STEP, UPDATE_TIME, TAG) VALUES (?, ?, ?, ?)";
                 List<LeafAlloc> list =  queryRunner.query(connection,"SELECT * FROM LEAF_ALLOC WHERE TAG = ?",handler,leafAlloc.getKey());
                 if(list!=null&&list.size()>0){
                     return 0;
                 }
+
+                String sql = "INSERT INTO LEAF_ALLOC (MAX_ID, STEP, UPDATE_TIME, TAG) VALUES (?, ?, ?, ?)";
                 return queryRunner.update(connection,sql,leafAlloc.getMaxId(),leafAlloc.getStep(),leafAlloc.getUpdateTime(),leafAlloc.getKey());
             }
         })>0;
