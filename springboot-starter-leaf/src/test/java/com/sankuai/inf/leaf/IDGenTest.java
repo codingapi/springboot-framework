@@ -27,11 +27,10 @@ class IDGenTest {
         alloc.setMaxId(0);
         alloc.setStep(100);
         alloc.setKey("leaf-segment-test");
+        allocDao.save(alloc);
 
         //init id gen
-        allocDao.save(alloc);
-        idGen = new SegmentIDGenImpl();
-        ((SegmentIDGenImpl) idGen).setDao(allocDao);
+        idGen = new SegmentIDGenImpl(allocDao);
         idGen.init();
     }
 

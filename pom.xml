@@ -129,6 +129,12 @@
 			</dependency>
 
 			<dependency>
+				<groupId>com.codingapi.springboot</groupId>
+				<artifactId>springboot-starter-leaf</artifactId>
+				<version>${codingapi.framework.version}</version>
+			</dependency>
+
+			<dependency>
 				<groupId>commons-dbutils</groupId>
 				<artifactId>commons-dbutils</artifactId>
 				<version>${commons-dbutils.version}</version>

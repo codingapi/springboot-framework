@@ -42,6 +42,10 @@ public class SegmentIDGenImpl implements IDGen {
     private Map<String, SegmentBuffer> cache = new ConcurrentHashMap<String, SegmentBuffer>();
     private IDAllocDao dao;
 
+    public SegmentIDGenImpl(IDAllocDao dao) {
+        this.dao = dao;
+    }
+
     public static class UpdateThreadFactory implements ThreadFactory {
 
         private static int threadInitNumber = 0;
