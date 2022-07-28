@@ -196,6 +196,7 @@
 				<module>springboot-example</module>
 				<module>springboot-starter-data-permission</module>
 				<module>springboot-starter-security-jwt</module>
+				<module>springboot-starter-leaf</module>
 			</modules>
 		</profile>
 
@@ -208,6 +209,7 @@
 				<module>springboot-example</module>
 				<module>springboot-starter-data-permission</module>
 				<module>springboot-starter-security-jwt</module>
+				<module>springboot-starter-leaf</module>
 			</modules>
 
 			<build>
@@ -254,6 +256,7 @@
 				<module>springboot-starter</module>
 				<module>springboot-starter-data-permission</module>
 				<module>springboot-starter-security-jwt</module>
+				<module>springboot-starter-leaf</module>
 			</modules>
 
 
