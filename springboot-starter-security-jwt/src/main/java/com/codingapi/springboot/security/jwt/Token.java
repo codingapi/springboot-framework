@@ -19,7 +19,7 @@ import java.util.List;
 public class Token implements JsonSerializable {
 
     private String username;
-    private String password;
+    private String certificate;
     private String token;
     private List<String> authorities;
     private long expireTime;
@@ -29,9 +29,9 @@ public class Token implements JsonSerializable {
     public Token() {
     }
 
-    public Token(String username,String password,List<String> authorities, int expireValue, int remindValue) throws IOException {
+    public Token(String username, String certificate, List<String> authorities, int expireValue, int remindValue) throws IOException {
         this.username = username;
-        this.password = AESUtils.getInstance().encodeToBase64(password);
+        this.certificate = AESUtils.getInstance().encodeToBase64(certificate);
         this.authorities = authorities;
         this.expireTime = System.currentTimeMillis()+expireValue;
         this.remindTime = System.currentTimeMillis()+remindValue;
@@ -49,13 +49,13 @@ public class Token implements JsonSerializable {
     }
 
 
-    public String getPassword(){
-        return password;
+    public String getCertificate(){
+        return certificate;
     }
 
     @Transient
     public String getDecodePassword() throws IOException {
-        return AESUtils.getInstance().decodeToBase64(password);
+        return AESUtils.getInstance().decodeToBase64(certificate);
     }
 
     public boolean canRestToken() {
@@ -69,7 +69,7 @@ public class Token implements JsonSerializable {
         for(String authority:authorities){
             simpleGrantedAuthorities.add(new SimpleGrantedAuthority(authority));
         }
-        return new UsernamePasswordAuthenticationToken(this,password,simpleGrantedAuthorities);
+        return new UsernamePasswordAuthenticationToken(this, certificate,simpleGrantedAuthorities);
     }
 
 
