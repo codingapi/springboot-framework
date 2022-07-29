@@ -19,6 +19,12 @@
     
      <dependency>
         <groupId>com.codingapi.springboot</groupId>
+        <artifactId>springboot-starter-leaf</artifactId>
+        <version>${last.version}</version>
+    </dependency>
+    
+     <dependency>
+        <groupId>com.codingapi.springboot</groupId>
         <artifactId>springboot-starter-security-jwt</artifactId>
         <version>${last.version}</version>
      </dependency>
