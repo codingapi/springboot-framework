@@ -5,10 +5,10 @@ import com.codingapi.springboot.framework.exception.LocaleMessageException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class Jwt {
     private final int jwtRestTime;
 
     public Jwt(String secretKey, int jwtTime, int jwtRestTime) {
-        this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+        this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
         this.jwtTime = jwtTime;
         this.jwtRestTime = jwtRestTime;
     }

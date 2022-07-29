@@ -134,7 +134,7 @@ public class AutoConfiguration {
 
 
     @Bean
-    @ConfigurationProperties(prefix = "security.jwt.properties")
+    @ConfigurationProperties(prefix = "codingapi.security")
     public SecurityJwtProperties securityJwtProperties(){
         return new SecurityJwtProperties();
     }

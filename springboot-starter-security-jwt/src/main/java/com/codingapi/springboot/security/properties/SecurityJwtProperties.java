@@ -10,18 +10,21 @@ public class SecurityJwtProperties {
 
     /**
      * JWT密钥
+     * 需大于32位的字符串
      */
-    private String jwtSecretKey;
+    private String jwtSecretKey = "codingapi.security.jwt.secretkey";
 
     /**
      * JWT 有效时间(毫秒)
+     * 15分钟有效期 1000*60*15=900000
      */
-    private int jwtTime;
+    private int jwtTime = 900000;
 
     /**
      * JWT 更换令牌时间(毫秒)
+     * 10分钟后更换令牌 1000*60*10=600000
      */
-    private int jwtRestTime;
+    private int jwtRestTime = 600000;
 
     /**
      * 权限拦截URL

@@ -24,6 +24,7 @@ class ExampleApplicationTests {
 		Demo demo = new Demo("xiaoming");
 		demoService.save(demo);
 		Assert.isTrue(demo.getId()>0,"demoRepository save error.");
+		log.info("id:{}",demo.getId());
 	}
 
 	@Test

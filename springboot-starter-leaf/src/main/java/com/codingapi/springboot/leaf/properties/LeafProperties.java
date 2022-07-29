@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 public class LeafProperties {
 
-    private String jdbcUrl = "jdbc:h2:mem:leaf;DB_CLOSE_DELAY=-1";
+    private String jdbcUrl = "jdbc:h2:file:./leaf.db";
 
 }
