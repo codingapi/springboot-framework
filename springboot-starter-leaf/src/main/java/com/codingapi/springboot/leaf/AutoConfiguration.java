@@ -30,8 +30,8 @@ public class AutoConfiguration {
     }
 
     @Bean(initMethod = "init")
-    public Leaf leafClient(IDGen idGen, IDAllocDao allocDao){
-        return new Leaf(idGen,allocDao);
+    public Leaf leafClient(IDGen idGen, IDAllocDao allocDao,LeafProperties leafProperties){
+        return new Leaf(idGen,allocDao,leafProperties);
     }
 
 }

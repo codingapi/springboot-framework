@@ -3,6 +3,7 @@ package com.codingapi.springboot.leaf;
 
 import com.codingapi.springboot.leaf.exception.LeafServerException;
 import com.codingapi.springboot.leaf.exception.NoKeyException;
+import com.codingapi.springboot.leaf.properties.LeafProperties;
 import com.sankuai.inf.leaf.IDGen;
 import com.sankuai.inf.leaf.common.Result;
 import com.sankuai.inf.leaf.common.Status;
@@ -23,7 +24,7 @@ class Leaf {
 
     private final IDGen idGen;
     private final IDAllocDao idAllocDao;
-
+    private final LeafProperties leafProperties;
 
     long segmentGetId(String key){
         Result result =  idGen.get(key);
@@ -58,7 +59,7 @@ class Leaf {
     }
 
      void init(){
-        LeafContext.getInstance().setLeaf(this);
+        LeafContext.getInstance().setLeaf(this,leafProperties);
     }
 
 }

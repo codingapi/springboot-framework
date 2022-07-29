@@ -1,6 +1,7 @@
 package com.codingapi.springboot.leaf;
 
 import com.codingapi.springboot.leaf.exception.LeafServerException;
+import com.codingapi.springboot.leaf.properties.LeafProperties;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,6 +15,9 @@ import java.util.Set;
 class LeafContext {
 
     private Leaf leaf;
+    private int defaultStep;
+    private int defaultMaxId;
+
     @Setter
     private Set<Class<? extends LeafIdGenerate>> classes;
 
@@ -33,8 +37,10 @@ class LeafContext {
         return instance;
     }
 
-    protected void setLeaf(Leaf leaf){
+    protected void setLeaf(Leaf leaf, LeafProperties leafProperties){
         this.leaf = leaf;
+        this.defaultMaxId = leafProperties.getDefaultMaxId();
+        this.defaultStep = leafProperties.getDefaultStep();
         this.initClass();
     }
 
@@ -43,13 +49,13 @@ class LeafContext {
         return segmentGetId(clazz);
     }
 
-    private long segmentGetId(Class<?> clazz){
+    long segmentGetId(Class<?> clazz){
         return leaf.segmentGetId(clazz.getName());
     }
 
 
-    boolean push(String key, int step, int maxId){
-        return leaf.segmentPush(key,step,maxId);
+    public void push(String key, int step, int maxId){
+        leaf.segmentPush(key, step, maxId);
     }
 
 
@@ -57,7 +63,7 @@ class LeafContext {
         if(classes!=null&&classes.size()>0) {
             for (Class<?> clazz : classes) {
                 try {
-                    LeafContext.getInstance().push(clazz.getName(), 2000, 1);
+                    LeafContext.getInstance().push(clazz.getName(), defaultStep, defaultMaxId);
                 } catch (Exception e) {
                     throw new LeafServerException(e);
                 }
