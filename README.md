@@ -55,7 +55,7 @@ If you find something incorrect or missing, please leave comments / suggestions.
 [领域驱动设计003--事件风暴](https://www.youtube.com/watch?v=EiMvgIKT46I)   
 [领域驱动设计004--领域边界](https://www.youtube.com/watch?v=l80I3LkvGdE)   
 [领域驱动设计005--统一模型语言UML](https://www.youtube.com/watch?v=FESDalckNQ4)     
-领域驱动设计006--领域建模    
+[领域驱动设计006--领域建模](https://www.youtube.com/watch?v=Fee0oXCDZxA)    
 领域驱动设计007--模型测试   
 领域驱动设计008--模型集成  
 领域驱动设计009--过程讲解  
