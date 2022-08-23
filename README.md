@@ -48,15 +48,15 @@ If you find something incorrect or missing, please leave comments / suggestions.
 见springboot-example 完善中...
 
 ## youtube
-欢迎订阅我的youtube账号 [codingapi](https://www.youtube.com/channel/UCdAsCAxh453D7MfLfYWj0Eg),带你从0到1落地springboot与领域驱动设计
+欢迎订阅我的youtube账号 [codingapi](https://www.youtube.com/channel/UCdAsCAxh453D7MfLfYWj0Eg), 哔哩哔哩账号[vip_lorne](https://space.bilibili.com/386239614) 带你从0到1落地springboot与领域驱动设计
 
-[领域驱动设计001--了解为什么采用领域驱动设计开发](https://www.youtube.com/watch?v=09uP_sMvhY8)     
-[领域驱动设计002--SpringBoot DDD Example HelloWorld](https://www.youtube.com/watch?v=d7LnYy8rTYI&t=149s)    
-[领域驱动设计003--事件风暴](https://www.youtube.com/watch?v=EiMvgIKT46I)   
-[领域驱动设计004--领域边界](https://www.youtube.com/watch?v=l80I3LkvGdE)   
-[领域驱动设计005--统一模型语言UML](https://www.youtube.com/watch?v=FESDalckNQ4)     
-[领域驱动设计006--领域建模01](https://www.youtube.com/watch?v=Fee0oXCDZxA)     
-[领域驱动设计006--领域建模02](https://www.youtube.com/watch?v=_VNmArHYZSI)   
+领域驱动设计001--了解为什么采用领域驱动设计开发 [YouTube](https://www.youtube.com/watch?v=09uP_sMvhY8) [哔哩哔哩](https://www.bilibili.com/video/BV1WB4y157kv?spm_id_from=333.999.0.0)     
+领域驱动设计002--SpringBoot DDD Example HelloWorld [YouTube](https://www.youtube.com/watch?v=d7LnYy8rTYI&t=149s) [哔哩哔哩](https://www.bilibili.com/video/BV1qU4y1k7DV?spm_id_from=333.999.0.0)    
+领域驱动设计003--事件风暴 [YouTube](https://www.youtube.com/watch?v=EiMvgIKT46I) [哔哩哔哩](https://www.bilibili.com/video/BV1tG41147AU?spm_id_from=333.999.0.0)   
+领域驱动设计004--领域边界 [YouTube](https://www.youtube.com/watch?v=l80I3LkvGdE) [哔哩哔哩](https://www.bilibili.com/video/BV1Za411d78d?spm_id_from=333.999.0.0)   
+领域驱动设计005--统一模型语言UML [YouTube](https://www.youtube.com/watch?v=FESDalckNQ4) [哔哩哔哩](https://www.bilibili.com/video/BV1gg411D7oe?spm_id_from=333.999.0.0)      
+领域驱动设计006--领域建模01 [YouTube](https://www.youtube.com/watch?v=Fee0oXCDZxA) [哔哩哔哩](https://www.bilibili.com/video/BV1DV4y1p7Rw?spm_id_from=333.999.0.0)      
+领域驱动设计006--领域建模02 [YouTube](https://www.youtube.com/watch?v=_VNmArHYZSI) [哔哩哔哩](https://www.bilibili.com/video/BV1i14y1t7wE?spm_id_from=333.999.0.0)   
 领域驱动设计007--模型测试   
 领域驱动设计008--模型集成  
 领域驱动设计009--过程讲解  
