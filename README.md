@@ -47,7 +47,7 @@ If you find something incorrect or missing, please leave comments / suggestions.
 ## example
 见springboot-example 完善中...
 
-## youtube
+## youtube|哔哩哔哩
 欢迎订阅我的youtube账号 [codingapi](https://www.youtube.com/channel/UCdAsCAxh453D7MfLfYWj0Eg), 哔哩哔哩账号[vip_lorne](https://space.bilibili.com/386239614) 带你从0到1落地springboot与领域驱动设计
 
 领域驱动设计001--了解为什么采用领域驱动设计开发 [YouTube](https://www.youtube.com/watch?v=09uP_sMvhY8) [哔哩哔哩](https://www.bilibili.com/video/BV1WB4y157kv?spm_id_from=333.999.0.0)     
