@@ -57,7 +57,8 @@ If you find something incorrect or missing, please leave comments / suggestions.
 领域驱动设计005--统一模型语言UML [YouTube](https://www.youtube.com/watch?v=FESDalckNQ4) [哔哩哔哩](https://www.bilibili.com/video/BV1gg411D7oe?spm_id_from=333.999.0.0)      
 领域驱动设计006--领域建模01 [YouTube](https://www.youtube.com/watch?v=Fee0oXCDZxA) [哔哩哔哩](https://www.bilibili.com/video/BV1DV4y1p7Rw?spm_id_from=333.999.0.0)      
 领域驱动设计006--领域建模02 [YouTube](https://www.youtube.com/watch?v=_VNmArHYZSI) [哔哩哔哩](https://www.bilibili.com/video/BV1i14y1t7wE?spm_id_from=333.999.0.0)   
-领域驱动设计007--模型测试   
+领域驱动设计007--模型测试01 [YouTube](https://www.youtube.com/watch?v=jCyGLAgjH8A) [哔哩哔哩](https://www.bilibili.com/video/BV1Jt4y1E7EX?spm_id_from=333.999.0.0)      
+领域驱动设计007--模型测试02 [YouTube](https://www.youtube.com/watch?v=dBFhNbb8LHg) [哔哩哔哩](https://www.bilibili.com/video/BV1HB4y1478r?spm_id_from=333.999.0.0)      
 领域驱动设计008--模型集成  
 领域驱动设计009--过程讲解  
 领域驱动设计010--回顾总结   
