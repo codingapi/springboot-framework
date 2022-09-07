@@ -1,6 +1,6 @@
 package com.codingapi.springboot.leaf.exception;
 
-public class LeafServerException extends RuntimeException{
+public class LeafServerException extends RuntimeException {
 
     public LeafServerException() {
     }

@@ -16,7 +16,7 @@ public class SqlAnalyzerConfiguration {
 
     static class SqlAnalyzerFilterBeanInit {
         public SqlAnalyzerFilterBeanInit(List<SqlAnalyzerFilter> filters) {
-            if(filters!=null&&filters.size()>0) {
+            if (filters != null && filters.size() > 0) {
                 AnalyzerFilterContext.getInstance().addFilters(filters);
             }
         }
@@ -24,7 +24,7 @@ public class SqlAnalyzerConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public SqlAnalyzerFilterBeanInit sqlAnalyzerFilterInit(@Autowired(required = false) List<SqlAnalyzerFilter> filters){
+    public SqlAnalyzerFilterBeanInit sqlAnalyzerFilterInit(@Autowired(required = false) List<SqlAnalyzerFilter> filters) {
         return new SqlAnalyzerFilterBeanInit(filters);
     }
 

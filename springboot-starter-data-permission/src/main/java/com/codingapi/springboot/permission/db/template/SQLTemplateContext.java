@@ -18,9 +18,9 @@ public class SQLTemplateContext {
     }
 
     public static SQLTemplateContext getInstance() {
-        if(context==null){
-            synchronized (SQLTemplateContext.class){
-                if(context==null){
+        if (context == null) {
+            synchronized (SQLTemplateContext.class) {
+                if (context == null) {
                     context = new SQLTemplateContext();
                 }
             }
@@ -28,14 +28,14 @@ public class SQLTemplateContext {
         return context;
     }
 
-    protected void addSQLTemplates(List<SQLTemplate> sqlTemplateList){
+    protected void addSQLTemplates(List<SQLTemplate> sqlTemplateList) {
         templates.addAll(sqlTemplateList);
     }
 
 
-    public SQLTemplate template(String driverName){
-        for(SQLTemplate template : templates){
-            if(template.match(driverName)){
+    public SQLTemplate template(String driverName) {
+        for (SQLTemplate template : templates) {
+            if (template.match(driverName)) {
                 return template;
             }
         }

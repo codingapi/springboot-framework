@@ -18,7 +18,7 @@ public class DemoApi {
 
 
     @ResponseBody
-    public List<Demo> findByName(@RequestParam("name") String name){
+    public List<Demo> findByName(@RequestParam("name") String name) {
         Demo demo = new Demo();
         demo.setName(name);
         Example.of(demo);

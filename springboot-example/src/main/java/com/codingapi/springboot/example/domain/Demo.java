@@ -20,7 +20,7 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @ToString
 @Entity(name = "t_demo")
-public class Demo  implements LeafIdGenerate {
+public class Demo implements LeafIdGenerate {
 
     @Id
     private Integer id;
@@ -32,11 +32,11 @@ public class Demo  implements LeafIdGenerate {
         this.name = name;
     }
 
-    public void changeName(String name){
+    public void changeName(String name) {
         String oldName = this.name;
         this.name = name;
 
-        EventPusher.push(new DemoNameChangeEvent(oldName,name));
+        EventPusher.push(new DemoNameChangeEvent(oldName, name));
     }
 
 }

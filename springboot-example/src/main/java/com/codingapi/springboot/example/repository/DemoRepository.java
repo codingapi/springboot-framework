@@ -12,11 +12,11 @@ import java.util.List;
  * @author lorne
  * @since 1.0.0
  */
-public interface DemoRepository extends JpaRepository<Demo,Integer> {
+public interface DemoRepository extends JpaRepository<Demo, Integer> {
 
 
     @ResponseBody
-    default List<Demo> test(@RequestParam("name") String name){
+    default List<Demo> test(@RequestParam("name") String name) {
         Demo demo = new Demo();
         demo.setName(name);
         return findAll(Example.of(demo));

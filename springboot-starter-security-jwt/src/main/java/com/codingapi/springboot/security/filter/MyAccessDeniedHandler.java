@@ -19,7 +19,7 @@ public class MyAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         log.debug("access denied");
-        String content = JSONObject.toJSONString(Response.buildFailure("not.access","please check user authentication."));
-        IOUtils.write(content,response.getOutputStream(), StandardCharsets.UTF_8);
+        String content = JSONObject.toJSONString(Response.buildFailure("not.access", "please check user authentication."));
+        IOUtils.write(content, response.getOutputStream(), StandardCharsets.UTF_8);
     }
 }

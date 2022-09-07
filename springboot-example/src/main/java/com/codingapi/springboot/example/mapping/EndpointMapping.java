@@ -16,7 +16,7 @@ public class EndpointMapping {
 
     private final RequestMappingHandlerMapping handlerMapping;
 
-    public void addGetMapping(String url, Object handler, Method method){
+    public void addGetMapping(String url, Object handler, Method method) {
 
         RequestMappingInfo.BuilderConfiguration options = new RequestMappingInfo.BuilderConfiguration();
         options.setPatternParser(new PathPatternParser());
@@ -28,6 +28,6 @@ public class EndpointMapping {
                 .options(options)
                 .build();
 
-        handlerMapping.registerMapping(mappingInfo,handler,method);
+        handlerMapping.registerMapping(mappingInfo, handler, method);
     }
 }

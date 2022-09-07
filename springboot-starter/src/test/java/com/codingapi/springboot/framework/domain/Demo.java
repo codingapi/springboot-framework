@@ -9,11 +9,11 @@ public class Demo {
 
     private String name;
 
-    public void changeName(String name){
+    public void changeName(String name) {
         String beforeName = this.name;
         this.name = name;
         //push event
-        EventPusher.push(new DemoChangeEvent(beforeName,name));
+        EventPusher.push(new DemoChangeEvent(beforeName, name));
     }
-    
+
 }

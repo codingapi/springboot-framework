@@ -14,24 +14,24 @@ public class AutoConfiguration {
 
     @Bean
     @ConfigurationProperties(prefix = "codingapi.leaf")
-    public LeafProperties leafProperties(){
+    public LeafProperties leafProperties() {
         return new LeafProperties();
     }
 
     @Bean
-    public IDAllocDao allocDao(LeafProperties leafProperties){
+    public IDAllocDao allocDao(LeafProperties leafProperties) {
         return new IDAllocDaoImpl(leafProperties.getJdbcUrl());
     }
 
 
     @Bean
-    public IDGen idGen(IDAllocDao allocDao){
+    public IDGen idGen(IDAllocDao allocDao) {
         return new SegmentIDGenImpl(allocDao);
     }
 
     @Bean(initMethod = "init")
-    public Leaf leafClient(IDGen idGen, IDAllocDao allocDao,LeafProperties leafProperties){
-        return new Leaf(idGen,allocDao,leafProperties);
+    public Leaf leafClient(IDGen idGen, IDAllocDao allocDao, LeafProperties leafProperties) {
+        return new Leaf(idGen, allocDao, leafProperties);
     }
 
 }

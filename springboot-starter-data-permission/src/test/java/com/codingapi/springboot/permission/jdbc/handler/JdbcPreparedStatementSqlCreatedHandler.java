@@ -14,7 +14,7 @@ public class JdbcPreparedStatementSqlCreatedHandler implements IHandler<JdbcPrep
 
     @Override
     public void handler(JdbcPreparedStatementSqlCreatedEvent event) {
-        SQL sql =  event.getSql();
+        SQL sql = event.getSql();
         sql.deleteKey("create_time");
     }
 }

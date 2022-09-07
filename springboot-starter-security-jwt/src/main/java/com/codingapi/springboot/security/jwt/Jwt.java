@@ -24,23 +24,23 @@ public class Jwt {
         this.jwtRestTime = jwtRestTime;
     }
 
-    public Token create(String username,String password,List<String> authorities) throws IOException {
-        Token token = new Token(username,password,authorities,jwtTime,jwtRestTime);
+    public Token create(String username, String password, List<String> authorities) throws IOException {
+        Token token = new Token(username, password, authorities, jwtTime, jwtRestTime);
         String jwt = Jwts.builder().setSubject(token.toJson()).signWith(key).compact();
         token.setToken(jwt);
         return token;
     }
 
-    public Token parser(String sign){
+    public Token parser(String sign) {
         try {
             Jws<Claims> jws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(sign);
             if (jws != null) {
                 String subject = jws.getBody().getSubject();
                 return JSONObject.parseObject(subject, Token.class);
             }
-            throw new LocaleMessageException("token.error","token失效,请重新登录.");
-        }catch (Exception exp){
-            throw new LocaleMessageException("token.error",exp.getMessage());
+            throw new LocaleMessageException("token.error", "token失效,请重新登录.");
+        } catch (Exception exp) {
+            throw new LocaleMessageException("token.error", exp.getMessage());
         }
     }
 }

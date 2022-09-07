@@ -24,10 +24,10 @@ public class SQL {
     private char[] sqlChars;
 
     //jdbc sql parameter key and values,for example insert into t_demo(id,name) values(?,?), keys:id,name value:1,2
-    private final Map<String,Integer> parameterKeys = new HashMap<>();
+    private final Map<String, Integer> parameterKeys = new HashMap<>();
 
     // init jdbc sql parameterKeys
-    private final Map<String,Integer> initParameters = new HashMap<>();
+    private final Map<String, Integer> initParameters = new HashMap<>();
 
     // remove keys index values
     @Getter
@@ -40,9 +40,9 @@ public class SQL {
         this.init();
     }
 
-    private void init(){
-        for(SqlAnalyzerFilter filter:AnalyzerFilterContext.getInstance().getFilters()){
-            if(filter.match(this)) {
+    private void init() {
+        for (SqlAnalyzerFilter filter : AnalyzerFilterContext.getInstance().getFilters()) {
+            if (filter.match(this)) {
                 filter.doFilter(this);
             }
         }
@@ -54,21 +54,21 @@ public class SQL {
     }
 
     public void put(String parameterKey, int index) {
-        parameterKeys.put(parameterKey,index);
+        parameterKeys.put(parameterKey, index);
     }
 
-    public void deleteKey(String key){
+    public void deleteKey(String key) {
         Integer value = parameterKeys.get(key);
-        if(value!=null){
-            for(SqlAnalyzerFilter filter:AnalyzerFilterContext.getInstance().getFilters()){
-                if(filter.match(this)) {
-                    sql = filter.delete(key,sql);
+        if (value != null) {
+            for (SqlAnalyzerFilter filter : AnalyzerFilterContext.getInstance().getFilters()) {
+                if (filter.match(this)) {
+                    sql = filter.delete(key, sql);
                 }
             }
             sql = sql.trim();
             //when endsWith where will append 1=1
-            if(sql.toUpperCase().endsWith("WHERE")){
-                sql = sql+" 1=1";
+            if (sql.toUpperCase().endsWith("WHERE")) {
+                sql = sql + " 1=1";
             }
             removeIndexes.add(value);
             parameterKeys.remove(key);
@@ -76,15 +76,15 @@ public class SQL {
         }
     }
 
-    public void copyParameter(){
-        for(String key:parameterKeys.keySet()){
-            initParameters.put(key,parameterKeys.get(key));
+    public void copyParameter() {
+        for (String key : parameterKeys.keySet()) {
+            initParameters.put(key, parameterKeys.get(key));
         }
     }
 
-    public int getIndex(String parameterKey){
+    public int getIndex(String parameterKey) {
         Integer value = initParameters.get(parameterKey);
-        if(value==null){
+        if (value == null) {
             return 0;
         }
         return value;

@@ -46,7 +46,8 @@ The final commit message should be clear and concise.
 
 ### Open an issue / PR
 
-We use [GitHub Issues](https://github.com/codingapi/springboot-framework/issues) and [Pull Requests](https://github.com/codingapi/springboot-framework/pulls) for trackers.
+We use [GitHub Issues](https://github.com/codingapi/springboot-framework/issues)
+and [Pull Requests](https://github.com/codingapi/springboot-framework/pulls) for trackers.
 
 If you find a typo in document, find a bug in code, or want new features, or want to give suggestions,
 you can [open an issue on GitHub](https://github.com/codingapi/springboot-framework/issues/new) to report it.

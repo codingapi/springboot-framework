@@ -13,7 +13,7 @@ public class DemoService {
 
     private final DemoRepository demoRepository;
 
-    public void swap(Demo demo1,Demo demo2){
+    public void swap(Demo demo1, Demo demo2) {
         String demo1Name = demo1.getName();
         String demo2Name = demo2.getName();
 
@@ -22,7 +22,7 @@ public class DemoService {
     }
 
 
-    public void save(Demo demo){
+    public void save(Demo demo) {
         demoRepository.save(demo);
     }
 

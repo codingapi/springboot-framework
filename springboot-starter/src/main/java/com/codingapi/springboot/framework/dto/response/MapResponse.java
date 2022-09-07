@@ -8,9 +8,9 @@ import java.util.Map;
 
 @Setter
 @Getter
-public class MapResponse extends Response{
+public class MapResponse extends Response {
 
-    private Map<String,Object> data;
+    private Map<String, Object> data;
 
     public MapResponse() {
         this.data = new HashMap<>();
@@ -29,7 +29,7 @@ public class MapResponse extends Response{
         return mapResponse;
     }
 
-    public MapResponse add(String key, Object value){
+    public MapResponse add(String key, Object value) {
         this.data.put(key, value);
         return this;
     }

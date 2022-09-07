@@ -20,7 +20,7 @@ public class IDAllocDaoImpl implements IDAllocDao {
     public IDAllocDaoImpl(String jdbcUrl) {
         this.handler = rs -> {
             List<LeafAlloc> list = new ArrayList<>();
-            while (rs.next()){
+            while (rs.next()) {
                 LeafAlloc leafAlloc = new LeafAlloc();
                 leafAlloc.setStep(rs.getInt("STEP"));
                 leafAlloc.setKey(rs.getString("TAG"));
@@ -38,8 +38,8 @@ public class IDAllocDaoImpl implements IDAllocDao {
     public List<LeafAlloc> getAllLeafAllocs() {
         return dbHelper.query(new DbHelper.IQuery<List<LeafAlloc>>() {
             @Override
-            public List<LeafAlloc> query(Connection connection, QueryRunner queryRunner)throws SQLException {
-                return queryRunner.query(connection,"SELECT * FROM LEAF_ALLOC",handler);
+            public List<LeafAlloc> query(Connection connection, QueryRunner queryRunner) throws SQLException {
+                return queryRunner.query(connection, "SELECT * FROM LEAF_ALLOC", handler);
             }
         });
     }
@@ -49,8 +49,8 @@ public class IDAllocDaoImpl implements IDAllocDao {
         return dbHelper.updateAndQuery(new DbHelper.IUpdateAndQuery<List<LeafAlloc>>() {
             @Override
             public List<LeafAlloc> updateAndQuery(Connection connection, QueryRunner queryRunner) throws SQLException {
-                queryRunner.update(connection,"UPDATE LEAF_ALLOC SET MAX_ID = MAX_ID + STEP WHERE TAG = ?",tag);
-                return queryRunner.query(connection,"SELECT * FROM LEAF_ALLOC WHERE TAG = ?",handler,tag);
+                queryRunner.update(connection, "UPDATE LEAF_ALLOC SET MAX_ID = MAX_ID + STEP WHERE TAG = ?", tag);
+                return queryRunner.query(connection, "SELECT * FROM LEAF_ALLOC WHERE TAG = ?", handler, tag);
             }
         }).stream().findFirst().orElse(null);
 
@@ -61,8 +61,8 @@ public class IDAllocDaoImpl implements IDAllocDao {
         return dbHelper.updateAndQuery(new DbHelper.IUpdateAndQuery<List<LeafAlloc>>() {
             @Override
             public List<LeafAlloc> updateAndQuery(Connection connection, QueryRunner queryRunner) throws SQLException {
-                queryRunner.update(connection,"UPDATE LEAF_ALLOC SET MAX_ID = MAX_ID + ? WHERE TAG = ?",leafAlloc.getStep(),leafAlloc.getKey());
-                return queryRunner.query(connection,"SELECT * FROM LEAF_ALLOC WHERE TAG = ?",handler,leafAlloc.getKey());
+                queryRunner.update(connection, "UPDATE LEAF_ALLOC SET MAX_ID = MAX_ID + ? WHERE TAG = ?", leafAlloc.getStep(), leafAlloc.getKey());
+                return queryRunner.query(connection, "SELECT * FROM LEAF_ALLOC WHERE TAG = ?", handler, leafAlloc.getKey());
             }
         }).stream().findFirst().orElse(null);
     }
@@ -75,28 +75,28 @@ public class IDAllocDaoImpl implements IDAllocDao {
 
 
     @Override
-    public boolean save(LeafAlloc leafAlloc){
+    public boolean save(LeafAlloc leafAlloc) {
         return dbHelper.update(new DbHelper.IUpdate() {
             @Override
             public int update(Connection connection, QueryRunner queryRunner) throws SQLException {
-                List<LeafAlloc> list =  queryRunner.query(connection,"SELECT * FROM LEAF_ALLOC WHERE TAG = ?",handler,leafAlloc.getKey());
-                if(list!=null&&list.size()>0){
+                List<LeafAlloc> list = queryRunner.query(connection, "SELECT * FROM LEAF_ALLOC WHERE TAG = ?", handler, leafAlloc.getKey());
+                if (list != null && list.size() > 0) {
                     return 0;
                 }
 
                 String sql = "INSERT INTO LEAF_ALLOC (MAX_ID, STEP, UPDATE_TIME, TAG) VALUES (?, ?, ?, ?)";
-                return queryRunner.update(connection,sql,leafAlloc.getMaxId(),leafAlloc.getStep(),leafAlloc.getUpdateTime(),leafAlloc.getKey());
+                return queryRunner.update(connection, sql, leafAlloc.getMaxId(), leafAlloc.getStep(), leafAlloc.getUpdateTime(), leafAlloc.getKey());
             }
-        })>0;
+        }) > 0;
     }
 
 
-    private void init(){
+    private void init() {
         dbHelper.execute(new DbHelper.IExecute() {
             @Override
             public void execute(Connection connection, QueryRunner queryRunner) throws SQLException {
                 String sql = "CREATE TABLE IF NOT EXISTS LEAF_ALLOC (TAG VARCHAR(128) NOT NULL, MAX_ID BIGINT, STEP INTEGER, UPDATE_TIME TIMESTAMP, PRIMARY KEY (TAG))";
-                queryRunner.execute(connection,sql);
+                queryRunner.execute(connection, sql);
             }
         });
     }

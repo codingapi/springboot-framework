@@ -17,9 +17,9 @@ public class JdbcPreparedStatementExecuteEvent implements IEvent {
     private final PreparedStatement preparedStatement;
     private final JdbcSql jdbcSql;
 
-    public void put(String key,Object value) throws SQLException {
-        jdbcSql.put(key,value,(index)->{
-            preparedStatement.setObject(index,value);
+    public void put(String key, Object value) throws SQLException {
+        jdbcSql.put(key, value, (index) -> {
+            preparedStatement.setObject(index, value);
         });
     }
 

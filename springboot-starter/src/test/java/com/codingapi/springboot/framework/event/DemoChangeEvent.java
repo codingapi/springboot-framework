@@ -7,9 +7,9 @@ import lombok.Setter;
 @Setter
 @Getter
 @AllArgsConstructor
-public class DemoChangeEvent implements IEvent{
+public class DemoChangeEvent implements IEvent {
 
     private String beforeName;
     private String currentName;
-    
+
 }

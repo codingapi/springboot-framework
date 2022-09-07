@@ -13,7 +13,7 @@ import java.util.logging.Logger;
  */
 public class DriverProxy implements Driver {
 
-    private final static String DRIVER_FLAG="proxy:";
+    private final static String DRIVER_FLAG = "proxy:";
 
     private final static Driver instance = new DriverProxy();
 
@@ -40,7 +40,7 @@ public class DriverProxy implements Driver {
     protected Driver findDriverByUrl(String url) throws SQLException {
         String realUrl = extractRealUrl(url);
         Driver driver = null;
-        for (Driver item: registeredDrivers() ) {
+        for (Driver item : registeredDrivers()) {
             try {
                 if (item.acceptsURL(extractRealUrl(url))) {
                     driver = item;
@@ -49,7 +49,7 @@ public class DriverProxy implements Driver {
             } catch (SQLException e) {
             }
         }
-        if( driver == null ) {
+        if (driver == null) {
             throw new SQLException("Unable to find a driver that accepts " + realUrl);
         }
         return driver;
@@ -60,7 +60,7 @@ public class DriverProxy implements Driver {
         if (url == null) {
             throw new SQLException("url is required");
         }
-        if( !acceptsURL(url) ) {
+        if (!acceptsURL(url)) {
             return null;
         }
         // find the real driver for the URL
@@ -68,7 +68,7 @@ public class DriverProxy implements Driver {
 
         Connection conn;
         try {
-            conn =  passThru.connect(extractRealUrl(url), properties);
+            conn = passThru.connect(extractRealUrl(url), properties);
         } catch (SQLException e) {
             throw e;
         }
@@ -76,8 +76,8 @@ public class DriverProxy implements Driver {
     }
 
     @Override
-    public boolean acceptsURL(String url){
-        return url != null && url.startsWith("jdbc:"+DRIVER_FLAG);
+    public boolean acceptsURL(String url) {
+        return url != null && url.startsWith("jdbc:" + DRIVER_FLAG);
     }
 
     @Override

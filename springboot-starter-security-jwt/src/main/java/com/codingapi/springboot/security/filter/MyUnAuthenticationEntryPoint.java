@@ -19,7 +19,7 @@ public class MyUnAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         log.debug("no authentication ~");
-        String content = JSONObject.toJSONString(Response.buildFailure("not.login","please to login."));
-        IOUtils.write(content,response.getOutputStream(), StandardCharsets.UTF_8);
+        String content = JSONObject.toJSONString(Response.buildFailure("not.login", "please to login."));
+        IOUtils.write(content, response.getOutputStream(), StandardCharsets.UTF_8);
     }
 }

@@ -22,15 +22,16 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
     }
 
     public PageRequest() {
-        this(0,20,Sort.unsorted());
+        this(0, 20, Sort.unsorted());
     }
 
-    private void initPage(){
-        int fixValue=0;
+    private void initPage() {
+        int fixValue = 0;
         try {
             fixValue = Integer.parseInt(System.getProperty(CURRENT_FIX_VALUE));
-        }catch (Exception e){}
-        pageRequest = PageRequest.of(current-fixValue, pageSize, pageRequest.getSort());
+        } catch (Exception e) {
+        }
+        pageRequest = PageRequest.of(current - fixValue, pageSize, pageRequest.getSort());
     }
 
     public int getCurrent() {

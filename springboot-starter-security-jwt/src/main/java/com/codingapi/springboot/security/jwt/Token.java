@@ -33,23 +33,23 @@ public class Token implements JsonSerializable {
         this.username = username;
         this.certificate = AESUtils.getInstance().encodeToBase64(certificate);
         this.authorities = authorities;
-        this.expireTime = System.currentTimeMillis()+expireValue;
-        this.remindTime = System.currentTimeMillis()+remindValue;
+        this.expireTime = System.currentTimeMillis() + expireValue;
+        this.remindTime = System.currentTimeMillis() + remindValue;
     }
 
 
-    public void verify() throws TokenExpiredException{
-        if(isExpire()){
+    public void verify() throws TokenExpiredException {
+        if (isExpire()) {
             throw new TokenExpiredException("token expired.");
         }
     }
 
-    public boolean isExpire(){
+    public boolean isExpire() {
         return expireTime <= System.currentTimeMillis();
     }
 
 
-    public String getCertificate(){
+    public String getCertificate() {
         return certificate;
     }
 
@@ -64,12 +64,12 @@ public class Token implements JsonSerializable {
 
 
     @Transient
-    public UsernamePasswordAuthenticationToken getAuthenticationToken(){
+    public UsernamePasswordAuthenticationToken getAuthenticationToken() {
         Collection<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
-        for(String authority:authorities){
+        for (String authority : authorities) {
             simpleGrantedAuthorities.add(new SimpleGrantedAuthority(authority));
         }
-        return new UsernamePasswordAuthenticationToken(this, certificate,simpleGrantedAuthorities);
+        return new UsernamePasswordAuthenticationToken(this, certificate, simpleGrantedAuthorities);
     }
 
 

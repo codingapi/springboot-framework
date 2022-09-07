@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-public abstract class BaseConnection extends AbsWrapper implements Connection{
+public abstract class BaseConnection extends AbsWrapper implements Connection {
 
     private final Connection delegate;
 

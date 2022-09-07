@@ -6,11 +6,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OpenApiConfiguration {
 
-    public static class BeanInit{
+    public static class BeanInit {
 
         public BeanInit(EndpointMapping endpointMapping, DemoApi demoApi) {
             try {
-                endpointMapping.addGetMapping("/open/demo/findByName",demoApi,DemoApi.class.getMethod("findByName", String.class));
+                endpointMapping.addGetMapping("/open/demo/findByName", demoApi, DemoApi.class.getMethod("findByName", String.class));
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
@@ -18,7 +18,7 @@ public class OpenApiConfiguration {
     }
 
     @Bean
-    public BeanInit beanInit(EndpointMapping endpointMapping, DemoApi demoApi){
+    public BeanInit beanInit(EndpointMapping endpointMapping, DemoApi demoApi) {
         return new BeanInit(endpointMapping, demoApi);
     }
 

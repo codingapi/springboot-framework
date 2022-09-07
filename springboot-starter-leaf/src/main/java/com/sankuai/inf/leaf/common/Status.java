@@ -1,6 +1,6 @@
 package com.sankuai.inf.leaf.common;
 
-public enum  Status {
+public enum Status {
     SUCCESS,
     EXCEPTION
 }

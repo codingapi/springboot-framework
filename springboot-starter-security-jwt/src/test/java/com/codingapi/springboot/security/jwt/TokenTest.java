@@ -9,7 +9,7 @@ class TokenTest {
     @SneakyThrows
     @Test
     void aesTest() {
-        AES aes = new AES("1234567890123456","1234567890123456");
+        AES aes = new AES("1234567890123456", "1234567890123456");
         final String input = "hello world!";
         String encode = aes.encodeToBase64(input);
         System.out.println(encode);

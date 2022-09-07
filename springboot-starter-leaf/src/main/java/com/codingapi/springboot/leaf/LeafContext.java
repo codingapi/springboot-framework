@@ -21,15 +21,15 @@ class LeafContext {
     @Setter
     private Set<Class<? extends LeafIdGenerate>> classes;
 
-    private LeafContext(){
+    private LeafContext() {
     }
 
     private static LeafContext instance;
 
     public static LeafContext getInstance() {
-        if(instance==null){
-            synchronized (LeafContext.class){
-                if(instance==null){
+        if (instance == null) {
+            synchronized (LeafContext.class) {
+                if (instance == null) {
                     instance = new LeafContext();
                 }
             }
@@ -37,7 +37,7 @@ class LeafContext {
         return instance;
     }
 
-    protected void setLeaf(Leaf leaf, LeafProperties leafProperties){
+    protected void setLeaf(Leaf leaf, LeafProperties leafProperties) {
         this.leaf = leaf;
         this.defaultMaxId = leafProperties.getDefaultMaxId();
         this.defaultStep = leafProperties.getDefaultStep();
@@ -45,22 +45,22 @@ class LeafContext {
     }
 
 
-    long generateId(Class<?> clazz){
+    long generateId(Class<?> clazz) {
         return segmentGetId(clazz);
     }
 
-    long segmentGetId(Class<?> clazz){
+    long segmentGetId(Class<?> clazz) {
         return leaf.segmentGetId(clazz.getName());
     }
 
 
-    public void push(String key, int step, int maxId){
+    public void push(String key, int step, int maxId) {
         leaf.segmentPush(key, step, maxId);
     }
 
 
-    private void initClass(){
-        if(classes!=null&&classes.size()>0) {
+    private void initClass() {
+        if (classes != null && classes.size() > 0) {
             for (Class<?> clazz : classes) {
                 try {
                     LeafContext.getInstance().push(clazz.getName(), defaultStep, defaultMaxId);

@@ -15,27 +15,26 @@ import org.springframework.util.Assert;
 @Rollback(value = false)
 class ExampleApplicationTests {
 
-	@Autowired
-	private DemoService demoService;
+    @Autowired
+    private DemoService demoService;
 
-	@Test
-	@Transactional
-	void save() {
-		Demo demo = new Demo("xiaoming");
-		demoService.save(demo);
-		Assert.isTrue(demo.getId()>0,"demoRepository save error.");
-		log.info("id:{}",demo.getId());
-	}
+    @Test
+    @Transactional
+    void save() {
+        Demo demo = new Demo("xiaoming");
+        demoService.save(demo);
+        Assert.isTrue(demo.getId() > 0, "demoRepository save error.");
+        log.info("id:{}", demo.getId());
+    }
 
-	@Test
-	void swap(){
-		Demo demo1 = new Demo("demo1");
-		Demo demo2 = new Demo("demo2");
-		demoService.swap(demo1,demo2);
-		Assert.isTrue(demo1.getName().equals("demo2"),"swap service error.");
-		Assert.isTrue(demo2.getName().equals("demo1"),"swap service error.");
-	}
-
+    @Test
+    void swap() {
+        Demo demo1 = new Demo("demo1");
+        Demo demo2 = new Demo("demo2");
+        demoService.swap(demo1, demo2);
+        Assert.isTrue(demo1.getName().equals("demo2"), "swap service error.");
+        Assert.isTrue(demo2.getName().equals("demo1"), "swap service error.");
+    }
 
 
 }

@@ -13,13 +13,13 @@ public class AutoConfiguration {
 
     @Bean
     @ConfigurationProperties(prefix = "codingapi.boot")
-    public BootProperties bootProperties(){
+    public BootProperties bootProperties() {
         return new BootProperties();
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public AES aes(BootProperties properties){
+    public AES aes(BootProperties properties) {
         return new AES(properties.getAseKey(), properties.getAseIv());
     }
 

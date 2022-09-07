@@ -17,6 +17,6 @@ public class JdbcExecuteHandler implements IHandler<JdbcPreparedStatementExecute
     @SneakyThrows
     @Override
     public void handler(JdbcPreparedStatementExecuteEvent event) {
-        event.put("user_id",1);
+        event.put("user_id", 1);
     }
 }

@@ -23,10 +23,10 @@ public class BootProperties {
 
     public void setPageCurrentFixValue(int pageCurrentFixValue) {
         this.pageCurrentFixValue = pageCurrentFixValue;
-        System.setProperty(PageRequest.CURRENT_FIX_VALUE,String.valueOf(pageCurrentFixValue));
+        System.setProperty(PageRequest.CURRENT_FIX_VALUE, String.valueOf(pageCurrentFixValue));
     }
 
     public BootProperties() {
-        System.setProperty(PageRequest.CURRENT_FIX_VALUE,String.valueOf(pageCurrentFixValue));
+        System.setProperty(PageRequest.CURRENT_FIX_VALUE, String.valueOf(pageCurrentFixValue));
     }
 }

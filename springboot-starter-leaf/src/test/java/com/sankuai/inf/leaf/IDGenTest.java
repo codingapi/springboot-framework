@@ -40,7 +40,7 @@ class IDGenTest {
         for (int i = 0; i < 100; ++i) {
             Result r = idGen.get("leaf-segment-test");
             assertEquals(r.getId(), (i), "id gen value error.");
-            log.info("res:{}",r);
+            log.info("res:{}", r);
         }
     }
 

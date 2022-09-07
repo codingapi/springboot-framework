@@ -7,13 +7,14 @@ package com.codingapi.springboot.permission.db.template;
 public interface SQLTemplate {
 
     /**
-     * @param  driverName connection driverName
+     * @param driverName connection driverName
      * @return match result
      */
     boolean match(String driverName);
 
     /**
      * create table sql
+     *
      * @param tableName table name
      * @return create sql
      */

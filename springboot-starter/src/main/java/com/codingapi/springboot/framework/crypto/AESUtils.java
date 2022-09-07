@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class AESUtils {
 
-    private AESUtils(){
+    private AESUtils() {
 
     }
 
@@ -17,7 +17,7 @@ public class AESUtils {
 
     private AES aes;
 
-    void init(AES aes){
+    void init(AES aes) {
         this.aes = aes;
     }
 

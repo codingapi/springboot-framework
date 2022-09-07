@@ -1,6 +1,6 @@
 package com.sankuai.inf.leaf.exception;
 
-public class DbException extends RuntimeException{
+public class DbException extends RuntimeException {
 
     public DbException() {
     }

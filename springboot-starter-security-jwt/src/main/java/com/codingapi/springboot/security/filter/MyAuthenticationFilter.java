@@ -26,7 +26,7 @@ public class MyAuthenticationFilter extends BasicAuthenticationFilter {
 
     private final Jwt jwt;
 
-    public MyAuthenticationFilter(AuthenticationManager authenticationManager,Jwt jwt) {
+    public MyAuthenticationFilter(AuthenticationManager authenticationManager, Jwt jwt) {
         super(authenticationManager);
         this.jwt = jwt;
     }
@@ -36,21 +36,21 @@ public class MyAuthenticationFilter extends BasicAuthenticationFilter {
         log.debug("token authentication ~");
 
         String sign = request.getHeader(TOKEN_KEY);
-        if(!StringUtils.hasLength(sign)){
-            writeResponse(response,Response.buildFailure("token.error","token must not null."));
+        if (!StringUtils.hasLength(sign)) {
+            writeResponse(response, Response.buildFailure("token.error", "token must not null."));
             return;
         }
 
         Token token = jwt.parser(sign);
-        if(token.canRestToken()){
-            Token newSign = jwt.create(token.getUsername(),token.getDecodePassword(),token.getAuthorities());
+        if (token.canRestToken()) {
+            Token newSign = jwt.create(token.getUsername(), token.getDecodePassword(), token.getAuthorities());
             log.info("reset token ");
-            response.setHeader(TOKEN_KEY,newSign.getToken());
+            response.setHeader(TOKEN_KEY, newSign.getToken());
         }
         try {
             token.verify();
         } catch (TokenExpiredException e) {
-            writeResponse(response,Response.buildFailure("token.expire","token expire."));
+            writeResponse(response, Response.buildFailure("token.expire", "token expire."));
             return;
         }
 
@@ -60,8 +60,8 @@ public class MyAuthenticationFilter extends BasicAuthenticationFilter {
 
     }
 
-    private void writeResponse(HttpServletResponse servletResponse,Response returnResponse) throws IOException {
+    private void writeResponse(HttpServletResponse servletResponse, Response returnResponse) throws IOException {
         String content = JSONObject.toJSONString(returnResponse);
-        IOUtils.write(content,servletResponse.getOutputStream(), StandardCharsets.UTF_8);
+        IOUtils.write(content, servletResponse.getOutputStream(), StandardCharsets.UTF_8);
     }
 }

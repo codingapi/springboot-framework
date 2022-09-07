@@ -10,7 +10,7 @@ import java.util.List;
 public class SpringHandlerConfiguration {
 
     @Bean
-    public SpringEventHandler springEventHandler(@Autowired(required = false) List<IHandler> handlers){
+    public SpringEventHandler springEventHandler(@Autowired(required = false) List<IHandler> handlers) {
         return new SpringEventHandler(handlers);
     }
 

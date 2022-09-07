@@ -4,9 +4,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public class TokenContext {
 
-    private TokenContext(){}
+    private TokenContext() {
+    }
 
-    public static Token current(){
+    public static Token current() {
         return (Token) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

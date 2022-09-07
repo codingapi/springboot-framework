@@ -19,7 +19,7 @@ public class SQLTemplateConfiguration {
     }
 
     @Bean
-    public H2SQLTemplate h2SQLTemplate(){
+    public H2SQLTemplate h2SQLTemplate() {
         return new H2SQLTemplate();
     }
 

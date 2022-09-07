@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author lorne
  * @since 1.0.0
  */
-public interface DemoRepository extends JpaRepository<Demo,Integer> {
+public interface DemoRepository extends JpaRepository<Demo, Integer> {
 
 }

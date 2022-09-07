@@ -3,15 +3,15 @@ package com.codingapi.springboot.leaf;
 public interface LeafIdGenerate {
 
 
-    default long generateLongId(){
+    default long generateLongId() {
         return LeafContext.getInstance().generateId(getClass());
     }
 
-    default int generateIntId(){
+    default int generateIntId() {
         return (int) LeafContext.getInstance().generateId(getClass());
     }
 
-    default String generateStringId(){
+    default String generateStringId() {
         return String.valueOf(LeafContext.getInstance().generateId(getClass()));
     }
 

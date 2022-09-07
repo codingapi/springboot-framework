@@ -13,7 +13,7 @@ public class AnalyzerFilterContext {
 
     private final List<SqlAnalyzerFilter> filters;
 
-    private AnalyzerFilterContext(){
+    private AnalyzerFilterContext() {
         this.filters = new ArrayList<>();
 
         filters.add(new CurdInsertSqlAnalyzer());
@@ -23,9 +23,9 @@ public class AnalyzerFilterContext {
     }
 
     public static AnalyzerFilterContext getInstance() {
-        if(instance==null){
-            synchronized (AnalyzerFilterContext.class){
-                if(instance==null){
+        if (instance == null) {
+            synchronized (AnalyzerFilterContext.class) {
+                if (instance == null) {
                     instance = new AnalyzerFilterContext();
                 }
             }
@@ -33,11 +33,11 @@ public class AnalyzerFilterContext {
         return instance;
     }
 
-    protected void addFilter(SqlAnalyzerFilter filter){
+    protected void addFilter(SqlAnalyzerFilter filter) {
         this.filters.add(filter);
     }
 
-    protected void addFilters(List<SqlAnalyzerFilter> filters){
+    protected void addFilters(List<SqlAnalyzerFilter> filters) {
         this.filters.addAll(filters);
     }
 

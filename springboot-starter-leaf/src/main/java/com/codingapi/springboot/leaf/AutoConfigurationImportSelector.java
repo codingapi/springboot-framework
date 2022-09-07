@@ -22,21 +22,21 @@ public class AutoConfigurationImportSelector implements ImportBeanDefinitionRegi
         try {
             packageNames.add(Class.forName(className).getPackage().getName());
 
-            Map<String,Object> annotations =  importingClassMetadata.getAnnotationAttributes(EnableLeaf.class.getName());
+            Map<String, Object> annotations = importingClassMetadata.getAnnotationAttributes(EnableLeaf.class.getName());
             assert annotations != null;
-            String[] packages = (String[])annotations.get("scanBasePackages");
+            String[] packages = (String[]) annotations.get("scanBasePackages");
             packageNames.addAll(Arrays.asList(packages));
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        Reflections reflections =  new Reflections(new ConfigurationBuilder()
+        Reflections reflections = new Reflections(new ConfigurationBuilder()
                 .forPackages(packageNames.toArray(new String[]{}))
-                .addScanners(Scanners.TypesAnnotated,Scanners.SubTypes));
+                .addScanners(Scanners.TypesAnnotated, Scanners.SubTypes));
 
         this.classes = reflections.getSubTypesOf(LeafIdGenerate.class);
-        log.debug("classes:{}",classes);
+        log.debug("classes:{}", classes);
 
         LeafContext.getInstance().setClasses(classes);
 

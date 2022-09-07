@@ -2,7 +2,7 @@ package com.codingapi.springboot.framework.exception;
 
 import lombok.Getter;
 
-public class LocaleMessageException extends RuntimeException{
+public class LocaleMessageException extends RuntimeException {
 
     @Getter
     private final String errCode;

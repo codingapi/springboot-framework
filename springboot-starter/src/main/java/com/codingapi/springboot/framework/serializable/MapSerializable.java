@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public interface MapSerializable {
 
-    default Map<String,Object> toMap(){
-        return (Map<String,Object>) JSONObject.toJSON(this);
+    default Map<String, Object> toMap() {
+        return (Map<String, Object>) JSONObject.toJSON(this);
     }
 }

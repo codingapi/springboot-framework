@@ -26,13 +26,13 @@ public class HandlerBeanDefinitionRegistrar implements ImportBeanDefinitionRegis
     @SneakyThrows
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        final Map<String, Object> attributes =  importingClassMetadata.getAnnotationAttributes(SpringBootApplication.class.getName());
-        if(attributes==null){
+        final Map<String, Object> attributes = importingClassMetadata.getAnnotationAttributes(SpringBootApplication.class.getName());
+        if (attributes == null) {
             return;
         }
 
         String defaultPackage = (Class.forName(importingClassMetadata.getClassName())).getPackage().getName();
-        log.debug("defaultPackage:{}",defaultPackage);
+        log.debug("defaultPackage:{}", defaultPackage);
         //获取包扫描
         ClassPathScanningCandidateComponentProvider pathScanningCandidateComponentProvider = new ClassPathScanningCandidateComponentProvider(false);
 
@@ -40,12 +40,12 @@ public class HandlerBeanDefinitionRegistrar implements ImportBeanDefinitionRegis
         pathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(Handler.class));
 
         LinkedHashSet<BeanDefinition> candidateComponents = new LinkedHashSet<>();
-        String[] scanBasePackages = (String[])attributes.getOrDefault("scanBasePackages", Collections.singletonList(defaultPackage));
+        String[] scanBasePackages = (String[]) attributes.getOrDefault("scanBasePackages", Collections.singletonList(defaultPackage));
 
         for (String basePackages : scanBasePackages) {
             candidateComponents.addAll(pathScanningCandidateComponentProvider.findCandidateComponents(basePackages));
         }
-        log.debug("candidateComponents:{}",candidateComponents);
+        log.debug("candidateComponents:{}", candidateComponents);
         //注册Bean
         for (BeanDefinition candidateComponent : candidateComponents) {
             String beanName = candidateComponent.getBeanClassName();

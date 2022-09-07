@@ -2,14 +2,14 @@ package com.codingapi.springboot.framework.command;
 
 import com.codingapi.springboot.framework.dto.response.Response;
 
-public interface IExecutor{
+public interface IExecutor {
 
-    interface Command <R extends Response,C> {
+    interface Command<R extends Response, C> {
         R execute(C command);
     }
 
-    interface Void <R extends Response> {
+    interface Void<R extends Response> {
         R execute();
     }
-    
+
 }

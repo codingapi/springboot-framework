@@ -16,13 +16,13 @@ public class DemoController {
 
     @GetMapping("/index")
     @PreAuthorize(value = "hasRole('ROLE_ADMIN')")
-    public String index(){
+    public String index() {
         String loginUserName = SecurityContextHolder.getContext().getAuthentication().getName();
-        return "hello:"+loginUserName;
+        return "hello:" + loginUserName;
     }
 
     @GetMapping("/error")
-    public Response error(){
+    public Response error() {
         throw new LocaleMessageException("hello.error");
     }
 }

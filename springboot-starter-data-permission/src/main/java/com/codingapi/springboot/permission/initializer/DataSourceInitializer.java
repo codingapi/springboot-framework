@@ -17,7 +17,7 @@ public class DataSourceInitializer {
     private final DataSource dataSource;
     private final QueryRunner queryRunner;
 
-    public DataSourceInitializer(DataSource dataSource) throws SQLException{
+    public DataSourceInitializer(DataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
         this.queryRunner = new QueryRunner(dataSource);
         this.init();

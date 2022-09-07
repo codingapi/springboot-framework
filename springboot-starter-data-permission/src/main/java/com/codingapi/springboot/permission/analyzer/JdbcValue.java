@@ -9,9 +9,9 @@ public class JdbcValue {
     }
 
     public String strVal() {
-        if(value==null) {
+        if (value == null) {
             return "NULL";
         }
-        return String.format("'%s'",value);
+        return String.format("'%s'", value);
     }
 }

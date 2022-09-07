@@ -6,7 +6,7 @@ public class LoginRequestContext {
 
     private static LoginRequestContext context = new LoginRequestContext();
 
-    private LoginRequestContext(){
+    private LoginRequestContext() {
 
     }
 
@@ -14,15 +14,15 @@ public class LoginRequestContext {
         return context;
     }
 
-    public void set(LoginRequest request){
+    public void set(LoginRequest request) {
         threadLocal.set(request);
     }
 
-    public LoginRequest get(){
+    public LoginRequest get() {
         return threadLocal.get();
     }
 
-    public void clean(){
+    public void clean() {
         threadLocal.set(null);
     }
 

@@ -7,27 +7,27 @@ import java.util.regex.Pattern;
  * @author lorne
  * @since 1.0.0
  */
-public class CurdUpdateSqlAnalyzer extends BaseAnalyzerFilter implements SqlAnalyzerFilter{
+public class CurdUpdateSqlAnalyzer extends BaseAnalyzerFilter implements SqlAnalyzerFilter {
 
     //Pattern
     private static final Pattern EQUAL_PATTERN = Pattern.compile("([a-zA-Z0-9_\\.]*\\s*[=]\\s*[?])");
 
-    private static final Pattern CURD_UPDATE_PATTERN = Pattern.compile("(^\\s*(update).*)",Pattern.CASE_INSENSITIVE);
+    private static final Pattern CURD_UPDATE_PATTERN = Pattern.compile("(^\\s*(update).*)", Pattern.CASE_INSENSITIVE);
 
 
     @Override
     public boolean match(SQL sql) {
-        return match(CURD_UPDATE_PATTERN,sql.getSql());
+        return match(CURD_UPDATE_PATTERN, sql.getSql());
     }
 
     @Override
     public void doFilter(SQL sql) {
-        List<String> values = find(EQUAL_PATTERN,sql.getSql());
+        List<String> values = find(EQUAL_PATTERN, sql.getSql());
         if (values.size() > 0) {
             for (int i = 0; i < values.size(); i++) {
                 String value = values.get(i);
                 String[] kvs = value.split("=");
-                sql.put(kvs[0].trim(), i+1);
+                sql.put(kvs[0].trim(), i + 1);
             }
         }
     }
@@ -35,7 +35,7 @@ public class CurdUpdateSqlAnalyzer extends BaseAnalyzerFilter implements SqlAnal
     @Override
     public String delete(String key, String sql) {
         //for example : update t_demo set name = ?, age = ? where id = ? , delete name will get result:update t_demo set age = ? where id = ?
-        sql = sql.replaceFirst(String.format("\\s*%s\\s*=\\s*\\?\\s*[,]?",key), "");
+        sql = sql.replaceFirst(String.format("\\s*%s\\s*=\\s*\\?\\s*[,]?", key), "");
         return sql;
     }
 }

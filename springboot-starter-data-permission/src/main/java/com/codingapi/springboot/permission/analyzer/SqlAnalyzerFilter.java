@@ -10,5 +10,5 @@ public interface SqlAnalyzerFilter {
 
     boolean match(SQL sql);
 
-    String delete(String key,String sql);
+    String delete(String key, String sql);
 }

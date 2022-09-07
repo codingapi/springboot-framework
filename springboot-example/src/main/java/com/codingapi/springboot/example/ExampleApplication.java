@@ -13,17 +13,17 @@ import java.util.Locale;
 @EnableLeaf
 public class ExampleApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ExampleApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ExampleApplication.class, args);
+    }
 
-	/**
-	 *  默认配置文件,更改为中文
-	 */
-	@Bean
-	public LocaleResolver localeResolver() {
-		SessionLocaleResolver slr = new SessionLocaleResolver();
-		slr.setDefaultLocale(Locale.CHINA);
-		return slr;
-	}
+    /**
+     * 默认配置文件,更改为中文
+     */
+    @Bean
+    public LocaleResolver localeResolver() {
+        SessionLocaleResolver slr = new SessionLocaleResolver();
+        slr.setDefaultLocale(Locale.CHINA);
+        return slr;
+    }
 }

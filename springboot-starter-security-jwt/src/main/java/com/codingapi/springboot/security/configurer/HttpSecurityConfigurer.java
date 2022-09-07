@@ -18,8 +18,8 @@ public class HttpSecurityConfigurer extends AbstractHttpConfigurer<HttpSecurityC
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        AuthenticationManager manager =  http.getSharedObject(AuthenticationManager.class);
-        http.addFilter(new MyLoginFilter(manager,jwt,securityJwtProperties));
-        http.addFilter(new MyAuthenticationFilter(manager,jwt));
+        AuthenticationManager manager = http.getSharedObject(AuthenticationManager.class);
+        http.addFilter(new MyLoginFilter(manager, jwt, securityJwtProperties));
+        http.addFilter(new MyAuthenticationFilter(manager, jwt));
     }
 }

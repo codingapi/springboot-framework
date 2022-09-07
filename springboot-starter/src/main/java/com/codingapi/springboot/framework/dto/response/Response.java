@@ -26,12 +26,11 @@ public class Response implements JsonSerializable {
         return response;
     }
 
-    public static Response buildSuccess(){
+    public static Response buildSuccess() {
         Response response = new Response();
         response.setSuccess(true);
         return response;
     }
-
 
 
 }

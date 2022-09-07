@@ -15,7 +15,7 @@ import java.sql.SQLException;
  * @since 1.0.0
  */
 @Configuration
-@AutoConfigureAfter({ DataSourceAutoConfiguration.class })
+@AutoConfigureAfter({DataSourceAutoConfiguration.class})
 @ConditionalOnSingleCandidate(value = DataSource.class)
 public class InitializerConfiguration {
 

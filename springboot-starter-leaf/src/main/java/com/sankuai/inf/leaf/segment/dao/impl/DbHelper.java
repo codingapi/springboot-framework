@@ -13,20 +13,27 @@ public class DbHelper<T> {
     private final QueryRunner queryRunner;
 
 
-    interface IExecute{
-        default void execute(Connection connection,QueryRunner queryRunner)throws SQLException{}
+    interface IExecute {
+        default void execute(Connection connection, QueryRunner queryRunner) throws SQLException {
+        }
     }
 
-    interface IUpdateAndQuery<T>{
-        default T updateAndQuery(Connection connection,QueryRunner queryRunner)throws SQLException{return null;}
+    interface IUpdateAndQuery<T> {
+        default T updateAndQuery(Connection connection, QueryRunner queryRunner) throws SQLException {
+            return null;
+        }
     }
 
-    interface IUpdate{
-        default int update(Connection connection,QueryRunner queryRunner)throws SQLException{return 0;}
+    interface IUpdate {
+        default int update(Connection connection, QueryRunner queryRunner) throws SQLException {
+            return 0;
+        }
     }
 
-    interface IQuery<T>{
-        default T query(Connection connection,QueryRunner queryRunner) throws SQLException{return null;}
+    interface IQuery<T> {
+        default T query(Connection connection, QueryRunner queryRunner) throws SQLException {
+            return null;
+        }
     }
 
     public DbHelper(String jdbcUrl) {
@@ -36,10 +43,10 @@ public class DbHelper<T> {
     }
 
 
-    public void execute(IExecute execute) throws DbException{
+    public void execute(IExecute execute) throws DbException {
         try {
             Connection connection = dataSource.getConnection();
-            execute.execute(connection,queryRunner);
+            execute.execute(connection, queryRunner);
             connection.close();
         } catch (SQLException e) {
             throw new DbException(e);
@@ -51,7 +58,7 @@ public class DbHelper<T> {
         try {
             Connection connection = dataSource.getConnection();
             connection.setAutoCommit(false);
-            T res = execute.updateAndQuery(connection,queryRunner);
+            T res = execute.updateAndQuery(connection, queryRunner);
             connection.commit();
             connection.close();
             return res;
@@ -64,7 +71,7 @@ public class DbHelper<T> {
         try {
             Connection connection = dataSource.getConnection();
             connection.setAutoCommit(false);
-            int res = execute.update(connection,queryRunner);
+            int res = execute.update(connection, queryRunner);
             connection.commit();
             connection.close();
             return res;
@@ -73,10 +80,10 @@ public class DbHelper<T> {
         }
     }
 
-    public T query(IQuery<T> execute)throws DbException{
+    public T query(IQuery<T> execute) throws DbException {
         try {
             Connection connection = dataSource.getConnection();
-            T res = execute.query(connection,queryRunner);
+            T res = execute.query(connection, queryRunner);
             connection.close();
             return res;
         } catch (SQLException e) {

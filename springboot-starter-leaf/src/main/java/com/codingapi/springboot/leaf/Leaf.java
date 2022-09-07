@@ -26,8 +26,8 @@ class Leaf {
     private final IDAllocDao idAllocDao;
     private final LeafProperties leafProperties;
 
-    long segmentGetId(String key){
-        Result result =  idGen.get(key);
+    long segmentGetId(String key) {
+        Result result = idGen.get(key);
         if (key == null || key.isEmpty()) {
             throw new NoKeyException();
         }
@@ -40,12 +40,13 @@ class Leaf {
 
     /**
      * 数据库模式添加 数据
+     *
      * @param key   key 关键字
      * @param step  每次获取数据长度 2000
      * @param maxId 开始的最大Id 1
-     * @return  执行状态
+     * @return 执行状态
      */
-    boolean segmentPush(String key, int step, int maxId)  {
+    boolean segmentPush(String key, int step, int maxId) {
         LeafAlloc alloc = new LeafAlloc();
         alloc.setKey(key);
         alloc.setStep(step);
@@ -54,12 +55,12 @@ class Leaf {
         return idAllocDao.save(alloc);
     }
 
-    void initIdGen(){
+    void initIdGen() {
         idGen.init();
     }
 
-     void init(){
-        LeafContext.getInstance().setLeaf(this,leafProperties);
+    void init() {
+        LeafContext.getInstance().setLeaf(this, leafProperties);
     }
 
 }

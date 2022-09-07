@@ -16,48 +16,48 @@ import java.util.List;
 public class ResponseTest {
 
     @Test
-    void multi(){
+    void multi() {
         List<String> list = new ArrayList<>();
         list.add("123");
         list.add("234");
 
-        MultiResponse<String> multiResponse =  MultiResponse.of(list);
-        Assert.isTrue(multiResponse.getData().equals(list),"return data error.");
-        Assert.isTrue(multiResponse.getData().getTotal()==list.size(),"return data error.");
+        MultiResponse<String> multiResponse = MultiResponse.of(list);
+        Assert.isTrue(multiResponse.getData().equals(list), "return data error.");
+        Assert.isTrue(multiResponse.getData().getTotal() == list.size(), "return data error.");
 
     }
 
     @Test
-    void multiSize(){
+    void multiSize() {
         List<String> list = new ArrayList<>();
         list.add("123");
         list.add("234");
 
-        MultiResponse<String> multiResponse =  MultiResponse.of(list,10);
-        Assert.isTrue(multiResponse.getData().equals(list),"return data error.");
-        Assert.isTrue(multiResponse.getData().getTotal()==10,"return data error.");
+        MultiResponse<String> multiResponse = MultiResponse.of(list, 10);
+        Assert.isTrue(multiResponse.getData().equals(list), "return data error.");
+        Assert.isTrue(multiResponse.getData().getTotal() == 10, "return data error.");
 
     }
 
 
     @Test
-    void single(){
+    void single() {
         String data = "123";
 
-        SingleResponse<String> singleResponse =  SingleResponse.of(data);
-        Assert.isTrue(singleResponse.getData().equals(data),"return data error.");
+        SingleResponse<String> singleResponse = SingleResponse.of(data);
+        Assert.isTrue(singleResponse.getData().equals(data), "return data error.");
     }
 
     @Test
-    void success(){
+    void success() {
         Response response = Response.buildSuccess();
-        Assert.isTrue(response.isSuccess(),"build success error.");
+        Assert.isTrue(response.isSuccess(), "build success error.");
     }
 
     @Test
-    void error(){
-        Response response = Response.buildFailure("errorCode","errorMessage");
-        Assert.isTrue(!response.isSuccess(),"build error error.");
-        Assert.isTrue(response.getErrCode().equals("errorCode"),"build error error.");
+    void error() {
+        Response response = Response.buildFailure("errorCode", "errorMessage");
+        Assert.isTrue(!response.isSuccess(), "build error error.");
+        Assert.isTrue(response.getErrCode().equals("errorCode"), "build error error.");
     }
 }

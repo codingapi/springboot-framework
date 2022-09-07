@@ -37,7 +37,7 @@ public class MyLoginFilter extends UsernamePasswordAuthenticationFilter {
     public MyLoginFilter(AuthenticationManager authenticationManager, Jwt jwt, SecurityJwtProperties securityJwtProperties) {
         super(authenticationManager);
         this.jwt = jwt;
-        this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(securityJwtProperties.getLoginProcessingUrl(),"POST"));
+        this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(securityJwtProperties.getLoginProcessingUrl(), "POST"));
     }
 
     @Override
@@ -49,21 +49,21 @@ public class MyLoginFilter extends UsernamePasswordAuthenticationFilter {
         } catch (IOException e) {
             throw new AuthenticationServiceException("request input stream read fail.");
         }
-        LoginRequest login = JSONObject.parseObject(content,LoginRequest.class);
-        if(login==null||login.isEmpty()){
+        LoginRequest login = JSONObject.parseObject(content, LoginRequest.class);
+        if (login == null || login.isEmpty()) {
             throw new AuthenticationServiceException("request stream read was null.");
         }
         LoginRequestContext.getInstance().set(login);
-        return getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(),login.getPassword()));
+        return getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword()));
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         log.debug("login success authentication ~");
         User user = (User) authResult.getPrincipal();
-        LoginRequest loginRequest =  LoginRequestContext.getInstance().get();
+        LoginRequest loginRequest = LoginRequestContext.getInstance().get();
 
-        Token token =  jwt.create(user.getUsername(),loginRequest.getPassword(),user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
+        Token token = jwt.create(user.getUsername(), loginRequest.getPassword(), user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
 
         LoginResponse login = new LoginResponse();
         login.setUsername(user.getUsername());
@@ -71,7 +71,7 @@ public class MyLoginFilter extends UsernamePasswordAuthenticationFilter {
         login.setAuthorities(token.getAuthorities());
 
         String content = JSONObject.toJSONString(SingleResponse.of(login));
-        IOUtils.write(content,response.getOutputStream(), StandardCharsets.UTF_8);
+        IOUtils.write(content, response.getOutputStream(), StandardCharsets.UTF_8);
 
         LoginRequestContext.getInstance().clean();
     }
@@ -80,8 +80,8 @@ public class MyLoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         log.debug("login fail authentication ~");
-        String content = JSONObject.toJSONString(Response.buildFailure("login.error",failed.getMessage()));
-        IOUtils.write(content,response.getOutputStream(), StandardCharsets.UTF_8);
+        String content = JSONObject.toJSONString(Response.buildFailure("login.error", failed.getMessage()));
+        IOUtils.write(content, response.getOutputStream(), StandardCharsets.UTF_8);
         LoginRequestContext.getInstance().clean();
     }
 }

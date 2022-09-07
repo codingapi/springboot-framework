@@ -5,9 +5,9 @@ class MessageContext {
 
     private static MessageContext context;
 
-    public static MessageContext getInstance(){
-        if(context==null){
-            synchronized (MessageContext.class){
+    public static MessageContext getInstance() {
+        if (context == null) {
+            synchronized (MessageContext.class) {
                 context = new MessageContext();
             }
         }
@@ -16,15 +16,15 @@ class MessageContext {
 
     private LocaleMessage localeMessage;
 
-    private MessageContext(){
+    private MessageContext() {
 
     }
 
-    void setExceptionLocaleMessage(LocaleMessage localeMessage){
+    void setExceptionLocaleMessage(LocaleMessage localeMessage) {
         this.localeMessage = localeMessage;
     }
 
-    public String getErrorMsg(String errCode){
+    public String getErrorMsg(String errCode) {
         return localeMessage.getMessage(errCode);
     }
 

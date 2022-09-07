@@ -13,8 +13,8 @@ public class SpringEventConfiguration {
     private ApplicationContext context;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         DomainEventContext.getInstance().initContext(context);
     }
-    
+
 }

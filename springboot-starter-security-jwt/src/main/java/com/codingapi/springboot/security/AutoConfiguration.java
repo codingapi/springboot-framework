@@ -46,47 +46,46 @@ public class AutoConfiguration {
                 .roles("USER")
                 .build();
 
-        return new InMemoryUserDetailsManager(admin,user);
+        return new InMemoryUserDetailsManager(admin, user);
     }
 
 
     @Bean
     @ConditionalOnMissingBean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
 
     @Bean
-    public HandlerExceptionResolver servletExceptionHandler(){
+    public HandlerExceptionResolver servletExceptionHandler() {
         return new ServletExceptionHandler();
     }
 
 
-
     @Bean
     @ConditionalOnMissingBean
-    public SecurityFilterChain filterChain(HttpSecurity http,Jwt jwt,SecurityJwtProperties properties) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, Jwt jwt, SecurityJwtProperties properties) throws Exception {
         //before add addCorsMappings to enable cors.
         http.cors();
 
         http.csrf().disable();
-        http.apply(new HttpSecurityConfigurer(jwt,properties));
+        http.apply(new HttpSecurityConfigurer(jwt, properties));
         http
-            .exceptionHandling()
+                .exceptionHandling()
                 .authenticationEntryPoint(new MyUnAuthenticationEntryPoint())
                 .accessDeniedHandler(new MyAccessDeniedHandler())
                 .and()
-            .authorizeRequests()
+                .authorizeRequests()
                 .antMatchers(properties.getAuthenticatedUrls()).authenticated()
                 .and()
-             //default login url :/login
-            .formLogin()
+                //default login url :/login
+                .formLogin()
                 .loginProcessingUrl(properties.getLoginProcessingUrl())
                 .permitAll()
                 .and()
-             //default logout url :/logout
-            .logout()
+                //default logout url :/logout
+                .logout()
                 .logoutUrl(properties.getLogoutUrl())
                 .addLogoutHandler(new MyLogoutHandler())
                 .logoutSuccessHandler(new MyLogoutSuccessHandler())
@@ -96,10 +95,9 @@ public class AutoConfiguration {
     }
 
 
-
     @Bean
     @ConditionalOnMissingBean
-    public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder){
+    public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder);
@@ -107,13 +105,11 @@ public class AutoConfiguration {
     }
 
 
-
     @Bean
     @ConditionalOnMissingBean
-    public Jwt jwt(SecurityJwtProperties properties){
-        return new Jwt(properties.getJwtSecretKey(),properties.getJwtTime(),properties.getJwtRestTime());
+    public Jwt jwt(SecurityJwtProperties properties) {
+        return new Jwt(properties.getJwtSecretKey(), properties.getJwtTime(), properties.getJwtRestTime());
     }
-
 
 
     @Bean
@@ -124,8 +120,8 @@ public class AutoConfiguration {
                 registry.addMapping("/**")
                         .allowedHeaders("*")
                         .allowedMethods("*")
-                        .exposedHeaders("Authorization","x-xsrf-token","Access-Control-Allow-Headers","Origin","Accept,X-Requested-With",
-                                "Content-Type","Access-Control-Request-Method","Access-Control-Request-Headers")
+                        .exposedHeaders("Authorization", "x-xsrf-token", "Access-Control-Allow-Headers", "Origin", "Accept,X-Requested-With",
+                                "Content-Type", "Access-Control-Request-Method", "Access-Control-Request-Headers")
                         .maxAge(1800L)
                         .allowedOrigins("*");
             }
@@ -135,7 +131,7 @@ public class AutoConfiguration {
 
     @Bean
     @ConfigurationProperties(prefix = "codingapi.security")
-    public SecurityJwtProperties securityJwtProperties(){
+    public SecurityJwtProperties securityJwtProperties() {
         return new SecurityJwtProperties();
     }
 

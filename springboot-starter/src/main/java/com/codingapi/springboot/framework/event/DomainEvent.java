@@ -6,7 +6,7 @@ import org.springframework.context.ApplicationEvent;
 /**
  * Event包装对象
  */
-public class DomainEvent extends ApplicationEvent{
+public class DomainEvent extends ApplicationEvent {
 
     @Getter
     private final IEvent event;
@@ -18,10 +18,10 @@ public class DomainEvent extends ApplicationEvent{
     @Getter
     private final boolean sync;
 
-    public DomainEvent(Object source,boolean sync) {
-        super(source); 
-        this.event = (IEvent)source;
+    public DomainEvent(Object source, boolean sync) {
+        super(source);
+        this.event = (IEvent) source;
         this.sync = sync;
     }
-    
+
 }

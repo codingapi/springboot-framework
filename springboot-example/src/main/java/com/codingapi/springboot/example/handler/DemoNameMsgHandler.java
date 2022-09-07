@@ -15,7 +15,7 @@ public class DemoNameMsgHandler implements IHandler<DemoNameChangeEvent> {
 
     @Override
     public void handler(DemoNameChangeEvent event) {
-      log.info("oldName:{},currentName:{}",event.getOldName(),event.getCurrentName());
+        log.info("oldName:{},currentName:{}", event.getOldName(), event.getCurrentName());
     }
 
 }
