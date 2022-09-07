@@ -14,15 +14,23 @@ import java.util.Collection;
 @Getter
 public class MultiResponse<T> extends Response {
 
-    private long total;
 
-    private Collection<T> data;
+    private Content<T> data;
+
+    @Setter
+    @Getter
+    public static class Content<T>{
+        private long total;
+        private Collection<T> list;
+    }
 
     public static <T> MultiResponse<T> of(Collection<T> data, long total) {
         MultiResponse<T> multiResponse = new MultiResponse<>();
         multiResponse.setSuccess(true);
-        multiResponse.setData(data);
-        multiResponse.setTotal(total);
+        Content<T> content = new Content<>();
+        content.setTotal(total);
+        content.setList(data);
+        multiResponse.setData(content);
         return multiResponse;
     }
 
@@ -36,7 +44,9 @@ public class MultiResponse<T> extends Response {
         MultiResponse<T> multiResponse = new MultiResponse<>();
         multiResponse.setSuccess(true);
         multiResponse.setData(null);
-        multiResponse.setTotal(0);
+        Content<T> content = new Content<>();
+        content.setTotal(0);
+        content.setList(null);
         return multiResponse;
     }
 
@@ -44,12 +54,13 @@ public class MultiResponse<T> extends Response {
     public static <T> MultiResponse<T> of(Collection<T> data) {
         MultiResponse<T> multiResponse = new MultiResponse<>();
         multiResponse.setSuccess(true);
-        multiResponse.setData(data);
         long total = 0;
         if(data!=null){
             total = data.size();
         }
-        multiResponse.setTotal(total);
+        Content<T> content = new Content<>();
+        content.setTotal(total);
+        content.setList(data);
         return multiResponse;
     }
 
