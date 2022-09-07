@@ -23,7 +23,7 @@ public class ResponseTest {
 
         MultiResponse<String> multiResponse =  MultiResponse.of(list);
         Assert.isTrue(multiResponse.getData().equals(list),"return data error.");
-        Assert.isTrue(multiResponse.getTotal()==list.size(),"return data error.");
+        Assert.isTrue(multiResponse.getData().getTotal()==list.size(),"return data error.");
 
     }
 
@@ -35,7 +35,7 @@ public class ResponseTest {
 
         MultiResponse<String> multiResponse =  MultiResponse.of(list,10);
         Assert.isTrue(multiResponse.getData().equals(list),"return data error.");
-        Assert.isTrue(multiResponse.getTotal()==10,"return data error.");
+        Assert.isTrue(multiResponse.getData().getTotal()==10,"return data error.");
 
     }
 
