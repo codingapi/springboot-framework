@@ -65,6 +65,7 @@ HelloWorld [YouTube](https://www.youtube.com/watch?v=d7LnYy8rTYI&t=149s) [哔哩
 领域驱动设计007--模型测试02 [YouTube](https://www.youtube.com/watch?v=dBFhNbb8LHg) [哔哩哔哩](https://www.bilibili.com/video/BV1HB4y1478r)      
 领域驱动设计008--模型集成01 [YouTube](https://www.youtube.com/watch?v=lmLFHGxkL1g) [哔哩哔哩](https://www.bilibili.com/video/BV14P411V7kS)   
 领域驱动设计008--模型集成02 [YouTube](https://www.youtube.com/watch?v=1A2OUn26sMc) [哔哩哔哩](https://www.bilibili.com/video/BV1DD4y167ea)   
+领域驱动设计008--模型集成03 [YouTube](https://www.youtube.com/watch?v=vu-dyolhRJM) [哔哩哔哩](https://www.bilibili.com/video/BV1We4y1o7ob)    
 领域驱动设计009--过程讲解  
 领域驱动设计010--回顾总结
 
