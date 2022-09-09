@@ -21,13 +21,17 @@ public class AES {
     private final Properties properties;
     private final String transform;
 
-    public AES(String key, String iv) {
-        this.key = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "AES");
-        this.iv = new IvParameterSpec(iv.getBytes(StandardCharsets.UTF_8));
+    public AES(String transform, byte[] keys, byte[] iv) {
+        this.key = new SecretKeySpec(keys, "AES");
+        this.iv = new IvParameterSpec(iv);
         this.properties = new Properties();
-        this.transform = "AES/CBC/PKCS5Padding";
-
+        this.transform = transform;
         AESUtils.getInstance().init(this);
+    }
+
+
+    public AES(String key, String iv) {
+        this("AES/CBC/PKCS5Padding",key.getBytes(StandardCharsets.UTF_8),iv.getBytes(StandardCharsets.UTF_8));
     }
 
 

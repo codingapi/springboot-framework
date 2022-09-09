@@ -38,12 +38,14 @@
         <commons-dbutils.version>1.7</commons-dbutils.version>
         <org.reflections.version>0.10.2</org.reflections.version>
         <perf4j.version>0.9.16</perf4j.version>
+        <bcprov-jdk15on.version>1.70</bcprov-jdk15on.version>
         <commons-crypto.version>1.1.0</commons-crypto.version>
 
     </properties>
 
 
     <dependencies>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -67,6 +69,12 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>${bcprov-jdk15on.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.reflections</groupId>
@@ -201,7 +209,6 @@
             <modules>
                 <module>springboot-starter</module>
                 <module>springboot-example</module>
-                <module>springboot-starter-data-permission</module>
                 <module>springboot-starter-security-jwt</module>
                 <module>springboot-starter-leaf</module>
             </modules>
@@ -214,7 +221,6 @@
             <modules>
                 <module>springboot-starter</module>
                 <module>springboot-example</module>
-                <module>springboot-starter-data-permission</module>
                 <module>springboot-starter-security-jwt</module>
                 <module>springboot-starter-leaf</module>
             </modules>
@@ -261,7 +267,6 @@
 
             <modules>
                 <module>springboot-starter</module>
-                <module>springboot-starter-data-permission</module>
                 <module>springboot-starter-security-jwt</module>
                 <module>springboot-starter-leaf</module>
             </modules>
