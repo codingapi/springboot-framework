@@ -30,11 +30,6 @@
         <version>${last.version}</version>
      </dependency>
      
-     <dependency>
-        <groupId>com.codingapi.springboot</groupId>
-        <artifactId>springboot-starter-data-permission</artifactId>
-        <version>${last.version}</version>
-     </dependency>
 ```
 
 ## CONTRIBUTING

@@ -144,6 +144,12 @@
             </dependency>
 
             <dependency>
+                <groupId>com.codingapi.springboot</groupId>
+                <artifactId>springboot-starter-fastshow</artifactId>
+                <version>${codingapi.framework.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>commons-dbutils</groupId>
                 <artifactId>commons-dbutils</artifactId>
                 <version>${commons-dbutils.version}</version>
@@ -211,6 +217,7 @@
                 <module>springboot-example</module>
                 <module>springboot-starter-security-jwt</module>
                 <module>springboot-starter-leaf</module>
+                <module>springboot-starter-fastshow</module>
             </modules>
         </profile>
 
@@ -223,6 +230,7 @@
                 <module>springboot-example</module>
                 <module>springboot-starter-security-jwt</module>
                 <module>springboot-starter-leaf</module>
+                <module>springboot-starter-fastshow</module>
             </modules>
 
             <build>
@@ -269,6 +277,7 @@
                 <module>springboot-starter</module>
                 <module>springboot-starter-security-jwt</module>
                 <module>springboot-starter-leaf</module>
+                <module>springboot-starter-fastshow</module>
             </modules>
 
 
