@@ -1,6 +1,6 @@
-package com.codingapi.springboot.example.handler;
+package com.codingapi.springboot.example.application.handler;
 
-import com.codingapi.springboot.example.event.DemoNameChangeEvent;
+import com.codingapi.springboot.example.domain.event.DemoNameChangeEvent;
 import com.codingapi.springboot.framework.handler.Handler;
 import com.codingapi.springboot.framework.handler.IHandler;
 import lombok.extern.slf4j.Slf4j;
