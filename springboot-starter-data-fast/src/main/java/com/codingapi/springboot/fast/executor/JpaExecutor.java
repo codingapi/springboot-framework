@@ -1,4 +1,4 @@
-package com.codingapi.springboot.fastshow.executor;
+package com.codingapi.springboot.fast.executor;
 
 import lombok.AllArgsConstructor;
 

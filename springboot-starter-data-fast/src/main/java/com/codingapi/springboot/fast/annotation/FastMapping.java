@@ -1,4 +1,4 @@
-package com.codingapi.springboot.fastshow.annotation;
+package com.codingapi.springboot.fast.annotation;
 
 
 import org.springframework.web.bind.annotation.RequestMethod;

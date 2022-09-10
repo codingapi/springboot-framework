@@ -1,8 +1,8 @@
-package com.codingapi.springboot.fastshow;
+package com.codingapi.springboot.fast;
 
-import com.codingapi.springboot.fastshow.executor.JpaExecutor;
-import com.codingapi.springboot.fastshow.mapping.MvcEndpointMapping;
-import com.codingapi.springboot.fastshow.registrar.MvcMappingRegistrar;
+import com.codingapi.springboot.fast.executor.JpaExecutor;
+import com.codingapi.springboot.fast.mapping.MvcEndpointMapping;
+import com.codingapi.springboot.fast.registrar.MvcMappingRegistrar;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +14,7 @@ import javax.persistence.EntityManager;
 
 @Configuration
 @ConditionalOnClass(WebMvcConfigurer.class)
-public class FastShowConfiguration {
+public class DataFastConfiguration {
 
 
     @Bean

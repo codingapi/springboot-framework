@@ -1,6 +1,6 @@
-package com.codingapi.springboot.fastshow.executor;
+package com.codingapi.springboot.fast.executor;
 
-import com.codingapi.springboot.fastshow.annotation.FastMapping;
+import com.codingapi.springboot.fast.annotation.FastMapping;
 import lombok.AllArgsConstructor;
 
 import java.lang.reflect.InvocationHandler;

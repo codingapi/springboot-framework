@@ -1,8 +1,8 @@
 package com.codingapi.springboot.example.insfrastructure.query;
 
 import com.codingapi.springboot.example.insfrastructure.entity.DemoEntity;
-import com.codingapi.springboot.fastshow.annotation.FastController;
-import com.codingapi.springboot.fastshow.annotation.FastMapping;
+import com.codingapi.springboot.fast.annotation.FastController;
+import com.codingapi.springboot.fast.annotation.FastMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 

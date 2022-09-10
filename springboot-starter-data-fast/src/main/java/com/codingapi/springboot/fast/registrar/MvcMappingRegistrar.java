@@ -1,9 +1,9 @@
-package com.codingapi.springboot.fastshow.registrar;
+package com.codingapi.springboot.fast.registrar;
 
-import com.codingapi.springboot.fastshow.annotation.FastMapping;
-import com.codingapi.springboot.fastshow.executor.JpaExecutor;
-import com.codingapi.springboot.fastshow.executor.MvcMethodProxy;
-import com.codingapi.springboot.fastshow.mapping.MvcEndpointMapping;
+import com.codingapi.springboot.fast.annotation.FastMapping;
+import com.codingapi.springboot.fast.executor.JpaExecutor;
+import com.codingapi.springboot.fast.executor.MvcMethodProxy;
+import com.codingapi.springboot.fast.mapping.MvcEndpointMapping;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
-package com.codingapi.springboot.fastshow.registrar;
+package com.codingapi.springboot.fast.registrar;
 
-import com.codingapi.springboot.fastshow.annotation.FastController;
+import com.codingapi.springboot.fast.annotation.FastController;
 import com.codingapi.springboot.framework.registrar.RegisterBeanDefinition;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Slf4j
 @Configuration
-public class FastShowBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar {
+public class DataFastBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar {
 
 
     @SneakyThrows

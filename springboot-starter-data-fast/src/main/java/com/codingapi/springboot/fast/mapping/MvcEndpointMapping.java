@@ -1,4 +1,4 @@
-package com.codingapi.springboot.fastshow.mapping;
+package com.codingapi.springboot.fast.mapping;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;

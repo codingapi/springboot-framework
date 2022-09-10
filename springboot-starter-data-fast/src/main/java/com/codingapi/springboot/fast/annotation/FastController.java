@@ -1,4 +1,4 @@
-package com.codingapi.springboot.fastshow.annotation;
+package com.codingapi.springboot.fast.annotation;
 
 import java.lang.annotation.*;
 
