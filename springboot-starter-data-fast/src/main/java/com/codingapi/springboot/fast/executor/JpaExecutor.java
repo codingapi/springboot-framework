@@ -13,20 +13,21 @@ public class JpaExecutor {
 
     private final EntityManager entityManager;
 
-    public Object execute(String hql,String countHql,Object[] args,Class<?> returnType){
-        JpaQuery query = new JpaQuery(hql,countHql,args,entityManager);
+    public Object execute(String hql, String countHql, Object[] args, Class<?> returnType) {
+        //only execute query sql
+        JpaQuery query = new JpaQuery(hql, countHql, args, entityManager);
 
-        if(returnType.equals(SingleResponse.class)){
+        if (returnType.equals(SingleResponse.class)) {
             return SingleResponse.of(query.getSingleResult());
         }
 
-        if(returnType.equals(MultiResponse.class)){
-            Object returnData =  query.getResultList();
-            if(Page.class.isAssignableFrom(returnData.getClass())) {
-                return MultiResponse.of((Page)returnData);
+        if (returnType.equals(MultiResponse.class)) {
+            Object returnData = query.getResultList();
+            if (Page.class.isAssignableFrom(returnData.getClass())) {
+                return MultiResponse.of((Page) returnData);
             }
 
-            if(Collection.class.isAssignableFrom(returnData.getClass())) {
+            if (Collection.class.isAssignableFrom(returnData.getClass())) {
                 return MultiResponse.of((Collection) returnData);
             }
         }

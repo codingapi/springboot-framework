@@ -14,6 +14,14 @@ public class MvcEndpointMapping {
 
     private final RequestMappingHandlerMapping handlerMapping;
 
+    /**
+     * add mvc mapping
+     *
+     * @param url           mapping url
+     * @param requestMethod request method
+     * @param handler       executor handler
+     * @param method        executor method
+     */
     public void addMapping(String url, RequestMethod requestMethod, Object handler, Method method) {
 
         RequestMappingInfo.BuilderConfiguration options = new RequestMappingInfo.BuilderConfiguration();

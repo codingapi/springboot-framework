@@ -27,13 +27,11 @@ public @interface FastMapping {
 
     /**
      * mvc request method
-     *
      */
     RequestMethod method() default RequestMethod.GET;
 
     /**
      * mvc request url
-     *
      */
     String mapping() default "";
 

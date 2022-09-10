@@ -22,13 +22,13 @@ public class OpenController {
     private final DemoEntityRepository demoEntityRepository;
 
     @GetMapping("/save")
-    public Response save(@RequestParam("name") String name){
+    public Response save(@RequestParam("name") String name) {
         executor.create(name);
         return Response.buildSuccess();
     }
 
     @GetMapping("/findAll")
-    public MultiResponse<DemoEntity> findAll(PageRequest pageRequest){
+    public MultiResponse<DemoEntity> findAll(PageRequest pageRequest) {
         return MultiResponse.of(demoEntityRepository.findAll(pageRequest));
     }
 }

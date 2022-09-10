@@ -12,20 +12,20 @@ import java.lang.annotation.Annotation;
 import java.util.*;
 
 @Slf4j
-public class RegisterBeanDefinition {
+public class RegisterBeanScanner {
 
     private final AnnotationMetadata importingClassMetadata;
     private final Class<? extends Annotation> handlerClass;
     private final List<String> scannerPackageNames;
 
-    public RegisterBeanDefinition(AnnotationMetadata importingClassMetadata, Class<? extends Annotation> handlerClass) throws ClassNotFoundException {
+    public RegisterBeanScanner(AnnotationMetadata importingClassMetadata, Class<? extends Annotation> handlerClass) throws ClassNotFoundException {
         this.importingClassMetadata = importingClassMetadata;
         this.handlerClass = handlerClass;
         this.scannerPackageNames = new ArrayList<>();
         this.loadScannerPackages();
     }
 
-    private void loadScannerPackages()throws ClassNotFoundException {
+    private void loadScannerPackages() throws ClassNotFoundException {
         final Map<String, Object> attributes = importingClassMetadata.getAnnotationAttributes(SpringBootApplication.class.getName());
         if (attributes == null) {
             return;
@@ -34,46 +34,45 @@ public class RegisterBeanDefinition {
         String defaultPackage = (Class.forName(importingClassMetadata.getClassName())).getPackage().getName();
         addPackage(defaultPackage);
 
+        String[] scanBasePackages = (String[]) attributes.get("scanBasePackages");
 
-        String[] scanBasePackages = (String[]) attributes.getOrDefault("scanBasePackages", Collections.singletonList(defaultPackage));
-
-        for (String basePackages : scanBasePackages) {
-            addPackage(basePackages);
+        if (scanBasePackages != null) {
+            for (String basePackages : scanBasePackages) {
+                addPackage(basePackages);
+            }
         }
 
         log.debug("scannerPackageNames:{}", scannerPackageNames);
     }
 
 
-    public List<BeanDefinition> findBeanDefinition(){
-        //获取包扫描
+    public List<BeanDefinition> findBeanDefinitions() {
         ClassPathScanningCandidateComponentProvider pathScanningCandidateComponentProvider = new ClassPathScanningCandidateComponentProvider(false);
-        //添加过滤 带有Handler这个注解的类
-        pathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(handlerClass,true,true));
+        pathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(handlerClass, true, true));
 
         List<BeanDefinition> candidateComponents = new ArrayList<>();
-        for(String packageName:scannerPackageNames){
+        for (String packageName : scannerPackageNames) {
             candidateComponents.addAll(pathScanningCandidateComponentProvider.findCandidateComponents(packageName));
         }
         return candidateComponents;
     }
 
-    public Set<Class<?>> findTypes(){
+    public Set<Class<?>> findTypes() {
         AnnotatedTypeScanner annotatedTypeScanner = new AnnotatedTypeScanner(handlerClass);
         return annotatedTypeScanner.findTypes(scannerPackageNames);
     }
 
 
-    private String appendPackageChildren(String packageName){
-        if(!packageName.endsWith(".*")||!packageName.endsWith(".**")){
-            packageName = String.format("%s.**",packageName);
+    private String appendPackageChildren(String packageName) {
+        if (!packageName.endsWith(".*") || !packageName.endsWith(".**")) {
+            packageName = String.format("%s.**", packageName);
         }
         return packageName;
     }
 
 
-    private void addPackage(String packageName){
-        if(packageName!=null){
+    private void addPackage(String packageName) {
+        if (packageName != null) {
             scannerPackageNames.add(appendPackageChildren(packageName));
         }
     }

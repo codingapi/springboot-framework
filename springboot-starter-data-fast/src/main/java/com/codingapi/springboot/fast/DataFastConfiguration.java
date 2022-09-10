@@ -19,19 +19,19 @@ public class DataFastConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public MvcEndpointMapping mvcEndpointMapping(RequestMappingHandlerMapping handlerMapping){
+    public MvcEndpointMapping mvcEndpointMapping(RequestMappingHandlerMapping handlerMapping) {
         return new MvcEndpointMapping(handlerMapping);
     }
 
     @Bean(initMethod = "registerMvcMapping")
     @ConditionalOnMissingBean
-    public MvcMappingRegistrar mappingRegistrar(MvcEndpointMapping mvcEndpointMapping,JpaExecutor jpaExecutor){
-        return new MvcMappingRegistrar(mvcEndpointMapping,jpaExecutor);
+    public MvcMappingRegistrar mappingRegistrar(MvcEndpointMapping mvcEndpointMapping, JpaExecutor jpaExecutor) {
+        return new MvcMappingRegistrar(mvcEndpointMapping, jpaExecutor);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public JpaExecutor jpaExecutor(EntityManager entityManager){
+    public JpaExecutor jpaExecutor(EntityManager entityManager) {
         return new JpaExecutor(entityManager);
     }
 

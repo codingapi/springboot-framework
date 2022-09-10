@@ -31,7 +31,7 @@ public class AES {
 
 
     public AES(String key, String iv) {
-        this("AES/CBC/PKCS5Padding",key.getBytes(StandardCharsets.UTF_8),iv.getBytes(StandardCharsets.UTF_8));
+        this("AES/CBC/PKCS5Padding", key.getBytes(StandardCharsets.UTF_8), iv.getBytes(StandardCharsets.UTF_8));
     }
 
 

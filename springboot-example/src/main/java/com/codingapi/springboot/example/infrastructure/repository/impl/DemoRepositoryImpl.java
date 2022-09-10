@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @AllArgsConstructor
-public class DemoRepositoryImpl  implements DemoRepository {
+public class DemoRepositoryImpl implements DemoRepository {
 
     private final DemoEntityRepository demoEntityRepository;
 

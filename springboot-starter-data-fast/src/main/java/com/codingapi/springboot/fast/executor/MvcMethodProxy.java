@@ -14,14 +14,20 @@ public class MvcMethodProxy implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args)
             throws Throwable {
-        if(method.equals(Object.class.getMethod("equals", Object.class))){
+
+        if (method.equals(Object.class.getMethod("equals", Object.class))) {
             return false;
         }
-        if(method.equals(Object.class.getMethod("hashCode"))){
+        if (method.equals(Object.class.getMethod("hashCode"))) {
             return hashCode();
         }
         FastMapping fastMapping = method.getAnnotation(FastMapping.class);
-        Class<?> returnType =  method.getReturnType();
-        return jpaExecutor.execute(fastMapping.value(),fastMapping.countQuery(),args,returnType);
+        if (fastMapping != null) {
+            Class<?> returnType = method.getReturnType();
+            return jpaExecutor.execute(fastMapping.value(), fastMapping.countQuery(), args, returnType);
+        }
+
+        // mvc mapping proxy can't execute return null.
+        return null;
     }
 }

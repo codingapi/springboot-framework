@@ -11,12 +11,13 @@ import org.springframework.stereotype.Component;
 public class DemoExecutor {
 
     private final DemoRepository demoRepository;
+
     public void swap(Demo demo1, Demo demo2) {
-        DemoChangeService demoChangeService = new DemoChangeService(demo1,demo2);
+        DemoChangeService demoChangeService = new DemoChangeService(demo1, demo2);
         demoChangeService.swap();
     }
 
-    public void create(String name){
+    public void create(String name) {
         Demo demo = new Demo(name);
         demoRepository.save(demo);
     }

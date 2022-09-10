@@ -1,7 +1,7 @@
 package com.codingapi.springboot.fast.registrar;
 
 import com.codingapi.springboot.fast.annotation.FastController;
-import com.codingapi.springboot.framework.registrar.RegisterBeanDefinition;
+import com.codingapi.springboot.framework.registrar.RegisterBeanScanner;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -19,17 +19,15 @@ public class DataFastBeanDefinitionRegistrar implements ImportBeanDefinitionRegi
     @SneakyThrows
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        RegisterBeanDefinition registerBeanDefinition = new RegisterBeanDefinition(importingClassMetadata, FastController.class);
-        Set<Class<?>> classSet = registerBeanDefinition.findTypes();
+        RegisterBeanScanner registerBeanScanner = new RegisterBeanScanner(importingClassMetadata, FastController.class);
+        Set<Class<?>> classSet = registerBeanScanner.findTypes();
 
-        //注册Bean
+        //register bean
         for (Class<?> clazz : classSet) {
-            log.info("FastController class:{}",clazz);
+            log.info("scanner @FastController class:{}", clazz);
             MvcMappingRegistrar.classSet.add(clazz);
         }
     }
-
-
 
 
 }
