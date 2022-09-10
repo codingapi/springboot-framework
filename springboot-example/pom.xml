@@ -43,7 +43,7 @@
 
         <dependency>
             <groupId>com.codingapi.springboot</groupId>
-            <artifactId>springboot-starter-fastshow</artifactId>
+            <artifactId>springboot-starter-data-fast</artifactId>
         </dependency>
 
 

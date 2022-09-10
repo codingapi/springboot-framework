@@ -145,7 +145,7 @@
 
             <dependency>
                 <groupId>com.codingapi.springboot</groupId>
-                <artifactId>springboot-starter-fastshow</artifactId>
+                <artifactId>springboot-starter-data-fast</artifactId>
                 <version>${codingapi.framework.version}</version>
             </dependency>
 
@@ -217,7 +217,7 @@
                 <module>springboot-example</module>
                 <module>springboot-starter-security-jwt</module>
                 <module>springboot-starter-leaf</module>
-                <module>springboot-starter-fastshow</module>
+                <module>springboot-starter-data-fast</module>
             </modules>
         </profile>
 
@@ -230,7 +230,7 @@
                 <module>springboot-example</module>
                 <module>springboot-starter-security-jwt</module>
                 <module>springboot-starter-leaf</module>
-                <module>springboot-starter-fastshow</module>
+                <module>springboot-starter-data-fast</module>
             </modules>
 
             <build>
@@ -277,7 +277,7 @@
                 <module>springboot-starter</module>
                 <module>springboot-starter-security-jwt</module>
                 <module>springboot-starter-leaf</module>
-                <module>springboot-starter-fastshow</module>
+                <module>springboot-starter-data-fast</module>
             </modules>
 
 
