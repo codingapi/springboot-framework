@@ -1,7 +1,6 @@
 package com.codingapi.springboot.fastshow.executor;
 
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -11,7 +10,6 @@ public class JpaExecutor {
 
     private final EntityManager entityManager;
 
-    @ResponseBody
     public Object execute(String jpaSql,Object[] args){
         Query query =  entityManager.createQuery(jpaSql);
         if(args!=null) {
