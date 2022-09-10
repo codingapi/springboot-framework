@@ -1,11 +1,14 @@
 package com.codingapi.springboot.framework.crypto;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 import java.io.IOException;
+import java.security.Security;
 
 public class AESUtils {
 
     private AESUtils() {
-
+        Security.addProvider(new BouncyCastleProvider());
     }
 
     private final static AESUtils instance = new AESUtils();
