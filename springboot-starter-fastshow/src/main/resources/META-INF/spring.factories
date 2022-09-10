@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.codingapi.springboot.fastshow.FastShowConfiguration
+com.codingapi.springboot.fastshow.FastShowConfiguration,\
+com.codingapi.springboot.fastshow.registrar.FastShowBeanDefinitionRegistrar

@@ -22,6 +22,17 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.codingapi.springboot</groupId>
+            <artifactId>springboot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

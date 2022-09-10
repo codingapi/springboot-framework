@@ -14,14 +14,14 @@ public class MvcEndpointMapping {
 
     private final RequestMappingHandlerMapping handlerMapping;
 
-    public void addGetMapping(String url, Object handler, Method method) {
+    public void addMapping(String url, RequestMethod requestMethod, Object handler, Method method) {
 
         RequestMappingInfo.BuilderConfiguration options = new RequestMappingInfo.BuilderConfiguration();
         options.setPatternParser(new PathPatternParser());
 
         RequestMappingInfo mappingInfo = RequestMappingInfo
                 .paths(url)
-                .methods(RequestMethod.GET)
+                .methods(requestMethod)
                 .produces(MediaType.APPLICATION_JSON_VALUE)
                 .options(options)
                 .build();

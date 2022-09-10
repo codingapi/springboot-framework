@@ -1,19 +1,15 @@
 package com.codingapi.springboot.framework.handler;
 
+import com.codingapi.springboot.framework.registrar.RegisterBeanDefinition;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
-import org.springframework.core.type.filter.AnnotationTypeFilter;
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Map;
+import java.util.List;
 
 /**
  * handler bean注册器
@@ -26,32 +22,18 @@ public class HandlerBeanDefinitionRegistrar implements ImportBeanDefinitionRegis
     @SneakyThrows
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        final Map<String, Object> attributes = importingClassMetadata.getAnnotationAttributes(SpringBootApplication.class.getName());
-        if (attributes == null) {
-            return;
-        }
 
-        String defaultPackage = (Class.forName(importingClassMetadata.getClassName())).getPackage().getName();
-        log.debug("defaultPackage:{}", defaultPackage);
-        //获取包扫描
-        ClassPathScanningCandidateComponentProvider pathScanningCandidateComponentProvider = new ClassPathScanningCandidateComponentProvider(false);
+        RegisterBeanDefinition registerBeanDefinition = new RegisterBeanDefinition(importingClassMetadata, Handler.class);
+        List<BeanDefinition> beanDefinitions = registerBeanDefinition.findBeanDefinition();
 
-        //添加过滤 带有Handler这个注解的类
-        pathScanningCandidateComponentProvider.addIncludeFilter(new AnnotationTypeFilter(Handler.class));
-
-        LinkedHashSet<BeanDefinition> candidateComponents = new LinkedHashSet<>();
-        String[] scanBasePackages = (String[]) attributes.getOrDefault("scanBasePackages", Collections.singletonList(defaultPackage));
-
-        for (String basePackages : scanBasePackages) {
-            candidateComponents.addAll(pathScanningCandidateComponentProvider.findCandidateComponents(basePackages));
-        }
-        log.debug("candidateComponents:{}", candidateComponents);
+        log.debug("candidateComponents:{}", beanDefinitions);
         //注册Bean
-        for (BeanDefinition candidateComponent : candidateComponents) {
+        for (BeanDefinition candidateComponent : beanDefinitions) {
             String beanName = candidateComponent.getBeanClassName();
             registry.registerBeanDefinition(beanName, candidateComponent);
         }
     }
+
 
 
 }
