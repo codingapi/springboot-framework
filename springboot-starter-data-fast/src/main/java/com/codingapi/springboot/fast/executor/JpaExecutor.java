@@ -1,22 +1,36 @@
 package com.codingapi.springboot.fast.executor;
 
+import com.codingapi.springboot.framework.dto.response.MultiResponse;
+import com.codingapi.springboot.framework.dto.response.SingleResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import java.util.Collection;
 
 @AllArgsConstructor
 public class JpaExecutor {
 
     private final EntityManager entityManager;
 
-    public Object execute(String jpaSql,Object[] args){
-        Query query =  entityManager.createQuery(jpaSql);
-        if(args!=null) {
-            for (int i = 0; i < args.length; i++) {
-                query.setParameter(i+1,args[i]);
+    public Object execute(String hql,String countHql,Object[] args,Class<?> returnType){
+        JpaQuery query = new JpaQuery(hql,countHql,args,entityManager);
+
+        if(returnType.equals(SingleResponse.class)){
+            return SingleResponse.of(query.getSingleResult());
+        }
+
+        if(returnType.equals(MultiResponse.class)){
+            Object returnData =  query.getResultList();
+            if(Page.class.isAssignableFrom(returnData.getClass())) {
+                return MultiResponse.of((Page)returnData);
+            }
+
+            if(Collection.class.isAssignableFrom(returnData.getClass())) {
+                return MultiResponse.of((Collection) returnData);
             }
         }
+
         return query.getResultList();
     }
 }

@@ -21,6 +21,7 @@ public class MvcMethodProxy implements InvocationHandler {
             return hashCode();
         }
         FastMapping fastMapping = method.getAnnotation(FastMapping.class);
-        return jpaExecutor.execute(fastMapping.hql(),args);
+        Class<?> returnType =  method.getReturnType();
+        return jpaExecutor.execute(fastMapping.hql(),fastMapping.countHql(),args,returnType);
     }
 }

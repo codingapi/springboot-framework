@@ -1,12 +1,15 @@
 package com.codingapi.springboot.fast.registrar;
 
 import com.codingapi.springboot.fast.annotation.FastMapping;
+import com.codingapi.springboot.fast.exception.FastMappingErrorException;
 import com.codingapi.springboot.fast.executor.JpaExecutor;
 import com.codingapi.springboot.fast.executor.MvcMethodProxy;
 import com.codingapi.springboot.fast.mapping.MvcEndpointMapping;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -26,13 +29,25 @@ public class MvcMappingRegistrar {
            Method[] methods = clazz.getDeclaredMethods();
            for(Method method:methods){
                FastMapping fastMapping =  method.getAnnotation(FastMapping.class);
-               if(fastMapping!=null) {
+               if(fastMapping!=null&&isVerify(fastMapping,method)) {
                    MvcMethodProxy handler = new MvcMethodProxy(jpaExecutor);
                    Object methodProxy =  Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, handler);
                    mvcEndpointMapping.addMapping(fastMapping.mapping(), fastMapping.method(), methodProxy, method);
                }
            }
        }
+    }
+
+    private boolean isVerify(FastMapping fastMapping,Method method) throws FastMappingErrorException {
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        for(Class<?> parameter:parameterTypes){
+            if(Pageable.class.isAssignableFrom(parameter)){
+                if(!StringUtils.hasText(fastMapping.countHql())){
+                    throw new FastMappingErrorException(String.format("fast mapping %s missing countHql .",fastMapping.mapping()));
+                }
+            }
+        }
+        return true;
     }
 
 }

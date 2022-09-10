@@ -16,6 +16,9 @@ public @interface FastMapping {
 
     String hql() default "";
 
+
+    String countHql() default "";
+
     RequestMethod method() default RequestMethod.GET;
 
 

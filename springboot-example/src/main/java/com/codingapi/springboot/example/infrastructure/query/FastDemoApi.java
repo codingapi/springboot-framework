@@ -1,17 +1,19 @@
 package com.codingapi.springboot.example.infrastructure.query;
 
+import com.codingapi.springboot.example.infrastructure.dto.DemoDTO;
 import com.codingapi.springboot.example.infrastructure.entity.DemoEntity;
 import com.codingapi.springboot.fast.annotation.FastController;
 import com.codingapi.springboot.fast.annotation.FastMapping;
+import com.codingapi.springboot.framework.dto.response.MultiResponse;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 @FastController
 public interface FastDemoApi {
 
-    @FastMapping(method = RequestMethod.GET,mapping = "/open/fast/demo/findAll",hql = "select d from DemoEntity d where name = ?1")
-    List<DemoEntity> findAll(@RequestParam("name") String name);
+    @FastMapping(method = RequestMethod.GET,
+            mapping = "/open/fast/demo/findAll",
+            hql = "select d from DemoEntity d where name = :name",
+            countHql = "select count(d) from DemoEntity d where name = :name")
+    MultiResponse<DemoEntity> findAll(DemoDTO.DemoQuery query);
 
 }
