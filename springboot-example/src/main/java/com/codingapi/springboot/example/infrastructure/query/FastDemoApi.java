@@ -10,10 +10,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FastController
 public interface FastDemoApi {
 
-    @FastMapping(method = RequestMethod.GET,
+    @FastMapping(
+            method = RequestMethod.GET,
             mapping = "/open/demo/findByName",
-            hql = "select d from DemoEntity d where name = :name",
-            countHql = "select count(d) from DemoEntity d where name = :name")
+            value = "select d from DemoEntity d where name = :name",
+            countQuery = "select count(d) from DemoEntity d where name = :name")
     MultiResponse<DemoEntity> findByName(DemoDTO.DemoQuery query);
 
 }

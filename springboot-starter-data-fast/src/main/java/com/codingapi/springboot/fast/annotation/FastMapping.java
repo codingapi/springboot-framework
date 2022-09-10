@@ -14,14 +14,27 @@ import java.lang.annotation.Target;
 @ResponseBody
 public @interface FastMapping {
 
-    String hql() default "";
+    /**
+     * execute jpa hql
+     */
+    String value() default "";
 
 
-    String countHql() default "";
+    /**
+     * execute jpa count hql
+     */
+    String countQuery() default "";
 
+    /**
+     * mvc request method
+     *
+     */
     RequestMethod method() default RequestMethod.GET;
 
-
+    /**
+     * mvc request url
+     *
+     */
     String mapping() default "";
 
 }
