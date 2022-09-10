@@ -27,8 +27,8 @@ public class OpenController {
         return Response.buildSuccess();
     }
 
-    @GetMapping("/list")
-    public MultiResponse<DemoEntity> list(PageRequest pageRequest){
+    @GetMapping("/findAll")
+    public MultiResponse<DemoEntity> findAll(PageRequest pageRequest){
         return MultiResponse.of(demoEntityRepository.findAll(pageRequest));
     }
 }
