@@ -1,13 +1,13 @@
-package com.codingapi.springboot.generator;
+package com.codingapi.springboot.generator.service;
 
 import com.codingapi.springboot.generator.dao.IdKeyDao;
 import com.codingapi.springboot.generator.domain.IdKey;
 
-public class IdGenerateContext {
+public class IdGenerateService {
 
     private final IdKeyDao keyDao;
 
-    public IdGenerateContext(IdKeyDao keyDao) {
+    public IdGenerateService(IdKeyDao keyDao) {
         this.keyDao = keyDao;
     }
 

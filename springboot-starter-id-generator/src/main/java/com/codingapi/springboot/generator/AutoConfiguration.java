@@ -20,7 +20,7 @@ public class AutoConfiguration {
     @ConditionalOnMissingBean
     public IdKeyDao idKeyDao(GeneratorProperties generatorProperties) {
         IdKeyDao keyDao = new IdKeyDao(generatorProperties.getJdbcUrl());
-        GeneratorContext.getInstance().init(keyDao);
+        IdGeneratorContext.getInstance().init(keyDao);
         return keyDao;
     }
 
