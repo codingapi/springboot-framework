@@ -7,6 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class DataFastApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DataFastApplication.class,args);
+        SpringApplication.run(DataFastApplication.class, args);
     }
 }

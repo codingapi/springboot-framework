@@ -24,11 +24,11 @@ public class DataFastApplicationTest {
 
     @Test
     void findById() throws Exception {
-        mockMvc.perform(get("/demo/getById").param("id","1").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+        mockMvc.perform(get("/demo/getById").param("id", "1").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     }
 
     @Test
     void findPage() throws Exception {
-        mockMvc.perform(get("/demo/findPage").param("pageSize","20").param("current","1").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+        mockMvc.perform(get("/demo/findPage").param("pageSize", "20").param("current", "1").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     }
 }

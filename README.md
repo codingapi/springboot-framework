@@ -9,11 +9,11 @@
 
 本框架基于springboot为提供领域驱动设计与事件风暴开发落地，提供的范式开源框架。
 
-## Project Modules Description  | 项目模块介绍
+## Project Modules Description | 项目模块介绍
 
-* springboot-example | 示例项目 
+* springboot-example | 示例项目
 * springboot-starter | Springboot领域驱动框架
-* springboot-starter-data-fast | 快速数据呈现框架 
+* springboot-starter-data-fast | 快速数据呈现框架
 * springboot-starter-id-generator | Id自增策略框架
 * springboot-starter-security-jwt | security&jwt权限框架
 
@@ -132,5 +132,5 @@ For further reference, please consider the following sections:
 * [spring-security-without-the-websecurityconfigureradapter](https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter)
 * [springboot-security&jwt](https://blog.csdn.net/u014553029/article/details/112759382)
 * [Meituan-Dianping/Leaf](https://github.com/Meituan-Dianping/Leaf)
-* [SpringBoot Test](https://spring.io/guides/gs/testing-web/)  
+* [SpringBoot Test](https://spring.io/guides/gs/testing-web/)
 * [SpringBoot Web Test](https://spring.io/guides/gs/testing-web/)  

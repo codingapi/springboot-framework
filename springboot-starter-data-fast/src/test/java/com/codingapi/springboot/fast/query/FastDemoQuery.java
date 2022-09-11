@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FastController
 public interface FastDemoQuery {
 
-    @FastMapping(value = "select d from Demo d",mapping = "/demo/findAll")
+    @FastMapping(value = "select d from Demo d", mapping = "/demo/findAll")
     MultiResponse<Demo> findAll();
 
-    @FastMapping(value = "select d from Demo d where d.id = ?1",mapping = "/demo/getById")
+    @FastMapping(value = "select d from Demo d where d.id = ?1", mapping = "/demo/getById")
     SingleResponse<Demo> getById(@RequestParam("id") int id);
 
-    @FastMapping(value = "select d from Demo d",countQuery = "select count(d) from Demo d",mapping = "/demo/findPage")
+    @FastMapping(value = "select d from Demo d", countQuery = "select count(d) from Demo d", mapping = "/demo/findPage")
     MultiResponse<Demo> findPage(PageRequest pageRequest);
 
 }

@@ -20,7 +20,7 @@ public class JpaExecutor {
 
         if (returnType.equals(SingleResponse.class)) {
             List list = (List) query.getResultList();
-            return list==null&&list.size()>0?SingleResponse.of(list.get(0)):SingleResponse.empty();
+            return list == null && list.size() > 0 ? SingleResponse.of(list.get(0)) : SingleResponse.empty();
         }
 
         if (returnType.equals(MultiResponse.class)) {

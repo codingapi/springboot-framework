@@ -8,7 +8,7 @@ public class SecurityJwtApplicationTest {
 
 
     @Test
-    void test(){
+    void test() {
 
     }
 
