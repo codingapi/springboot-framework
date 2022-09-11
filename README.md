@@ -9,6 +9,18 @@
 
 本框架基于springboot为提供领域驱动设计与事件风暴开发落地，提供的范式开源框架。
 
+## Project Modules Description  | 项目模块介绍
+
+* springboot-example | 示例项目 
+* springboot-starter | Springboot领域驱动框架
+* springboot-starter-data-fast | 快速数据呈现框架 
+* springboot-starter-id-generator | Id自增策略框架
+* springboot-starter-security-jwt | security&jwt权限框架
+
+## SpringBoot DDD Architecture | SpringBoot DDD 框架图
+
+![](./docs/img/ddd_architecture.png)
+
 ## maven install
 
 ```
@@ -51,11 +63,11 @@ If you find something incorrect or missing, please leave comments / suggestions.
 
 ## example
 
-见springboot-example 完善中...
+见 [springboot-ddd-examples](https://github.com/1991wangliang/springboot-ddd-examples) 完善中...
 
-## youtube|哔哩哔哩
+## YouTube|哔哩哔哩
 
-欢迎订阅我的youtube账号 [codingapi](https://www.youtube.com/channel/UCdAsCAxh453D7MfLfYWj0Eg),
+欢迎订阅我的YouTube账号 [codingapi](https://www.youtube.com/channel/UCdAsCAxh453D7MfLfYWj0Eg),
 哔哩哔哩账号[vip_lorne](https://space.bilibili.com/386239614) 带你从0到1落地springboot与领域驱动设计
 
 领域驱动设计001--了解为什么采用领域驱动设计开发 [YouTube](https://www.youtube.com/watch?v=09uP_sMvhY8) [哔哩哔哩](https://www.bilibili.com/video/BV1WB4y157kv)     
@@ -120,3 +132,5 @@ For further reference, please consider the following sections:
 * [spring-security-without-the-websecurityconfigureradapter](https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter)
 * [springboot-security&jwt](https://blog.csdn.net/u014553029/article/details/112759382)
 * [Meituan-Dianping/Leaf](https://github.com/Meituan-Dianping/Leaf)
+* [SpringBoot Test](https://spring.io/guides/gs/testing-web/)  
+* [SpringBoot Web Test](https://spring.io/guides/gs/testing-web/)  
