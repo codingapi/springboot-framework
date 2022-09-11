@@ -145,6 +145,12 @@
 
             <dependency>
                 <groupId>com.codingapi.springboot</groupId>
+                <artifactId>springboot-starter-id-generator</artifactId>
+                <version>${codingapi.framework.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.codingapi.springboot</groupId>
                 <artifactId>springboot-starter-data-fast</artifactId>
                 <version>${codingapi.framework.version}</version>
             </dependency>
@@ -218,6 +224,7 @@
                 <module>springboot-starter-security-jwt</module>
                 <module>springboot-starter-leaf</module>
                 <module>springboot-starter-data-fast</module>
+                <module>springboot-starter-id-generator</module>
             </modules>
         </profile>
 
@@ -231,6 +238,7 @@
                 <module>springboot-starter-security-jwt</module>
                 <module>springboot-starter-leaf</module>
                 <module>springboot-starter-data-fast</module>
+                <module>springboot-starter-id-generator</module>
             </modules>
 
             <build>
@@ -278,6 +286,7 @@
                 <module>springboot-starter-security-jwt</module>
                 <module>springboot-starter-leaf</module>
                 <module>springboot-starter-data-fast</module>
+                <module>springboot-starter-id-generator</module>
             </modules>
 
 
