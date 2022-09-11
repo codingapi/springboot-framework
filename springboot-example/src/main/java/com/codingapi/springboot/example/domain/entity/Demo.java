@@ -2,14 +2,14 @@ package com.codingapi.springboot.example.domain.entity;
 
 import com.codingapi.springboot.example.domain.event.DemoNameChangeEvent;
 import com.codingapi.springboot.framework.event.EventPusher;
-import com.codingapi.springboot.leaf.LeafIdGenerate;
+import com.codingapi.springboot.generator.IdGenerate;
 import lombok.Getter;
 
 /**
  * @author lorne
  * @since 1.0.0
  */
-public class Demo implements LeafIdGenerate {
+public class Demo implements IdGenerate {
 
     @Getter
     private Integer id;

@@ -6,8 +6,8 @@ import com.codingapi.springboot.example.infrastructure.jap.repository.DemoEntity
 import com.codingapi.springboot.framework.dto.request.PageRequest;
 import com.codingapi.springboot.framework.dto.response.MultiResponse;
 import com.codingapi.springboot.framework.dto.response.Response;
-import com.codingapi.springboot.generator.dao.IdGeneratorDao;
-import com.codingapi.springboot.generator.domain.IdGenerator;
+import com.codingapi.springboot.generator.dao.IdKeyDao;
+import com.codingapi.springboot.generator.domain.IdKey;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -27,7 +26,7 @@ public class OpenController {
 
     private final DemoEntityRepository demoEntityRepository;
 
-    private final IdGeneratorDao idGeneratorDao;
+    private final IdKeyDao idKeyDao;
 
     @GetMapping("/save")
     public Response save(@RequestParam("name") String name) {
@@ -43,17 +42,14 @@ public class OpenController {
 
 
     @GetMapping("/test-list")
-    public List<IdGenerator> test1() throws SQLException{
-        return idGeneratorDao.findAll();
+    public List<IdKey> test1() throws SQLException{
+        return idKeyDao.findAll();
     }
 
     @GetMapping("/test-save")
     public Response test2() throws SQLException {
-        IdGenerator generator = new IdGenerator();
-        generator.setKey("xxxx");
-        generator.setId(1L);
-        generator.setUpdateTime(new Date());
-        idGeneratorDao.save(generator);
+        IdKey generator = new IdKey("xxx");
+        idKeyDao.save(generator);
         return Response.buildSuccess();
     }
 

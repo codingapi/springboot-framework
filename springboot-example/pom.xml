@@ -38,11 +38,6 @@
 
         <dependency>
             <groupId>com.codingapi.springboot</groupId>
-            <artifactId>springboot-starter-leaf</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.codingapi.springboot</groupId>
             <artifactId>springboot-starter-data-fast</artifactId>
         </dependency>
 

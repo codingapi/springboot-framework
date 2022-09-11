@@ -12,18 +12,28 @@
 ## maven install
 
 ```
+    <!-- Springboot领域驱动框架 -->
     <dependency>
         <groupId>com.codingapi.springboot</groupId>
         <artifactId>springboot-starter</artifactId>
         <version>${last.version}</version>
     </dependency>
     
+     <!-- 快速数据呈现框架 -->
      <dependency>
         <groupId>com.codingapi.springboot</groupId>
-        <artifactId>springboot-starter-leaf</artifactId>
+        <artifactId>springboot-starter-data-fast</artifactId>
         <version>${last.version}</version>
     </dependency>
     
+     <!-- Id自增策略框架 -->
+    <dependency>
+        <groupId>com.codingapi.springboot</groupId>
+        <artifactId>springboot-starter-id-generator</artifactId>
+        <version>${last.version}</version>
+    </dependency>
+    
+     <!-- security&jwt权限框架 -->
      <dependency>
         <groupId>com.codingapi.springboot</groupId>
         <artifactId>springboot-starter-security-jwt</artifactId>
