@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 
 import javax.persistence.EntityManager;
 import java.util.Collection;
+import java.util.List;
 
 @AllArgsConstructor
 public class JpaExecutor {
@@ -18,7 +19,8 @@ public class JpaExecutor {
         JpaQuery query = new JpaQuery(hql, countHql, args, entityManager);
 
         if (returnType.equals(SingleResponse.class)) {
-            return SingleResponse.of(query.getSingleResult());
+            List list = (List) query.getResultList();
+            return list==null&&list.size()>0?SingleResponse.of(list.get(0)):SingleResponse.empty();
         }
 
         if (returnType.equals(MultiResponse.class)) {
