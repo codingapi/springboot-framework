@@ -2,9 +2,8 @@ package com.codingapi.springboot.security.dto.request;
 
 public class LoginRequestContext {
 
-    private final ThreadLocal<LoginRequest> threadLocal = new ThreadLocal<>();
-
     private static LoginRequestContext context = new LoginRequestContext();
+    private final ThreadLocal<LoginRequest> threadLocal = new ThreadLocal<>();
 
     private LoginRequestContext() {
 

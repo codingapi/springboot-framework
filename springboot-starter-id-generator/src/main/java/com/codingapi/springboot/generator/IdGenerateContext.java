@@ -11,12 +11,12 @@ public class IdGenerateContext {
         this.keyDao = keyDao;
     }
 
-    public synchronized long generateId(Class<?> clazz)  {
-        IdKey idKey =  keyDao.getByKey(clazz.getName());
-        if(idKey==null){
+    public synchronized long generateId(Class<?> clazz) {
+        IdKey idKey = keyDao.getByKey(clazz.getName());
+        if (idKey == null) {
             idKey = new IdKey(clazz.getName());
             keyDao.save(idKey);
-        }else{
+        } else {
             keyDao.updateMaxId(idKey);
         }
         return idKey.getId();

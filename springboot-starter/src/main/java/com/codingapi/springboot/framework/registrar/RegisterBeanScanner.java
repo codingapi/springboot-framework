@@ -9,7 +9,10 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.data.util.AnnotatedTypeScanner;
 
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 public class RegisterBeanScanner {

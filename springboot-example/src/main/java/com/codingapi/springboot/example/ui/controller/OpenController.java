@@ -40,9 +40,8 @@ public class OpenController {
     }
 
 
-
     @GetMapping("/test-list")
-    public List<IdKey> test1() throws SQLException{
+    public List<IdKey> test1() throws SQLException {
         return idKeyDao.findAll();
     }
 

@@ -5,6 +5,12 @@ import org.springframework.context.ApplicationContext;
 class DomainEventContext {
 
     private static DomainEventContext instance;
+    private ApplicationContext context;
+
+
+    private DomainEventContext() {
+
+    }
 
     public static DomainEventContext getInstance() {
         if (instance == null) {
@@ -16,14 +22,6 @@ class DomainEventContext {
         }
         return instance;
     }
-
-
-    private DomainEventContext() {
-
-    }
-
-    private ApplicationContext context;
-
 
     private void push(IEvent event, boolean sync) {
         if (context != null) {

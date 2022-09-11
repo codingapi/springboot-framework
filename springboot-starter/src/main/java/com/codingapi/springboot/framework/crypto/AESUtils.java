@@ -7,18 +7,16 @@ import java.security.Security;
 
 public class AESUtils {
 
+    private final static AESUtils instance = new AESUtils();
+    private AES aes;
+
     private AESUtils() {
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    private final static AESUtils instance = new AESUtils();
-
     public static AESUtils getInstance() {
         return instance;
     }
-
-
-    private AES aes;
 
     void init(AES aes) {
         this.aes = aes;

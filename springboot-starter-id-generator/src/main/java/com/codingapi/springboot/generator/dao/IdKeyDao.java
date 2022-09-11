@@ -48,17 +48,15 @@ public class IdKeyDao {
     }
 
 
-
     @SneakyThrows
     public IdKey getByKey(String key) {
         return dbHelper.query(new DbHelper.IQuery<List<IdKey>>() {
             @Override
             public List<IdKey> query(Connection connection, QueryRunner queryRunner) throws SQLException {
-                return queryRunner.query(connection, "SELECT * FROM ID_GENERATOR WHERE TAG = ?", handler,key);
+                return queryRunner.query(connection, "SELECT * FROM ID_GENERATOR WHERE TAG = ?", handler, key);
             }
         }).stream().findFirst().orElse(null);
     }
-
 
 
     @SneakyThrows

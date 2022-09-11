@@ -4,7 +4,6 @@ import com.codingapi.springboot.framework.domain.Demo;
 import com.codingapi.springboot.framework.event.SpringEventConfiguration;
 import com.codingapi.springboot.framework.handler.DemoConfiguration;
 import com.codingapi.springboot.framework.handler.HandlerBeanDefinitionRegistrar;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 

@@ -12,11 +12,12 @@ import java.util.List;
 class ApplicationHandlerUtils implements IHandler<IEvent> {
 
     private static ApplicationHandlerUtils instance;
+    private List<IHandler<IEvent>> handlers;
+
 
     private ApplicationHandlerUtils() {
         this.handlers = new ArrayList<>();
     }
-
 
     public static ApplicationHandlerUtils getInstance() {
         if (instance == null) {
@@ -28,9 +29,6 @@ class ApplicationHandlerUtils implements IHandler<IEvent> {
         }
         return instance;
     }
-
-
-    private List<IHandler<IEvent>> handlers;
 
     public void addHandlers(List<IHandler> handlers) {
         if (handlers != null) {

@@ -16,13 +16,6 @@ public class MultiResponse<T> extends Response {
 
     private Content<T> data;
 
-    @Setter
-    @Getter
-    public static class Content<T> {
-        private long total;
-        private Collection<T> list;
-    }
-
     public MultiResponse() {
         this.data = new Content<>();
     }
@@ -35,18 +28,15 @@ public class MultiResponse<T> extends Response {
         return multiResponse;
     }
 
-
     public static <T> MultiResponse<T> of(Page<T> page) {
         return of(page.getContent(), page.getTotalElements());
     }
-
 
     public static <T> MultiResponse<T> empty() {
         MultiResponse<T> multiResponse = new MultiResponse<>();
         multiResponse.setSuccess(true);
         return multiResponse;
     }
-
 
     public static <T> MultiResponse<T> of(Collection<T> data) {
         MultiResponse<T> multiResponse = new MultiResponse<>();
@@ -58,6 +48,13 @@ public class MultiResponse<T> extends Response {
         multiResponse.getData().setTotal(total);
         multiResponse.getData().setList(data);
         return multiResponse;
+    }
+
+    @Setter
+    @Getter
+    public static class Content<T> {
+        private long total;
+        private Collection<T> list;
     }
 
 

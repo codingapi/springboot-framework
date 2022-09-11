@@ -18,8 +18,8 @@ public class AutoConfiguration {
 
     @Bean(initMethod = "init")
     @ConditionalOnMissingBean
-    public IdKeyDao idKeyDao(GeneratorProperties generatorProperties){
-        IdKeyDao keyDao =  new IdKeyDao(generatorProperties.getJdbcUrl());
+    public IdKeyDao idKeyDao(GeneratorProperties generatorProperties) {
+        IdKeyDao keyDao = new IdKeyDao(generatorProperties.getJdbcUrl());
         GeneratorContext.getInstance().init(keyDao);
         return keyDao;
     }

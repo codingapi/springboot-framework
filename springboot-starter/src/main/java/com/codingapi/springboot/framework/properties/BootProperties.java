@@ -17,16 +17,16 @@ public class BootProperties {
     private String aseIv = "ACXFGH@EDS#XCZas";
 
 
+    public BootProperties() {
+        System.setProperty(PageRequest.CURRENT_FIX_VALUE, String.valueOf(pageCurrentFixValue));
+    }
+
     public int getPageCurrentFixValue() {
         return pageCurrentFixValue;
     }
 
     public void setPageCurrentFixValue(int pageCurrentFixValue) {
         this.pageCurrentFixValue = pageCurrentFixValue;
-        System.setProperty(PageRequest.CURRENT_FIX_VALUE, String.valueOf(pageCurrentFixValue));
-    }
-
-    public BootProperties() {
         System.setProperty(PageRequest.CURRENT_FIX_VALUE, String.valueOf(pageCurrentFixValue));
     }
 }

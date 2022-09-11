@@ -4,10 +4,11 @@ import com.codingapi.springboot.generator.dao.IdKeyDao;
 
 public class GeneratorContext {
 
+    private static GeneratorContext instance;
+    private IdGenerateContext idGenerateContext;
+
     private GeneratorContext() {
     }
-
-    private static GeneratorContext instance;
 
     public static GeneratorContext getInstance() {
         if (instance == null) {
@@ -20,13 +21,11 @@ public class GeneratorContext {
         return instance;
     }
 
-    private IdGenerateContext idGenerateContext;
-
     long generateId(Class<?> clazz) {
         return idGenerateContext.generateId(clazz);
     }
 
-    void init(IdKeyDao idKeyDao){
+    void init(IdKeyDao idKeyDao) {
         idGenerateContext = new IdGenerateContext(idKeyDao);
     }
 

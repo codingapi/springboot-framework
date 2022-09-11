@@ -4,6 +4,11 @@ package com.codingapi.springboot.framework.exception;
 class MessageContext {
 
     private static MessageContext context;
+    private LocaleMessage localeMessage;
+
+    private MessageContext() {
+
+    }
 
     public static MessageContext getInstance() {
         if (context == null) {
@@ -12,12 +17,6 @@ class MessageContext {
             }
         }
         return context;
-    }
-
-    private LocaleMessage localeMessage;
-
-    private MessageContext() {
-
     }
 
     void setExceptionLocaleMessage(LocaleMessage localeMessage) {

@@ -7,11 +7,9 @@ import java.util.Optional;
 
 public class PageRequest extends org.springframework.data.domain.PageRequest {
 
+    public final static String CURRENT_FIX_VALUE = "CURRENT_FIX_VALUE";
     private int current;
     private int pageSize;
-
-    public final static String CURRENT_FIX_VALUE = "CURRENT_FIX_VALUE";
-
     private org.springframework.data.domain.PageRequest pageRequest;
 
     public PageRequest(int current, int pageSize, Sort sort) {
@@ -23,6 +21,26 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
 
     public PageRequest() {
         this(0, 20, Sort.unsorted());
+    }
+
+    public static org.springframework.data.domain.PageRequest of(int page, int size) {
+        return org.springframework.data.domain.PageRequest.of(page, size);
+    }
+
+    public static org.springframework.data.domain.PageRequest of(int page, int size, Sort sort) {
+        return org.springframework.data.domain.PageRequest.of(page, size, sort);
+    }
+
+    public static org.springframework.data.domain.PageRequest of(int page, int size, Sort.Direction direction, String... properties) {
+        return org.springframework.data.domain.PageRequest.of(page, size, direction, properties);
+    }
+
+    public static org.springframework.data.domain.PageRequest ofSize(int pageSize) {
+        return org.springframework.data.domain.PageRequest.ofSize(pageSize);
+    }
+
+    public static Pageable unpaged() {
+        return Pageable.unpaged();
     }
 
     private void initPage() {
@@ -51,22 +69,6 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
         this.initPage();
-    }
-
-    public static org.springframework.data.domain.PageRequest of(int page, int size) {
-        return org.springframework.data.domain.PageRequest.of(page, size);
-    }
-
-    public static org.springframework.data.domain.PageRequest of(int page, int size, Sort sort) {
-        return org.springframework.data.domain.PageRequest.of(page, size, sort);
-    }
-
-    public static org.springframework.data.domain.PageRequest of(int page, int size, Sort.Direction direction, String... properties) {
-        return org.springframework.data.domain.PageRequest.of(page, size, direction, properties);
-    }
-
-    public static org.springframework.data.domain.PageRequest ofSize(int pageSize) {
-        return org.springframework.data.domain.PageRequest.ofSize(pageSize);
     }
 
     @Override
@@ -137,10 +139,6 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
     @Override
     public Pageable previousOrFirst() {
         return pageRequest.previousOrFirst();
-    }
-
-    public static Pageable unpaged() {
-        return Pageable.unpaged();
     }
 
     @Override
