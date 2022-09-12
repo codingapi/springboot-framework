@@ -9,6 +9,7 @@ class FrameworkApplicationTests {
 
     @Test
     void contextLoads() {
+
     }
 
 }

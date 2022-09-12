@@ -4,6 +4,7 @@ import com.codingapi.springboot.framework.event.DemoChangeEvent;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Handler
 public class DemoChangeLogHandler implements IHandler<DemoChangeEvent> {
 
     @Override
