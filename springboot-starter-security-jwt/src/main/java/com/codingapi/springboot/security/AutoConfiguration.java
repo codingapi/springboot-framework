@@ -1,10 +1,8 @@
 package com.codingapi.springboot.security;
 
 import com.codingapi.springboot.security.configurer.HttpSecurityConfigurer;
-import com.codingapi.springboot.security.filter.MyAccessDeniedHandler;
-import com.codingapi.springboot.security.filter.MyLogoutHandler;
-import com.codingapi.springboot.security.filter.MyLogoutSuccessHandler;
-import com.codingapi.springboot.security.filter.MyUnAuthenticationEntryPoint;
+import com.codingapi.springboot.security.dto.request.LoginRequest;
+import com.codingapi.springboot.security.filter.*;
 import com.codingapi.springboot.security.handler.ServletExceptionHandler;
 import com.codingapi.springboot.security.jwt.Jwt;
 import com.codingapi.springboot.security.properties.SecurityJwtProperties;
@@ -26,6 +24,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableMethodSecurity
@@ -62,15 +63,25 @@ public class AutoConfiguration {
         return new ServletExceptionHandler();
     }
 
+    @Bean
+    @ConditionalOnMissingBean
+    public SecurityLoginHandler securityLoginHandler(){
+        return new SecurityLoginHandler() {
+            @Override
+            public void preHandle(HttpServletRequest request, HttpServletResponse response, LoginRequest handler) throws Exception {
+
+            }
+        };
+    }
 
     @Bean
     @ConditionalOnMissingBean
-    public SecurityFilterChain filterChain(HttpSecurity http, Jwt jwt, SecurityJwtProperties properties) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, Jwt jwt,SecurityLoginHandler loginHandler, SecurityJwtProperties properties) throws Exception {
         //before add addCorsMappings to enable cors.
         http.cors();
 
         http.csrf().disable();
-        http.apply(new HttpSecurityConfigurer(jwt, properties));
+        http.apply(new HttpSecurityConfigurer(jwt,loginHandler,properties));
         http
                 .exceptionHandling()
                 .authenticationEntryPoint(new MyUnAuthenticationEntryPoint())

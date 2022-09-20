@@ -34,9 +34,12 @@ public class MyLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final Jwt jwt;
 
-    public MyLoginFilter(AuthenticationManager authenticationManager, Jwt jwt, SecurityJwtProperties securityJwtProperties) {
+    private final SecurityLoginHandler loginHandler;
+
+    public MyLoginFilter(AuthenticationManager authenticationManager, Jwt jwt, SecurityLoginHandler loginHandler, SecurityJwtProperties securityJwtProperties) {
         super(authenticationManager);
         this.jwt = jwt;
+        this.loginHandler = loginHandler;
         this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(securityJwtProperties.getLoginProcessingUrl(), "POST"));
     }
 
@@ -52,6 +55,11 @@ public class MyLoginFilter extends UsernamePasswordAuthenticationFilter {
         LoginRequest login = JSONObject.parseObject(content, LoginRequest.class);
         if (login == null || login.isEmpty()) {
             throw new AuthenticationServiceException("request stream read was null.");
+        }
+        try {
+            loginHandler.preHandle(request,response,login);
+        } catch (Exception e) {
+            throw new AuthenticationServiceException(e.getLocalizedMessage());
         }
         LoginRequestContext.getInstance().set(login);
         return getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword()));

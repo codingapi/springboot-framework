@@ -35,11 +35,11 @@ public class AES {
     }
 
 
-    public String encodeToBase64(String input) throws IOException {
+    public String encode(String input) throws IOException {
         return Base64Utils.encodeToString(encode(input.getBytes(StandardCharsets.UTF_8)));
     }
 
-    public String decodeToBase64(String input) throws IOException {
+    public String decode(String input) throws IOException {
         return new String(decode(Base64Utils.decodeFromString(input)), StandardCharsets.UTF_8);
     }
 

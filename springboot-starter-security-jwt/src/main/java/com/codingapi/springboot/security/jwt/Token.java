@@ -31,7 +31,7 @@ public class Token implements JsonSerializable {
 
     public Token(String username, String certificate, List<String> authorities, int expireValue, int remindValue) throws IOException {
         this.username = username;
-        this.certificate = AESUtils.getInstance().encodeToBase64(certificate);
+        this.certificate = AESUtils.getInstance().encode(certificate);
         this.authorities = authorities;
         this.expireTime = System.currentTimeMillis() + expireValue;
         this.remindTime = System.currentTimeMillis() + remindValue;
@@ -55,7 +55,7 @@ public class Token implements JsonSerializable {
 
     @Transient
     public String getDecodePassword() throws IOException {
-        return AESUtils.getInstance().decodeToBase64(certificate);
+        return AESUtils.getInstance().decode(certificate);
     }
 
     public boolean canRestToken() {

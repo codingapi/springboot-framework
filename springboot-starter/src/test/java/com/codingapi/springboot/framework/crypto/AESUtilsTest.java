@@ -14,8 +14,8 @@ class AESUtilsTest {
     @Test
     void encodeDecodeToBase64() throws IOException {
        String word = "123";
-       String encode = AESUtils.getInstance().encodeToBase64(word);
-       String decode = AESUtils.getInstance().decodeToBase64(encode);
+       String encode = AESUtils.getInstance().encode(word);
+       String decode = AESUtils.getInstance().decode(encode);
        assertEquals(word,decode,"AES encode error");
     }
 

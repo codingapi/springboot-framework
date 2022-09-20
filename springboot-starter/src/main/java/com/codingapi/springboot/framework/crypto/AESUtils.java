@@ -22,12 +22,12 @@ public class AESUtils {
         this.aes = aes;
     }
 
-    public String encodeToBase64(String input) throws IOException {
-        return aes.encodeToBase64(input);
+    public String encode(String input) throws IOException {
+        return aes.encode(input);
     }
 
-    public String decodeToBase64(String input) throws IOException {
-        return aes.decodeToBase64(input);
+    public String decode(String input) throws IOException {
+        return aes.decode(input);
     }
 
     public byte[] encode(byte[] input) throws IOException {
