@@ -13,7 +13,7 @@ class TrustAnyHttpClientFactoryTest {
     void createTrustAnyHttpClient() {
         ClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(TrustAnyHttpClientFactory.createTrustAnyHttpClient());
         RestTemplate restTemplate = new RestTemplate(factory);
-        String response = restTemplate.getForObject("https://github.com",String.class);
+        String response = restTemplate.getForObject("https://www.baidu.com",String.class);
         assertNotNull(response);
     }
 }
