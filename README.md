@@ -61,9 +61,9 @@ If you find something incorrect or missing, please leave comments / suggestions.
 
 [CONTRIBUTING](./CONTRIBUTING.md)
 
-## example
+## examples
 
-见 [springboot-ddd-examples](https://github.com/1991wangliang/springboot-ddd-examples) 完善中...
+见 [springboot-ddd-examples](https://github.com/1991wangliang/springboot-ddd-examples) 
 
 ## YouTube|哔哩哔哩
 
@@ -84,7 +84,6 @@ HelloWorld [YouTube](https://www.youtube.com/watch?v=d7LnYy8rTYI&t=149s) [哔哩
 领域驱动设计008--模型集成02 [YouTube](https://www.youtube.com/watch?v=1A2OUn26sMc) [哔哩哔哩](https://www.bilibili.com/video/BV1DD4y167ea)   
 领域驱动设计008--模型集成03 [YouTube](https://www.youtube.com/watch?v=vu-dyolhRJM) [哔哩哔哩](https://www.bilibili.com/video/BV1We4y1o7ob)    
 领域驱动设计009--回顾总结 [YouTube](https://www.youtube.com/watch?v=VLPzblm1qPc) [哔哩哔哩](https://www.bilibili.com/video/BV1ZW4y1v7b5)    
-
 
 ## books
 
