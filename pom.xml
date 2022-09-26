@@ -214,7 +214,6 @@
             </activation>
             <modules>
                 <module>springboot-starter</module>
-                <module>springboot-example</module>
                 <module>springboot-starter-security-jwt</module>
                 <module>springboot-starter-data-fast</module>
                 <module>springboot-starter-id-generator</module>
@@ -227,7 +226,6 @@
 
             <modules>
                 <module>springboot-starter</module>
-                <module>springboot-example</module>
                 <module>springboot-starter-security-jwt</module>
                 <module>springboot-starter-data-fast</module>
                 <module>springboot-starter-id-generator</module>
