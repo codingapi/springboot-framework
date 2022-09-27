@@ -8,22 +8,22 @@ import java.nio.charset.StandardCharsets;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
-class RSATest {
+class DESUtilsTest {
 
     @Test
     void encode() throws Exception {
         String word = "123";
-        String encode = RSAUtils.getInstance().encode(word);
+        String encode = DESUtils.getInstance().encode(word);
         log.info("encode:{}",encode);
-        String decode = RSAUtils.getInstance().decode(encode);
+        String decode = DESUtils.getInstance().decode(encode);
         assertEquals(word,decode,"AES encode error");
     }
 
     @Test
     void decode() throws Exception {
         byte[] word = "123".getBytes(StandardCharsets.UTF_8);
-        byte[] encode = RSAUtils.getInstance().encode(word);
-        byte[] decode = RSAUtils.getInstance().decode(encode);
+        byte[] encode = DESUtils.getInstance().encode(word);
+        byte[] decode = DESUtils.getInstance().decode(encode);
         assertEquals(new String(word),new String(decode),"AES encode error");
     }
 }

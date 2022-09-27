@@ -1,36 +1,95 @@
 package com.codingapi.springboot.framework.crypto;
 
-import lombok.Getter;
-import org.bouncycastle.util.encoders.Base64;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.Cipher;
-import java.nio.charset.StandardCharsets;
 import java.security.*;
+import java.security.spec.EncodedKeySpec;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 
 public class RSA {
 
-    @Getter
+    public static final String KEY_ALGORITHM = "RSA";
+
     private final PrivateKey privateKey;
 
-    @Getter
     private final PublicKey publicKey;
 
-    public RSA() throws NoSuchAlgorithmException {
-        KeyPair keyPair =  RSAUtils.generateKey();
+    public RSA() throws NoSuchAlgorithmException  {
+        Security.addProvider(new BouncyCastleProvider());
+        KeyPair keyPair = generateKey();
         this.privateKey = keyPair.getPrivate();
-        this.publicKey = keyPair.getPublic();
+        this.publicKey =keyPair.getPublic();
+    }
+
+    public RSA(KeyPair keyPair){
+        Security.addProvider(new BouncyCastleProvider());
+        this.privateKey = keyPair.getPrivate();
+        this.publicKey =keyPair.getPublic();
     }
 
     public RSA(PrivateKey privateKey, PublicKey publicKey){
+        Security.addProvider(new BouncyCastleProvider());
         this.privateKey = privateKey;
         this.publicKey =publicKey;
     }
 
-    public RSA(String privateKey, String publicKey) throws Exception {
-        this.privateKey = RSAUtils.getPrivateKeyFromString(privateKey);
-        this.publicKey = RSAUtils.getPublicKeyFromString(publicKey);
+    public RSA(byte[] privateKey, byte[] publicKey) throws Exception {
+        this.privateKey = this.getPrivateKeyFromString(privateKey);
+        this.publicKey = this.getPublicKeyFromString(publicKey);
     }
 
+
+    /**
+     * Generate key which contains a pair of privae and public key using 2048 bytes
+     *
+     * @return key pair
+     * @throws NoSuchAlgorithmException
+     */
+    public KeyPair generateKey() throws NoSuchAlgorithmException {
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance(KEY_ALGORITHM);
+        keyGen.initialize(2048);
+        return keyGen.generateKeyPair();
+    }
+
+
+    /**
+     * Generates Private Key from byte[] string
+     *
+     * @param key byte[] key
+     * @return The PrivateKey
+     * @throws Exception
+     */
+    private  PrivateKey getPrivateKeyFromString(byte[] key) throws Exception {
+        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
+        EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(key);
+        return keyFactory.generatePrivate(privateKeySpec);
+    }
+
+
+    /**
+     * Generates Public Key from byte[] string
+     *
+     * @param key byte[] key
+     * @return The PublicKey
+     * @throws NoSuchAlgorithmException,InvalidKeySpecException
+     */
+    private  PublicKey getPublicKeyFromString(byte[] key) throws Exception {
+        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
+        EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(key);
+        return keyFactory.generatePublic(publicKeySpec);
+    }
+
+
+    public byte[] getPrivateKey() {
+        return privateKey.getEncoded();
+    }
+
+    public byte[]  getPublicKey() {
+        return publicKey.getEncoded();
+    }
 
     /**
      * Encrypt a text using public key.
@@ -48,20 +107,6 @@ public class RSA {
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
         cipherText = cipher.doFinal(text);
         return cipherText;
-    }
-
-    /**
-     * Encrypt a text using public key. The result is enctypted BASE64 encoded text
-     *
-     * @param text The original unencrypted text
-     * @return Encrypted text encoded as BASE64
-     * @throws Exception
-     */
-    public String encrypt(String text) throws Exception {
-        String encryptedText;
-        byte[] cipherText = encrypt(text.getBytes(StandardCharsets.UTF_8));
-        encryptedText = Base64.toBase64String(cipherText);
-        return encryptedText;
     }
 
 
@@ -82,19 +127,6 @@ public class RSA {
 
     }
 
-    /**
-     * Decrypt BASE64 encoded text using private key
-     *
-     * @param text The encrypted text, encoded as BASE64
-     * @return The unencrypted text encoded as UTF8
-     * @throws Exception
-     */
-    public String decrypt(String text) throws Exception {
-        String result;
-        // decrypt the text using the private key
-        byte[] dectyptedText = decrypt(Base64.decode(text));
-        result = new String(dectyptedText, StandardCharsets.UTF_8);
-        return result;
-    }
+
 
 }

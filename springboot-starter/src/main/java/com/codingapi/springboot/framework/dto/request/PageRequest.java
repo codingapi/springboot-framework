@@ -7,16 +7,16 @@ import java.util.Optional;
 
 public class PageRequest extends org.springframework.data.domain.PageRequest {
 
-    public final static String CURRENT_FIX_VALUE = "CURRENT_FIX_VALUE";
     private int current;
     private int pageSize;
-    private org.springframework.data.domain.PageRequest pageRequest;
+
+    private final org.springframework.data.domain.PageRequest pageRequest;
 
     public PageRequest(int current, int pageSize, Sort sort) {
         super(current, pageSize, sort);
         this.current = current;
         this.pageSize = pageSize;
-        pageRequest = PageRequest.of(current, pageSize, sort);
+        this.pageRequest = PageRequest.of(current, pageSize, sort);
     }
 
     public PageRequest() {
@@ -43,22 +43,12 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
         return Pageable.unpaged();
     }
 
-    private void initPage() {
-        int fixValue = 0;
-        try {
-            fixValue = Integer.parseInt(System.getProperty(CURRENT_FIX_VALUE));
-        } catch (Exception e) {
-        }
-        pageRequest = PageRequest.of(current - fixValue, pageSize, pageRequest.getSort());
-    }
-
     public int getCurrent() {
         return current;
     }
 
     public void setCurrent(int current) {
         this.current = current;
-        this.initPage();
     }
 
     @Override
@@ -68,7 +58,6 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
-        this.initPage();
     }
 
     @Override

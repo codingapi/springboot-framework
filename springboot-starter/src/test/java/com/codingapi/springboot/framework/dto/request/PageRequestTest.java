@@ -8,10 +8,11 @@ class PageRequestTest {
 
     @Test
     void test(){
-        System.setProperty(PageRequest.CURRENT_FIX_VALUE,"1");
         PageRequest pageRequest = new PageRequest();
         pageRequest.setCurrent(2);
+        pageRequest.setPageSize(10);
 
-        assertEquals(pageRequest.getPageNumber(),1);
+        assertEquals(pageRequest.getCurrent(),2);
+        assertEquals(pageRequest.getPageSize(),10);
     }
 }

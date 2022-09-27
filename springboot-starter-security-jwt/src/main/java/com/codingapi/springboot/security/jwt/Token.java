@@ -1,7 +1,7 @@
 package com.codingapi.springboot.security.jwt;
 
-import com.codingapi.springboot.framework.crypto.AESUtils;
 import com.codingapi.springboot.framework.serializable.JsonSerializable;
+import com.codingapi.springboot.security.crypto.MyAES;
 import com.codingapi.springboot.security.exception.TokenExpiredException;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +9,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.beans.Transient;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -19,7 +18,7 @@ import java.util.List;
 public class Token implements JsonSerializable {
 
     private String username;
-    private String certificate;
+    private String iv;
     private String token;
     private List<String> authorities;
     private long expireTime;
@@ -29,9 +28,9 @@ public class Token implements JsonSerializable {
     public Token() {
     }
 
-    public Token(String username, String certificate, List<String> authorities, int expireValue, int remindValue) throws IOException {
+    public Token(String username, String iv, List<String> authorities, int expireValue, int remindValue){
         this.username = username;
-        this.certificate = AESUtils.getInstance().encode(certificate);
+        this.iv = MyAES.getInstance().encode(iv);
         this.authorities = authorities;
         this.expireTime = System.currentTimeMillis() + expireValue;
         this.remindTime = System.currentTimeMillis() + remindValue;
@@ -49,13 +48,13 @@ public class Token implements JsonSerializable {
     }
 
 
-    public String getCertificate() {
-        return certificate;
+    public String getIv() {
+        return iv;
     }
 
     @Transient
-    public String getDecodePassword() throws IOException {
-        return AESUtils.getInstance().decode(certificate);
+    public String getDecodeIv(){
+        return MyAES.getInstance().decode(iv);
     }
 
     public boolean canRestToken() {
@@ -69,7 +68,7 @@ public class Token implements JsonSerializable {
         for (String authority : authorities) {
             simpleGrantedAuthorities.add(new SimpleGrantedAuthority(authority));
         }
-        return new UsernamePasswordAuthenticationToken(this, certificate, simpleGrantedAuthorities);
+        return new UsernamePasswordAuthenticationToken(this, iv, simpleGrantedAuthorities);
     }
 
 

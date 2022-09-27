@@ -7,12 +7,23 @@ import lombok.Setter;
 @Getter
 public class SecurityJwtProperties {
 
-
     /**
      * JWT密钥
      * 需大于32位的字符串
      */
     private String jwtSecretKey = "codingapi.security.jwt.secretkey";
+
+
+    /**
+     * aes key
+     */
+    private String aseKey = "QUNEWCQlXiYqJCNYQ1phc0FDRFgkJV4mKiQjWENaYXM=";
+
+    /**
+     * aes iv
+     */
+    private String aseIv = "QUNYRkdIQEVEUyNYQ1phcw==";
+
 
     /**
      * JWT 有效时间(毫秒)
