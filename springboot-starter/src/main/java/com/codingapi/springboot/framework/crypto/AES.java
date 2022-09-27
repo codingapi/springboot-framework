@@ -18,7 +18,7 @@ public class AES {
 
     public static final String KEY_ALGORITHM = "AES";
 
-    public static final String CIPHER_ALGORITHM = "AES/CBC/PKCS7Padding";
+    public static final String CIPHER_ALGORITHM = "AES/CBC/PKCS5Padding";
 
     private final Key key;
     private final AlgorithmParameters iv;
