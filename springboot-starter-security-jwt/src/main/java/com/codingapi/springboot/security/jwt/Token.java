@@ -1,9 +1,11 @@
 package com.codingapi.springboot.security.jwt;
 
+import com.alibaba.fastjson.JSONObject;
 import com.codingapi.springboot.framework.serializable.JsonSerializable;
 import com.codingapi.springboot.security.crypto.MyAES;
 import com.codingapi.springboot.security.exception.TokenExpiredException;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,22 +17,25 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class Token implements JsonSerializable {
 
     private String username;
+    private String extra;
     private String iv;
+
     private String token;
     private List<String> authorities;
     private long expireTime;
     private long remindTime;
 
 
-    public Token() {
-    }
-
-    public Token(String username, String iv, List<String> authorities, int expireValue, int remindValue){
+    public Token(String username, String iv,String extra, List<String> authorities, int expireValue, int remindValue){
         this.username = username;
-        this.iv = MyAES.getInstance().encode(iv);
+        this.extra = extra;
+        if(iv!=null) {
+            this.iv = MyAES.getInstance().encode(iv);
+        }
         this.authorities = authorities;
         this.expireTime = System.currentTimeMillis() + expireValue;
         this.remindTime = System.currentTimeMillis() + remindValue;
@@ -47,15 +52,21 @@ public class Token implements JsonSerializable {
         return expireTime <= System.currentTimeMillis();
     }
 
-
-    public String getIv() {
-        return iv;
-    }
-
-    @Transient
-    public String getDecodeIv(){
+    public String decodeIv(){
+        if(iv==null){
+            return null;
+        }
         return MyAES.getInstance().decode(iv);
     }
+
+
+    public <T> T parseExtra(Class<T> clazz){
+        if(extra==null){
+            return null;
+        }
+        return JSONObject.parseObject(extra,clazz);
+    }
+
 
     public boolean canRestToken() {
         return !isExpire() && remindTime <= System.currentTimeMillis();

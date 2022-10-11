@@ -43,7 +43,7 @@ public class MyAuthenticationFilter extends BasicAuthenticationFilter {
 
         Token token = jwt.parser(sign);
         if (token.canRestToken()) {
-            Token newSign = jwt.create(token.getUsername(), token.getDecodeIv(), token.getAuthorities());
+            Token newSign = jwt.create(token.getUsername(), token.decodeIv(), token.getAuthorities(),token.getExtra());
             log.info("reset token ");
             response.setHeader(TOKEN_KEY, newSign.getToken());
         }

@@ -23,8 +23,20 @@ public class Jwt {
         this.jwtRestTime = jwtRestTime;
     }
 
+    public Token create(String username, List<String> authorities,String extra){
+        return create(username, null,authorities, extra);
+    }
+
+    public Token create(String username, List<String> authorities){
+        return create(username, null,authorities, null);
+    }
+
     public Token create(String username, String iv, List<String> authorities){
-        Token token = new Token(username, iv, authorities, jwtTime, jwtRestTime);
+        return create(username, iv,authorities, null);
+    }
+
+    public Token create(String username, String iv,List<String> authorities,String extra){
+        Token token = new Token(username, iv,extra, authorities, jwtTime, jwtRestTime);
         String jwt = Jwts.builder().setSubject(token.toJson()).signWith(key).compact();
         token.setToken(jwt);
         return token;

@@ -17,7 +17,7 @@ class TokenTest {
     private Jwt jwt;
 
     @Test
-    void verify() throws TokenExpiredException {
+    void verify1() throws TokenExpiredException {
         String username = "admin";
         String iv = "123456";
         List<String> authorities = Collections.singletonList("ADMIN");
@@ -26,6 +26,37 @@ class TokenTest {
         token.verify();
 
         Token data = jwt.parser(token.getToken());
-        assertEquals(data.getDecodeIv(),iv);
+        assertEquals(data.decodeIv(),iv);
+        assertEquals(data.getAuthorities(),authorities);
+    }
+
+    @Test
+    void verify2() throws TokenExpiredException {
+        String username = "admin";
+        List<String> authorities = Collections.singletonList("ADMIN");
+
+        Token token =jwt.create(username,authorities);
+        token.verify();
+
+        Token data = jwt.parser(token.getToken());
+        assertEquals(data.getUsername(),username);
+        assertEquals(data.getAuthorities(),authorities);
+    }
+
+
+
+    @Test
+    void verify3() throws TokenExpiredException {
+        String username = "admin";
+        TestVO testVO = new TestVO("123");
+        String extra = testVO.toJson();
+        List<String> authorities = Collections.singletonList("ADMIN");
+
+        Token token =jwt.create(username,authorities,extra);
+        token.verify();
+
+        Token data = jwt.parser(token.getToken());
+        assertEquals(data.parseExtra(TestVO.class).getName(), testVO.getName());
+        assertEquals(data.getAuthorities(),authorities);
     }
 }
