@@ -36,6 +36,10 @@ public class Arithmetic {
         return new Arithmetic(value);
     }
 
+    public static Arithmetic parse(String value){
+        return new Arithmetic(value);
+    }
+
 
     public Arithmetic(String value) {
         this.value = new BigDecimal(value);
