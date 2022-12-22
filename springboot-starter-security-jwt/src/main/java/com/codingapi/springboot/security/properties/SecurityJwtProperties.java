@@ -58,6 +58,17 @@ public class SecurityJwtProperties {
      */
     private String ignoreUrls = "/open/**";
 
+    /**
+     * 启用禁用CSRF
+     */
+    private boolean disableCsrf = true;
+
+
+    /**
+     * 启用禁用CORS
+     */
+    private boolean disableCors = true;
+
 
     public String[] getIgnoreUrls() {
         return ignoreUrls.split(",");

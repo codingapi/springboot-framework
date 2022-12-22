@@ -1,7 +1,6 @@
 package com.codingapi.springboot.security;
 
 import com.codingapi.springboot.security.configurer.HttpSecurityConfigurer;
-import com.codingapi.springboot.security.dto.request.LoginRequest;
 import com.codingapi.springboot.security.filter.*;
 import com.codingapi.springboot.security.handler.ServletExceptionHandler;
 import com.codingapi.springboot.security.jwt.Jwt;
@@ -24,9 +23,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableMethodSecurity
@@ -66,21 +62,20 @@ public class AutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public SecurityLoginHandler securityLoginHandler(){
-        return new SecurityLoginHandler() {
-            @Override
-            public void preHandle(HttpServletRequest request, HttpServletResponse response, LoginRequest handler) throws Exception {
+        return (request, response, handler) -> {
 
-            }
         };
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public SecurityFilterChain filterChain(HttpSecurity http, Jwt jwt,SecurityLoginHandler loginHandler, SecurityJwtProperties properties) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, Jwt jwt,SecurityLoginHandler loginHandler,
+                                           SecurityJwtProperties properties) throws Exception {
         //before add addCorsMappings to enable cors.
         http.cors();
-
-        http.csrf().disable();
+        if(properties.isDisableCsrf() ){
+            http.csrf().disable();
+        }
         http.apply(new HttpSecurityConfigurer(jwt,loginHandler,properties));
         http
                 .exceptionHandling()
@@ -108,7 +103,8 @@ public class AutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+    public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService,
+                                                         PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder);
@@ -124,17 +120,20 @@ public class AutoConfiguration {
 
 
     @Bean
-    public WebMvcConfigurer corsConfigurer() {
+    public WebMvcConfigurer corsConfigurer(SecurityJwtProperties securityJwtProperties) {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedHeaders("*")
-                        .allowedMethods("*")
-                        .exposedHeaders("Authorization", "x-xsrf-token", "Access-Control-Allow-Headers", "Origin", "Accept,X-Requested-With",
-                                "Content-Type", "Access-Control-Request-Method", "Access-Control-Request-Headers")
-                        .maxAge(1800L)
-                        .allowedOrigins("*");
+                if(securityJwtProperties.isDisableCors()) {
+                    registry.addMapping("/**")
+                            .allowedHeaders("*")
+                            .allowedMethods("*")
+                            .exposedHeaders("Authorization", "x-xsrf-token", "Access-Control-Allow-Headers", "Origin",
+                                    "Accept,X-Requested-With", "Content-Type", "Access-Control-Request-Method",
+                                    "Access-Control-Request-Headers")
+                            .maxAge(1800L)
+                            .allowedOrigins("*");
+                }
             }
         };
     }
