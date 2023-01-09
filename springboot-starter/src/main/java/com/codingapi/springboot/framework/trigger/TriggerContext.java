@@ -1,11 +1,13 @@
 package com.codingapi.springboot.framework.trigger;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 
 /**
@@ -15,6 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Trigger是单独的消息数据不占用Event的通道。由于Event利用了Spring的事件底层,因此在大规模的事件情况下会堵塞spring的事件通道。
  */
 @SuppressWarnings("all")
+@Slf4j
 public class TriggerContext{
 
     public static TriggerContext getInstance() {
@@ -38,7 +41,7 @@ public class TriggerContext{
         Class<? extends Trigger> clazz = getTriggerClass(handler);
         List<TriggerHandler> triggerList =  this.triggers.get(clazz);
         if(triggerList==null){
-            triggerList = new CopyOnWriteArrayList<>();
+            triggerList = new ArrayList<>();
             this.triggers.put(clazz,triggerList);
         }
         triggerList.add(handler);
@@ -74,7 +77,9 @@ public class TriggerContext{
                             iterator.remove();
                         }
                     }
-                }catch (Exception e){}
+                }catch (Exception e){
+                    log.warn("trigger error:{}",e.getLocalizedMessage());
+                }
             }
         }
     }
