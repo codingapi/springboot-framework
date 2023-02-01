@@ -1,5 +1,6 @@
 package com.codingapi.springboot.framework.rest;
 
+import com.alibaba.fastjson.JSONObject;
 import com.codingapi.springboot.framework.rest.param.ApiGetParamBuilder;
 import com.codingapi.springboot.framework.rest.param.ApiPostParamBuilder;
 import com.codingapi.springboot.framework.rest.properties.RestApiProperties;
@@ -43,7 +44,25 @@ public class RestClient {
     }
 
     private String _post(String api, ApiPostParamBuilder paramBuilder) {
-        return httpClient.post(api, paramBuilder.build());
+        return _post(api, paramBuilder.build());
+    }
+
+
+    private String _post(String api, JSONObject requestBody) {
+        return httpClient.post(api, requestBody);
+    }
+
+
+    public String post(String api, JSONObject requestBody) {
+        for (int i=0;i< RETRY_COUNT;i++){
+            try {
+                return _post(api, requestBody);
+            }catch (Exception e){
+                log.warn("api:{},error:{}",api,e.getMessage());
+                sleep();
+            }
+        }
+        return EMPTY;
     }
 
 
