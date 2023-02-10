@@ -14,18 +14,22 @@ import java.net.Proxy;
 import java.net.URI;
 
 @Slf4j
-class HttpClient {
+public class HttpClient {
 
     private final RestTemplate restTemplate;
 
     private final String baseUrl;
+
+    public HttpClient(String baseUrl) {
+        this(null,baseUrl);
+    }
 
     public HttpClient(RestApiProperties properties, String baseUrl) {
         this.baseUrl = baseUrl;
         this.restTemplate = RestTemplateContext.getInstance().getRestTemplate();
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setConnectTimeout(3000);
-        if(properties!=null) {
+        if (properties != null) {
             if (properties.isEnableProxy()) {
                 log.info("enable proxy {}//:{}:{}", properties.getProxyType(), properties.getProxyHost(), properties.getProxyPort());
                 requestFactory.setProxy(new Proxy(properties.getProxyType(),
@@ -37,11 +41,14 @@ class HttpClient {
 
 
     private String buildUrl(String api) {
-        return baseUrl+api;
+        return baseUrl + api;
     }
 
     public String post(String api, JSON jsonObject) {
-        HttpHeaders headers = new HttpHeaders();
+        return post(api, new HttpHeaders(), jsonObject);
+    }
+
+    public String post(String api, HttpHeaders headers, JSON jsonObject) {
         headers.setContentType(MediaType.APPLICATION_JSON);
         String url = buildUrl(api);
         HttpEntity<String> httpEntity = new HttpEntity<>(jsonObject.toString(), headers);
@@ -49,18 +56,20 @@ class HttpClient {
         return httpResponse.getBody();
     }
 
-
-    public String get(String api, MultiValueMap<String, String> uriVariables) {
-        HttpHeaders headers = new HttpHeaders();
+    public String get(String api, HttpHeaders headers, MultiValueMap<String, String> uriVariables) {
         headers.setContentType(MediaType.APPLICATION_JSON);
         String url = buildUrl(api);
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(url);
-        if(uriVariables!=null){
+        if (uriVariables != null) {
             uriComponentsBuilder = uriComponentsBuilder.queryParams(uriVariables);
         }
         URI uri = uriComponentsBuilder.build().toUri();
         HttpEntity<String> httpEntity = new HttpEntity<>(headers);
         ResponseEntity<String> httpResponse = restTemplate.exchange(uri, HttpMethod.GET, httpEntity, String.class);
         return httpResponse.getBody();
+    }
+
+    public String get(String api, MultiValueMap<String, String> uriVariables) {
+        return get(api, new HttpHeaders(), uriVariables);
     }
 }
