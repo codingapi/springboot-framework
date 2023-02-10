@@ -4,11 +4,15 @@ import com.alibaba.fastjson.JSON;
 import com.codingapi.springboot.framework.rest.properties.HttpProxyProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.DefaultResponseErrorHandler;
+import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URI;
@@ -40,14 +44,29 @@ public class HttpClient {
             if(response.getStatusCode().equals(HttpStatus.OK)){
                 return response.getBody();
             }
+
+            if(response.getStatusCode().equals(HttpStatus.NOT_FOUND)){
+                return response.getBody();
+            }
+
             if(response.getStatusCode().equals(HttpStatus.FOUND)){
                 HttpHeaders headers = response.getHeaders();
                 String location = Objects.requireNonNull(headers.getLocation()).toString();
                 String baseUrl = uri.getScheme() + "://" + uri.getHost()+":"+uri.getPort();
                 String url = baseUrl+location;
-                return client.get(url,copyHeaders(headers));
+                return client.get(url,copyHeaders(headers),null);
             }
             return response.getBody();
+        }
+    };
+
+    private static final ResponseErrorHandler defaultErrorHandler = new DefaultResponseErrorHandler() {
+        @Override
+        public boolean hasError(ClientHttpResponse response) throws IOException {
+            if(response.getStatusCode()==HttpStatus.NOT_FOUND){
+                return false;
+            }
+            return super.hasError(response);
         }
     };
 
@@ -75,26 +94,20 @@ public class HttpClient {
                         new InetSocketAddress(properties.getProxyHost(), properties.getProxyPort())));
             }
         }
+        this.restTemplate.setErrorHandler(defaultErrorHandler);
         this.restTemplate.setRequestFactory(requestFactory);
     }
 
-    public String post(String url, JSON jsonObject) {
-        return post(url, new HttpHeaders(), jsonObject);
-    }
-
     public String post(String url, HttpHeaders headers, JSON jsonObject) {
-        headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> httpEntity = new HttpEntity<>(jsonObject.toString(), headers);
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(url);
+        URI uri = uriComponentsBuilder.build().toUri();
         ResponseEntity<String> httpResponse = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
-        return httpResponse.getBody();
+        return responseHandler.toResponse(this,uri,httpResponse);
     }
 
-    public String post(String url, MultiValueMap<String, String> formData) {
-        return post(url,new HttpHeaders(),formData);
-    }
 
     public String post(String url, HttpHeaders headers, MultiValueMap<String, String> formData) {
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(formData, headers);
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(url);
         URI uri = uriComponentsBuilder.build().toUri();
@@ -103,7 +116,6 @@ public class HttpClient {
     }
 
     public String get(String url, HttpHeaders headers, MultiValueMap<String, String> uriVariables) {
-        headers.setContentType(MediaType.APPLICATION_JSON);
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(url);
         if (uriVariables != null) {
             uriComponentsBuilder = uriComponentsBuilder.queryParams(uriVariables);
@@ -114,17 +126,5 @@ public class HttpClient {
         return responseHandler.toResponse(this,uri,httpResponse);
     }
 
-
-    public String get(String url, MultiValueMap<String, String> uriVariables) {
-        return get(url, new HttpHeaders(), uriVariables);
-    }
-
-    public String get(String url, HttpHeaders headers) {
-        return get(url,headers,null);
-    }
-
-    public String get(String url) {
-        return get(url, new HttpHeaders(), null);
-    }
 
 }
