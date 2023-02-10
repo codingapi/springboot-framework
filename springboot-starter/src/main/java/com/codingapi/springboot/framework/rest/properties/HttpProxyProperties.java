@@ -7,7 +7,7 @@ import java.net.Proxy;
 
 @Setter
 @Getter
-public class RestApiProperties {
+public class HttpProxyProperties {
 
     private boolean enableProxy;
     private String proxyHost;
