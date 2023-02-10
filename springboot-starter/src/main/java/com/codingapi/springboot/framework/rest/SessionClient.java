@@ -30,12 +30,17 @@ public class SessionClient {
                 if (response.getStatusCode().equals(HttpStatus.OK)) {
                     return response.getBody();
                 }
+
+                if(response.getStatusCode().equals(HttpStatus.NOT_FOUND)){
+                    return response.getBody();
+                }
+
                 if (response.getStatusCode().equals(HttpStatus.FOUND)) {
                     HttpHeaders headers = response.getHeaders();
                     String location = Objects.requireNonNull(headers.getLocation()).toString();
                     String baseUrl = uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort();
                     String url = baseUrl + location;
-                    return client.get(url, copyHeaders(headers));
+                    return client.get(url, copyHeaders(headers),null);
                 }
                 return response.getBody();
             }
@@ -58,7 +63,7 @@ public class SessionClient {
     }
 
     public String get(String url){
-        return httpClient.get(url,httpHeaders);
+        return httpClient.get(url,httpHeaders,null);
     }
 
 }
