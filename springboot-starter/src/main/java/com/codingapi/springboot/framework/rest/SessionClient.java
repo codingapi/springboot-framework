@@ -20,7 +20,11 @@ public class SessionClient {
 
             public HttpHeaders copyHeaders(HttpHeaders headers) {
                 for (String key : headers.keySet()) {
-                    httpHeaders.set(key, String.join(";", Objects.requireNonNull(headers.get(key))));
+                    if(key.equals("Set-Cookie")){
+                        httpHeaders.set("Cookie", String.join(";", Objects.requireNonNull(headers.get(key))));
+                    }else {
+                        httpHeaders.set(key, String.join(";", Objects.requireNonNull(headers.get(key))));
+                    }
                 }
                 return httpHeaders;
             }
