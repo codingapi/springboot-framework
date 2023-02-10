@@ -41,10 +41,6 @@ public class RestClient {
         return baseUrl + api;
     }
 
-    private String _get(String api, RestParamBuilder paramBuilder) {
-        return _get(api, httpHeaders, paramBuilder);
-    }
-
     private String _get(String api, HttpHeaders headers, RestParamBuilder paramBuilder) {
         return httpClient.get(toUrl(api), headers, paramBuilder != null ? paramBuilder.toFormRequest() : null);
     }
@@ -62,7 +58,7 @@ public class RestClient {
     }
 
     public String get(String api, RestParamBuilder paramBuilder) {
-        return get(api, new HttpHeaders(), paramBuilder);
+        return get(api, httpHeaders, paramBuilder);
     }
 
     public String get(String api) {
@@ -73,16 +69,12 @@ public class RestClient {
         return get(api, headers, null);
     }
 
-    private String _post(String api, JSONObject requestBody) {
-        return _post(api, new HttpHeaders(), requestBody);
-    }
-
     private String _post(String api, HttpHeaders headers, JSONObject requestBody) {
         return httpClient.post(toUrl(api), headers, requestBody);
     }
 
     public String post(String api, JSONObject requestBody) {
-        return post(api, new HttpHeaders(), requestBody);
+        return post(api, httpHeaders, requestBody);
     }
 
     public String post(String api, RestParamBuilder paramBuilder) {
