@@ -32,14 +32,14 @@
         <nexus.staging.maven.plugin>1.6.3</nexus.staging.maven.plugin>
 
         <codingapi.framework.version>${project.version}</codingapi.framework.version>
-        <fastjson.version>2.0.9</fastjson.version>
+        <fastjson.version>2.0.23</fastjson.version>
         <jsonwebtoken.jjwt.version>0.11.5</jsonwebtoken.jjwt.version>
         <commons-io.version>2.11.0</commons-io.version>
         <commons-dbutils.version>1.7</commons-dbutils.version>
         <org.reflections.version>0.10.2</org.reflections.version>
         <perf4j.version>0.9.16</perf4j.version>
         <bcprov-jdk15on.version>1.70</bcprov-jdk15on.version>
-        <commons-crypto.version>1.1.0</commons-crypto.version>
+        <commons-crypto.version>1.2.0</commons-crypto.version>
 
     </properties>
 
@@ -50,21 +50,25 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <dependencyManagement>
@@ -105,7 +109,6 @@
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
             </dependency>
-
 
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
