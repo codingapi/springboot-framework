@@ -10,6 +10,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
@@ -22,7 +23,7 @@ import java.util.Objects;
 public class HttpClient {
 
     public interface IHttpResponseHandler{
-        String toResponse(HttpClient client,URI uri,ResponseEntity<String> response);
+        String toResponse(HttpClient client,String uri,ResponseEntity<String> response);
     }
 
     private final RestTemplate restTemplate;
@@ -40,7 +41,7 @@ public class HttpClient {
         }
 
         @Override
-        public String toResponse(HttpClient client, URI uri, ResponseEntity<String> response) {
+        public String toResponse(HttpClient client, String url, ResponseEntity<String> response) {
             if(response.getStatusCode().equals(HttpStatus.OK)){
                 return response.getBody();
             }
@@ -50,11 +51,12 @@ public class HttpClient {
             }
 
             if(response.getStatusCode().equals(HttpStatus.FOUND)){
+                URI uri = URI.create(url);
                 HttpHeaders headers = response.getHeaders();
                 String location = Objects.requireNonNull(headers.getLocation()).toString();
                 String baseUrl = uri.getScheme() + "://" + uri.getHost()+":"+uri.getPort();
-                String url = baseUrl+location;
-                return client.get(url,copyHeaders(headers),null);
+                String locationUrl = baseUrl+location;
+                return client.get(locationUrl,copyHeaders(headers),null);
             }
             return response.getBody();
         }
@@ -96,34 +98,35 @@ public class HttpClient {
         }
         this.restTemplate.setErrorHandler(defaultErrorHandler);
         this.restTemplate.setRequestFactory(requestFactory);
+        DefaultUriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory();
+        uriBuilderFactory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.NONE);
+        this.restTemplate.setUriTemplateHandler(uriBuilderFactory);
     }
 
     public String post(String url, HttpHeaders headers, JSON jsonObject) {
         HttpEntity<String> httpEntity = new HttpEntity<>(jsonObject.toString(), headers);
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(url);
-        URI uri = uriComponentsBuilder.build().toUri();
         ResponseEntity<String> httpResponse = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
-        return responseHandler.toResponse(this,uri,httpResponse);
+        return responseHandler.toResponse(this,url,httpResponse);
     }
-
 
     public String post(String url, HttpHeaders headers, MultiValueMap<String, String> formData) {
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(formData, headers);
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(url);
-        URI uri = uriComponentsBuilder.build().toUri();
-        ResponseEntity<String> httpResponse = restTemplate.exchange(uri, HttpMethod.POST, httpEntity, String.class);
-        return responseHandler.toResponse(this,uri,httpResponse);
+        ResponseEntity<String> httpResponse = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
+        return responseHandler.toResponse(this,url,httpResponse);
     }
 
     public String get(String url, HttpHeaders headers, MultiValueMap<String, String> uriVariables) {
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(url);
-        if (uriVariables != null) {
-            uriComponentsBuilder = uriComponentsBuilder.queryParams(uriVariables);
-        }
-        URI uri = uriComponentsBuilder.build().toUri();
         HttpEntity<String> httpEntity = new HttpEntity<>(headers);
-        ResponseEntity<String> httpResponse = restTemplate.exchange(uri, HttpMethod.GET, httpEntity, String.class);
-        return responseHandler.toResponse(this,uri,httpResponse);
+        ResponseEntity<String> httpResponse;
+        if(uriVariables!=null&&!uriVariables.isEmpty()) {
+            URI uri = UriComponentsBuilder.fromHttpUrl(url)
+                    .queryParams(uriVariables)
+                    .build(true).toUri();
+            httpResponse = restTemplate.exchange(uri, HttpMethod.GET, httpEntity, String.class);
+        }else{
+            httpResponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+        }
+        return responseHandler.toResponse(this, url, httpResponse);
     }
 
 
