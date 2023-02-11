@@ -30,7 +30,7 @@ public class SessionClient {
             }
 
             @Override
-            public String toResponse(HttpClient client, URI uri, ResponseEntity<String> response) {
+            public String toResponse(HttpClient client, String url, ResponseEntity<String> response) {
                 if (response.getStatusCode().equals(HttpStatus.OK)) {
                     return response.getBody();
                 }
@@ -40,11 +40,12 @@ public class SessionClient {
                 }
 
                 if (response.getStatusCode().equals(HttpStatus.FOUND)) {
+                    URI uri = URI.create(url);
                     HttpHeaders headers = response.getHeaders();
                     String location = Objects.requireNonNull(headers.getLocation()).toString();
                     String baseUrl = uri.getScheme() + "://" + uri.getHost() + ":" + uri.getPort();
-                    String url = baseUrl + location;
-                    return client.get(url, copyHeaders(headers),null);
+                    String locationUrl = baseUrl + location;
+                    return client.get(locationUrl, copyHeaders(headers),null);
                 }
                 return response.getBody();
             }
@@ -67,7 +68,11 @@ public class SessionClient {
     }
 
     public String get(String url){
-        return httpClient.get(url,httpHeaders,null);
+        return get(url,null);
+    }
+
+    public String get(String url,RestParamBuilder restParam){
+        return httpClient.get(url,httpHeaders,restParam!=null?restParam.toFormRequest():null);
     }
 
 }
