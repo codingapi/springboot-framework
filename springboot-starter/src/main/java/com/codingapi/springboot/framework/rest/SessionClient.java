@@ -1,9 +1,11 @@
 package com.codingapi.springboot.framework.rest;
 
+import com.alibaba.fastjson.JSONObject;
 import com.codingapi.springboot.framework.rest.param.RestParamBuilder;
 import com.codingapi.springboot.framework.rest.properties.HttpProxyProperties;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
@@ -63,16 +65,36 @@ public class SessionClient {
         return this;
     }
 
-    public String post(String url, RestParamBuilder restParam){
+    public String postForm(String url, RestParamBuilder restParam){
+        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         return httpClient.post(url,httpHeaders,restParam.toFormRequest());
     }
 
-    public String get(String url){
-        return get(url,null);
+    public String postJson(String url, RestParamBuilder restParam){
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        return httpClient.post(url,httpHeaders,restParam.toJsonRequest());
     }
 
-    public String get(String url,RestParamBuilder restParam){
+    public String postJson(String url, JSONObject requestBody){
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        return httpClient.post(url,httpHeaders,requestBody);
+    }
+
+    public String getJson(String url){
+        return getJson(url,null);
+    }
+
+    public String getHtml(String url){
+        return getHtml(url,null);
+    }
+
+    public String getHtml(String url,RestParamBuilder restParam){
+        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         return httpClient.get(url,httpHeaders,restParam!=null?restParam.toFormRequest():null);
     }
 
+    public String getJson(String url,RestParamBuilder restParam){
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        return httpClient.get(url,httpHeaders,restParam!=null?restParam.toFormRequest():null);
+    }
 }
