@@ -7,6 +7,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.beans.PropertyDescriptor;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public class RestParamBuilder {
 
@@ -45,10 +47,15 @@ public class RestParamBuilder {
     }
 
     public RestParamBuilder add(String key, Object value) {
-        jsonBody.put(key, value);
-        mapBody.add(key, value.toString());
-        return this;
+        return add(key, value,true);
     }
 
+    public RestParamBuilder add(String key, Object value,boolean encode) {
+        String stringValue = value.toString();
+        String encodeValue = encode? URLEncoder.encode(stringValue, StandardCharsets.UTF_8):value.toString();
+        jsonBody.put(key, value);
+        mapBody.add(key, encodeValue);
+        return this;
+    }
 
 }
