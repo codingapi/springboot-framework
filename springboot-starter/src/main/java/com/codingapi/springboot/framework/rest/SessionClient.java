@@ -3,6 +3,7 @@ package com.codingapi.springboot.framework.rest;
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.springboot.framework.rest.param.RestParamBuilder;
 import com.codingapi.springboot.framework.rest.properties.HttpProxyProperties;
+import lombok.Getter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +16,7 @@ public class SessionClient {
 
     private final HttpClient httpClient;
 
+    @Getter
     private final HttpHeaders httpHeaders;
 
     public SessionClient(HttpProxyProperties properties) {

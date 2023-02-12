@@ -1,6 +1,7 @@
 package com.codingapi.springboot.framework.rest;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.codingapi.springboot.framework.rest.properties.HttpProxyProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
@@ -104,7 +105,7 @@ public class HttpClient {
     }
 
     public String post(String url, HttpHeaders headers, JSON jsonObject) {
-        HttpEntity<String> httpEntity = new HttpEntity<>(jsonObject.toString(), headers);
+        HttpEntity<String> httpEntity = new HttpEntity<>(jsonObject.toString(SerializerFeature.WriteMapNullValue), headers);
         ResponseEntity<String> httpResponse = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
         return responseHandler.toResponse(this,url,httpResponse);
     }
