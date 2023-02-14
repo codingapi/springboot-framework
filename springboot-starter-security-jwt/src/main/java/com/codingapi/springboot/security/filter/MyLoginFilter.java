@@ -8,6 +8,7 @@ import com.codingapi.springboot.security.dto.request.LoginRequestContext;
 import com.codingapi.springboot.security.dto.response.LoginResponse;
 import com.codingapi.springboot.security.jwt.Jwt;
 import com.codingapi.springboot.security.jwt.Token;
+import com.codingapi.springboot.security.jwt.TokenContext;
 import com.codingapi.springboot.security.properties.SecurityJwtProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -71,7 +72,9 @@ public class MyLoginFilter extends UsernamePasswordAuthenticationFilter {
         User user = (User) authResult.getPrincipal();
         LoginRequest loginRequest = LoginRequestContext.getInstance().get();
 
-        Token token = jwt.create(user.getUsername(), loginRequest.getPassword(), user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
+        Token token = jwt.create(user.getUsername(), loginRequest.getPassword(),
+                user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()),
+                TokenContext.getExtra());
 
         LoginResponse login = new LoginResponse();
         login.setUsername(user.getUsername());

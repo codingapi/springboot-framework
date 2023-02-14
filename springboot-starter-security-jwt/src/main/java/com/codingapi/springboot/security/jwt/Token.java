@@ -79,6 +79,7 @@ public class Token implements JsonSerializable {
         for (String authority : authorities) {
             simpleGrantedAuthorities.add(new SimpleGrantedAuthority(authority));
         }
+        TokenContext.pushExtra(extra);
         return new UsernamePasswordAuthenticationToken(this, iv, simpleGrantedAuthorities);
     }
 
