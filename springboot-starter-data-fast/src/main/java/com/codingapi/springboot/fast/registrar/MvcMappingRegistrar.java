@@ -5,12 +5,12 @@ import com.codingapi.springboot.fast.exception.FastMappingErrorException;
 import com.codingapi.springboot.fast.executor.JpaExecutor;
 import com.codingapi.springboot.fast.executor.MvcMethodInterceptor;
 import com.codingapi.springboot.fast.mapping.MvcEndpointMapping;
-import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.framework.AdvisedSupport;
 import org.springframework.aop.framework.AopProxy;
+import org.springframework.aop.framework.AopProxyFactory;
 import org.springframework.aop.framework.DefaultAopProxyFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
@@ -21,15 +21,24 @@ import java.util.List;
 import java.util.Set;
 
 @Slf4j
-@AllArgsConstructor
 public class MvcMappingRegistrar {
     protected final static Set<Class<?>> classSet = new HashSet<>();
     private final MvcEndpointMapping mvcEndpointMapping;
-    private final JpaExecutor jpaExecutor;
 
-    private final DefaultAopProxyFactory proxyFactory = new DefaultAopProxyFactory();
+    private final AopProxyFactory proxyFactory;
 
     private final List<Advisor> advisors;
+
+    private final MvcMethodInterceptor interceptor;
+
+    public MvcMappingRegistrar(MvcEndpointMapping mvcEndpointMapping,
+                               JpaExecutor jpaExecutor,
+                               List<Advisor> advisors) {
+        this.mvcEndpointMapping = mvcEndpointMapping;
+        this.advisors = advisors;
+        this.interceptor = new MvcMethodInterceptor(jpaExecutor);
+        this.proxyFactory = new DefaultAopProxyFactory();
+    }
 
     @SneakyThrows
     public void registerMvcMapping() {
@@ -47,9 +56,8 @@ public class MvcMappingRegistrar {
         }
     }
 
-    private AdvisedSupport createAdvisedSupport(Class<?> clazz){
+    private AdvisedSupport createAdvisedSupport(Class<?> clazz) {
         AdvisedSupport advisedSupport = new AdvisedSupport(clazz);
-        MvcMethodInterceptor interceptor = new MvcMethodInterceptor(jpaExecutor);
         advisedSupport.setTarget(interceptor);
         advisedSupport.addAdvisors(advisors);
         advisedSupport.addAdvice(interceptor);
