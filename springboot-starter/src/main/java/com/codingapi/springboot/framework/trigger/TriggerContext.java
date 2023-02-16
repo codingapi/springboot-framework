@@ -12,9 +12,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Trigger与Event模式都提供了订阅的功能。
+ * Trigger与Event差异是,Event是消息驱动性，而Trigger是订阅驱动性。
+ * 两者的差异在于，Event是确定了消息而不确定订阅方，而Trigger则是确定了订阅再等待消息触发。
  *
  * Trigger模式可以控制触发的规则,例如是否进入触发器,触发器是否在触发以后删除。
- * Trigger是单独的消息数据不占用Event的通道。由于Event利用了Spring的事件底层,因此在大规模的事件情况下会堵塞spring的事件通道。
  */
 @SuppressWarnings("all")
 @Slf4j
