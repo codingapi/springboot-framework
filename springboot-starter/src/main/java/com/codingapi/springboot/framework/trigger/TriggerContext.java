@@ -3,11 +3,11 @@ package com.codingapi.springboot.framework.trigger;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 /**
@@ -42,7 +42,7 @@ public class TriggerContext{
         Class<? extends Trigger> clazz = getTriggerClass(handler);
         List<TriggerHandler> triggerList =  this.triggers.get(clazz);
         if(triggerList==null){
-            triggerList = new ArrayList<>();
+            triggerList = new CopyOnWriteArrayList<>();
             this.triggers.put(clazz,triggerList);
         }
         triggerList.add(handler);
