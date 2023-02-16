@@ -3,7 +3,6 @@ package com.codingapi.springboot.framework.trigger;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -66,20 +65,19 @@ public class TriggerContext{
      */
     public void trigger(Trigger trigger){
         Class<? extends Trigger> clazz = trigger.getClass();
-        Iterator<TriggerHandler> iterator = triggers.get(clazz).iterator();
-        while (iterator.hasNext()){
-            TriggerHandler handler = iterator.next();
+        List<TriggerHandler> triggerHandlerList = triggers.get(clazz);
+        for(TriggerHandler handler:triggerHandlerList){
             Class<? extends Trigger> triggerClass = getTriggerClass(handler);
             if(triggerClass.equals(clazz)) {
                 try {
                     if (handler.preTrigger(trigger)) {
                         handler.trigger(trigger);
                         if (handler.remove()) {
-                            iterator.remove();
+                            triggerHandlerList.remove(handler);
                         }
                     }
                 }catch (Exception e){
-                    log.warn("trigger error:{}",e.getLocalizedMessage());
+                    log.warn("trigger error:{}",e);
                 }
             }
         }
