@@ -23,13 +23,19 @@ import java.util.Objects;
 @Slf4j
 public class HttpClient {
 
+    public interface IHttpRequestHandler{
+        String handler(HttpClient client,String uri,HttpMethod method,HttpHeaders headers,HttpEntity<?> httpEntity);
+    }
+
     public interface IHttpResponseHandler{
-        String toResponse(HttpClient client,String uri,ResponseEntity<String> response);
+        String handler(HttpClient client,String uri,ResponseEntity<String> response);
     }
 
     private final RestTemplate restTemplate;
 
     private final IHttpResponseHandler responseHandler;
+
+    private final IHttpRequestHandler requestHandler;
 
     private static final IHttpResponseHandler defaultResponseHandler =  new IHttpResponseHandler() {
 
@@ -42,7 +48,7 @@ public class HttpClient {
         }
 
         @Override
-        public String toResponse(HttpClient client, String url, ResponseEntity<String> response) {
+        public String handler(HttpClient client, String url, ResponseEntity<String> response) {
             if(response.getStatusCode().equals(HttpStatus.OK)){
                 return response.getBody();
             }
@@ -63,6 +69,14 @@ public class HttpClient {
         }
     };
 
+    private static final IHttpRequestHandler defaultRequestHandler =  new IHttpRequestHandler() {
+
+        @Override
+        public String handler(HttpClient client, String uri,HttpMethod method, HttpHeaders headers, HttpEntity<?> httpEntity) {
+            return uri;
+        }
+    };
+
     private static final ResponseErrorHandler defaultErrorHandler = new DefaultResponseErrorHandler() {
         @Override
         public boolean hasError(ClientHttpResponse response) throws IOException {
@@ -74,19 +88,20 @@ public class HttpClient {
     };
 
     public HttpClient() {
-        this(null,defaultResponseHandler);
+        this(null,defaultRequestHandler,defaultResponseHandler);
     }
 
-    public HttpClient(IHttpResponseHandler responseHandler) {
-        this(null,responseHandler);
+    public HttpClient(IHttpRequestHandler requestHandler,IHttpResponseHandler responseHandler) {
+        this(null,requestHandler,responseHandler);
     }
 
     public HttpClient(HttpProxyProperties properties) {
-        this(properties,defaultResponseHandler);
+        this(properties,defaultRequestHandler,defaultResponseHandler);
     }
 
-    public HttpClient(HttpProxyProperties properties,IHttpResponseHandler responseHandler) {
-        this.responseHandler = responseHandler;
+    public HttpClient(HttpProxyProperties properties,IHttpRequestHandler requestHandler,IHttpResponseHandler responseHandler) {
+        this.requestHandler = requestHandler==null?defaultRequestHandler:requestHandler;
+        this.responseHandler = responseHandler==null?defaultResponseHandler:responseHandler;
         this.restTemplate = RestTemplateContext.getInstance().getRestTemplate();
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setConnectTimeout(3000);
@@ -106,14 +121,16 @@ public class HttpClient {
 
     public String post(String url, HttpHeaders headers, JSON jsonObject) {
         HttpEntity<String> httpEntity = new HttpEntity<>(jsonObject.toString(SerializerFeature.WriteMapNullValue), headers);
-        ResponseEntity<String> httpResponse = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
-        return responseHandler.toResponse(this,url,httpResponse);
+        String requestUrl = requestHandler.handler(this,url, HttpMethod.POST,headers,httpEntity);
+        ResponseEntity<String> httpResponse = restTemplate.exchange(requestUrl, HttpMethod.POST, httpEntity, String.class);
+        return responseHandler.handler(this,url,httpResponse);
     }
 
     public String post(String url, HttpHeaders headers, MultiValueMap<String, String> formData) {
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(formData, headers);
-        ResponseEntity<String> httpResponse = restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class);
-        return responseHandler.toResponse(this,url,httpResponse);
+        String requestUrl = requestHandler.handler(this,url ,HttpMethod.POST,headers,httpEntity);
+        ResponseEntity<String> httpResponse = restTemplate.exchange(requestUrl, HttpMethod.POST, httpEntity, String.class);
+        return responseHandler.handler(this,url,httpResponse);
     }
 
     public String get(String url, HttpHeaders headers, MultiValueMap<String, String> uriVariables) {
@@ -123,11 +140,13 @@ public class HttpClient {
             URI uri = UriComponentsBuilder.fromHttpUrl(url)
                     .queryParams(uriVariables)
                     .build(true).toUri();
-            httpResponse = restTemplate.exchange(uri, HttpMethod.GET, httpEntity, String.class);
+            String requestUrl = requestHandler.handler(this,uri.toString(), HttpMethod.GET,headers,httpEntity);
+            httpResponse = restTemplate.exchange(requestUrl, HttpMethod.GET, httpEntity, String.class);
         }else{
-            httpResponse = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+            String requestUrl = requestHandler.handler(this,url, HttpMethod.GET,headers,httpEntity);
+            httpResponse = restTemplate.exchange(requestUrl, HttpMethod.GET, httpEntity, String.class);
         }
-        return responseHandler.toResponse(this, url, httpResponse);
+        return responseHandler.handler(this, url, httpResponse);
     }
 
 

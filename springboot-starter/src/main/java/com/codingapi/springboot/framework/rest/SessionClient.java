@@ -1,6 +1,6 @@
 package com.codingapi.springboot.framework.rest;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSON;
 import com.codingapi.springboot.framework.rest.param.RestParamBuilder;
 import com.codingapi.springboot.framework.rest.properties.HttpProxyProperties;
 import lombok.Getter;
@@ -34,7 +34,7 @@ public class SessionClient {
             }
 
             @Override
-            public String toResponse(HttpClient client, String url, ResponseEntity<String> response) {
+            public String handler(HttpClient client, String url, ResponseEntity<String> response) {
                 if (response.getStatusCode().equals(HttpStatus.OK)) {
                     return response.getBody();
                 }
@@ -54,7 +54,7 @@ public class SessionClient {
                 return response.getBody();
             }
         };
-        this.httpClient = new HttpClient(properties, responseHandler);
+        this.httpClient = new HttpClient(properties, null,responseHandler);
         this.httpHeaders = new HttpHeaders();
     }
 
@@ -77,7 +77,7 @@ public class SessionClient {
         return httpClient.post(url,httpHeaders,restParam.toJsonRequest());
     }
 
-    public String postJson(String url, JSONObject requestBody){
+    public String postJson(String url, JSON requestBody){
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         return httpClient.post(url,httpHeaders,requestBody);
     }
