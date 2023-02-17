@@ -70,11 +70,12 @@ public class TriggerContext{
             Class<? extends Trigger> triggerClass = getTriggerClass(handler);
             if(triggerClass.equals(clazz)) {
                 try {
-                    if (handler.preTrigger(trigger)) {
+                    boolean canTrigger = handler.preTrigger(trigger);
+                    if (canTrigger) {
                         handler.trigger(trigger);
-                        if (handler.remove()) {
-                            triggerHandlerList.remove(handler);
-                        }
+                    }
+                    if (handler.remove(trigger,canTrigger)) {
+                        triggerHandlerList.remove(handler);
                     }
                 }catch (Exception e){
                     log.warn("trigger error",e);

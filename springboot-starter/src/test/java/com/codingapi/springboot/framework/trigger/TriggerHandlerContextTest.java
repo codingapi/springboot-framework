@@ -22,10 +22,6 @@ class TriggerHandlerContextTest {
 
             }
 
-            @Override
-            public boolean remove() {
-                return false;
-            }
         });
 
         TriggerContext.getInstance().addTrigger(new TriggerHandler<MyTrigger2>() {
@@ -39,10 +35,6 @@ class TriggerHandlerContextTest {
 
             }
 
-            @Override
-            public boolean remove() {
-                return false;
-            }
         });
 
         assertFalse(TriggerContext.getInstance().isEmpty(MyTrigger.class));
@@ -64,8 +56,8 @@ class TriggerHandlerContextTest {
             }
 
             @Override
-            public boolean remove() {
-                return true;
+            public boolean remove(Trigger trigger, boolean canTrigger) {
+                return canTrigger;
             }
         });
 

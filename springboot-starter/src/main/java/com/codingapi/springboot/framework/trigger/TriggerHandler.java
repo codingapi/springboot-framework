@@ -22,10 +22,11 @@ public interface TriggerHandler<T extends  Trigger> {
 
     /**
      * 执行完成以后是否删除触发器
+     * @param trigger 触发对象  {@link Trigger}
+     * @param canTrigger 是否执行过程trigger逻辑 true执行过程 false未执行
      * @return true删除
      */
-    default boolean remove(){
+    default boolean remove(Trigger trigger, boolean canTrigger){
         return false;
     }
-
 }
