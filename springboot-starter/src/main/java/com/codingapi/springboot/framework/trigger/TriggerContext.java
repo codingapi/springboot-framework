@@ -77,7 +77,7 @@ public class TriggerContext{
                         }
                     }
                 }catch (Exception e){
-                    log.warn("trigger error:{}",e);
+                    log.warn("trigger error",e);
                 }
             }
         }

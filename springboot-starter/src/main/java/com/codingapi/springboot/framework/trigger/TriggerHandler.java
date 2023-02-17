@@ -24,6 +24,8 @@ public interface TriggerHandler<T extends  Trigger> {
      * 执行完成以后是否删除触发器
      * @return true删除
      */
-    boolean remove();
+    default boolean remove(){
+        return false;
+    }
 
 }
