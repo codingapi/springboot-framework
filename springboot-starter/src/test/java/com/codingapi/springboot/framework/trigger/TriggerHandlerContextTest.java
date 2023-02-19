@@ -56,7 +56,7 @@ class TriggerHandlerContextTest {
             }
 
             @Override
-            public boolean remove(Trigger trigger, boolean canTrigger) {
+            public boolean remove(MyTrigger trigger, boolean canTrigger) {
                 return canTrigger;
             }
         });

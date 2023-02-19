@@ -26,7 +26,7 @@ public interface TriggerHandler<T extends  Trigger> {
      * @param canTrigger 是否执行过程trigger逻辑 true执行过程 false未执行
      * @return true删除
      */
-    default boolean remove(Trigger trigger, boolean canTrigger){
+    default boolean remove(T trigger, boolean canTrigger){
         return false;
     }
 }
