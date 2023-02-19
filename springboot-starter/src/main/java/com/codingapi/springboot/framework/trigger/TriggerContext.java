@@ -38,7 +38,7 @@ public class TriggerContext{
      * @param handler 触发订阅
      */
     public void addTrigger(TriggerHandler handler){
-        Class<? extends Trigger> clazz = getTriggerClass(handler);
+        Class<? extends Trigger> clazz = getTriggerClass(handler.getClass());
         List<TriggerHandler> triggerList =  this.triggers.get(clazz);
         if(triggerList==null){
             triggerList = new CopyOnWriteArrayList<>();
@@ -53,9 +53,14 @@ public class TriggerContext{
      * @param handler 触发订阅
      * @return Trigger类型
      */
-    private Class<? extends Trigger> getTriggerClass(TriggerHandler handler){
-        ParameterizedType parameterizedType = (ParameterizedType) handler.getClass().getGenericInterfaces()[0];
-        return (Class<? extends Trigger>) parameterizedType.getActualTypeArguments()[0];
+    private Class<? extends Trigger> getTriggerClass(Class<?> handler){
+        for(Class<?> superInterface : handler.getInterfaces()) {
+            if (superInterface.equals(TriggerHandler.class)) {
+                ParameterizedType parameterizedType = (ParameterizedType) handler.getGenericInterfaces()[0];
+                return (Class<? extends Trigger>) parameterizedType.getActualTypeArguments()[0];
+            }
+        }
+        return getTriggerClass(handler.getSuperclass());
     }
 
 
@@ -67,7 +72,7 @@ public class TriggerContext{
         Class<? extends Trigger> clazz = trigger.getClass();
         List<TriggerHandler> triggerHandlerList = triggers.get(clazz);
         for(TriggerHandler handler:triggerHandlerList){
-            Class<? extends Trigger> triggerClass = getTriggerClass(handler);
+            Class<? extends Trigger> triggerClass = getTriggerClass(handler.getClass());
             if(triggerClass.equals(clazz)) {
                 try {
                     boolean canTrigger = handler.preTrigger(trigger);
