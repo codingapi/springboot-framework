@@ -13,7 +13,7 @@ public class RestClient {
 
     private final HttpHeaders httpHeaders;
 
-    private final HttpClient httpClient;
+    private final HttpRequest httpRequest;
 
     private final int retryCount;
 
@@ -25,11 +25,11 @@ public class RestClient {
                       String baseUrl,
                       int retryCount,
                       String emptyResponse,
-                      HttpClient.IHttpRequestHandler requestHandler,
-                      HttpClient.IHttpResponseHandler responseHandler) {
+                      HttpRequest.IHttpRequestHandler requestHandler,
+                      HttpRequest.IHttpResponseHandler responseHandler) {
         this.baseUrl = baseUrl;
         this.retryCount = retryCount;
-        this.httpClient = new HttpClient(httpProxyProperties,requestHandler,responseHandler);
+        this.httpRequest = new HttpRequest(httpProxyProperties,requestHandler,responseHandler);
         this.httpHeaders = new HttpHeaders();
         this.emptyResponse = emptyResponse;
         this.initHeaders();
@@ -48,9 +48,10 @@ public class RestClient {
     }
 
     public String get(String api, HttpHeaders headers, MultiValueMap<String, String> requestParams) {
+        Request request = getGetRequest(toUrl(api), headers, requestParams);
         for (int i = 0; i < retryCount; i++) {
             try {
-                return httpClient.get(toUrl(api), headers, requestParams);
+                return request.execute();
             } catch (Exception e) {
                 log.warn("api:{},error:{}", api, e.getMessage());
                 sleep();
@@ -75,8 +76,12 @@ public class RestClient {
         return get(api, headers, (RestParamBuilder) null);
     }
 
-    private String _post(String api, HttpHeaders headers, JSON requestBody) {
-        return httpClient.post(toUrl(api), headers, requestBody);
+    public Request getGetRequest(String api, HttpHeaders headers, MultiValueMap<String, String> requestParams) {
+        return httpRequest.getGetRequest(toUrl(api), headers, requestParams);
+    }
+
+    public Request getPostRequest(String api, HttpHeaders headers, JSON requestBody) {
+        return httpRequest.getPostRequest(toUrl(api), headers, requestBody);
     }
 
     public String post(String api, JSON requestBody) {
@@ -88,9 +93,10 @@ public class RestClient {
     }
 
     public String post(String api, HttpHeaders headers, JSON requestBody) {
+        Request request =  getPostRequest(api, headers, requestBody);
         for (int i = 0; i < retryCount; i++) {
             try {
-                return _post(api, headers, requestBody);
+                return request.execute();
             } catch (Exception e) {
                 log.warn("api:{},error:{}", api, e.getMessage());
                 sleep();

@@ -20,7 +20,7 @@ public class SessionClient {
     private final HttpHeaders httpHeaders;
 
     public SessionClient(HttpProxyProperties properties) {
-        HttpClient.IHttpResponseHandler responseHandler = new HttpClient.IHttpResponseHandler() {
+        HttpRequest.IHttpResponseHandler responseHandler = new HttpRequest.IHttpResponseHandler() {
 
             public HttpHeaders copyHeaders(HttpHeaders headers) {
                 for (String key : headers.keySet()) {
@@ -34,7 +34,7 @@ public class SessionClient {
             }
 
             @Override
-            public String handler(HttpClient client, String url, ResponseEntity<String> response) {
+            public String handler(HttpRequest client, String url, ResponseEntity<String> response) {
                 if (response.getStatusCode().equals(HttpStatus.OK)) {
                     return response.getBody();
                 }
