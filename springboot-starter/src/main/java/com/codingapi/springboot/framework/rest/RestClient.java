@@ -48,7 +48,8 @@ public class RestClient {
     }
 
     public String get(String api, HttpHeaders headers, MultiValueMap<String, String> requestParams) {
-        Request request = getGetRequest(toUrl(api), headers, requestParams);
+        String url = toUrl(api);
+        Request request = getGetRequest(url, headers, requestParams);
         for (int i = 0; i < retryCount; i++) {
             try {
                 return request.execute();
@@ -77,11 +78,11 @@ public class RestClient {
     }
 
     public Request getGetRequest(String api, HttpHeaders headers, MultiValueMap<String, String> requestParams) {
-        return httpRequest.getGetRequest(toUrl(api), headers, requestParams);
+        return httpRequest.getGetRequest(api, headers, requestParams);
     }
 
     public Request getPostRequest(String api, HttpHeaders headers, JSON requestBody) {
-        return httpRequest.getPostRequest(toUrl(api), headers, requestBody);
+        return httpRequest.getPostRequest(api, headers, requestBody);
     }
 
     public String post(String api, JSON requestBody) {
@@ -93,7 +94,8 @@ public class RestClient {
     }
 
     public String post(String api, HttpHeaders headers, JSON requestBody) {
-        Request request =  getPostRequest(api, headers, requestBody);
+        String url = toUrl(api);
+        Request request =  getPostRequest(url, headers, requestBody);
         for (int i = 0; i < retryCount; i++) {
             try {
                 return request.execute();
