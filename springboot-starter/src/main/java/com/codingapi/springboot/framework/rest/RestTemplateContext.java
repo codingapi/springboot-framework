@@ -14,8 +14,9 @@ public class RestTemplateContext {
     private final RestTemplate restTemplate;
 
     private RestTemplateContext(){
-        this.restTemplate = restTemplate(new HttpComponentsClientHttpRequestFactory(
-                TrustAnyHttpClientFactory.createTrustAnyHttpClient()));
+        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(
+                TrustAnyHttpClientFactory.createTrustAnyHttpClient());
+        this.restTemplate = restTemplate(requestFactory);
     }
 
     public static RestTemplateContext getInstance() {

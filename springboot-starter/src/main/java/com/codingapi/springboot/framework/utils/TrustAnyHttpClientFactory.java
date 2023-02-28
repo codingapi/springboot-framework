@@ -3,6 +3,7 @@ package com.codingapi.springboot.framework.utils;
 
 import lombok.SneakyThrows;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.HttpClients;
@@ -39,7 +40,13 @@ public class TrustAnyHttpClientFactory {
         TrustAnyTrustManager trustAnyTrustManager = new TrustAnyTrustManager();
         sslContext.init(null, new TrustManager[] {trustAnyTrustManager}, null);
         SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
+
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setCircularRedirectsAllowed(true)
+                .build();
+
         return HttpClients.custom()
+                .setDefaultRequestConfig(requestConfig)
                 .setSSLSocketFactory(sslConnectionSocketFactory)
                 .build();
     }
