@@ -13,7 +13,7 @@ public class RSA {
 
     public static final String KEY_ALGORITHM = "RSA";
 
-    private final PrivateKey privateKey;
+    private PrivateKey privateKey;
 
     private final PublicKey publicKey;
 
@@ -37,7 +37,14 @@ public class RSA {
     }
 
     public RSA(byte[] privateKey, byte[] publicKey) throws Exception {
+        Security.addProvider(new BouncyCastleProvider());
         this.privateKey = this.getPrivateKeyFromString(privateKey);
+        this.publicKey = this.getPublicKeyFromString(publicKey);
+    }
+
+
+    public RSA(byte[] publicKey) throws Exception {
+        Security.addProvider(new BouncyCastleProvider());
         this.publicKey = this.getPublicKeyFromString(publicKey);
     }
 
