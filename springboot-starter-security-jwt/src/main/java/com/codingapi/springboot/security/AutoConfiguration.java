@@ -3,7 +3,6 @@ package com.codingapi.springboot.security;
 import com.codingapi.springboot.security.configurer.HttpSecurityConfigurer;
 import com.codingapi.springboot.security.controller.VersionController;
 import com.codingapi.springboot.security.filter.*;
-import com.codingapi.springboot.security.handler.ServletExceptionHandler;
 import com.codingapi.springboot.security.jwt.Jwt;
 import com.codingapi.springboot.security.properties.SecurityJwtProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -22,7 +21,6 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -55,11 +53,6 @@ public class AutoConfiguration {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-
-    @Bean
-    public HandlerExceptionResolver servletExceptionHandler() {
-        return new ServletExceptionHandler();
-    }
 
     @Bean
     @ConditionalOnMissingBean

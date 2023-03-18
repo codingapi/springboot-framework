@@ -1,4 +1,4 @@
-package com.codingapi.springboot.security.handler;
+package com.codingapi.springboot.framework.servlet;
 
 import com.codingapi.springboot.framework.exception.LocaleMessageException;
 import lombok.extern.slf4j.Slf4j;
