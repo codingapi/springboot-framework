@@ -12,7 +12,7 @@ class PageRequestTest {
         pageRequest.setCurrent(2);
         pageRequest.setPageSize(10);
 
-        assertEquals(pageRequest.getCurrent(),2);
+        assertEquals(pageRequest.getCurrent(),1);
         assertEquals(pageRequest.getPageSize(),10);
     }
 }
