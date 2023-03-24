@@ -12,7 +12,7 @@
 
     <groupId>com.codingapi.springboot</groupId>
     <artifactId>springboot-parent</artifactId>
-    <version>1.5.14</version>
+    <version>1.5.15</version>
 
     <url>https://github.com/codingapi/springboot-framewrok</url>
     <name>springboot-parent</name>

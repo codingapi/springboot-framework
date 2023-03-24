@@ -13,7 +13,7 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
     private final org.springframework.data.domain.PageRequest pageRequest;
 
     public PageRequest(int current, int pageSize, Sort sort) {
-        super(current, pageSize, sort);
+        super(current>0?current--:0, pageSize, sort);
         this.current = current;
         this.pageSize = pageSize;
         this.pageRequest = PageRequest.of(current, pageSize, sort);
@@ -23,32 +23,12 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
         this(0, 20, Sort.unsorted());
     }
 
-    public static org.springframework.data.domain.PageRequest of(int page, int size) {
-        return org.springframework.data.domain.PageRequest.of(page, size);
-    }
-
-    public static org.springframework.data.domain.PageRequest of(int page, int size, Sort sort) {
-        return org.springframework.data.domain.PageRequest.of(page, size, sort);
-    }
-
-    public static org.springframework.data.domain.PageRequest of(int page, int size, Sort.Direction direction, String... properties) {
-        return org.springframework.data.domain.PageRequest.of(page, size, direction, properties);
-    }
-
-    public static org.springframework.data.domain.PageRequest ofSize(int pageSize) {
-        return org.springframework.data.domain.PageRequest.ofSize(pageSize);
-    }
-
-    public static Pageable unpaged() {
-        return Pageable.unpaged();
-    }
-
     public int getCurrent() {
         return current;
     }
 
     public void setCurrent(int current) {
-        this.current = current;
+        this.current = current>0?current-1:0;
     }
 
     @Override
@@ -67,62 +47,32 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
 
     @Override
     public org.springframework.data.domain.PageRequest next() {
-        return pageRequest.next();
+        return new PageRequest(current + 1, getPageSize(), getSort());
     }
 
     @Override
     public org.springframework.data.domain.PageRequest previous() {
-        return pageRequest.previous();
+        return current == 0? this: new PageRequest(current-1,getPageSize(),getSort());
     }
 
     @Override
     public org.springframework.data.domain.PageRequest first() {
-        return pageRequest.first();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return pageRequest.equals(obj);
-    }
-
-    @Override
-    public org.springframework.data.domain.PageRequest withPage(int pageNumber) {
-        return pageRequest.withPage(pageNumber);
-    }
-
-    @Override
-    public org.springframework.data.domain.PageRequest withSort(Sort.Direction direction, String... properties) {
-        return pageRequest.withSort(direction, properties);
-    }
-
-    @Override
-    public org.springframework.data.domain.PageRequest withSort(Sort sort) {
-        return pageRequest.withSort(sort);
-    }
-
-    @Override
-    public int hashCode() {
-        return pageRequest.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return pageRequest.toString();
+        return new PageRequest(0, getPageSize(), getSort());
     }
 
     @Override
     public int getPageNumber() {
-        return pageRequest.getPageNumber();
+        return current;
     }
 
     @Override
     public long getOffset() {
-        return pageRequest.getOffset();
+        return (long) current * (long) pageSize;
     }
 
     @Override
     public boolean hasPrevious() {
-        return pageRequest.hasPrevious();
+        return current > 0;
     }
 
     @Override
