@@ -16,18 +16,17 @@ public class ServletExceptionHandler implements HandlerExceptionResolver {
 
     @Override
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        log.warn("controller exception:{}", ex.getLocalizedMessage(), ex);
-
         MappingJackson2JsonView view = new MappingJackson2JsonView();
         ModelAndView mv = new ModelAndView(view);
-
         mv.addObject("success", false);
         if (ex instanceof LocaleMessageException) {
             LocaleMessageException localMessageException = (LocaleMessageException) ex;
             mv.addObject("errCode", localMessageException.getErrCode());
             mv.addObject("errMessage", localMessageException.getMessage());
+            log.warn("controller errCode:{} exception:{}",localMessageException.getErrCode(), ex.getLocalizedMessage());
             return mv;
         }
+        log.warn("controller exception:{}", ex.getLocalizedMessage(), ex);
         mv.addObject("errCode", DEFAULT_ERROR_CODE);
         mv.addObject("errMessage", ex.getMessage());
 
