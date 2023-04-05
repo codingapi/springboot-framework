@@ -1,6 +1,7 @@
 package com.codingapi.springboot.framework.crypto;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.springframework.util.Base64Utils;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -78,7 +79,7 @@ public class AES {
 
     private AlgorithmParameters generateIV(byte[] ivs) throws Exception {
         AlgorithmParameters params = AlgorithmParameters.getInstance(KEY_ALGORITHM);
-        params.init(new IvParameterSpec(ivs));
+        params.init(new IvParameterSpec(ivs, 0, 16));
         return params;
     }
 
