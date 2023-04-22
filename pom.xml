@@ -290,6 +290,7 @@
         <profile>
             <!--  mvn clean deploy -P ossrh  -->
             <!-- gpg: signing failed: Inappropriate ioctl for device -->
+            <!-- fix command : export GPG_TTY=$(tty)  -->
             <!-- https://github.com/keybase/keybase-issues/issues/2798 -->
             <id>ossrh</id>
 
