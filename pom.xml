@@ -30,7 +30,7 @@
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven.javadoc.plugin>2.10.3</maven.javadoc.plugin>
         <nexus.staging.maven.plugin>1.6.3</nexus.staging.maven.plugin>
-
+        <maven.gpg.plugin>1.6</maven.gpg.plugin>
         <codingapi.framework.version>${project.version}</codingapi.framework.version>
         <fastjson.version>2.0.28</fastjson.version>
         <jsonwebtoken.jjwt.version>0.11.5</jsonwebtoken.jjwt.version>
@@ -42,7 +42,6 @@
         <commons-crypto.version>1.2.0</commons-crypto.version>
         <org.yaml.snakeyaml.version>2.0</org.yaml.snakeyaml.version>
     </properties>
-
 
     <dependencies>
 
@@ -302,17 +301,7 @@
             </modules>
 
 
-            <properties>
-                <repository.id>ossrh</repository.id>
-                <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
-                <maven.compile.source>1.8</maven.compile.source>
-                <maven.compile.target>1.8</maven.compile.target>
-                <maven.source.plugin>3.0.1</maven.source.plugin>
-                <nexus.staging.maven.plugin>1.6.3</nexus.staging.maven.plugin>
-                <maven-compiler-plugin.version>3.6.0</maven-compiler-plugin.version>
-                <maven.javadoc.plugin>2.10.3</maven.javadoc.plugin>
-                <maven.gpg.plugin>1.6</maven.gpg.plugin>
-            </properties>
+
             <build>
                 <plugins>
 
