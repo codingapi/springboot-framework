@@ -1,0 +1,2 @@
+com.codingapi.springboot.fast.DataFastConfiguration
+com.codingapi.springboot.fast.registrar.DataFastBeanDefinitionRegistrar

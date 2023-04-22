@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import java.util.List;
 
 @Configuration

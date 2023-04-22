@@ -2,7 +2,7 @@ package com.codingapi.springboot.framework.rest.param;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.SneakyThrows;
-import org.apache.commons.beanutils.PropertyUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -26,11 +26,11 @@ public class RestParamBuilder {
 
     @SneakyThrows
     public static RestParamBuilder parser(Object obj) {
-        PropertyDescriptor[] descriptors = PropertyUtils.getPropertyDescriptors(obj.getClass());
+        PropertyDescriptor[] descriptors =  BeanUtils.getPropertyDescriptors(obj.getClass());
         RestParamBuilder builder = create();
         for (PropertyDescriptor descriptor : descriptors) {
             String name = descriptor.getName();
-            Object value = PropertyUtils.getProperty(obj, name);
+            Object value = BeanUtils.getPropertyDescriptor(obj.getClass(), name);
             if (value != null) {
                 builder.add(name, value);
             }

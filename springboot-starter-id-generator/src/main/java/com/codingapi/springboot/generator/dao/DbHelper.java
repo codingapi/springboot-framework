@@ -1,21 +1,20 @@
 package com.codingapi.springboot.generator.dao;
 
 import org.apache.commons.dbutils.QueryRunner;
-import org.h2.jdbcx.JdbcDataSource;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public class DbHelper<T> {
 
-    private final JdbcDataSource dataSource;
+    private final DataSource dataSource;
     private final QueryRunner queryRunner;
 
 
-    public DbHelper(String jdbcUrl) {
-        this.dataSource = new JdbcDataSource();
+    public DbHelper(DataSource dataSource) {
+        this.dataSource = dataSource;
         this.queryRunner = new QueryRunner();
-        this.dataSource.setURL(jdbcUrl);
     }
 
     public void execute(IExecute execute) throws SQLException {

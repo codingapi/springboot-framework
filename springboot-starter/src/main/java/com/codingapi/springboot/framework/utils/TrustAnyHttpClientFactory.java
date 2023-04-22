@@ -2,11 +2,16 @@ package com.codingapi.springboot.framework.utils;
 
 
 import lombok.SneakyThrows;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.BasicHttpClientConnectionManager;
+import org.apache.hc.client5.http.socket.ConnectionSocketFactory;
+import org.apache.hc.client5.http.socket.PlainConnectionSocketFactory;
+import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
+import org.apache.hc.core5.http.config.Registry;
+import org.apache.hc.core5.http.config.RegistryBuilder;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -41,13 +46,22 @@ public class TrustAnyHttpClientFactory {
         sslContext.init(null, new TrustManager[] {trustAnyTrustManager}, null);
         SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
 
+        final Registry<ConnectionSocketFactory> socketFactoryRegistry =
+                RegistryBuilder.<ConnectionSocketFactory> create()
+                        .register("https", sslConnectionSocketFactory)
+                        .register("http", new PlainConnectionSocketFactory())
+                        .build();
+
         RequestConfig requestConfig = RequestConfig.custom()
                 .setCircularRedirectsAllowed(true)
                 .build();
 
+        BasicHttpClientConnectionManager connectionManager
+                = new BasicHttpClientConnectionManager(socketFactoryRegistry);
+
         return HttpClients.custom()
                 .setDefaultRequestConfig(requestConfig)
-                .setSSLSocketFactory(sslConnectionSocketFactory)
+                .setConnectionManager(connectionManager)
                 .build();
     }
 }

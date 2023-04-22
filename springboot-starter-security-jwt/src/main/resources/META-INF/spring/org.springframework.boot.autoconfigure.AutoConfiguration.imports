@@ -1,0 +1,3 @@
+com.codingapi.springboot.security.configurer.WebSecurityConfigurer
+com.codingapi.springboot.security.crypto.MyCryptoConfiguration
+com.codingapi.springboot.security.AutoConfiguration
