@@ -1,7 +1,6 @@
 package com.codingapi.springboot.framework.crypto;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.springframework.util.Base64Utils;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -25,7 +24,7 @@ public class AES {
     private final AlgorithmParameters iv;
     private final String algorithm;
 
-    public AES(String algorithm,Key key,AlgorithmParameters iv){
+    public AES(String algorithm, Key key, AlgorithmParameters iv) {
         Security.addProvider(new BouncyCastleProvider());
         this.algorithm = algorithm;
         this.key = key;
@@ -39,7 +38,7 @@ public class AES {
         this.iv = generateIV(randomIv());
     }
 
-    public AES(String algorithm, byte[] keys, byte[] ivs) throws Exception{
+    public AES(String algorithm, byte[] keys, byte[] ivs) throws Exception {
         Security.addProvider(new BouncyCastleProvider());
         this.algorithm = algorithm;
         this.key = convertToKey(keys);
@@ -47,27 +46,27 @@ public class AES {
     }
 
     public AES() throws Exception {
-        this(CIPHER_ALGORITHM,256);
+        this(CIPHER_ALGORITHM, 256);
     }
 
 
     public AES(int generateKeySize) throws Exception {
-        this(CIPHER_ALGORITHM,generateKeySize);
+        this(CIPHER_ALGORITHM, generateKeySize);
     }
 
-    public AES(byte[] keys, byte[] ivs) throws Exception{
-        this(CIPHER_ALGORITHM,keys,ivs);
+    public AES(byte[] keys, byte[] ivs) throws Exception {
+        this(CIPHER_ALGORITHM, keys, ivs);
     }
 
-    public AES(String key, String iv) throws Exception{
-        this(CIPHER_ALGORITHM,key.getBytes(StandardCharsets.UTF_8),iv.getBytes(StandardCharsets.UTF_8));
+    public AES(String key, String iv) throws Exception {
+        this(CIPHER_ALGORITHM, key.getBytes(StandardCharsets.UTF_8), iv.getBytes(StandardCharsets.UTF_8));
     }
 
-    private byte[] randomIv(){
+    private byte[] randomIv() {
         Random random = new Random();
         byte[] bytes = new byte[16];
         random.nextBytes(bytes);
-        return  bytes;
+        return bytes;
     }
 
     private SecretKey generateKey(int keySize) throws Exception {
@@ -83,11 +82,11 @@ public class AES {
         return params;
     }
 
-    private Key convertToKey(byte[] keyBytes){
+    private Key convertToKey(byte[] keyBytes) {
         return new SecretKeySpec(keyBytes, KEY_ALGORITHM);
     }
 
-    public byte[] getKey(){
+    public byte[] getKey() {
         return key.getEncoded();
     }
 

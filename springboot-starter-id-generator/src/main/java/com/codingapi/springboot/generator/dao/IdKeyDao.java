@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -16,8 +17,8 @@ public class IdKeyDao {
 
     private final ResultSetHandler<List<IdKey>> handler;
 
-    public IdKeyDao(String jdbcUrl) {
-        this.dbHelper = new DbHelper<>(jdbcUrl);
+    public IdKeyDao(DataSource dataSource) {
+        this.dbHelper = new DbHelper<>(dataSource);
         this.handler = rs -> {
             List<IdKey> list = new ArrayList<>();
             while (rs.next()) {
@@ -32,8 +33,8 @@ public class IdKeyDao {
     }
 
     @SneakyThrows
-    public boolean save(IdKey generator) {
-        return dbHelper.update(new DbHelper.IUpdate() {
+    public void save(IdKey generator) {
+        dbHelper.update(new DbHelper.IUpdate() {
             @Override
             public int update(Connection connection, QueryRunner queryRunner) throws SQLException {
                 List<IdKey> list = queryRunner.query(connection, "SELECT * FROM ID_GENERATOR WHERE TAG = ?", handler, generator.getKey());
@@ -44,7 +45,7 @@ public class IdKeyDao {
                 String sql = "INSERT INTO ID_GENERATOR (ID, UPDATE_TIME, TAG) VALUES (?, ?, ?)";
                 return queryRunner.update(connection, sql, generator.getId(), generator.getUpdateTime(), generator.getKey());
             }
-        }) > 0;
+        });
     }
 
 
@@ -61,7 +62,7 @@ public class IdKeyDao {
 
     @SneakyThrows
     public IdKey updateMaxId(IdKey generator) {
-        return dbHelper.updateAndQuery(new DbHelper.IUpdateAndQuery<List<IdKey>>() {
+        return dbHelper.updateAndQuery(new DbHelper.IUpdateAndQuery<>() {
             @Override
             public List<IdKey> updateAndQuery(Connection connection, QueryRunner queryRunner) throws SQLException {
                 queryRunner.update(connection, "UPDATE ID_GENERATOR SET ID = ID + 1 WHERE TAG = ?", generator.getKey());
@@ -73,7 +74,7 @@ public class IdKeyDao {
 
     @SneakyThrows
     public List<IdKey> findAll() throws SQLException {
-        return dbHelper.query(new DbHelper.IQuery<List<IdKey>>() {
+        return dbHelper.query(new DbHelper.IQuery<>() {
             @Override
             public List<IdKey> query(Connection connection, QueryRunner queryRunner) throws SQLException {
                 return queryRunner.query(connection, "SELECT * FROM ID_GENERATOR", handler);
@@ -85,8 +86,8 @@ public class IdKeyDao {
         dbHelper.execute(new DbHelper.IExecute() {
             @Override
             public void execute(Connection connection, QueryRunner queryRunner) throws SQLException {
-                String sql = "CREATE TABLE IF NOT EXISTS ID_GENERATOR (TAG VARCHAR(128) NOT NULL, ID BIGINT NOT NULL, UPDATE_TIME BIGINT NOT NULL, PRIMARY KEY (TAG))";
-                queryRunner.execute(connection, sql);
+                String sql = "CREATE TABLE IF NOT EXISTS ID_GENERATOR (TAG TEXT NOT NULL, ID INTEGER  NOT NULL, UPDATE_TIME INTEGER NOT NULL, PRIMARY KEY (TAG))";
+                queryRunner.update(connection, sql);
             }
         });
     }

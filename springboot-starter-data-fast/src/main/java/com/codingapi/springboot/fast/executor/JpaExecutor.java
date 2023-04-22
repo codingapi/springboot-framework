@@ -5,7 +5,7 @@ import com.codingapi.springboot.framework.dto.response.SingleResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import java.util.Collection;
 import java.util.List;
 

@@ -1,0 +1,5 @@
+com.codingapi.springboot.framework.AutoConfiguration
+com.codingapi.springboot.framework.event.SpringEventConfiguration
+com.codingapi.springboot.framework.exception.ExceptionConfiguration
+com.codingapi.springboot.framework.handler.HandlerBeanDefinitionRegistrar
+com.codingapi.springboot.framework.handler.SpringHandlerConfiguration
