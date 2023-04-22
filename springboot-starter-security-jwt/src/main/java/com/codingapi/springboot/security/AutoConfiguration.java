@@ -82,7 +82,8 @@ public class AutoConfiguration {
                 .and()
                 .authorizeHttpRequests(
                         registry -> {
-                            registry.requestMatchers(properties.getAuthenticatedUrls()).authenticated()
+                            registry.requestMatchers(properties.getIgnoreUrls()).permitAll()
+                                    .requestMatchers(properties.getAuthenticatedUrls()).authenticated()
                                     .anyRequest().permitAll();
                         }
                 )
