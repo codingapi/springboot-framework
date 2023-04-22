@@ -58,16 +58,18 @@ public class AutoConfiguration {
     @ConditionalOnMissingBean
     public SecurityLoginHandler securityLoginHandler(){
         return (request, response, handler) -> {
-
         };
     }
+
 
     @Bean
     @ConditionalOnMissingBean
     public SecurityFilterChain filterChain(HttpSecurity security, Jwt jwt,SecurityLoginHandler loginHandler,
                                            SecurityJwtProperties properties) throws Exception {
-        //before add addCorsMappings to enable cors.
+        //disable basic auth
         security.httpBasic().disable();
+
+        //before add addCorsMappings to enable cors.
         security.cors();
         if(properties.isDisableCsrf() ){
             security.csrf().disable();
@@ -78,9 +80,12 @@ public class AutoConfiguration {
                 .authenticationEntryPoint(new MyUnAuthenticationEntryPoint())
                 .accessDeniedHandler(new MyAccessDeniedHandler())
                 .and()
-                .authorizeHttpRequests()
-                .requestMatchers(properties.getAuthenticatedUrls()).authenticated()
-                .and()
+                .authorizeHttpRequests(
+                        registry -> {
+                            registry.requestMatchers(properties.getAuthenticatedUrls()).authenticated()
+                                    .anyRequest().permitAll();
+                        }
+                )
                 //default login url :/login
                 .formLogin()
                 .loginProcessingUrl(properties.getLoginProcessingUrl())
@@ -90,8 +95,7 @@ public class AutoConfiguration {
                 .logout()
                 .logoutUrl(properties.getLogoutUrl())
                 .addLogoutHandler(new MyLogoutHandler())
-                .logoutSuccessHandler(new MyLogoutSuccessHandler())
-                .permitAll();
+                .logoutSuccessHandler(new MyLogoutSuccessHandler());
 
         return security.build();
     }
