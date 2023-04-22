@@ -32,7 +32,7 @@
         <nexus.staging.maven.plugin>1.6.3</nexus.staging.maven.plugin>
 
         <codingapi.framework.version>${project.version}</codingapi.framework.version>
-        <fastjson.version>2.0.23</fastjson.version>
+        <fastjson.version>2.0.28</fastjson.version>
         <jsonwebtoken.jjwt.version>0.11.5</jsonwebtoken.jjwt.version>
         <commons-io.version>2.11.0</commons-io.version>
         <commons-dbutils.version>1.7</commons-dbutils.version>
@@ -40,7 +40,7 @@
         <perf4j.version>0.9.16</perf4j.version>
         <bcprov-jdk15on.version>1.70</bcprov-jdk15on.version>
         <commons-crypto.version>1.2.0</commons-crypto.version>
-
+        <org.yaml.snakeyaml.version>2.0</org.yaml.snakeyaml.version>
     </properties>
 
 
@@ -49,6 +49,17 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.yaml</groupId>
+                    <artifactId>snakeyaml</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
         </dependency>
 
         <dependency>
@@ -73,6 +84,12 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${org.yaml.snakeyaml.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.bouncycastle</groupId>
