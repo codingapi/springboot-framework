@@ -5,7 +5,8 @@ import com.codingapi.springboot.security.properties.SecurityJwtProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.Base64Utils;
+
+import java.util.Base64;
 
 @Configuration
 public class MyCryptoConfiguration {
@@ -13,7 +14,8 @@ public class MyCryptoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public AES aes(SecurityJwtProperties properties) throws Exception {
-        AES aes = new AES(Base64Utils.decodeFromString(properties.getAseKey()), Base64Utils.decodeFromString(properties.getAseIv()));
+        AES aes = new AES(Base64.getDecoder().decode(properties.getAseKey().getBytes()),
+                Base64.getDecoder().decode(properties.getAseIv()));
         MyAES.getInstance().init(aes);
         return aes;
     }

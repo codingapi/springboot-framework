@@ -2,7 +2,8 @@ package com.codingapi.springboot.framework.crypto;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.util.Base64Utils;
+
+import java.util.Base64;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -17,8 +18,9 @@ class AESTest {
         key = aes.getKey();
         iv = aes.getIv();
 
-        System.out.println("keys:" + Base64Utils.encodeToString(key));
-        System.out.println("ivs:" + Base64Utils.encodeToString(iv));
+        Base64.Encoder encoder = Base64.getEncoder();
+        System.out.println("keys:" + encoder.encodeToString(key));
+        System.out.println("ivs:" + encoder.encodeToString(iv));
 
     }
 
@@ -26,10 +28,12 @@ class AESTest {
     void aes1() throws Exception {
         AES aes = new AES();
         String content = "hello world";
-        String encrypt = Base64Utils.encodeToString(aes.encrypt(content.getBytes()));
+        Base64.Encoder encoder = Base64.getEncoder();
+        String encrypt = encoder.encodeToString(aes.encrypt(content.getBytes()));
         System.out.println("encrypt:" + encrypt);
 
-        String decrypt = new String(aes.decrypt(Base64Utils.decodeFromString(encrypt)));
+        Base64.Decoder decoder = Base64.getDecoder();
+        String decrypt = new String(aes.decrypt(decoder.decode(encrypt)));
         System.out.println("decrypt:" + decrypt);
 
         assertEquals(content, decrypt, "AES encrypt error");
@@ -39,7 +43,8 @@ class AESTest {
     void aes2() throws Exception {
         AES aes = new AES(key, iv);
         String content = "hello world";
-        String encrypt = Base64Utils.encodeToString(aes.encrypt(content.getBytes()));
+        Base64.Encoder encoder = Base64.getEncoder();
+        String encrypt = encoder.encodeToString(aes.encrypt(content.getBytes()));
         System.out.println("encrypt:" + encrypt);
     }
 

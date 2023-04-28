@@ -2,9 +2,9 @@ package com.codingapi.springboot.security.crypto;
 
 import com.codingapi.springboot.framework.crypto.AES;
 import lombok.SneakyThrows;
-import org.springframework.util.Base64Utils;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 public class MyAES {
 
@@ -25,12 +25,12 @@ public class MyAES {
 
     @SneakyThrows
     public String encode(String input)  {
-        return Base64Utils.encodeToString(aes.encrypt(input.getBytes(StandardCharsets.UTF_8)));
+        return Base64.getEncoder().encodeToString(aes.encrypt(input.getBytes(StandardCharsets.UTF_8)));
     }
 
     @SneakyThrows
     public String decode(String input)  {
-        return new String(aes.decrypt(Base64Utils.decodeFromString(input)),StandardCharsets.UTF_8);
+        return new String(aes.decrypt(Base64.getDecoder().decode(input)),StandardCharsets.UTF_8);
     }
 
     @SneakyThrows

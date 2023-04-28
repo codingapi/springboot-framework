@@ -1,9 +1,9 @@
 package com.codingapi.springboot.framework.crypto;
 
 import lombok.SneakyThrows;
-import org.springframework.util.Base64Utils;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 public class DESUtils {
 
@@ -18,7 +18,7 @@ public class DESUtils {
 
     @SneakyThrows
     private DESUtils() {
-        this.des = new DES(Base64Utils.decodeFromString(key));
+        this.des = new DES(Base64.getDecoder().decode(key));
     }
 
     public static DESUtils getInstance() {
@@ -26,11 +26,13 @@ public class DESUtils {
     }
 
     public String encode(String input) throws Exception {
-        return Base64Utils.encodeToString(des.encrypt(input.getBytes(StandardCharsets.UTF_8)));
+        return Base64.getEncoder().encodeToString(des.encrypt(input.getBytes(StandardCharsets.UTF_8)));
     }
 
+
     public String decode(String input) throws Exception {
-        return new String(des.decrypt(Base64Utils.decodeFromString(input)),StandardCharsets.UTF_8);
+        Base64.Decoder decoder = Base64.getDecoder();
+        return new String(des.decrypt(decoder.decode(input)),StandardCharsets.UTF_8);
     }
 
     public byte[] encode(byte[] input) throws Exception {

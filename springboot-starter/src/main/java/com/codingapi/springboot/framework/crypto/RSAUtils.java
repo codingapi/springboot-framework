@@ -1,9 +1,9 @@
 package com.codingapi.springboot.framework.crypto;
 
 import lombok.SneakyThrows;
-import org.springframework.util.Base64Utils;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 public class RSAUtils {
 
@@ -22,7 +22,7 @@ public class RSAUtils {
 
     @SneakyThrows
     private RSAUtils() {
-        this.rsa = new RSA(Base64Utils.decodeFromString(privateKey),Base64Utils.decodeFromString(publicKey));
+        this.rsa = new RSA(Base64.getDecoder().decode(privateKey),Base64.getDecoder().decode(publicKey));
     }
 
     public static RSAUtils getInstance() {
@@ -30,11 +30,11 @@ public class RSAUtils {
     }
 
     public String encode(String input) throws Exception {
-        return Base64Utils.encodeToString(rsa.encrypt(input.getBytes(StandardCharsets.UTF_8)));
+        return Base64.getEncoder().encodeToString(rsa.encrypt(input.getBytes(StandardCharsets.UTF_8)));
     }
 
     public String decode(String input) throws Exception {
-        return new String(rsa.decrypt(Base64Utils.decodeFromString(input)),StandardCharsets.UTF_8);
+        return new String(rsa.decrypt(Base64.getDecoder().decode(input)),StandardCharsets.UTF_8);
     }
 
     public byte[] encode(byte[] input) throws Exception {

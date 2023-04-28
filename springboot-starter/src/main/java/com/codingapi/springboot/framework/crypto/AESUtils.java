@@ -1,9 +1,9 @@
 package com.codingapi.springboot.framework.crypto;
 
 import lombok.SneakyThrows;
-import org.springframework.util.Base64Utils;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 public class AESUtils {
 
@@ -24,7 +24,7 @@ public class AESUtils {
 
     @SneakyThrows
     private AESUtils() {
-        this.aes = new AES(Base64Utils.decodeFromString(key),Base64Utils.decodeFromString(iv));
+        this.aes = new AES(Base64.getDecoder().decode(key),Base64.getDecoder().decode(iv));
     }
 
     public static AESUtils getInstance() {
@@ -32,11 +32,11 @@ public class AESUtils {
     }
 
     public String encode(String input) throws Exception {
-        return Base64Utils.encodeToString(aes.encrypt(input.getBytes(StandardCharsets.UTF_8)));
+        return Base64.getEncoder().encodeToString(aes.encrypt(input.getBytes(StandardCharsets.UTF_8)));
     }
 
     public String decode(String input) throws Exception {
-        return new String(aes.decrypt(Base64Utils.decodeFromString(input)),StandardCharsets.UTF_8);
+        return new String(aes.decrypt(Base64.getDecoder().decode(input)),StandardCharsets.UTF_8);
     }
 
     public byte[] encode(byte[] input) throws Exception {
