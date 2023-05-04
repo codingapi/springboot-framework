@@ -1,12 +1,12 @@
 package com.codingapi.springboot.framework;
 
-import org.springframework.boot.SpringApplication;
+import com.codingapi.springboot.framework.boot.DynamicApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class FrameWorkApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(FrameWorkApplication.class, args);
+        DynamicApplication.run(FrameWorkApplication.class, args);
     }
 }
