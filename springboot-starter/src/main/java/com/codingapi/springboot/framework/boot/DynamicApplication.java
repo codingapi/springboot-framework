@@ -4,7 +4,6 @@ import lombok.Setter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
@@ -12,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class DynamicApplication {
 
@@ -40,6 +40,7 @@ public class DynamicApplication {
 
 
     public static void run(Class<?> applicationClass, String[] args) {
+        DynamicApplication.getInstance().addDynamicJars();
         DynamicApplication.getInstance().run0(applicationClass, args);
     }
 
@@ -50,31 +51,29 @@ public class DynamicApplication {
     public void restart0() {
         Thread thread = new Thread(() -> {
             context.close();
-            try {
-                this.addDynamicJars();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            this.addDynamicJars();
             this.run0(applicationClass, runArgs);
         });
         thread.setDaemon(false);
         thread.start();
     }
 
-    private void addDynamicJars() throws IOException {
+    private void addDynamicJars(){
         Path libsPath = Paths.get(jarsFolder);
         if (Files.exists(libsPath) && Files.isDirectory(libsPath)) {
             System.out.println("Start Load Dynamic Jars:");
             List<URL> jarUrls = new ArrayList<>();
-            Files.list(libsPath)
-                    .filter(file -> file.toString().endsWith(".jar"))
-                    .forEach(file -> {
-                        try {
-                            URL url = file.toUri().toURL();
-                            jarUrls.add(url);
-                            System.out.println(url);
-                        } catch (Exception ignored) {}
-                    });
+            try(Stream<Path> stream = Files.list(libsPath)){
+                stream
+                        .filter(file -> file.toString().endsWith(".jar"))
+                        .map(Path::toUri)
+                        .forEach(uri -> {
+                            try {
+                                jarUrls.add(uri.toURL());
+                                System.out.println(uri);
+                            } catch (Exception ignored) {}
+                        });
+            }catch (Exception ignored){}
             URL[] urls = jarUrls.toArray(new URL[0]);
             URLClassLoader urlClassLoader = new URLClassLoader(urls, ClassLoader.getSystemClassLoader());
             Thread.currentThread().setContextClassLoader(urlClassLoader);
