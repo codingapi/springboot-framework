@@ -60,7 +60,11 @@ If you find something incorrect or missing, please leave comments / suggestions.
 
 [CONTRIBUTING](./CONTRIBUTING.md)
 
-## example
+## Documentation
+
+https://github.com/codingapi/springboot-framework/wiki
+
+## Example
 
 见 [springboot-example](https://github.com/codingapi/springboot-example) 
 
