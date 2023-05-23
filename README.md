@@ -11,7 +11,6 @@
 
 ## Project Modules Description | 项目模块介绍
 
-* springboot-example | 示例项目
 * springboot-starter | Springboot领域驱动框架
 * springboot-starter-data-fast | 快速数据呈现框架
 * springboot-starter-id-generator | Id自增策略框架
