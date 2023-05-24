@@ -12,4 +12,8 @@ public class DemoChangeLogHandler implements IHandler<DemoChangeEvent> {
         log.info("print before name :{},current name :{}", event.getBeforeName(), event.getCurrentName());
     }
 
+    @Override
+    public void error(Exception exception) {
+        log.error("DemoChangeLogHandler error", exception);
+    }
 }

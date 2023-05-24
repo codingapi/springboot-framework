@@ -1,29 +1,37 @@
 package com.codingapi.springboot.framework.crypto;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
-import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-@Slf4j
 class RSATest {
 
     @Test
-    void encode() throws Exception {
-        String word = "123";
-        String encode = RSAUtils.getInstance().encode(word);
-        log.info("encode:{}",encode);
-        String decode = RSAUtils.getInstance().decode(encode);
-        assertEquals(word,decode,"AES encode error");
+    void getPrivateKey()  throws NoSuchAlgorithmException {
+        RSA rsa = new RSA();
+        assertNotNull(rsa.getPrivateKey());
+        Base64.Encoder encoder = Base64.getEncoder();
+        System.out.println("privateKey:" + encoder.encodeToString(rsa.getPrivateKey()));
     }
 
     @Test
-    void decode() throws Exception {
-        byte[] word = "123".getBytes(StandardCharsets.UTF_8);
-        byte[] encode = RSAUtils.getInstance().encode(word);
-        byte[] decode = RSAUtils.getInstance().decode(encode);
-        assertEquals(new String(word),new String(decode),"AES encode error");
+    void getPublicKey() throws NoSuchAlgorithmException {
+        RSA rsa = new RSA();
+        assertNotNull(rsa.getPublicKey());
+        Base64.Encoder encoder = Base64.getEncoder();
+        System.out.println("publicKey:" + encoder.encodeToString(rsa.getPublicKey()));
     }
+
+    @Test
+    void encryptAndDecrypt() throws Exception {
+        RSA rsa = new RSA();
+        String content = "hello world";
+        byte[] encrypt = rsa.encrypt(content.getBytes());
+        byte[] data = rsa.decrypt(encrypt);
+        assertEquals(content,new String(data));
+    }
+
 }
