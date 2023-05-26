@@ -38,6 +38,21 @@ public class SecurityJwtApplicationTest {
     }
 
     @Test
+    void loginError() throws Exception {
+        JSONObject json = new JSONObject();
+        json.put("username","admin");
+        json.put("password","12345678");
+        mockMvc.perform(post("/user/login")
+                .content(json.toJSONString().getBytes(StandardCharsets.UTF_8))
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(result -> {
+            String body = result.getResponse().getContentAsString();
+            JSONObject jsonObject = JSONObject.parseObject(body);
+            log.info("body:{}", jsonObject);
+            assertEquals(jsonObject.getString("errCode"),"login.error","login error");
+        });
+    }
+
+    @Test
     void noToken() throws Exception {
         mockMvc.perform(get("/api/hello")
                 .contentType(MediaType.APPLICATION_JSON)).andExpect(result -> {
