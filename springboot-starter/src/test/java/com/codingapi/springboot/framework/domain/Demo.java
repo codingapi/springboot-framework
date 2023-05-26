@@ -5,7 +5,11 @@ import com.codingapi.springboot.framework.event.EventPusher;
 import com.codingapi.springboot.framework.serializable.JsonSerializable;
 import com.codingapi.springboot.framework.serializable.MapSerializable;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+@ToString
+@NoArgsConstructor
 public class Demo implements JsonSerializable, MapSerializable {
 
     @Getter
@@ -19,10 +23,10 @@ public class Demo implements JsonSerializable, MapSerializable {
     }
 
     public void changeName(String name) {
-        String beforeName = this.name;
+//        String beforeName = this.name;
         this.name = name;
         //push event
-        EventPusher.push(new DemoChangeEvent(beforeName, name));
+//        EventPusher.push(new DemoChangeEvent(beforeName, name));
     }
 
 }
