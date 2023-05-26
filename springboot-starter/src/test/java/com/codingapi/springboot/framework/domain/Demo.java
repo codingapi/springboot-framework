@@ -10,6 +10,7 @@ public class Demo implements JsonSerializable, MapSerializable {
 
     @Getter
     private long id;
+
     @Getter
     private String name;
 
@@ -21,7 +22,7 @@ public class Demo implements JsonSerializable, MapSerializable {
     public void changeName(String name) {
         String beforeName = this.name;
         this.name = name;
-        //push event
+//        push event
         EventPusher.push(new DemoChangeEvent(beforeName, name));
     }
 
