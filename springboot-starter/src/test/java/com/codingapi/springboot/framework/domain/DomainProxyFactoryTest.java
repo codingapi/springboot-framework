@@ -13,6 +13,6 @@ class DomainProxyFactoryTest {
         demo.changeAnimalName("123");
         demo.changeName("test");
         demo.changeName("test123");
-        System.out.println(demo);
+        demo.persist();
     }
 }

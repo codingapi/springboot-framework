@@ -6,7 +6,7 @@ import com.codingapi.springboot.framework.serializable.JsonSerializable;
 import com.codingapi.springboot.framework.serializable.MapSerializable;
 import lombok.Getter;
 
-public class Demo implements JsonSerializable, MapSerializable {
+public class Demo implements JsonSerializable, MapSerializable, IDomain {
 
     @Getter
     private final long id;
