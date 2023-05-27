@@ -1,11 +1,14 @@
-package com.codingapi.springboot.framework.domain.field;
+package com.codingapi.springboot.framework.domain.proxy;
+
+import com.codingapi.springboot.framework.domain.event.DomainCreateEvent;
+import com.codingapi.springboot.framework.event.EventPusher;
 
 import java.lang.reflect.InvocationTargetException;
 
 /**
  * 实体代理工厂
  */
-public class FieldProxyFactory {
+public class DomainProxyFactory {
 
     public static <T> T create(Class<T> entityClass, Object... args) {
         FieldValueInterceptor interceptor = null;
@@ -14,6 +17,8 @@ public class FieldProxyFactory {
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-        return (T) interceptor.createProxy();
+        T result = (T) interceptor.createProxy();
+        EventPusher.push(new DomainCreateEvent(result));
+        return result;
     }
 }

@@ -1,4 +1,4 @@
-package com.codingapi.springboot.framework.domain.field;
+package com.codingapi.springboot.framework.domain.event;
 
 import com.codingapi.springboot.framework.event.IEvent;
 import lombok.Getter;

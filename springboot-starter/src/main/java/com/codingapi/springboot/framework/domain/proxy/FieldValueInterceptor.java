@@ -1,5 +1,6 @@
-package com.codingapi.springboot.framework.domain.field;
+package com.codingapi.springboot.framework.domain.proxy;
 
+import com.codingapi.springboot.framework.domain.event.FieldChangeEvent;
 import com.codingapi.springboot.framework.event.EventPusher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
