@@ -10,6 +10,9 @@ class FieldProxyFactoryTest {
     @Test
     void createEntity() {
         Demo demo = FieldProxyFactory.create(Demo.class, "test");
-        demo.changeName("123");
+        demo.changeAinimalName("123");
+        demo.changeAinimalName("234");
+        demo.changeName("test");
+        demo.changeName("test123");
     }
 }

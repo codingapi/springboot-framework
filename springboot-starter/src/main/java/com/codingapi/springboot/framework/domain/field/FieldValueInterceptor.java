@@ -76,7 +76,7 @@ public class FieldValueInterceptor implements MethodInterceptor {
         }
 
         if(fields.isEmpty()){
-            this.readFields();
+            this.readFields(fields,target,propertyDescriptors);
         }
         Object result = method.invoke(target, args);
         this.compareAndUpdateField();
@@ -88,12 +88,26 @@ public class FieldValueInterceptor implements MethodInterceptor {
      * @throws InvocationTargetException InvocationTargetException
      * @throws IllegalAccessException InvocationTargetException
      */
-    private void readFields() throws InvocationTargetException, IllegalAccessException {
+    private void readFields(Map<String,Object> fields, Object target,PropertyDescriptor[] propertyDescriptors) throws InvocationTargetException, IllegalAccessException {
         for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
             String name = propertyDescriptor.getName();
             Object value = propertyDescriptor.getReadMethod().invoke(target);
-            fields.put(name, value);
+            if (isPrimitive(value)) {
+                fields.put(name, value);
+            }else {
+                Map<String,Object> childFields = new HashMap<>();
+                this.readFields(childFields,value,BeanUtils.getPropertyDescriptors(value.getClass()));
+                fields.put(name, childFields);
+            }
         }
+    }
+
+
+    private boolean isPrimitive(Object obj) {
+        return obj instanceof String || obj instanceof Integer || obj instanceof Long
+                || obj instanceof Double || obj instanceof Float || obj instanceof Boolean
+                || obj instanceof Short || obj instanceof Byte || obj instanceof Character
+                || obj instanceof Enum || obj instanceof Class;
     }
 
     /**
@@ -106,10 +120,27 @@ public class FieldValueInterceptor implements MethodInterceptor {
             String name = propertyDescriptor.getName();
             Object newValue = propertyDescriptor.getReadMethod().invoke(target);
             Object oldValue = fields.get(name);
-            if (!newValue.equals(oldValue)) {
-                pushEvent(name, oldValue, newValue);
+            if(isPrimitive(newValue)) {
+                if (!newValue.equals(oldValue)) {
+                    pushEvent(name, oldValue, newValue);
+                }
+                fields.put(name, newValue);
+            }else{
+                Map<String,Object> newFields = new HashMap<>();
+                this.readFields(newFields,newValue,BeanUtils.getPropertyDescriptors(newValue.getClass()));
+
+                Map<String,Object> oldFields = (Map<String,Object>)oldValue;
+                for (String key:oldFields.keySet()){
+                    Object oldChildValue = oldFields.get(key);
+                    Object newChildValue = newFields.get(key);
+                    if(!oldChildValue.equals(newChildValue)){
+                        String namePrefix = name + ".";
+                        pushEvent(namePrefix+key, oldChildValue, newChildValue);
+                    }
+                }
+                fields.put(name, newFields);
             }
-            fields.put(name, newValue);
+
         }
     }
 
