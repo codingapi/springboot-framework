@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class Ainimal {
+public class Animal {
 
     private String name;
 }

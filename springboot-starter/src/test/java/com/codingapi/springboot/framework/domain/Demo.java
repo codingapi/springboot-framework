@@ -9,19 +9,19 @@ import lombok.Getter;
 public class Demo implements JsonSerializable, MapSerializable {
 
     @Getter
-    private long id;
+    private final long id;
 
     @Getter
     private String name;
 
     @Getter
-    private Ainimal ainimal;
+    private Animal animal;
 
     public Demo(String name) {
         this.name = name;
         this.id = System.currentTimeMillis();
-        this.ainimal = new Ainimal();
-        this.ainimal.setName("cat");
+        this.animal = new Animal();
+        this.animal.setName("cat");
     }
 
     public void changeName(String name) {
@@ -35,7 +35,7 @@ public class Demo implements JsonSerializable, MapSerializable {
         EventPusher.push(new DemoChangeEvent(beforeName, name));
     }
 
-    public void changeAinimalName(String name) {
-        this.ainimal.setName(name);
+    public void changeAnimalName(String name) {
+        this.animal.setName(name);
     }
 }

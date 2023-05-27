@@ -10,8 +10,8 @@ class DomainProxyFactoryTest {
     @Test
     void createEntity() {
         Demo demo = DomainProxyFactory.create(Demo.class, "test");
-        demo.changeAinimalName("123");
-        demo.changeAinimalName("234");
+        demo.changeAnimalName("123");
+        demo.changeAnimalName("234");
         demo.changeName("test");
         demo.changeName("test123");
         System.out.println(demo);
