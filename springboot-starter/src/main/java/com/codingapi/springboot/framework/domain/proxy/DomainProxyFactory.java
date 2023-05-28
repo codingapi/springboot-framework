@@ -11,9 +11,9 @@ import java.lang.reflect.InvocationTargetException;
 public class DomainProxyFactory {
 
     public static <T> T create(Class<T> entityClass, Object... args) {
-        FieldValueInterceptor interceptor = null;
+        DomainChangeInterceptor interceptor = null;
         try {
-            interceptor = new FieldValueInterceptor(entityClass, args);
+            interceptor = new DomainChangeInterceptor(entityClass, args);
         } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }

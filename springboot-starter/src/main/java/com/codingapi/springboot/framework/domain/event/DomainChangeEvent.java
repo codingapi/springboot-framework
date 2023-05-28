@@ -8,7 +8,7 @@ import lombok.ToString;
  */
 @Getter
 @ToString(callSuper = true)
-public class FieldChangeEvent extends DomainEvent {
+public class DomainChangeEvent extends DomainEvent {
 
     /**
      * 字段名称
@@ -23,7 +23,7 @@ public class FieldChangeEvent extends DomainEvent {
      */
     private final Object newValue;
 
-    public FieldChangeEvent(Object entity, String fieldName, Object oldValue, Object newValue) {
+    public DomainChangeEvent(Object entity, String fieldName, Object oldValue, Object newValue) {
         super(entity);
         this.fieldName = fieldName;
         this.oldValue = oldValue;

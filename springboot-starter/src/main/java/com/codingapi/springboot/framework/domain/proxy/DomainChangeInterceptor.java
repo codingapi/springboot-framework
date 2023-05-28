@@ -1,6 +1,6 @@
 package com.codingapi.springboot.framework.domain.proxy;
 
-import com.codingapi.springboot.framework.domain.event.FieldChangeEvent;
+import com.codingapi.springboot.framework.domain.event.DomainChangeEvent;
 import com.codingapi.springboot.framework.event.EventPusher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -18,7 +18,7 @@ import java.util.Map;
  * 实体代理
  */
 @Slf4j
-public class FieldValueInterceptor implements MethodInterceptor {
+public class DomainChangeInterceptor implements MethodInterceptor {
 
     // 目标类
     private final Class<?> targetClass;
@@ -34,7 +34,7 @@ public class FieldValueInterceptor implements MethodInterceptor {
     // 目标类属性值
     private final Map<String, Object> fields;
 
-    public FieldValueInterceptor(Class<?> targetClass, Object... args) throws NoSuchMethodException,
+    public DomainChangeInterceptor(Class<?> targetClass, Object... args) throws NoSuchMethodException,
             InvocationTargetException, InstantiationException, IllegalAccessException {
         this.targetClass = targetClass;
         this.args = args;
@@ -146,6 +146,6 @@ public class FieldValueInterceptor implements MethodInterceptor {
     }
 
     private void pushEvent(String fieldName, Object oldValue, Object newValue) {
-        EventPusher.push(new FieldChangeEvent(target,fieldName,oldValue,newValue));
+        EventPusher.push(new DomainChangeEvent(target,fieldName,oldValue,newValue));
     }
 }
