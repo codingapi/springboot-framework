@@ -14,5 +14,12 @@ class DomainProxyFactoryTest {
         demo.changeName("test");
         demo.changeName("test123");
         demo.persist();
+        demo.delete();
+    }
+
+    @Test
+    void deleteEntity() {
+        Demo demo = DomainProxyFactory.create(Demo.class, "test");
+        demo.delete();
     }
 }

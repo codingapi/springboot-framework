@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Handler
-public class DomainPersistEventHandler implements IHandler<DomainPersistEvent>{
+public class DemoPersistEventHandler implements IHandler<DomainPersistEvent>{
 
     @Override
     public void handler(DomainPersistEvent event) {

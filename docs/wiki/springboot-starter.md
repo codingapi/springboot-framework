@@ -177,16 +177,23 @@ class DomainProxyFactoryTest {
         demo.changeName("test");
         //这里将会抛出FieldChangeEvent事件
         demo.changeName("test123");
+        //这里将会抛出DomainPersistEvent事件
+        demo.persist();
+        //这里将会抛出DomainDeleteEvent事件
+        demo.delete();
+        
         System.out.println(demo);
     }
 }
 ```
 执行的打印如下：
 ```
-2023-05-27T10:51:12.748+08:00  INFO 1421 --- [           main] c.c.s.f.handler.DemoCreateHandler        : create domain -> com.codingapi.springboot.framework.domain.Demo@37c7766e
-2023-05-27T10:51:12.753+08:00  INFO 1421 --- [           main] c.c.s.f.h.EntityFiledChangeHandler       : field change event -> FieldChangeEvent(simpleName=Demo, timestamp=1685155872753, fieldName=animal.name, oldValue=cat, newValue=123)
-2023-05-27T10:51:12.760+08:00  INFO 1421 --- [           main] c.c.s.f.h.EntityFiledChangeHandler       : field change event -> FieldChangeEvent(simpleName=Demo, timestamp=1685155872760, fieldName=name, oldValue=test, newValue=test123)
-com.codingapi.springboot.framework.domain.Demo@37c7766e
+2023-05-28T08:57:00.505+08:00  INFO 13748 --- [           main] c.c.s.f.handler.DemoCreateHandler        : create domain -> com.codingapi.springboot.framework.domain.Demo@4cc12db2
+2023-05-28T08:57:00.507+08:00  INFO 13748 --- [           main] c.c.s.f.h.EntityFiledChangeHandler       : field change event -> FieldChangeEvent(simpleName=Demo, timestamp=1685235420507, fieldName=animal.name, oldValue=cat, newValue=123)
+2023-05-28T08:57:00.512+08:00  INFO 13748 --- [           main] c.c.s.f.h.EntityFiledChangeHandler       : field change event -> FieldChangeEvent(simpleName=Demo, timestamp=1685235420512, fieldName=name, oldValue=test, newValue=test123)
+2023-05-28T08:57:00.513+08:00  INFO 13748 --- [           main] c.c.s.f.handler.DemoPersistEventHandler  : DomainPersistEvent handler DomainPersistEvent(entity=com.codingapi.springboot.framework.domain.Demo@4cc12db2, simpleName=Demo, timestamp=1685235420513)
+2023-05-28T08:57:00.516+08:00  INFO 13748 --- [           main] c.c.s.f.handler.DemoDeleteHandler        : delete domain -> com.codingapi.springboot.framework.domain.Demo@4cc12db2
+
 ```
 
 ## 转换工具
