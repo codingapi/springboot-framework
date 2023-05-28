@@ -145,14 +145,7 @@ public class FieldValueInterceptor implements MethodInterceptor {
         }
     }
 
-    private void pushEvent(String field, Object oldValue, Object newValue) {
-        FieldChangeEvent event = new FieldChangeEvent();
-        event.setEntity(target);
-        event.setSimpleName(targetClass.getSimpleName());
-        event.setFieldName(field);
-        event.setOldValue(oldValue);
-        event.setNewValue(newValue);
-        event.setTimestamp(System.currentTimeMillis());
-        EventPusher.push(event);
+    private void pushEvent(String fieldName, Object oldValue, Object newValue) {
+        EventPusher.push(new FieldChangeEvent(target,fieldName,oldValue,newValue));
     }
 }

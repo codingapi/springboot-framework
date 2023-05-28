@@ -1,46 +1,33 @@
 package com.codingapi.springboot.framework.domain.event;
 
-import com.codingapi.springboot.framework.event.IEvent;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 /**
  * 实体字段变更事件
  */
-@Setter
 @Getter
-@ToString(exclude = {"entity"})
-public class FieldChangeEvent implements IEvent {
-
-    /**
-     * 实体对象
-     */
-    private Object entity;
-
-    /**
-     * 实体类名称
-     */
-    private String simpleName;
-
-    /**
-     * 时间戳
-     */
-    private long timestamp;
+@ToString(callSuper = true)
+public class FieldChangeEvent extends DomainEvent {
 
     /**
      * 字段名称
      */
-    private String fieldName;
+    private final String fieldName;
     /**
      * 旧的值
      */
-    private Object oldValue;
+    private final Object oldValue;
     /**
      * 新的值
      */
-    private Object newValue;
+    private final Object newValue;
 
-
+    public FieldChangeEvent(Object entity, String fieldName, Object oldValue, Object newValue) {
+        super(entity);
+        this.fieldName = fieldName;
+        this.oldValue = oldValue;
+        this.newValue = newValue;
+    }
 
 }

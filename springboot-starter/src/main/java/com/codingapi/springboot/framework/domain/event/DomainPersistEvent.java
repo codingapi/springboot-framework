@@ -1,20 +1,14 @@
 package com.codingapi.springboot.framework.domain.event;
 
-import com.codingapi.springboot.framework.event.IEvent;
 import lombok.Getter;
-import lombok.ToString;
 
+/**
+ * 实体持久化事件
+ */
 @Getter
-@ToString
-public class DomainPersistEvent implements IEvent {
-
-    private final Object entity;
-    private final String simpleName;
-    private final long timestamp;
+public class DomainPersistEvent extends DomainEvent {
 
     public DomainPersistEvent(Object entity) {
-        this.entity = entity;
-        this.simpleName = entity.getClass().getSimpleName();
-        this.timestamp = System.currentTimeMillis();
+        super(entity);
     }
 }
