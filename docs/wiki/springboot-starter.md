@@ -124,12 +124,18 @@ public class DemoChangeLogHandler implements IHandler<DemoChangeEvent> {
 1. domain对象创建时的监听
 2. domain对象中的字段值发生改变时的监听
 
+同时框架提供IDomain接口，该接口提供了domain对象的持久化方法与删除方法：
+
+1. persist()：持久化方法，该方法会触发domain对象的持久化事件
+2. delete()：删除方法，该方法会触发domain对象的删除事件
+
+
 实例domain如下：
 ```java
 
 import lombok.Getter;
 
-public class Demo  {
+public class Demo implements IDomain {
 
     @Getter
     private final long id;
