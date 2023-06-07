@@ -71,19 +71,21 @@ public class TriggerContext{
     public void trigger(Trigger trigger){
         Class<? extends Trigger> clazz = trigger.getClass();
         List<TriggerHandler> triggerHandlerList = triggers.get(clazz);
-        for(TriggerHandler handler:triggerHandlerList){
-            Class<? extends Trigger> triggerClass = getTriggerClass(handler.getClass());
-            if(triggerClass.equals(clazz)) {
-                try {
-                    boolean canTrigger = handler.preTrigger(trigger);
-                    if (canTrigger) {
-                        handler.trigger(trigger);
+        if(triggerHandlerList!=null) {
+            for (TriggerHandler handler : triggerHandlerList) {
+                Class<? extends Trigger> triggerClass = getTriggerClass(handler.getClass());
+                if (triggerClass.equals(clazz)) {
+                    try {
+                        boolean canTrigger = handler.preTrigger(trigger);
+                        if (canTrigger) {
+                            handler.trigger(trigger);
+                        }
+                        if (handler.remove(trigger, canTrigger)) {
+                            triggerHandlerList.remove(handler);
+                        }
+                    } catch (Exception e) {
+                        log.warn("trigger error", e);
                     }
-                    if (handler.remove(trigger,canTrigger)) {
-                        triggerHandlerList.remove(handler);
-                    }
-                }catch (Exception e){
-                    log.warn("trigger error",e);
                 }
             }
         }
