@@ -467,7 +467,7 @@ RestClient工具类提供了对Restful接口的调用能力
 ```java
 
 import com.alibaba.fastjson.JSONObject;
-import com.codingapi.springboot.framework.rest.param.RestParamBuilder;
+import com.codingapi.springboot.framework.rest.param.RestParam;
 import com.codingapi.springboot.framework.rest.properties.HttpProxyProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -489,7 +489,7 @@ class RestClientTest {
         proxyProperties.setProxyHost("127.0.0.1");
         proxyProperties.setProxyPort(7890);
         RestClient restClient = new RestClient(proxyProperties,baseUrl,5,"{}",null,null);
-        String response = restClient.get("api/v5/market/candles", RestParamBuilder.create()
+        String response = restClient.get("api/v5/market/candles", RestParam.create()
                 .add("instId","BTC-USDT")
                 .add("bar","1m")
                 .add("limit","300")

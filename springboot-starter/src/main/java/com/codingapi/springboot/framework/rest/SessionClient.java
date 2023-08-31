@@ -1,7 +1,7 @@
 package com.codingapi.springboot.framework.rest;
 
 import com.alibaba.fastjson.JSON;
-import com.codingapi.springboot.framework.rest.param.RestParamBuilder;
+import com.codingapi.springboot.framework.rest.param.RestParam;
 import com.codingapi.springboot.framework.rest.properties.HttpProxyProperties;
 import lombok.Getter;
 import org.springframework.http.HttpHeaders;
@@ -67,12 +67,12 @@ public class SessionClient {
         return this;
     }
 
-    public String postForm(String url, RestParamBuilder restParam){
+    public String postForm(String url, RestParam restParam){
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         return httpClient.post(url,httpHeaders,restParam.toFormRequest());
     }
 
-    public String postJson(String url, RestParamBuilder restParam){
+    public String postJson(String url, RestParam restParam){
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         return httpClient.post(url,httpHeaders,restParam.toJsonRequest());
     }
@@ -90,12 +90,12 @@ public class SessionClient {
         return getHtml(url,null);
     }
 
-    public String getHtml(String url,RestParamBuilder restParam){
+    public String getHtml(String url, RestParam restParam){
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         return httpClient.get(url,httpHeaders,restParam!=null?restParam.toFormRequest():null);
     }
 
-    public String getJson(String url,RestParamBuilder restParam){
+    public String getJson(String url, RestParam restParam){
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         return httpClient.get(url,httpHeaders,restParam!=null?restParam.toFormRequest():null);
     }

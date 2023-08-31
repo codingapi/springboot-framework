@@ -1,7 +1,7 @@
 package com.codingapi.springboot.framework.rest;
 
 import com.alibaba.fastjson.JSON;
-import com.codingapi.springboot.framework.rest.param.RestParamBuilder;
+import com.codingapi.springboot.framework.rest.param.RestParam;
 import com.codingapi.springboot.framework.rest.properties.HttpProxyProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -61,20 +61,20 @@ public class RestClient {
         return emptyResponse;
     }
 
-    public String get(String api, HttpHeaders headers, RestParamBuilder paramBuilder) {
+    public String get(String api, HttpHeaders headers, RestParam paramBuilder) {
         return get(api, headers,paramBuilder!=null?paramBuilder.toFormRequest():null);
     }
 
-    public String get(String api, RestParamBuilder paramBuilder) {
+    public String get(String api, RestParam paramBuilder) {
         return get(api, httpHeaders, paramBuilder);
     }
 
     public String get(String api) {
-        return get(api, httpHeaders, (RestParamBuilder) null);
+        return get(api, httpHeaders, (RestParam) null);
     }
 
     public String get(String api, HttpHeaders headers) {
-        return get(api, headers, (RestParamBuilder) null);
+        return get(api, headers, (RestParam) null);
     }
 
     public Request getGetRequest(String api, HttpHeaders headers, MultiValueMap<String, String> requestParams) {
@@ -89,7 +89,7 @@ public class RestClient {
         return post(api, httpHeaders, requestBody);
     }
 
-    public String post(String api, RestParamBuilder paramBuilder) {
+    public String post(String api, RestParam paramBuilder) {
         return post(api, httpHeaders, paramBuilder.toJsonRequest());
     }
 
@@ -107,7 +107,7 @@ public class RestClient {
         return emptyResponse;
     }
 
-    public String post(String api, HttpHeaders headers, RestParamBuilder paramBuilder) {
+    public String post(String api, HttpHeaders headers, RestParam paramBuilder) {
         return post(api, headers, paramBuilder.toJsonRequest());
     }
 
