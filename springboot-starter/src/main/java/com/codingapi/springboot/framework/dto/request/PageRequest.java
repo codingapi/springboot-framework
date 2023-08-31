@@ -10,10 +10,10 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
     private int current;
     private int pageSize;
 
-    private final org.springframework.data.domain.PageRequest pageRequest;
+    private org.springframework.data.domain.PageRequest pageRequest;
 
     public PageRequest(int current, int pageSize, Sort sort) {
-        super(current>0?current--:0, pageSize, sort);
+        super(current > 0 ? current-- : 0, pageSize, sort);
         this.current = current;
         this.pageSize = pageSize;
         this.pageRequest = PageRequest.of(current, pageSize, sort);
@@ -28,7 +28,7 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
     }
 
     public void setCurrent(int current) {
-        this.current = current>0?current-1:0;
+        this.current = current > 0 ? current - 1 : 0;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
 
     @Override
     public org.springframework.data.domain.PageRequest previous() {
-        return current == 0? this: new PageRequest(current-1,getPageSize(),getSort());
+        return current == 0 ? this : new PageRequest(current - 1, getPageSize(), getSort());
     }
 
     @Override
@@ -98,6 +98,15 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
     @Override
     public Optional<Pageable> toOptional() {
         return pageRequest.toOptional();
+    }
+
+    public void addSort(Sort sort) {
+        Sort nowSort = pageRequest.getSort();
+        if (nowSort == Sort.unsorted()) {
+            this.pageRequest = new PageRequest(getCurrent(), getPageSize(), sort);
+        }else{
+            pageRequest.getSort().and(sort);
+        }
     }
 }
 
