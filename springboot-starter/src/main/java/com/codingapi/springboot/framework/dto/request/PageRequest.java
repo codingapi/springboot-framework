@@ -1,14 +1,20 @@
 package com.codingapi.springboot.framework.dto.request;
 
+import lombok.Getter;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.beans.PropertyDescriptor;
 import java.util.Optional;
 
 public class PageRequest extends org.springframework.data.domain.PageRequest {
 
+    @Getter
     private int current;
     private int pageSize;
+    private QueryFilter filter;
 
     private org.springframework.data.domain.PageRequest pageRequest;
 
@@ -21,10 +27,6 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
 
     public PageRequest() {
         this(0, 20, Sort.unsorted());
-    }
-
-    public int getCurrent() {
-        return current;
     }
 
     public void setCurrent(int current) {
@@ -106,6 +108,34 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
             this.pageRequest = new PageRequest(getCurrent(), getPageSize(), sort);
         }else{
             pageRequest.getSort().and(sort);
+        }
+    }
+
+    public void addFilter(QueryFilter filter){
+        this.filter = filter;
+    }
+
+    public boolean hasFilter(){
+        return this.filter!=null;
+    }
+
+    public <T> Example<T> getExample(Class<T> clazz){
+        if(this.filter ==null){
+            return null;
+        }
+        try {
+            Object entity = clazz.getDeclaredConstructor().newInstance();
+            PropertyDescriptor[] descriptors = BeanUtils.getPropertyDescriptors(clazz);
+            for (PropertyDescriptor descriptor : descriptors) {
+                String name = descriptor.getName();
+                Object value = filter.getValue(name);
+                if (value != null) {
+                    descriptor.getWriteMethod().invoke(entity,value);
+                }
+            }
+            return (Example<T>) Example.of(entity);
+        }catch (Exception e){
+            return null;
         }
     }
 }
