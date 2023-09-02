@@ -11,8 +11,8 @@ import org.springframework.data.repository.NoRepositoryBean;
 public interface FastRepository<T,ID> extends JpaRepository<T,ID>, JpaSpecificationExecutor<T> {
 
     default Page<T> findAll(PageRequest request){
-        Class<T> clazz = getDomainClass();
         if(request.hasFilter()){
+            Class<T> clazz = getDomainClass();
             return findAll(request.getExample(clazz),request);
         }
         return findAll((org.springframework.data.domain.PageRequest)request);

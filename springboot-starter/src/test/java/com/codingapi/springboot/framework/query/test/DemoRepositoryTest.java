@@ -1,7 +1,6 @@
 package com.codingapi.springboot.framework.query.test;
 
 import com.codingapi.springboot.framework.dto.request.PageRequest;
-import com.codingapi.springboot.framework.dto.request.QueryFilter;
 import com.codingapi.springboot.framework.query.entity.Demo;
 import com.codingapi.springboot.framework.query.repository.DemoRepository;
 import org.junit.jupiter.api.Test;
@@ -47,7 +46,7 @@ public class DemoRepositoryTest {
         request.setCurrent(1);
         request.setPageSize(10);
 
-        request.addFilter(QueryFilter.of("name","123"));
+        request.addFilter("name","123");
 
         Example<Demo> demo = request.getExample(Demo.class);
         System.out.println(demo);

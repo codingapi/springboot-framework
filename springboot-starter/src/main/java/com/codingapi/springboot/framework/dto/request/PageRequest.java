@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.beans.PropertyDescriptor;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class PageRequest extends org.springframework.data.domain.PageRequest {
@@ -14,7 +16,7 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
     @Getter
     private int current;
     private int pageSize;
-    private QueryFilter filter;
+    private final Map<String,Object> filters = new HashMap<>();
 
     private org.springframework.data.domain.PageRequest pageRequest;
 
@@ -111,16 +113,17 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
         }
     }
 
-    public void addFilter(QueryFilter filter){
-        this.filter = filter;
+    public PageRequest addFilter(String key,Object value){
+        this.filters.put(key, value);
+        return this;
     }
 
     public boolean hasFilter(){
-        return this.filter!=null;
+        return !this.filters.isEmpty();
     }
 
     public <T> Example<T> getExample(Class<T> clazz){
-        if(this.filter ==null){
+        if(!hasFilter()){
             return null;
         }
         try {
@@ -128,7 +131,7 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
             PropertyDescriptor[] descriptors = BeanUtils.getPropertyDescriptors(clazz);
             for (PropertyDescriptor descriptor : descriptors) {
                 String name = descriptor.getName();
-                Object value = filter.getValue(name);
+                Object value = filters.get(name);
                 if (value != null) {
                     descriptor.getWriteMethod().invoke(entity,value);
                 }

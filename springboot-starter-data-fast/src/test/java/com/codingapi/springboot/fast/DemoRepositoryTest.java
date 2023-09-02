@@ -3,7 +3,6 @@ package com.codingapi.springboot.fast;
 import com.codingapi.springboot.fast.entity.Demo;
 import com.codingapi.springboot.fast.repository.DemoRepository;
 import com.codingapi.springboot.framework.dto.request.PageRequest;
-import com.codingapi.springboot.framework.dto.request.QueryFilter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -44,7 +43,7 @@ public class DemoRepositoryTest {
         PageRequest request = new PageRequest();
         request.setCurrent(1);
         request.setPageSize(10);
-        request.addFilter(QueryFilter.of("name","123"));
+        request.addFilter("name","123");
 
         Page<Demo> page =  demoRepository.findAll(request);
         assertEquals(1, page.getTotalElements());
