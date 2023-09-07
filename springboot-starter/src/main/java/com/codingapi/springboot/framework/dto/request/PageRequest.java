@@ -6,10 +6,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.beans.PropertyDescriptor;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -20,7 +22,7 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
     private int current;
     private int pageSize;
 
-    private final Map<String,Object> filters = new HashMap<>();
+    private final Map<String, Object> filters = new HashMap<>();
 
     @Getter
     private final HttpServletRequest servletRequest;
@@ -35,6 +37,19 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
 
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         this.servletRequest = attributes.getRequest();
+        this.syncParameter();
+    }
+
+
+    private void syncParameter() {
+        Enumeration<String> enumeration = servletRequest.getParameterNames();
+        while (enumeration.hasMoreElements()) {
+            String key = enumeration.nextElement();
+            String value = servletRequest.getParameter(key);
+            if(StringUtils.hasText(value)) {
+                this.filters.put(key, value);
+            }
+        }
     }
 
     public PageRequest() {
@@ -45,14 +60,24 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
         this.current = current > 0 ? current - 1 : 0;
     }
 
-    public String getParameter(String key){
+    public String getParameter(String key) {
         return servletRequest.getParameter(key);
     }
 
-    public String getParameter(String key,String defaultValue){
-        String result =  servletRequest.getParameter(key);
+    public String getParameter(String key, String defaultValue) {
+        String result = servletRequest.getParameter(key);
         return result == null ? defaultValue : result;
     }
+
+    public int getIntParameter(String key) {
+        return Integer.parseInt(servletRequest.getParameter(key));
+    }
+
+    public int getIntParameter(String key, int defaultValue) {
+        String result = servletRequest.getParameter(key);
+        return result == null ? defaultValue : Integer.parseInt(result);
+    }
+
 
     @Override
     public int getPageSize() {
@@ -127,38 +152,43 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
         Sort nowSort = pageRequest.getSort();
         if (nowSort == Sort.unsorted()) {
             this.pageRequest = new PageRequest(getCurrent(), getPageSize(), sort);
-        }else{
+        } else {
             pageRequest.getSort().and(sort);
         }
     }
 
-    public PageRequest addFilter(String key,Object value){
+    public PageRequest addFilter(String key, Object value) {
         this.filters.put(key, value);
         return this;
     }
 
-    public boolean hasFilter(){
+    public boolean hasFilter() {
         return !this.filters.isEmpty();
     }
 
-    public <T> Example<T> getExample(Class<T> clazz){
-        if(!hasFilter()){
+    public <T> Example<T> getExample(Class<T> clazz) {
+        if (!hasFilter()) {
             return null;
         }
+        Object entity = null;
         try {
-            Object entity = clazz.getDeclaredConstructor().newInstance();
-            PropertyDescriptor[] descriptors = BeanUtils.getPropertyDescriptors(clazz);
-            for (PropertyDescriptor descriptor : descriptors) {
-                String name = descriptor.getName();
-                Object value = filters.get(name);
-                if (value != null) {
-                    descriptor.getWriteMethod().invoke(entity,value);
+            entity = clazz.getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        PropertyDescriptor[] descriptors = BeanUtils.getPropertyDescriptors(clazz);
+        for (PropertyDescriptor descriptor : descriptors) {
+            String name = descriptor.getName();
+            Object value = filters.get(name);
+            if (value != null) {
+                try {
+                    descriptor.getWriteMethod().invoke(entity, value);
+                } catch (Exception e) {
                 }
             }
-            return (Example<T>) Example.of(entity);
-        }catch (Exception e){
-            return null;
         }
+        return (Example<T>) Example.of(entity);
+
     }
 }
 
