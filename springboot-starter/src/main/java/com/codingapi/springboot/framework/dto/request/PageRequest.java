@@ -1,10 +1,13 @@
 package com.codingapi.springboot.framework.dto.request;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.beans.PropertyDescriptor;
 import java.util.HashMap;
@@ -16,7 +19,11 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
     @Getter
     private int current;
     private int pageSize;
+
     private final Map<String,Object> filters = new HashMap<>();
+
+    @Getter
+    private final HttpServletRequest servletRequest;
 
     private org.springframework.data.domain.PageRequest pageRequest;
 
@@ -25,6 +32,9 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
         this.current = current;
         this.pageSize = pageSize;
         this.pageRequest = PageRequest.of(current, pageSize, sort);
+
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        this.servletRequest = attributes.getRequest();
     }
 
     public PageRequest() {
@@ -33,6 +43,15 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
 
     public void setCurrent(int current) {
         this.current = current > 0 ? current - 1 : 0;
+    }
+
+    public String getParameter(String key){
+        return servletRequest.getParameter(key);
+    }
+
+    public String getParameter(String key,String defaultValue){
+        String result =  servletRequest.getParameter(key);
+        return result == null ? defaultValue : result;
     }
 
     @Override
