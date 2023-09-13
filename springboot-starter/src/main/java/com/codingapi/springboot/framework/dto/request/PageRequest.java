@@ -25,7 +25,7 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
     private final Map<String, Object> filters = new HashMap<>();
 
     @Getter
-    private final HttpServletRequest servletRequest;
+    private HttpServletRequest servletRequest;
 
     private org.springframework.data.domain.PageRequest pageRequest;
 
@@ -35,9 +35,11 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
         this.pageSize = pageSize;
         this.pageRequest = PageRequest.of(current, pageSize, sort);
 
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        this.servletRequest = attributes.getRequest();
-        this.syncParameter();
+        try {
+            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+            this.servletRequest = attributes.getRequest();
+            this.syncParameter();
+        }catch (Exception e){}
     }
 
 
