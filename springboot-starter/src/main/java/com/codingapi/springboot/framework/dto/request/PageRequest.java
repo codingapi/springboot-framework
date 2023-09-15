@@ -39,7 +39,8 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
             this.servletRequest = attributes.getRequest();
             this.syncParameter();
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
     }
 
 
@@ -48,7 +49,7 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
         while (enumeration.hasMoreElements()) {
             String key = enumeration.nextElement();
             String value = servletRequest.getParameter(key);
-            if(StringUtils.hasText(value)) {
+            if (StringUtils.hasText(value)) {
                 this.filters.put(key, value);
             }
         }
@@ -77,6 +78,28 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
 
     public int getIntParameter(String key, int defaultValue) {
         String result = servletRequest.getParameter(key);
+        return result == null ? defaultValue : Integer.parseInt(result);
+    }
+
+    public Map<String, Object> getFilters() {
+        return filters;
+    }
+
+    public String getStringFilter(String key) {
+        return (String) filters.get(key);
+    }
+
+    public String getStringFilter(String key, String defaultValue) {
+        String result = (String) filters.get(key);
+        return result == null ? defaultValue : result;
+    }
+
+    public int getIntFilter(String key) {
+        return Integer.parseInt((String) filters.get(key));
+    }
+
+    public int getIntFilter(String key, int defaultValue) {
+        String result = (String) filters.get(key);
         return result == null ? defaultValue : Integer.parseInt(result);
     }
 
