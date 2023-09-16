@@ -1,6 +1,7 @@
 package com.codingapi.springboot.fast;
 
 import com.codingapi.springboot.fast.executor.JpaExecutor;
+import com.codingapi.springboot.fast.manager.EntityManagerInitializer;
 import com.codingapi.springboot.fast.mapping.MvcEndpointMapping;
 import com.codingapi.springboot.fast.registrar.MvcMappingRegistrar;
 import org.springframework.aop.Advisor;
@@ -31,6 +32,12 @@ public class DataFastConfiguration {
                                                 JpaExecutor jpaExecutor,
                                                 List<Advisor> advisors) {
         return new MvcMappingRegistrar(mvcEndpointMapping, jpaExecutor,advisors);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public EntityManagerInitializer entityManagerInitializer(EntityManager entityManager){
+        return new EntityManagerInitializer(entityManager);
     }
 
     @Bean
