@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -18,7 +17,6 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 public class BasicHandlerExceptionResolverConfiguration {
 
     @Bean
-    @ConditionalOnMissingBean
     public HandlerExceptionResolver servletExceptionHandler() {
         return new ServletExceptionHandler();
     }
