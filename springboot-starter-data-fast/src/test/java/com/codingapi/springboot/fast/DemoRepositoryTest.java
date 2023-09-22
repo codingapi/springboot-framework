@@ -51,6 +51,28 @@ public class DemoRepositoryTest {
 
 
     @Test
+    void queryByRequest(){
+        demoRepository.deleteAll();
+        Demo demo1 = new Demo();
+        demo1.setName("1234");
+        demoRepository.save(demo1);
+
+        Demo demo2 = new Demo();
+        demo2.setName("4567");
+        demoRepository.save(demo2);
+
+        PageRequest request = new PageRequest();
+        request.setCurrent(1);
+        request.setPageSize(10);
+        request.addFilter("name","1234");
+        request.addFilter("id", PageRequest.FilterRelation.LESS_THAN_EQUAL,10);
+
+        Page<Demo> page =  demoRepository.findAllByRequest(request);
+        assertEquals(1, page.getTotalElements());
+    }
+
+
+    @Test
     void sort(){
         demoRepository.deleteAll();
         Demo demo1 = new Demo();

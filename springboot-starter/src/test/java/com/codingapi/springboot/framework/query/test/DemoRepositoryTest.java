@@ -46,10 +46,10 @@ public class DemoRepositoryTest {
         request.setCurrent(1);
         request.setPageSize(10);
 
-        request.addFilter("name","123");
 
-        Example<Demo> demo = request.getExample(Demo.class);
-        System.out.println(demo);
+        Demo search = new Demo();
+        search.setName("123");
+        Example<Demo> demo = Example.of(search);
         Page<Demo> page =  demoRepository.findAll(demo,request);
         assertEquals(1, page.getTotalElements());
     }
