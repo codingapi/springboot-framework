@@ -1,8 +1,9 @@
 package com.codingapi.springboot.framework.query.entity;
 
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.persistence.*;
 
 @Setter
 @Getter

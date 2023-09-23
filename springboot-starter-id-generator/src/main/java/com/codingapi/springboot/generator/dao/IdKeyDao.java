@@ -62,7 +62,7 @@ public class IdKeyDao {
 
     @SneakyThrows
     public IdKey updateMaxId(IdKey generator) {
-        return dbHelper.updateAndQuery(new DbHelper.IUpdateAndQuery<>() {
+        return dbHelper.updateAndQuery(new DbHelper.IUpdateAndQuery<List<IdKey>>() {
             @Override
             public List<IdKey> updateAndQuery(Connection connection, QueryRunner queryRunner) throws SQLException {
                 queryRunner.update(connection, "UPDATE ID_GENERATOR SET ID = ID + 1 WHERE TAG = ?", generator.getKey());
@@ -74,7 +74,7 @@ public class IdKeyDao {
 
     @SneakyThrows
     public List<IdKey> findAll() throws SQLException {
-        return dbHelper.query(new DbHelper.IQuery<>() {
+        return dbHelper.query(new DbHelper.IQuery<List<IdKey>>() {
             @Override
             public List<IdKey> query(Connection connection, QueryRunner queryRunner) throws SQLException {
                 return queryRunner.query(connection, "SELECT * FROM ID_GENERATOR", handler);

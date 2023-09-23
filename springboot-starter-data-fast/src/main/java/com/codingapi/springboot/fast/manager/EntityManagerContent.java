@@ -1,7 +1,8 @@
 package com.codingapi.springboot.fast.manager;
 
-import jakarta.persistence.EntityManager;
 import lombok.Getter;
+
+import javax.persistence.EntityManager;
 
 public class EntityManagerContent {
 

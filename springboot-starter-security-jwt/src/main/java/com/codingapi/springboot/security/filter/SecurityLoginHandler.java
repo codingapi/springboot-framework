@@ -2,8 +2,9 @@ package com.codingapi.springboot.security.filter;
 
 import com.codingapi.springboot.security.dto.request.LoginRequest;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 
 public interface SecurityLoginHandler {
 

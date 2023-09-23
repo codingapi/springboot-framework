@@ -3,7 +3,8 @@ package com.codingapi.springboot.fast.entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
+
 
 @Setter
 @Getter

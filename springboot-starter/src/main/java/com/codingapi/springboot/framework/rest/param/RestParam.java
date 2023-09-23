@@ -41,9 +41,11 @@ public class RestParam {
                     fetch(jsonObject, builder);
                 }
 
-                if (value instanceof JSONArray jsonArray) {
+                if (value instanceof JSONArray) {
+                    JSONArray jsonArray = (JSONArray) value;
                     for (Object o : jsonArray) {
-                        if (o instanceof JSONObject jsonObject) {
+                        if (o instanceof JSONObject) {
+                            JSONObject jsonObject = (JSONObject) o;
                             fetch(jsonObject, builder);
                         }
                     }

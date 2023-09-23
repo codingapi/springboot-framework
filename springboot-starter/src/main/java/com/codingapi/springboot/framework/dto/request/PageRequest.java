@@ -1,6 +1,5 @@
 package com.codingapi.springboot.framework.dto.request;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Example;
@@ -10,6 +9,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.beans.PropertyDescriptor;
 import java.util.Enumeration;
 import java.util.HashMap;
