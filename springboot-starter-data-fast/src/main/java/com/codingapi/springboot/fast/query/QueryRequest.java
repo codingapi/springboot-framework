@@ -39,7 +39,7 @@ public class QueryRequest {
             PageRequest.Filter value = request.getFilters().get(name);
             if (value != null) {
                 try {
-                    descriptor.getWriteMethod().invoke(entity, value.getValue()[0]);
+                    descriptor.getWriteMethod().invoke(entity, value.getFilterValue(descriptor.getPropertyType()));
                 } catch (Exception e) {
                 }
             }
