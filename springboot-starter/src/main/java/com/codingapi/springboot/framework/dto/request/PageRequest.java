@@ -1,16 +1,14 @@
 package com.codingapi.springboot.framework.dto.request;
 
+import javax.servlet.http.HttpServletRequest;
 import lombok.Getter;
-import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Example;
+import lombok.Setter;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import java.beans.PropertyDescriptor;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +20,8 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
     private int current;
     private int pageSize;
 
-    private final Map<String, Object> filters = new HashMap<>();
+    @Getter
+    private final Map<String, Filter> filters = new HashMap<>();
 
     @Getter
     private HttpServletRequest servletRequest;
@@ -50,7 +49,7 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
             String key = enumeration.nextElement();
             String value = servletRequest.getParameter(key);
             if (StringUtils.hasText(value)) {
-                this.filters.put(key, value);
+                addFilter(key, value);
             }
         }
     }
@@ -81,26 +80,41 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
         return result == null ? defaultValue : Integer.parseInt(result);
     }
 
-    public Map<String, Object> getFilters() {
-        return filters;
-    }
 
     public String getStringFilter(String key) {
-        return (String) filters.get(key);
+        Filter filter = (Filter) filters.get(key);
+        if (filter != null) {
+            return (String) filter.getValue()[0];
+        }
+        return null;
     }
 
     public String getStringFilter(String key, String defaultValue) {
-        String result = (String) filters.get(key);
-        return result == null ? defaultValue : result;
+        String value = getStringFilter(key);
+        if (!StringUtils.hasText(value)) {
+            return defaultValue;
+        }
+        return value;
     }
 
     public int getIntFilter(String key) {
-        return Integer.parseInt((String) filters.get(key));
+        Filter filter = (Filter) filters.get(key);
+        if (filter != null) {
+            String value = (String) filter.getValue()[0];
+            if (StringUtils.hasText(value)) {
+                return Integer.parseInt(value);
+            }
+            return 0;
+        }
+        return 0;
     }
 
     public int getIntFilter(String key, int defaultValue) {
-        String result = (String) filters.get(key);
-        return result == null ? defaultValue : Integer.parseInt(result);
+        int value = getIntFilter(key);
+        if (value == 0) {
+            return defaultValue;
+        }
+        return value;
     }
 
 
@@ -182,38 +196,96 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
         }
     }
 
-    public PageRequest addFilter(String key, Object value) {
-        this.filters.put(key, value);
+    public PageRequest addFilter(String key, FilterRelation relation, Object... value) {
+        putFilter(key, relation, value);
         return this;
+    }
+
+    public PageRequest addFilter(String key, Object... value) {
+        return this.addFilter(key, FilterRelation.EUQAL, value);
     }
 
     public boolean hasFilter() {
         return !this.filters.isEmpty();
     }
 
-    public <T> Example<T> getExample(Class<T> clazz) {
-        if (!hasFilter()) {
-            return null;
+    @Setter
+    @Getter
+    public static class Filter {
+        private String key;
+        private Object[] value;
+
+        private FilterRelation relation;
+
+        public boolean isEqual() {
+            return relation == FilterRelation.EUQAL;
         }
-        Object entity = null;
-        try {
-            entity = clazz.getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+
+        public boolean isLike() {
+            return relation == FilterRelation.LIKE;
         }
-        PropertyDescriptor[] descriptors = BeanUtils.getPropertyDescriptors(clazz);
-        for (PropertyDescriptor descriptor : descriptors) {
-            String name = descriptor.getName();
-            Object value = filters.get(name);
-            if (value != null) {
-                try {
-                    descriptor.getWriteMethod().invoke(entity, value);
-                } catch (Exception e) {
+
+        public boolean isBetween() {
+            return relation == FilterRelation.BETWEEN;
+        }
+
+        public boolean isIn() {
+            return relation == FilterRelation.IN;
+        }
+
+        public boolean isGreaterThan() {
+            return relation == FilterRelation.GREATER_THAN;
+        }
+
+        public boolean isLessThan() {
+            return relation == FilterRelation.LESS_THAN;
+        }
+
+        public boolean isGreaterThanEqual() {
+            return relation == FilterRelation.GREATER_THAN_EQUAL;
+        }
+
+        public boolean isLessThanEqual() {
+            return relation == FilterRelation.LESS_THAN_EQUAL;
+        }
+
+        public Object getFilterValue(Class<?> clazz) {
+            Object val = value[0];
+            if(val instanceof String) {
+                if(clazz == Integer.class) {
+                    return Integer.parseInt((String)val);
+                }
+                if(clazz == Long.class) {
+                    return Long.parseLong((String)val);
+                }
+                if(clazz == Double.class) {
+                    return Double.parseDouble((String)val);
+                }
+                if(clazz == Float.class) {
+                    return Float.parseFloat((String)val);
                 }
             }
+            return value[0];
         }
-        return (Example<T>) Example.of(entity);
 
     }
-}
 
+    private void putFilter(String key, FilterRelation relation, Object... val) {
+        Filter filter = new Filter();
+        filter.setKey(key);
+        filter.setValue(val);
+        filter.setRelation(relation);
+        this.filters.put(key, filter);
+    }
+
+    public enum FilterRelation {
+        EUQAL,
+        LIKE,
+        BETWEEN,
+        IN,
+        GREATER_THAN,
+        LESS_THAN,
+        GREATER_THAN_EQUAL,
+        LESS_THAN_EQUAL,
+    }
+}

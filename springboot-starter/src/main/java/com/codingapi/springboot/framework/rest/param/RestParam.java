@@ -2,11 +2,11 @@ package com.codingapi.springboot.framework.rest.param;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lombok.SneakyThrows;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 public class RestParam {
 
@@ -66,9 +66,10 @@ public class RestParam {
         return add(key, value, true);
     }
 
+    @SneakyThrows
     public RestParam add(String key, Object value, boolean encode) {
         String stringValue = value.toString();
-        String encodeValue = encode ? URLEncoder.encode(stringValue, StandardCharsets.UTF_8) : value.toString();
+        String encodeValue = encode ? URLEncoder.encode(stringValue, "UTF-8") : value.toString();
         jsonBody.put(key, value);
         mapBody.add(key, encodeValue);
         return this;
