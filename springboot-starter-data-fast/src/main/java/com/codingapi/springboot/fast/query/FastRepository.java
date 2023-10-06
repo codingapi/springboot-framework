@@ -1,5 +1,6 @@
 package com.codingapi.springboot.fast.query;
 
+import com.codingapi.springboot.fast.dynamic.DynamicRepository;
 import com.codingapi.springboot.framework.dto.request.PageRequest;
 import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
@@ -13,7 +14,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 import java.util.List;
 
 @NoRepositoryBean
-public interface FastRepository<T, ID> extends JpaRepository<T, ID>, JpaSpecificationExecutor<T> {
+public interface FastRepository<T, ID> extends JpaRepository<T, ID>, JpaSpecificationExecutor<T>, DynamicRepository<T,ID> {
 
     default Page<T> findAll(PageRequest request) {
         if (request.hasFilter()) {
