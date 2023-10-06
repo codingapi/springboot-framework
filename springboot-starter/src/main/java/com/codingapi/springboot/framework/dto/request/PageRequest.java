@@ -32,7 +32,7 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
         super(current > 0 ? current-- : 0, pageSize, sort);
         this.current = current;
         this.pageSize = pageSize;
-        this.pageRequest = PageRequest.of(current, pageSize, sort);
+        this.pageRequest = org.springframework.data.domain.PageRequest.of(current, pageSize, sort);
 
         try {
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
@@ -251,18 +251,18 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
 
         public Object getFilterValue(Class<?> clazz) {
             Object val = value[0];
-            if(val instanceof String) {
-                if(clazz == Integer.class) {
-                    return Integer.parseInt((String)val);
+            if (val instanceof String) {
+                if (clazz == Integer.class) {
+                    return Integer.parseInt((String) val);
                 }
-                if(clazz == Long.class) {
-                    return Long.parseLong((String)val);
+                if (clazz == Long.class) {
+                    return Long.parseLong((String) val);
                 }
-                if(clazz == Double.class) {
-                    return Double.parseDouble((String)val);
+                if (clazz == Double.class) {
+                    return Double.parseDouble((String) val);
                 }
-                if(clazz == Float.class) {
-                    return Float.parseFloat((String)val);
+                if (clazz == Float.class) {
+                    return Float.parseFloat((String) val);
                 }
             }
             return value[0];
@@ -288,5 +288,13 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
         GREATER_THAN_EQUAL,
         LESS_THAN_EQUAL,
     }
-}
 
+
+    public static PageRequest of(int page, int size) {
+        return new PageRequest(page, size, Sort.unsorted());
+    }
+
+    public static PageRequest of(int page, int size, Sort sort) {
+        return new PageRequest(page, size, sort);
+    }
+}

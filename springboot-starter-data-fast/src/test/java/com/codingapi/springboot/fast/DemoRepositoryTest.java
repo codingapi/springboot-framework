@@ -8,6 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -20,17 +24,17 @@ public class DemoRepositoryTest {
 
 
     @Test
-    void test(){
+    void test() {
         demoRepository.deleteAll();
         Demo demo = new Demo();
         demo.setName("123");
         demoRepository.save(demo);
-        assertTrue(demo.getId()>0);
+        assertTrue(demo.getId() > 0);
     }
 
 
     @Test
-    void query(){
+    void findAll() {
         demoRepository.deleteAll();
         Demo demo1 = new Demo();
         demo1.setName("123");
@@ -43,37 +47,68 @@ public class DemoRepositoryTest {
         PageRequest request = new PageRequest();
         request.setCurrent(1);
         request.setPageSize(10);
-        request.addFilter("name","123");
+        request.addFilter("name", "123");
 
-        Page<Demo> page =  demoRepository.findAll(request);
+        Page<Demo> page = demoRepository.findAll(request);
         assertEquals(1, page.getTotalElements());
     }
 
 
     @Test
-    void queryByRequest(){
+    void pageRequest() {
         demoRepository.deleteAll();
         Demo demo1 = new Demo();
-        demo1.setName("1234");
+        demo1.setName("123");
         demoRepository.save(demo1);
 
         Demo demo2 = new Demo();
-        demo2.setName("4567");
+        demo2.setName("456");
         demoRepository.save(demo2);
 
         PageRequest request = new PageRequest();
         request.setCurrent(1);
         request.setPageSize(10);
-        request.addFilter("name","1234");
-        request.addFilter("id", PageRequest.FilterRelation.LESS_THAN_EQUAL,10);
+        request.addFilter("name", PageRequest.FilterRelation.LIKE, "%2%");
 
-        Page<Demo> page =  demoRepository.findAllByRequest(request);
+        Page<Demo> page = demoRepository.pageRequest(request);
         assertEquals(1, page.getTotalElements());
     }
 
 
     @Test
-    void sort(){
+    void dynamicListQuery() {
+        demoRepository.deleteAll();
+        Demo demo1 = new Demo();
+        demo1.setName("123");
+        demoRepository.save(demo1);
+
+        Demo demo2 = new Demo();
+        demo2.setName("456");
+        demoRepository.save(demo2);
+
+        List<Demo> list = demoRepository.dynamicListQuery("from Demo where name = ?1", "123");
+        assertEquals(1, list.size());
+    }
+
+
+    @Test
+    void dynamicPageQuery() {
+        demoRepository.deleteAll();
+        Demo demo1 = new Demo();
+        demo1.setName("123");
+        demoRepository.save(demo1);
+
+        Demo demo2 = new Demo();
+        demo2.setName("456");
+        demoRepository.save(demo2);
+
+        Page<Demo> page = demoRepository.dynamicPageQuery("from Demo where name = ?1", PageRequest.of(1, 2), "123");
+        assertEquals(1, page.getTotalElements());
+    }
+
+
+    @Test
+    void sortQuery() {
         demoRepository.deleteAll();
         Demo demo1 = new Demo();
         demo1.setName("123");
@@ -88,8 +123,32 @@ public class DemoRepositoryTest {
         request.setPageSize(10);
 
         request.addSort(Sort.by("id").descending());
-        Page<Demo> page =  demoRepository.findAll(request);
-        assertEquals(page.getContent().get(0).getName(),"456");
+        Page<Demo> page = demoRepository.findAll(request);
+        assertEquals(page.getContent().get(0).getName(), "456");
         assertEquals(2, page.getTotalElements());
+    }
+
+
+    @Test
+    @Transactional
+    void pageSort() {
+        demoRepository.deleteAll();
+        Demo demo1 = new Demo();
+        demo1.setName("123");
+        demoRepository.save(demo1);
+
+        Demo demo2 = new Demo();
+        demo2.setName("456");
+        demoRepository.save(demo2);
+
+        List<Integer> ids = Arrays.asList(demo1.getId(), demo2.getId());
+        System.out.println(ids);
+        demoRepository.pageSort(PageRequest.of(1, 10), ids);
+
+        Demo newDemo1 = demoRepository.getReferenceById(demo1.getId());
+        Demo newDemo2 = demoRepository.getReferenceById(demo2.getId());
+
+        assertEquals(newDemo2.getSort(), 1);
+        assertEquals(newDemo1.getSort(), 0);
     }
 }
