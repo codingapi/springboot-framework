@@ -1,21 +1,24 @@
 package com.codingapi.springboot.fast.sort;
 
-import org.springframework.data.domain.PageRequest;
+import com.codingapi.springboot.framework.dto.request.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @NoRepositoryBean
-public interface SortRepository<T extends ISort, I> extends JpaRepository<T, I> {
+public interface SortRepository<T extends ISort, ID> extends JpaRepository<T, ID> {
 
 
-    default void sort(PageRequest request, List<Integer> ids) {
+    default void pageSort(PageRequest request, List<ID> ids) {
+        List<T> list = new ArrayList<>();
         for (int i = 0; i < ids.size(); i++) {
-            ISort entity = getById((I) ids.get(i));
-            entity.setSort(i + ((request.getPageNumber() - 1) * request.getPageSize()));
-            save((T) entity);
+            ISort entity = getReferenceById(ids.get(i));
+            entity.setSort(i + (request.getPageNumber() * request.getPageSize()));
+            list.add((T) entity);
         }
+        saveAll(list);
     }
 
 }

@@ -33,7 +33,7 @@ public interface FastRepository<T, ID> extends JpaRepository<T, ID>, JpaSpecific
     }
 
 
-    default Page<T> findAllByRequest(PageRequest request) {
+    default Page<T> pageRequest(PageRequest request) {
         if (request.hasFilter()) {
             Class<T> clazz = getDomainClass();
             Specification<T> specification = (root, query, criteriaBuilder) -> {
