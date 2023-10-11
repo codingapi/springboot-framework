@@ -1,5 +1,6 @@
 package com.codingapi.springboot.security.controller;
 
+import com.codingapi.springboot.framework.dto.response.SingleResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +15,7 @@ public class VersionController {
     private final Environment env;
 
     @GetMapping("/version")
-    public String version(){
-        return env.getProperty("application.version","-");
+    public SingleResponse<String> version() {
+        return SingleResponse.of(env.getProperty("application.version", "-"));
     }
 }
