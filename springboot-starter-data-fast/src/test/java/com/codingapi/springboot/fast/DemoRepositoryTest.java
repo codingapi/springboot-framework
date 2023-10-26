@@ -74,6 +74,26 @@ public class DemoRepositoryTest {
         assertEquals(1, page.getTotalElements());
     }
 
+    @Test
+    void pageRequestOr() {
+        demoRepository.deleteAll();
+        Demo demo1 = new Demo();
+        demo1.setName("123");
+        demoRepository.save(demo1);
+
+        Demo demo2 = new Demo();
+        demo2.setName("456");
+        demoRepository.save(demo2);
+
+        PageRequest request = new PageRequest();
+        request.setCurrent(1);
+        request.setPageSize(10);
+        request.addOrFilters("name", "%2%","id","1");
+
+        Page<Demo> page = demoRepository.pageRequest(request);
+        assertEquals(1, page.getTotalElements());
+    }
+
 
     @Test
     void dynamicListQuery() {
