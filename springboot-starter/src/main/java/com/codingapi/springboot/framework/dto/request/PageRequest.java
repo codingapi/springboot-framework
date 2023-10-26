@@ -205,6 +205,15 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
         return this.addFilter(key, FilterRelation.EUQAL, value);
     }
 
+    public PageRequest addOrFilters(Object... value) {
+        // 检查value数组是否为偶数长度，因为我们需要成对处理它
+        if (value.length % 2 != 0) {
+            throw new IllegalArgumentException("Invalid number of elements in value array.");
+        }
+
+        return this.addFilter("OR", FilterRelation.OR, value);
+    }
+
     public boolean hasFilter() {
         return !this.filters.isEmpty();
     }
@@ -231,6 +240,10 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
 
         public boolean isIn() {
             return relation == FilterRelation.IN;
+        }
+
+        public boolean isOr() {
+            return relation == FilterRelation.OR;
         }
 
         public boolean isGreaterThan() {
@@ -287,6 +300,7 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
         LESS_THAN,
         GREATER_THAN_EQUAL,
         LESS_THAN_EQUAL,
+        OR,
     }
 
 
