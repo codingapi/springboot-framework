@@ -17,7 +17,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -30,12 +29,15 @@ public class MyAuthenticationFilter extends BasicAuthenticationFilter {
     private final Jwt jwt;
 
     private final SecurityJwtProperties securityJwtProperties;
+    private final AuthenticationTokenFilter authenticationTokenFilter;
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
-    public MyAuthenticationFilter(AuthenticationManager manager, SecurityJwtProperties securityJwtProperties, Jwt jwt) {
+
+    public MyAuthenticationFilter(AuthenticationManager manager, SecurityJwtProperties securityJwtProperties, Jwt jwt,AuthenticationTokenFilter authenticationTokenFilter) {
         super(manager);
         this.jwt = jwt;
         this.securityJwtProperties = securityJwtProperties;
+        this.authenticationTokenFilter = authenticationTokenFilter;
     }
 
 
@@ -65,6 +67,7 @@ public class MyAuthenticationFilter extends BasicAuthenticationFilter {
                 }
 
                 SecurityContextHolder.getContext().setAuthentication(token.getAuthenticationToken());
+                authenticationTokenFilter.doFilter(request, response, chain);
             }
         }
         chain.doFilter(request, response);
