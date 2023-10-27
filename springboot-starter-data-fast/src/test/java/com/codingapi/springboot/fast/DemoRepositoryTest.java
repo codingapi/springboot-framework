@@ -77,7 +77,7 @@ public class DemoRepositoryTest {
     }
 
     @Test
-    void customSearchOr() {
+    void customSearchOrFilters() {
         demoRepository.deleteAll();
         Demo demo1 = new Demo();
         demo1.setName("123");
@@ -93,6 +93,27 @@ public class DemoRepositoryTest {
 
         request.orFilters(Filter.as("name", Relation.LIKE, "%2%"), Filter.as("id", Relation.IN, 1, 2, 3));
 
+        Page<Demo> page = demoRepository.pageRequest(request);
+        assertEquals(2, page.getTotalElements());
+    }
+
+    @Test
+    void customSearchAddFilters() {
+        demoRepository.deleteAll();
+        Demo demo1 = new Demo();
+        demo1.setName("123");
+        demoRepository.save(demo1);
+
+        Demo demo2 = new Demo();
+        demo2.setName("456");
+        demoRepository.save(demo2);
+
+        PageRequest request = new PageRequest();
+        request.setCurrent(1);
+        request.setPageSize(10);
+
+//        request.addFilters(Filter.as("id", Relation.IN, 1),Filter.as("id", Relation.IN, 2),Filter.as("id", Relation.IN, 3),Filter.as("id", Relation.IN, 4));
+        request.orFilters(Filter.as("name", Relation.LIKE, "%2%"),Filter.and(Filter.as("id", Relation.IN, 1),Filter.as("id", Relation.IN, 2)));
         Page<Demo> page = demoRepository.pageRequest(request);
         assertEquals(2, page.getTotalElements());
     }
