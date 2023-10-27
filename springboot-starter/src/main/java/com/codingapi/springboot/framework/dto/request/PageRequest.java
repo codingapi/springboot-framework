@@ -80,6 +80,10 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
         return requestFilter.getIntFilter(key, defaultValue);
     }
 
+    public boolean hasFilter() {
+        return requestFilter.hasFilter();
+    }
+
     @Override
     public int getPageSize() {
         return pageSize;
