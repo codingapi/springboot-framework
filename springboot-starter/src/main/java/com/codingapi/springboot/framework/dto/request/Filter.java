@@ -7,6 +7,9 @@ import lombok.Setter;
 @Getter
 public class Filter {
 
+    public static final String FILTER_OR_KEY = "FILTER_OR_KEY";
+    public static final String FILTER_ADD_KEY = "FILTER_ADD_KEY";
+
     private String key;
     private Object[] value;
     private Relation relation;
@@ -21,8 +24,8 @@ public class Filter {
         this(key, Relation.EQUAL, value);
     }
 
-    public Filter(Filter... value) {
-        this(null, null, value);
+    public Filter(String key, Filter... value) {
+        this(key, null, value);
     }
 
     public static Filter as(String key, Relation relation, Object... value) {
@@ -33,8 +36,12 @@ public class Filter {
         return new Filter(key, value);
     }
 
-    public static Filter as(Filter... value) {
-        return new Filter(value);
+    public static Filter and(Filter... value) {
+        return new Filter(FILTER_ADD_KEY, value);
+    }
+
+    public static Filter or(Filter... value) {
+        return new Filter(FILTER_OR_KEY, value);
     }
 
     public boolean isEqual() {
@@ -53,8 +60,12 @@ public class Filter {
         return relation == Relation.IN;
     }
 
-    public boolean isOr() {
-        return value != null && value.length > 0 && value[0] instanceof Filter;
+    public boolean isOrFilters() {
+        return FILTER_OR_KEY.equals(key);
+    }
+
+    public boolean isAddFilters() {
+        return FILTER_ADD_KEY.equals(key);
     }
 
     public boolean isGreaterThan() {

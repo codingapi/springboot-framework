@@ -76,7 +76,7 @@ public class QueryRequest {
 
     private <T> Predicate toPredicate(Filter filter, CriteriaBuilder criteriaBuilder, Root<T> root, List<String> properties) {
         String key = filter.getKey();
-        if (filter.isOr() || properties.contains(key)) {
+        if (filter.isAddFilters() || filter.isOrFilters() || properties.contains(key)) {
 
             if (filter.isEqual()) {
                 return criteriaBuilder.equal(root.get(key), filter.getValue()[0]);
@@ -164,7 +164,7 @@ public class QueryRequest {
                 return in;
             }
 
-            if (filter.isOr()) {
+            if (filter.isOrFilters()) {
                 Filter[] orFilters = (Filter[]) filter.getValue();
                 List<Predicate> orPredicates = new ArrayList<>();
                 for (Filter orFilter : orFilters) {
@@ -174,6 +174,18 @@ public class QueryRequest {
                     }
                 }
                 return criteriaBuilder.or(orPredicates.toArray(new Predicate[0]));
+            }
+
+            if (filter.isAddFilters()) {
+                Filter[] orFilters = (Filter[]) filter.getValue();
+                List<Predicate> addPredicates = new ArrayList<>();
+                for (Filter orFilter : orFilters) {
+                    Predicate predicate = toPredicate(orFilter, criteriaBuilder, root, properties);
+                    if (predicate != null) {
+                        addPredicates.add(predicate);
+                    }
+                }
+                return criteriaBuilder.and(addPredicates.toArray(new Predicate[0]));
             }
         }
         return null;
