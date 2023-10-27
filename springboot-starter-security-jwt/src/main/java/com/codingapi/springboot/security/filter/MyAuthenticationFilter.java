@@ -29,12 +29,14 @@ public class MyAuthenticationFilter extends BasicAuthenticationFilter {
     private final Jwt jwt;
 
     private final SecurityJwtProperties securityJwtProperties;
+    private final AuthenticationTokenFilter authenticationTokenFilter;
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
-    public MyAuthenticationFilter(AuthenticationManager manager, SecurityJwtProperties securityJwtProperties, Jwt jwt) {
+    public MyAuthenticationFilter(AuthenticationManager manager, SecurityJwtProperties securityJwtProperties, Jwt jwt,AuthenticationTokenFilter authenticationTokenFilter) {
         super(manager);
         this.jwt = jwt;
         this.securityJwtProperties = securityJwtProperties;
+        this.authenticationTokenFilter = authenticationTokenFilter;
     }
 
 
@@ -64,6 +66,7 @@ public class MyAuthenticationFilter extends BasicAuthenticationFilter {
                 }
 
                 SecurityContextHolder.getContext().setAuthentication(token.getAuthenticationToken());
+                authenticationTokenFilter.doFilter(request, response, chain);
             }
         }
         chain.doFilter(request, response);

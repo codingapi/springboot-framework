@@ -2,8 +2,10 @@ package com.codingapi.springboot.security;
 
 import com.codingapi.springboot.security.configurer.HttpSecurityConfigurer;
 import com.codingapi.springboot.security.controller.VersionController;
+import com.codingapi.springboot.security.dto.request.LoginRequest;
 import com.codingapi.springboot.security.filter.*;
 import com.codingapi.springboot.security.jwt.Jwt;
+import com.codingapi.springboot.security.jwt.Token;
 import com.codingapi.springboot.security.properties.SecurityJwtProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -23,6 +25,9 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
@@ -53,28 +58,45 @@ public class AutoConfiguration {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-
     @Bean
     @ConditionalOnMissingBean
-    public SecurityLoginHandler securityLoginHandler(){
-        return (request, response, handler) -> {
+    public AuthenticationTokenFilter authenticationTokenFilter() {
+        return (request, response, chain) -> {
+
         };
     }
 
 
     @Bean
     @ConditionalOnMissingBean
-    public SecurityFilterChain filterChain(HttpSecurity security, Jwt jwt,SecurityLoginHandler loginHandler,
-                                           SecurityJwtProperties properties) throws Exception {
+    public SecurityLoginHandler securityLoginHandler() {
+        return new SecurityLoginHandler() {
+            @Override
+            public void preHandle(HttpServletRequest request, HttpServletResponse response, LoginRequest handler) throws Exception {
+
+            }
+
+            @Override
+            public void postHandle(HttpServletRequest request, HttpServletResponse response, LoginRequest handler, Token token) {
+
+            }
+        };
+    }
+
+
+    @Bean
+    @ConditionalOnMissingBean
+    public SecurityFilterChain filterChain(HttpSecurity security, Jwt jwt, SecurityLoginHandler loginHandler,
+                                           SecurityJwtProperties properties, AuthenticationTokenFilter authenticationTokenFilter) throws Exception {
         //disable basic auth
         security.httpBasic().disable();
 
         //before add addCorsMappings to enable cors.
         security.cors();
-        if(properties.isDisableCsrf() ){
+        if (properties.isDisableCsrf()) {
             security.csrf().disable();
         }
-        security.apply(new HttpSecurityConfigurer(jwt,loginHandler,properties));
+        security.apply(new HttpSecurityConfigurer(jwt, loginHandler, properties, authenticationTokenFilter));
         security
                 .exceptionHandling()
                 .authenticationEntryPoint(new MyUnAuthenticationEntryPoint())
@@ -125,7 +147,7 @@ public class AutoConfiguration {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                if(securityJwtProperties.isDisableCors()) {
+                if (securityJwtProperties.isDisableCors()) {
                     registry.addMapping("/**")
                             .allowedHeaders("*")
                             .allowedMethods("*")
@@ -149,7 +171,7 @@ public class AutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public VersionController versionController(Environment environment){
+    public VersionController versionController(Environment environment) {
         return new VersionController(environment);
     }
 
