@@ -1,6 +1,8 @@
 package com.codingapi.springboot.fast.query;
 
+import com.codingapi.springboot.framework.dto.request.Filter;
 import com.codingapi.springboot.framework.dto.request.PageRequest;
+import com.codingapi.springboot.framework.dto.request.RequestFilter;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
@@ -24,7 +26,8 @@ public class QueryRequest {
     }
 
     public <T> Example<T> getExample() {
-        if (!request.hasFilter()) {
+        RequestFilter requestFilter = request.getRequestFilter();
+        if (!requestFilter.hasFilter()) {
             return null;
         }
         Object entity = null;
@@ -36,7 +39,7 @@ public class QueryRequest {
         PropertyDescriptor[] descriptors = BeanUtils.getPropertyDescriptors(clazz);
         for (PropertyDescriptor descriptor : descriptors) {
             String name = descriptor.getName();
-            PageRequest.Filter value = request.getFilters().get(name);
+            Filter value = requestFilter.getFilter(name);
             if (value != null) {
                 try {
                     descriptor.getWriteMethod().invoke(entity, value.getFilterValue(descriptor.getPropertyType()));
@@ -70,116 +73,120 @@ public class QueryRequest {
         return orderList;
     }
 
+
+    private <T> Predicate toPredicate(Filter filter, CriteriaBuilder criteriaBuilder, Root<T> root, List<String> properties) {
+        String key = filter.getKey();
+        if (filter.isOr() || properties.contains(key)) {
+
+            if (filter.isEqual()) {
+                return criteriaBuilder.equal(root.get(key), filter.getValue()[0]);
+            }
+
+            if (filter.isLike()) {
+                String matchValue = (String) filter.getValue()[0];
+                return criteriaBuilder.like(root.get(key), "%" + matchValue + "%");
+            }
+
+            if (filter.isBetween()) {
+                Object value1 = filter.getValue()[0];
+                Object value2 = filter.getValue()[2];
+                if (value1 instanceof Integer && value2 instanceof Integer) {
+                    return criteriaBuilder.between(root.get(key), (Integer) value1, (Integer) value2);
+                }
+
+                if (value1 instanceof Long && value2 instanceof Long) {
+                    return criteriaBuilder.between(root.get(key), (Long) value1, (Long) value2);
+                }
+
+                if (value1 instanceof Date && value2 instanceof Date) {
+                    return criteriaBuilder.between(root.get(key), (Date) value1, (Date) value2);
+                }
+            }
+
+            if (filter.isGreaterThan()) {
+                Object value = filter.getValue()[0];
+                if (value instanceof Integer) {
+                    return criteriaBuilder.greaterThan(root.get(key), (Integer) value);
+                }
+                if (value instanceof Long) {
+                    return criteriaBuilder.greaterThan(root.get(key), (Long) value);
+                }
+                if (value instanceof Date) {
+                    return criteriaBuilder.greaterThan(root.get(key), (Date) value);
+                }
+            }
+
+            if (filter.isGreaterThanEqual()) {
+                Object value = filter.getValue()[0];
+                if (value instanceof Integer) {
+                    return criteriaBuilder.greaterThanOrEqualTo(root.get(key), (Integer) value);
+                }
+                if (value instanceof Long) {
+                    return criteriaBuilder.greaterThanOrEqualTo(root.get(key), (Long) value);
+                }
+                if (value instanceof Date) {
+                    return criteriaBuilder.greaterThanOrEqualTo(root.get(key), (Date) value);
+                }
+            }
+
+            if (filter.isLessThan()) {
+                Object value = filter.getValue()[0];
+                if (value instanceof Integer) {
+                    return criteriaBuilder.lessThan(root.get(key), (Integer) value);
+                }
+                if (value instanceof Long) {
+                    return criteriaBuilder.lessThan(root.get(key), (Long) value);
+                }
+                if (value instanceof Date) {
+                    return criteriaBuilder.lessThan(root.get(key), (Date) value);
+                }
+            }
+
+            if (filter.isLessThanEqual()) {
+                Object value = filter.getValue()[0];
+                if (value instanceof Integer) {
+                    return criteriaBuilder.lessThanOrEqualTo(root.get(key), (Integer) value);
+                }
+                if (value instanceof Long) {
+                    return criteriaBuilder.lessThanOrEqualTo(root.get(key), (Long) value);
+                }
+                if (value instanceof Date) {
+                    return criteriaBuilder.lessThanOrEqualTo(root.get(key), (Date) value);
+                }
+            }
+
+            if (filter.isIn()) {
+                Object[] value = filter.getValue();
+                CriteriaBuilder.In<Object> in = criteriaBuilder.in(root.get(key));
+                for (Object item : value) {
+                    in.value(item);
+                }
+                return in;
+            }
+
+            if (filter.isOr()) {
+                Filter[] orFilters = (Filter[]) filter.getValue();
+                List<Predicate> orPredicates = new ArrayList<>();
+                for (Filter orFilter : orFilters) {
+                    orPredicates.add(toPredicate(orFilter, criteriaBuilder, root, properties));
+                }
+                return criteriaBuilder.or(orPredicates.toArray(new Predicate[0]));
+            }
+        }
+        return null;
+    }
+
+
     public <T> List<Predicate> getPredicate(Root<T> root, CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();
         List<String> properties = getClazzProperties();
-        for (String key : request.getFilters().keySet()) {
-            PageRequest.Filter filter = request.getFilters().get(key);
-            if (filter.isOr() || properties.contains(key)) {
-                if (filter.isEqual()) {
-                    predicates.add(criteriaBuilder.equal(root.get(key), filter.getValue()[0]));
-                }
-
-                if (filter.isLike()) {
-                    String matchValue = (String) filter.getValue()[0];
-                    predicates.add(criteriaBuilder.like(root.get(key), "%" + matchValue + "%"));
-                }
-
-                if (filter.isBetween()) {
-                    Object value1 = filter.getValue()[0];
-                    Object value2 = filter.getValue()[2];
-                    if (value1 instanceof Integer && value2 instanceof Integer) {
-                        predicates.add(criteriaBuilder.between(root.get(key), (Integer) value1, (Integer) value2));
-                    }
-
-                    if (value1 instanceof Long && value2 instanceof Long) {
-                        predicates.add(criteriaBuilder.between(root.get(key), (Long) value1, (Long) value2));
-                    }
-
-                    if (value1 instanceof Date && value2 instanceof Date) {
-                        predicates.add(criteriaBuilder.between(root.get(key), (Date) value1, (Date) value2));
-                    }
-                }
-
-                if (filter.isGreaterThan()) {
-                    Object value = filter.getValue()[0];
-                    if (value instanceof Integer) {
-                        predicates.add(criteriaBuilder.greaterThan(root.get(key), (Integer) value));
-                    }
-                    if (value instanceof Long) {
-                        predicates.add(criteriaBuilder.greaterThan(root.get(key), (Long) value));
-                    }
-                    if (value instanceof Date) {
-                        predicates.add(criteriaBuilder.greaterThan(root.get(key), (Date) value));
-                    }
-                }
-
-                if (filter.isGreaterThanEqual()) {
-                    Object value = filter.getValue()[0];
-                    if (value instanceof Integer) {
-                        predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(key), (Integer) value));
-                    }
-                    if (value instanceof Long) {
-                        predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(key), (Long) value));
-                    }
-                    if (value instanceof Date) {
-                        predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(key), (Date) value));
-                    }
-                }
-
-                if (filter.isLessThan()) {
-                    Object value = filter.getValue()[0];
-                    if (value instanceof Integer) {
-                        predicates.add(criteriaBuilder.lessThan(root.get(key), (Integer) value));
-                    }
-                    if (value instanceof Long) {
-                        predicates.add(criteriaBuilder.lessThan(root.get(key), (Long) value));
-                    }
-                    if (value instanceof Date) {
-                        predicates.add(criteriaBuilder.lessThan(root.get(key), (Date) value));
-                    }
-                }
-
-                if (filter.isLessThanEqual()) {
-                    Object value = filter.getValue()[0];
-                    if (value instanceof Integer) {
-                        predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(key), (Integer) value));
-                    }
-                    if (value instanceof Long) {
-                        predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(key), (Long) value));
-                    }
-                    if (value instanceof Date) {
-                        predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(key), (Date) value));
-                    }
-                }
-
-                if (filter.isIn()) {
-                    Object[] value = filter.getValue();
-                    predicates.add(criteriaBuilder.in(root.get(key)).value(value));
-                }
-
-                if (filter.isOr()) {
-                    if(key.equals("OR")) {
-                        Object[] value = filter.getValue();
-
-                        // 创建Predicate的列表，用于收集所有的OR条件
-                        List<Predicate> orPredicates = new ArrayList<>();
-
-                        // 循环遍历value数组，每两个为一组
-                        for (int i = 0; i < value.length; i += 2) {
-                            orPredicates.add(criteriaBuilder.equal(root.get((String) value[i]), value[i + 1]));
-                        }
-
-                        // 使用or方法连接所有的Predicate
-                        predicates.add(criteriaBuilder.or(orPredicates.toArray(new Predicate[0])));
-                    }else{
-                        Object[] value = filter.getValue();
-                        predicates.add(criteriaBuilder.equal(root.get(key), value[0]));
-                    }
-                }
+        RequestFilter requestFilter = request.getRequestFilter();
+        for (Filter filter : requestFilter.getFilters()) {
+            Predicate predicate = toPredicate(filter, criteriaBuilder, root, properties);
+            if (predicate != null) {
+                predicates.add(predicate);
             }
         }
-
         return predicates;
     }
 }

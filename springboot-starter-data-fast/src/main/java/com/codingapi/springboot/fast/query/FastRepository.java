@@ -17,7 +17,7 @@ import java.util.List;
 public interface FastRepository<T, ID> extends JpaRepository<T, ID>, JpaSpecificationExecutor<T>, DynamicRepository<T,ID> {
 
     default Page<T> findAll(PageRequest request) {
-        if (request.hasFilter()) {
+        if (request.getRequestFilter().hasFilter()) {
             Class<T> clazz = getDomainClass();
             QueryRequest queryRequest = new QueryRequest(request, clazz);
             return findAll(queryRequest.getExample(), request);
@@ -34,7 +34,7 @@ public interface FastRepository<T, ID> extends JpaRepository<T, ID>, JpaSpecific
 
 
     default Page<T> pageRequest(PageRequest request) {
-        if (request.hasFilter()) {
+        if (request.getRequestFilter().hasFilter()) {
             Class<T> clazz = getDomainClass();
             Specification<T> specification = (root, query, criteriaBuilder) -> {
                 QueryRequest queryRequest = new QueryRequest(request, clazz);
