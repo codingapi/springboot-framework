@@ -2,7 +2,9 @@ package com.codingapi.springboot.fast;
 
 import com.codingapi.springboot.fast.entity.Demo;
 import com.codingapi.springboot.fast.repository.DemoRepository;
+import com.codingapi.springboot.framework.dto.request.Filter;
 import com.codingapi.springboot.framework.dto.request.PageRequest;
+import com.codingapi.springboot.framework.dto.request.Relation;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -68,14 +70,14 @@ public class DemoRepositoryTest {
         PageRequest request = new PageRequest();
         request.setCurrent(1);
         request.setPageSize(10);
-        request.addFilter("name", PageRequest.FilterRelation.LIKE, "%2%");
+        request.addFilter("name", Relation.LIKE, "%2%");
 
         Page<Demo> page = demoRepository.pageRequest(request);
         assertEquals(1, page.getTotalElements());
     }
 
     @Test
-    void pageRequestOr() {
+    void customSearchOr() {
         demoRepository.deleteAll();
         Demo demo1 = new Demo();
         demo1.setName("123");
@@ -88,10 +90,11 @@ public class DemoRepositoryTest {
         PageRequest request = new PageRequest();
         request.setCurrent(1);
         request.setPageSize(10);
-        request.addOrFilters("name", "%2%","id","1");
+
+        request.orFilters(Filter.as("name", Relation.LIKE, "%2%"), Filter.as("id", Relation.IN, 1, 2, 3));
 
         Page<Demo> page = demoRepository.pageRequest(request);
-        assertEquals(1, page.getTotalElements());
+        assertEquals(2, page.getTotalElements());
     }
 
 
