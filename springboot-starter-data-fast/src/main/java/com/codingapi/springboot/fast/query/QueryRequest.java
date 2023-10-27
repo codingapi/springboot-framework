@@ -4,13 +4,13 @@ package com.codingapi.springboot.fast.query;
 import com.codingapi.springboot.framework.dto.request.Filter;
 import com.codingapi.springboot.framework.dto.request.PageRequest;
 import com.codingapi.springboot.framework.dto.request.RequestFilter;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Example;
+
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Example;
-
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.Date;
@@ -169,7 +169,10 @@ public class QueryRequest {
                 Filter[] orFilters = (Filter[]) filter.getValue();
                 List<Predicate> orPredicates = new ArrayList<>();
                 for (Filter orFilter : orFilters) {
-                    orPredicates.add(toPredicate(orFilter, criteriaBuilder, root, properties));
+                    Predicate predicate = toPredicate(orFilter, criteriaBuilder, root, properties);
+                    if (predicate != null) {
+                        orPredicates.add(predicate);
+                    }
                 }
                 return criteriaBuilder.or(orPredicates.toArray(new Predicate[0]));
             }
