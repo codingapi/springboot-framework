@@ -168,7 +168,10 @@ public class QueryRequest {
                 Filter[] orFilters = (Filter[]) filter.getValue();
                 List<Predicate> orPredicates = new ArrayList<>();
                 for (Filter orFilter : orFilters) {
-                    orPredicates.add(toPredicate(orFilter, criteriaBuilder, root, properties));
+                    Predicate predicate = toPredicate(orFilter, criteriaBuilder, root, properties);
+                    if (predicate != null) {
+                        orPredicates.add(predicate);
+                    }
                 }
                 return criteriaBuilder.or(orPredicates.toArray(new Predicate[0]));
             }
