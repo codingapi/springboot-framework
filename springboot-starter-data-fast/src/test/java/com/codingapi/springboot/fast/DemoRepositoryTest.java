@@ -72,7 +72,7 @@ public class DemoRepositoryTest {
         PageRequest request = new PageRequest();
         request.setCurrent(1);
         request.setPageSize(10);
-        request.addFilter("name", Relation.LIKE, "%2%");
+        request.andFilter("name", Relation.LIKE, "%2%");
 
         Page<Demo> page = demoRepository.pageRequest(request);
         assertEquals(1, page.getTotalElements());
@@ -94,7 +94,7 @@ public class DemoRepositoryTest {
         request.setCurrent(1);
         request.setPageSize(10);
 
-        request.addFilter("id", Relation.IN, 1, 2, 3);
+        request.andFilter("id", Relation.IN, 1, 2, 3);
 
         Page<Demo> page = demoRepository.pageRequest(request);
         log.info("demo:{}", page.getContent());
