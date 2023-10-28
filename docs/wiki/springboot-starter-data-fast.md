@@ -64,7 +64,7 @@ public interface DemoRepository extends FastRepository<Demo,Integer> {
 ```
 动态FastRepository的能力展示
 
-```java
+```
 
     // 重写findAll，通过Example查询 
     @Test
@@ -90,7 +90,7 @@ public interface DemoRepository extends FastRepository<Demo,Integer> {
 
     // pageRequest 自定义条件查询        
     @Test
-    void pageRequest() {
+    void pageRequest1() {
             demoRepository.deleteAll();
             Demo demo1 = new Demo();
             demo1.setName("123");
@@ -104,10 +104,33 @@ public interface DemoRepository extends FastRepository<Demo,Integer> {
             request.setCurrent(1);
             request.setPageSize(10);
             request.addFilter("name", PageRequest.FilterRelation.LIKE, "%2%");
+            //sql: select demo0_.id as id1_0_, demo0_.name as name2_0_, demo0_.sort as sort3_0_ from t_demo demo0_ where demo0_.name like ? limit ?
 
             Page<Demo> page = demoRepository.pageRequest(request);
             assertEquals(1, page.getTotalElements());
-        }
+    }
+    
+    // pageRequest 自定义条件查询      
+    @Test
+    void pageRequest2() {
+            demoRepository.deleteAll();
+            Demo demo1 = new Demo();
+            demo1.setName("123");
+            demoRepository.save(demo1);
+
+            Demo demo2 = new Demo();
+            demo2.setName("456");
+            demoRepository.save(demo2);
+
+            PageRequest request = new PageRequest();
+            request.setCurrent(1);
+            request.setPageSize(10);
+            request.orFilters(Filter.as("name","123"),Filter.as("name","456"));
+            //sql: select demo0_.id as id1_0_, demo0_.name as name2_0_, demo0_.sort as sort3_0_ from t_demo demo0_ where demo0_.name=? or demo0_.name=? limit ?
+
+            Page<Demo> page = demoRepository.pageRequest(request);
+            assertEquals(1, page.getTotalElements());
+    }
 
 
     // 动态sql的List查询    

@@ -90,11 +90,10 @@ public class DemoRepositoryTest {
         PageRequest request = new PageRequest();
         request.setCurrent(1);
         request.setPageSize(10);
-
-        request.orFilters(Filter.and(Filter.as("name", Relation.LIKE, "%2%"),Filter.as("name", Relation.LIKE, "%1%")), Filter.and(Filter.as("id", Relation.IN, 1),Filter.as("id", Relation.IN, 2)));
+        request.orFilters(Filter.as("name","123"),Filter.as("name","456"));
 
         Page<Demo> page = demoRepository.pageRequest(request);
-        assertEquals(1, page.getTotalElements());
+        assertEquals(2, page.getTotalElements());
     }
 
     @Test
