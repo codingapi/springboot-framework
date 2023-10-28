@@ -51,14 +51,22 @@ security默认的账户密码为admin/admin，可以通过重写UserDetailsServi
 也可以通过数据库账户获取账户数据，请自己实现UserDetailsService接口
 
 ## 登录拦截
-可以通过重写SecurityLoginHandler来实现自定义登录拦截
-```java
+可以通过重写SecurityLoginHandler来实现自定义登录拦截，preHandle登录前的拦截处理，postHandle登录后的拦截处理
+```
     @Bean
-    public SecurityLoginHandler securityLoginHandler(){
-        return (request, response, handler) -> {
-            //TODO 自定义登录拦截
-        };
-    }
+    public SecurityLoginHandler securityLoginHandler() {
+        return new SecurityLoginHandler() {
+            @Override
+            public void preHandle(HttpServletRequest request, HttpServletResponse response, LoginRequest handler) throws Exception {
+
+            }
+
+            @Override
+            public void postHandle(HttpServletRequest request, HttpServletResponse response, LoginRequest handler, Token token) {
+
+        }
+    };
+}
 ```
 
 ## 获取当前用户
