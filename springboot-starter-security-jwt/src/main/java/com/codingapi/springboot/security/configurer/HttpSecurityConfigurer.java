@@ -1,5 +1,6 @@
 package com.codingapi.springboot.security.configurer;
 
+import com.codingapi.springboot.security.filter.AuthenticationTokenFilter;
 import com.codingapi.springboot.security.filter.MyAuthenticationFilter;
 import com.codingapi.springboot.security.filter.MyLoginFilter;
 import com.codingapi.springboot.security.filter.SecurityLoginHandler;
@@ -17,11 +18,12 @@ public class HttpSecurityConfigurer extends AbstractHttpConfigurer<HttpSecurityC
 
     private final SecurityLoginHandler securityLoginHandler;
     private final SecurityJwtProperties securityJwtProperties;
+    private final AuthenticationTokenFilter authenticationTokenFilter;
 
     @Override
     public void configure(HttpSecurity security) throws Exception {
         AuthenticationManager manager = security.getSharedObject(AuthenticationManager.class);
         security.addFilter(new MyLoginFilter(manager, jwt,securityLoginHandler, securityJwtProperties));
-        security.addFilter(new MyAuthenticationFilter(manager,securityJwtProperties,jwt));
+        security.addFilter(new MyAuthenticationFilter(manager,securityJwtProperties,jwt,authenticationTokenFilter));
     }
 }

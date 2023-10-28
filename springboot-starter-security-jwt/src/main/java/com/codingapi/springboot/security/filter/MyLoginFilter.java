@@ -84,7 +84,9 @@ public class MyLoginFilter extends UsernamePasswordAuthenticationFilter {
         String content = JSONObject.toJSONString(SingleResponse.of(login));
         IOUtils.write(content, response.getOutputStream(), StandardCharsets.UTF_8);
 
+        loginHandler.postHandle(request,response,loginRequest,token);
         LoginRequestContext.getInstance().clean();
+
     }
 
 

@@ -2,9 +2,14 @@ package com.codingapi.springboot.security;
 
 import com.codingapi.springboot.security.configurer.HttpSecurityConfigurer;
 import com.codingapi.springboot.security.controller.VersionController;
+import com.codingapi.springboot.security.dto.request.LoginRequest;
 import com.codingapi.springboot.security.filter.*;
 import com.codingapi.springboot.security.jwt.Jwt;
+import com.codingapi.springboot.security.jwt.Token;
 import com.codingapi.springboot.security.properties.SecurityJwtProperties;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -57,7 +62,24 @@ public class AutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public SecurityLoginHandler securityLoginHandler(){
-        return (request, response, handler) -> {
+       return new SecurityLoginHandler() {
+           @Override
+           public void preHandle(HttpServletRequest request, HttpServletResponse response, LoginRequest handler) throws Exception {
+
+           }
+
+           @Override
+           public void postHandle(HttpServletRequest request, HttpServletResponse response, LoginRequest handler, Token token) {
+
+           }
+       };
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public AuthenticationTokenFilter authenticationTokenFilter(){
+        return (request, response, chain) -> {
+
         };
     }
 
@@ -65,7 +87,7 @@ public class AutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public SecurityFilterChain filterChain(HttpSecurity security, Jwt jwt,SecurityLoginHandler loginHandler,
-                                           SecurityJwtProperties properties) throws Exception {
+                                           SecurityJwtProperties properties,AuthenticationTokenFilter authenticationTokenFilter) throws Exception {
         //disable basic auth
         security.httpBasic().disable();
 
@@ -74,7 +96,7 @@ public class AutoConfiguration {
         if(properties.isDisableCsrf() ){
             security.csrf().disable();
         }
-        security.apply(new HttpSecurityConfigurer(jwt,loginHandler,properties));
+        security.apply(new HttpSecurityConfigurer(jwt,loginHandler,properties,authenticationTokenFilter));
         security
                 .exceptionHandling()
                 .authenticationEntryPoint(new MyUnAuthenticationEntryPoint())

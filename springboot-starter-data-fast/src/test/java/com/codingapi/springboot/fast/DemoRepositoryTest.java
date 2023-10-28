@@ -2,7 +2,10 @@ package com.codingapi.springboot.fast;
 
 import com.codingapi.springboot.fast.entity.Demo;
 import com.codingapi.springboot.fast.repository.DemoRepository;
+import com.codingapi.springboot.framework.dto.request.Filter;
 import com.codingapi.springboot.framework.dto.request.PageRequest;
+import com.codingapi.springboot.framework.dto.request.Relation;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +19,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Slf4j
 @SpringBootTest
 public class DemoRepositoryTest {
 
@@ -68,12 +72,58 @@ public class DemoRepositoryTest {
         PageRequest request = new PageRequest();
         request.setCurrent(1);
         request.setPageSize(10);
-        request.addFilter("name", PageRequest.FilterRelation.LIKE, "%2%");
+        request.andFilter("name", Relation.LIKE, "%2%");
 
         Page<Demo> page = demoRepository.pageRequest(request);
         assertEquals(1, page.getTotalElements());
     }
 
+
+    @Test
+    void customInSearch() {
+        demoRepository.deleteAll();
+        Demo demo1 = new Demo();
+        demo1.setName("123");
+        demoRepository.save(demo1);
+
+        Demo demo2 = new Demo();
+        demo2.setName("456");
+        demoRepository.save(demo2);
+
+        PageRequest request = new PageRequest();
+        request.setCurrent(1);
+        request.setPageSize(10);
+
+        request.andFilter("id", Relation.IN, 1, 2, 3);
+
+        Page<Demo> page = demoRepository.pageRequest(request);
+        log.info("demo:{}", page.getContent());
+        assertEquals(2, page.getTotalElements());
+    }
+
+
+    @Test
+    void customOrSearch() {
+        demoRepository.deleteAll();
+        Demo demo1 = new Demo();
+        demo1.setName("123");
+        demoRepository.save(demo1);
+
+        Demo demo2 = new Demo();
+        demo2.setName("456");
+        demoRepository.save(demo2);
+
+        PageRequest request = new PageRequest();
+        request.setCurrent(1);
+        request.setPageSize(10);
+
+
+        request.orFilters(Filter.as("id", Relation.IN, 1, 2, 3), Filter.as("name", "123"));
+
+        Page<Demo> page = demoRepository.pageRequest(request);
+        log.info("demo:{}", page.getContent());
+        assertEquals(2, page.getTotalElements());
+    }
 
     @Test
     void dynamicListQuery() {
