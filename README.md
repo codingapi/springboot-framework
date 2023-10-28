@@ -9,7 +9,7 @@
 
 本框架基于springboot为提供领域驱动设计与事件风暴开发落地，提供的范式开源框架。
 
-## 项目版本说明
+## Project Version | 项目版本说明
 
 v.2.x 为springboot 2.x版本,使用jdk8版本   
 v.3.x 为springboot 3.x版本,使用jdk17版本 
