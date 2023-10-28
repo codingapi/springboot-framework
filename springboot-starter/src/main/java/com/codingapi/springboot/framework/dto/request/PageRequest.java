@@ -172,8 +172,8 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
         return this;
     }
 
-    public PageRequest addFilters(Filter... filters) {
-        requestFilter.addFilters(filters);
+    public PageRequest andFilters(Filter... filters) {
+        requestFilter.andFilters(filters);
         return this;
     }
 

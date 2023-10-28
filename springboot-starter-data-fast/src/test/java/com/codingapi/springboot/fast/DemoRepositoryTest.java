@@ -113,7 +113,7 @@ public class DemoRepositoryTest {
         request.setPageSize(10);
 
 //        request.addFilters(Filter.as("id", Relation.IN, 1),Filter.as("id", Relation.IN, 2),Filter.as("id", Relation.IN, 3),Filter.as("id", Relation.IN, 4));
-        request.addFilters(Filter.as("name", Relation.LIKE, "%2%"), Filter.and(Filter.as("id", Relation.IN, 1), Filter.as("id", Relation.IN, 2)));
+        request.andFilters(Filter.as("name", Relation.LIKE, "%2%"), Filter.and(Filter.as("id", Relation.IN, 1), Filter.as("id", Relation.IN, 2)));
         Page<Demo> page = demoRepository.pageRequest(request);
         assertEquals(0, page.getTotalElements());
     }

@@ -9,7 +9,7 @@ import lombok.Setter;
 public class Filter {
 
     public static final String FILTER_OR_KEY = "FILTER_OR_KEY";
-    public static final String FILTER_ADD_KEY = "FILTER_ADD_KEY";
+    public static final String FILTER_AND_KEY = "FILTER_AND_KEY";
 
     private String key;
     private Object[] value;
@@ -38,7 +38,7 @@ public class Filter {
     }
 
     public static Filter and(Filter... value) {
-        return new Filter(FILTER_ADD_KEY, value);
+        return new Filter(FILTER_AND_KEY, value);
     }
 
     public static Filter or(Filter... value) {
@@ -65,8 +65,8 @@ public class Filter {
         return FILTER_OR_KEY.equals(key);
     }
 
-    public boolean isAddFilters() {
-        return FILTER_ADD_KEY.equals(key);
+    public boolean isAndFilters() {
+        return FILTER_AND_KEY.equals(key);
     }
 
     public boolean isGreaterThan() {
