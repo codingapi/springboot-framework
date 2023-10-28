@@ -162,13 +162,18 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
         }
     }
 
-    public PageRequest addFilter(String key, Relation relation, Object... value) {
+    public PageRequest andFilter(String key, Relation relation, Object... value) {
         requestFilter.addFilter(key, relation, value);
         return this;
     }
 
     public PageRequest addFilter(String key, Object... value) {
         requestFilter.addFilter(key, value);
+        return this;
+    }
+
+    public PageRequest andFilter(Filter... value) {
+        requestFilter.andFilters(value);
         return this;
     }
 

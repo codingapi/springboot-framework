@@ -20,8 +20,8 @@ public class RequestFilter {
         return this;
     }
 
-    public RequestFilter addFilters(Filter... value) {
-        this.pushFilter(new Filter(Filter.FILTER_ADD_KEY, value));
+    public RequestFilter andFilters(Filter... value) {
+        this.pushFilter(new Filter(Filter.FILTER_AND_KEY, value));
         return this;
     }
 
