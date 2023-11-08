@@ -7,13 +7,13 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
+import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.util.List;
 
 public class Jwt {
 
-    private final Key key;
+    private final SecretKey key;
     private final int jwtTime;
     private final int jwtRestTime;
 
@@ -37,16 +37,16 @@ public class Jwt {
 
     public Token create(String username, String iv,List<String> authorities,String extra){
         Token token = new Token(username, iv,extra, authorities, jwtTime, jwtRestTime);
-        String jwt = Jwts.builder().setSubject(token.toJson()).signWith(key).compact();
+        String jwt = Jwts.builder().subject(token.toJson()).signWith(key).compact();
         token.setToken(jwt);
         return token;
     }
 
     public Token parser(String sign) {
         try {
-            Jws<Claims> jws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(sign);
+            Jws<Claims> jws = Jwts.parser().verifyWith(key).build().parseSignedClaims(sign);
             if (jws != null) {
-                String subject = jws.getBody().getSubject();
+                String subject = jws.getPayload().getSubject();
                 return JSONObject.parseObject(subject, Token.class);
             }
             throw new LocaleMessageException("token.error", "token失效,请重新登录.");
