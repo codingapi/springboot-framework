@@ -35,6 +35,7 @@ public class RequestFilter {
     }
 
     public void pushFilter(Filter filter) {
+        filterList.removeIf(item -> item.getKey().equals(filter.getKey()));
         filterList.add(filter);
         filterMap.put(filter.getKey(), filter);
     }
