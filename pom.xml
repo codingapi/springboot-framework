@@ -6,13 +6,13 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.4</version>
+        <version>3.1.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>com.codingapi.springboot</groupId>
     <artifactId>springboot-parent</artifactId>
-    <version>3.1.3</version>
+    <version>3.1.5</version>
 
     <url>https://github.com/codingapi/springboot-framewrok</url>
     <name>springboot-parent</name>
@@ -27,19 +27,19 @@
         <maven.compile.target>17</maven.compile.target>
         <maven.source.plugin>3.0.1</maven.source.plugin>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
-        <maven.javadoc.plugin>2.10.3</maven.javadoc.plugin>
-        <nexus.staging.maven.plugin>1.6.3</nexus.staging.maven.plugin>
-        <maven.gpg.plugin>1.6</maven.gpg.plugin>
+        <maven.javadoc.plugin>3.6.1</maven.javadoc.plugin>
+        <nexus.staging.maven.plugin>1.6.13</nexus.staging.maven.plugin>
+        <maven.gpg.plugin>3.1.0</maven.gpg.plugin>
         <codingapi.framework.version>${project.version}</codingapi.framework.version>
-        <fastjson.version>2.0.28</fastjson.version>
-        <jsonwebtoken.jjwt.version>0.11.5</jsonwebtoken.jjwt.version>
-        <commons-io.version>2.11.0</commons-io.version>
-        <commons-dbutils.version>1.7</commons-dbutils.version>
+        <fastjson.version>2.0.42</fastjson.version>
+        <jsonwebtoken.jjwt.version>0.12.3</jsonwebtoken.jjwt.version>
+        <commons-io.version>2.15.0</commons-io.version>
+        <commons-dbutils.version>1.8.1</commons-dbutils.version>
         <org.reflections.version>0.10.2</org.reflections.version>
         <perf4j.version>0.9.16</perf4j.version>
         <bcprov-jdk15on.version>1.70</bcprov-jdk15on.version>
         <commons-crypto.version>1.2.0</commons-crypto.version>
-        <org.yaml.snakeyaml.version>2.0</org.yaml.snakeyaml.version>
+        <org.yaml.snakeyaml.version>2.2</org.yaml.snakeyaml.version>
     </properties>
 
     <dependencies>
@@ -47,6 +47,17 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.yaml</groupId>
+                    <artifactId>snakeyaml</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
         </dependency>
 
         <dependency>
@@ -155,6 +166,13 @@
                 <artifactId>commons-dbutils</artifactId>
                 <version>${commons-dbutils.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${org.yaml.snakeyaml.version}</version>
+            </dependency>
+
 
         </dependencies>
     </dependencyManagement>

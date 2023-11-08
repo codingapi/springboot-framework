@@ -1,6 +1,6 @@
 package com.codingapi.springboot.framework.serializable;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSON;
 
 import java.util.Map;
 
@@ -11,6 +11,6 @@ import java.util.Map;
 public interface MapSerializable {
 
     default Map<String, Object> toMap() {
-        return (Map<String, Object>) JSONObject.toJSON(this);
+        return JSON.parseObject(JSON.toJSONString(this));
     }
 }

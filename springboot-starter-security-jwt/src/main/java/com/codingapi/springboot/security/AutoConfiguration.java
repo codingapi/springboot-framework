@@ -7,7 +7,6 @@ import com.codingapi.springboot.security.filter.*;
 import com.codingapi.springboot.security.jwt.Jwt;
 import com.codingapi.springboot.security.jwt.Token;
 import com.codingapi.springboot.security.properties.SecurityJwtProperties;
-import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

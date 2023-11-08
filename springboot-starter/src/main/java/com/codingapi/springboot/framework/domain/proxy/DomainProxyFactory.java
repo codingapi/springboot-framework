@@ -10,6 +10,7 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class DomainProxyFactory {
 
+    @SuppressWarnings("unchecked")
     public static <T> T create(Class<T> entityClass, Object... args) {
         DomainChangeInterceptor interceptor = null;
         try {
