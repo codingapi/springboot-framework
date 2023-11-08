@@ -9,6 +9,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 import java.util.List;
 
 @NoRepositoryBean
+@SuppressWarnings("unchecked")
 public interface DynamicRepository<T, ID> extends JpaRepository<T, ID> {
 
     default Class<?> getEntityClass() {
