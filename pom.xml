@@ -39,7 +39,7 @@
         <perf4j.version>0.9.16</perf4j.version>
         <bcprov-jdk15on.version>1.70</bcprov-jdk15on.version>
         <commons-crypto.version>1.2.0</commons-crypto.version>
-        <org.yaml.snakeyaml.version>2.2</org.yaml.snakeyaml.version>
+        <snakeyaml.version>2.2</snakeyaml.version>
     </properties>
 
     <dependencies>
@@ -47,18 +47,8 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.yaml</groupId>
-                    <artifactId>snakeyaml</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -166,13 +156,6 @@
                 <artifactId>commons-dbutils</artifactId>
                 <version>${commons-dbutils.version}</version>
             </dependency>
-
-            <dependency>
-                <groupId>org.yaml</groupId>
-                <artifactId>snakeyaml</artifactId>
-                <version>${org.yaml.snakeyaml.version}</version>
-            </dependency>
-
 
         </dependencies>
     </dependencyManagement>
