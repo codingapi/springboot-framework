@@ -1,6 +1,5 @@
 package com.codingapi.springboot.framework.rest.param;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.SneakyThrows;
 import org.springframework.util.LinkedMultiValueMap;
@@ -35,21 +34,6 @@ public class RestParam {
             Object value = object.getObject(key, Object.class);
             if (value != null) {
                 builder.add(key, value);
-
-                if (value instanceof JSONObject) {
-                    JSONObject jsonObject = (JSONObject) value;
-                    fetch(jsonObject, builder);
-                }
-
-                if (value instanceof JSONArray) {
-                    JSONArray jsonArray = (JSONArray) value;
-                    for (Object o : jsonArray) {
-                        if (o instanceof JSONObject) {
-                            JSONObject jsonObject = (JSONObject) o;
-                            fetch(jsonObject, builder);
-                        }
-                    }
-                }
             }
         }
     }
