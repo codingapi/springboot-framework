@@ -17,10 +17,10 @@ public abstract class Schema {
         log.info("Schema init:{}", domainClass);
         this.domainClass = domainClass;
         this.schemaProperty = new SchemaProperty(domainClass);
-        this.check();
+        this.verify();
     }
 
-    public void check() {
+    public void verify() {
         if (!this.schemaProperty.hasIdProperty()) {
             throw new RuntimeException("schema id property not found");
         }
