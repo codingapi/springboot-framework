@@ -21,4 +21,12 @@ public class DemoRepository {
         return domainPersistence.get(Demo.class, id);
     }
 
+    public void delete(int id) {
+        domainPersistence.delete(Demo.class,id);
+    }
+
+    public void update(Demo demo) {
+        domainPersistence.update(demo);
+    }
+
 }

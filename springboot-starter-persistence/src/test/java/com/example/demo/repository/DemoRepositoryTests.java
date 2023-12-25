@@ -38,4 +38,17 @@ public class DemoRepositoryTests {
         log.info("demo: {}", demo);
     }
 
+    @Test
+    void delete() {
+        demoRepository.delete(100);
+    }
+
+
+    @Test
+    void update() {
+        Demo demo = new Demo();
+        demo.setId(100);
+        demo.setName("123456");
+        demoRepository.update(demo);
+    }
 }

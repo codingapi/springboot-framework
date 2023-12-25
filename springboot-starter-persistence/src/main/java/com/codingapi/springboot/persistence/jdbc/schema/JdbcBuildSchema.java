@@ -1,7 +1,7 @@
 package com.codingapi.springboot.persistence.jdbc.schema;
 
 import com.codingapi.springboot.persistence.schema.BuildSchema;
-import com.codingapi.springboot.persistence.property.Property;
+import com.codingapi.springboot.persistence.property.BeanProperty;
 import com.codingapi.springboot.persistence.schema.Schema;
 
 import java.util.List;
@@ -19,12 +19,12 @@ public class JdbcBuildSchema extends BuildSchema {
         sql.append(property.getSchemaName());
         sql.append(" (");
         sql.append("id INT PRIMARY KEY AUTO_INCREMENT,");
-        List<Property> properties = property.getProperties(false);
+        List<BeanProperty> properties = property.getProperties(false);
         for (int i = 0; i < properties.size(); i++) {
-            Property property = properties.get(i);
-            sql.append(property.getName());
+            BeanProperty beanProperty = properties.get(i);
+            sql.append(beanProperty.getName());
             sql.append(" ");
-            sql.append(property.getJdbcType());
+            sql.append(beanProperty.getJdbcType());
             if (i != properties.size() - 1) {
                 sql.append(", ");
             }

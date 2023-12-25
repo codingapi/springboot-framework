@@ -1,6 +1,6 @@
 package com.codingapi.springboot.persistence.schema;
 
-import com.codingapi.springboot.persistence.property.Property;
+import com.codingapi.springboot.persistence.property.BeanProperty;
 import com.codingapi.springboot.persistence.property.SchemaProperty;
 import lombok.Getter;
 
@@ -25,8 +25,8 @@ public abstract class SaveSchema  {
 
     public Object[] getSaveValues(Object object, boolean hasId) {
         List<Object> values = new ArrayList<>();
-        for (Property property : property.getProperties(hasId)) {
-            values.add(property.get(object));
+        for (BeanProperty beanProperty : property.getProperties(hasId)) {
+            values.add(beanProperty.get(object));
         }
         return values.toArray();
     }

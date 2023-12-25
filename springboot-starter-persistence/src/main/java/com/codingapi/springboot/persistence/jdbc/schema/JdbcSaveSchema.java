@@ -1,6 +1,6 @@
 package com.codingapi.springboot.persistence.jdbc.schema;
 
-import com.codingapi.springboot.persistence.property.Property;
+import com.codingapi.springboot.persistence.property.BeanProperty;
 import com.codingapi.springboot.persistence.schema.SaveSchema;
 import com.codingapi.springboot.persistence.schema.Schema;
 
@@ -16,13 +16,13 @@ public class JdbcSaveSchema extends SaveSchema {
         sql.append("INSERT INTO ");
         sql.append(property.getSchemaName());
         sql.append(" (");
-        for (Property property : property.getProperties(hasId)) {
-            sql.append(property.getName());
+        for (BeanProperty beanProperty : property.getProperties(hasId)) {
+            sql.append(beanProperty.getName());
             sql.append(", ");
         }
         sql.delete(sql.length() - 2, sql.length());
         sql.append(") VALUES (");
-        for (Property property : property.getProperties(hasId)) {
+        for (BeanProperty beanProperty : property.getProperties(hasId)) {
             sql.append("?, ");
         }
         sql.delete(sql.length() - 2, sql.length());

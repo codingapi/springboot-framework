@@ -26,6 +26,10 @@ public abstract class Schema {
 
     public abstract SearchSchema getById();
 
+    public abstract DeleteSchema deleteSchema();
+
+    public abstract UpdateSchema updateSchema();
+
     public boolean supports(Class<?> domainClass) {
         return this.domainClass.equals(domainClass);
     }

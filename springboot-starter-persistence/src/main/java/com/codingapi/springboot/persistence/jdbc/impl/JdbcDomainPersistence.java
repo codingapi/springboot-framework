@@ -5,6 +5,7 @@ import com.codingapi.springboot.persistence.scanner.SchemaContext;
 import com.codingapi.springboot.persistence.schema.SaveSchema;
 import com.codingapi.springboot.persistence.schema.Schema;
 import com.codingapi.springboot.persistence.schema.SearchSchema;
+import com.codingapi.springboot.persistence.schema.UpdateSchema;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -56,5 +57,23 @@ public class JdbcDomainPersistence implements DomainPersistence {
             }
         }
         return null;
+    }
+
+    @Override
+    public void delete(Class<?> domainClazz,Object id) {
+        Schema schema = SchemaContext.getINSTANCE().getSchema(domainClazz);
+        if (schema != null) {
+            String sql = schema.deleteSchema().deleteSchema();
+            jdbcTemplate.update(sql, id);
+        }
+    }
+
+    @Override
+    public void update(Object domain) {
+        Schema schema = SchemaContext.getINSTANCE().getSchema(domain.getClass());
+        if (schema != null) {
+            UpdateSchema updateSchema = schema.updateSchema();
+            jdbcTemplate.update(updateSchema.updateSchema(), updateSchema.getUpdateValues(domain));
+        }
     }
 }

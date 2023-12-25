@@ -1,13 +1,14 @@
 package com.codingapi.springboot.persistence.property;
 
 import lombok.extern.slf4j.Slf4j;
+import org.yaml.snakeyaml.introspector.Property;
 
 @Slf4j
-public class Property {
+public class BeanProperty {
     
-    private final org.yaml.snakeyaml.introspector.Property property;
+    private final Property property;
 
-    public Property(org.yaml.snakeyaml.introspector.Property property) {
+    public BeanProperty(Property property) {
         this.property = property;
     }
     

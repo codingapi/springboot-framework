@@ -15,7 +15,7 @@ public abstract class SearchSchema {
     public abstract String getById();
 
     public Object getByIdValue(Object domain) {
-        return property.getIdProperty().get(domain);
+        return property.getIdBeanProperty().get(domain);
     }
 
 }

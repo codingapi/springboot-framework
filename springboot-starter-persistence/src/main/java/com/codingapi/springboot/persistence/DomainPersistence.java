@@ -6,4 +6,7 @@ public interface DomainPersistence {
 
     <T> T get(Class<T> domainClass, Object id);
 
+    void delete(Class<?> domainClass,Object id);
+
+    void update(Object domain);
 }

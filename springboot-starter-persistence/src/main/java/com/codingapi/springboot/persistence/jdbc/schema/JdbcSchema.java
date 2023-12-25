@@ -1,9 +1,6 @@
 package com.codingapi.springboot.persistence.jdbc.schema;
 
-import com.codingapi.springboot.persistence.schema.BuildSchema;
-import com.codingapi.springboot.persistence.schema.SaveSchema;
-import com.codingapi.springboot.persistence.schema.Schema;
-import com.codingapi.springboot.persistence.schema.SearchSchema;
+import com.codingapi.springboot.persistence.schema.*;
 
 public class JdbcSchema extends Schema {
 
@@ -24,5 +21,15 @@ public class JdbcSchema extends Schema {
     @Override
     public SearchSchema getById() {
         return new JdbcSearchSchema(this);
+    }
+
+    @Override
+    public DeleteSchema deleteSchema() {
+        return new JdbcDeleteSchema(this);
+    }
+
+    @Override
+    public UpdateSchema updateSchema() {
+        return new JdbcUpdateSchema(this);
     }
 }
