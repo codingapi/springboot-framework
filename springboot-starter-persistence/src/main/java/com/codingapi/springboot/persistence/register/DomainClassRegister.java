@@ -16,8 +16,13 @@ public class DomainClassRegister {
         this.classes = new ArrayList<>();
     }
 
-    public void register(Class<?> domainClass) {
+    public DomainClassRegister register(Class<?> domainClass) {
         this.classes.add(domainClass);
+        return this;
+    }
+
+    public void register(Class<?>... domainClasses) {
+        this.classes.addAll(List.of(domainClasses));
     }
 
     public boolean supports(Class<?> domainClass) {

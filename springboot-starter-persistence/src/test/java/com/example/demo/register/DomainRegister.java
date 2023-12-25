@@ -1,7 +1,7 @@
 package com.example.demo.register;
 
-import com.example.demo.domain.Demo;
 import com.codingapi.springboot.persistence.register.DomainClassRegister;
+import com.example.demo.domain.Demo;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 

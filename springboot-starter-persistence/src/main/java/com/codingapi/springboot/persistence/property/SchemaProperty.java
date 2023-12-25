@@ -26,9 +26,9 @@ public class SchemaProperty {
 
 
     public List<BeanProperty> getProperties(boolean hasId) {
-        if(hasId){
+        if (hasId) {
             return properties;
-        }else{
+        } else {
             return properties.stream()
                     .filter(beanProperty -> !beanProperty.getName().equals("id"))
                     .collect(Collectors.toList());
@@ -45,5 +45,14 @@ public class SchemaProperty {
 
     public void setIdValue(Object domain, Number key) {
         idBeanProperty.setIdValue(domain, key);
+    }
+
+    public boolean hasIdProperty() {
+        for (BeanProperty property : properties) {
+            if (property.getName().equals("id")) {
+                return true;
+            }
+        }
+        return false;
     }
 }
