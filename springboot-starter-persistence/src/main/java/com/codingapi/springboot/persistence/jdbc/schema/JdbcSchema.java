@@ -14,12 +14,12 @@ public class JdbcSchema extends Schema {
     }
 
     @Override
-    public SaveSchema insertSchema() {
+    public SaveSchema saveSchema() {
         return new JdbcSaveSchema(this);
     }
 
     @Override
-    public SearchSchema getById() {
+    public SearchSchema searchSchema() {
         return new JdbcSearchSchema(this);
     }
 

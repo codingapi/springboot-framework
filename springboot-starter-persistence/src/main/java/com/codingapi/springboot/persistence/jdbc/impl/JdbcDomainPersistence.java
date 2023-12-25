@@ -24,15 +24,15 @@ public class JdbcDomainPersistence implements DomainPersistence {
 
     @Override
     public void save(Object domain) {
-        Schema schema = SchemaContext.getINSTANCE().getSchema(domain.getClass());
+        Schema schema = SchemaContext.getInstance().getSchema(domain.getClass());
         if (schema != null) {
-            SaveSchema saveSchema = schema.insertSchema();
+            SaveSchema saveSchema = schema.saveSchema();
             if (schema.getSchemaProperty().hasIdValue(domain)) {
-                jdbcTemplate.update(saveSchema.saveSchema(), saveSchema.getSaveValues(domain));
+                jdbcTemplate.update(saveSchema.schema(), saveSchema.getSaveValues(domain));
             } else {
                 KeyHolder keyHolder = new GeneratedKeyHolder();
                 jdbcTemplate.update(con -> {
-                    PreparedStatement ps = con.prepareStatement(saveSchema.saveSchema(false), Statement.RETURN_GENERATED_KEYS);
+                    PreparedStatement ps = con.prepareStatement(saveSchema.schema(false), Statement.RETURN_GENERATED_KEYS);
                     int index = 1;
                     for (Object value : saveSchema.getSaveValues(domain, false)) {
                         ps.setObject(index++, value);
@@ -46,10 +46,10 @@ public class JdbcDomainPersistence implements DomainPersistence {
 
     @Override
     public <T> T get(Class<T> domainClass, Object id) {
-        Schema schema = SchemaContext.getINSTANCE().getSchema(domainClass);
+        Schema schema = SchemaContext.getInstance().getSchema(domainClass);
         if (schema != null) {
-            SearchSchema searchSchema = schema.getById();
-            String sql = searchSchema.getById();
+            SearchSchema searchSchema = schema.searchSchema();
+            String sql = searchSchema.schema();
             try {
                 return jdbcTemplate.queryForObject(sql, new Object[]{id}, new BeanPropertyRowMapper<>(domainClass));
             } catch (EmptyResultDataAccessException e) {
@@ -62,26 +62,26 @@ public class JdbcDomainPersistence implements DomainPersistence {
 
     @Override
     public void delete(Class<?> domainClazz, Object id) {
-        Schema schema = SchemaContext.getINSTANCE().getSchema(domainClazz);
+        Schema schema = SchemaContext.getInstance().getSchema(domainClazz);
         if (schema != null) {
-            String sql = schema.deleteSchema().deleteSchema();
+            String sql = schema.deleteSchema().schema();
             jdbcTemplate.update(sql, id);
         }
     }
 
     @Override
     public void update(Object domain) {
-        Schema schema = SchemaContext.getINSTANCE().getSchema(domain.getClass());
+        Schema schema = SchemaContext.getInstance().getSchema(domain.getClass());
         if (schema != null) {
             UpdateSchema updateSchema = schema.updateSchema();
-            jdbcTemplate.update(updateSchema.updateSchema(), updateSchema.getUpdateValues(domain));
+            jdbcTemplate.update(updateSchema.schema(), updateSchema.getUpdateValues(domain));
         }
     }
 
 
     @Override
     public <T> List<T> find(Class<T> domainClass, String sql, Object... fields) {
-        Schema schema = SchemaContext.getINSTANCE().getSchema(domainClass);
+        Schema schema = SchemaContext.getInstance().getSchema(domainClass);
         if (schema != null) {
             return jdbcTemplate.query(sql, fields, new BeanPropertyRowMapper<>(domainClass));
         }

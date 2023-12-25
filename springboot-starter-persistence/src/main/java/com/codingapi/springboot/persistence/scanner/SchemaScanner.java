@@ -3,7 +3,7 @@ package com.codingapi.springboot.persistence.scanner;
 import com.codingapi.springboot.persistence.register.DomainClassRegister;
 import com.codingapi.springboot.persistence.schema.Schema;
 import com.codingapi.springboot.persistence.schema.executor.SchemaExecutor;
-import com.codingapi.springboot.persistence.schema.SchemaFactory;
+import com.codingapi.springboot.persistence.schema.factory.SchemaFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -24,10 +24,10 @@ public class SchemaScanner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        List<Class<?>> domainClasses = DomainClassRegister.INSTANCE.getClasses();
+        List<Class<?>> domainClasses = DomainClassRegister.getInstance().getClasses();
         for (Class<?> domainClass : domainClasses) {
             Schema schema = schemaFactory.getSchema(domainClass);
-            SchemaContext.INSTANCE.register(schema);
+            SchemaContext.getInstance().register(schema);
             schemaExecutor.create(schema);
         }
     }

@@ -8,8 +8,7 @@ import java.util.List;
 
 public class SchemaContext {
 
-    @Getter
-    public final static SchemaContext INSTANCE = new SchemaContext();
+    private final static SchemaContext INSTANCE = new SchemaContext();
 
     private final List<Schema> schemas;
 
@@ -26,5 +25,9 @@ public class SchemaContext {
                 .filter(schema -> schema.getDomainClass().equals(domainClass))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("schema not found"));
+    }
+
+    public static SchemaContext getInstance() {
+        return INSTANCE;
     }
 }

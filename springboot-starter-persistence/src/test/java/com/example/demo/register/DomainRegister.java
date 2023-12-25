@@ -10,6 +10,6 @@ public class DomainRegister implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        DomainClassRegister.INSTANCE.register(Demo.class);
+        DomainClassRegister.getInstance().register(Demo.class);
     }
 }

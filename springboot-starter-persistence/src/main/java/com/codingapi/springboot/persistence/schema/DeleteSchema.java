@@ -4,7 +4,7 @@ import com.codingapi.springboot.persistence.property.SchemaProperty;
 
 public abstract class DeleteSchema {
 
-    public abstract String deleteSchema();
+    public abstract String schema();
 
     protected final SchemaProperty property;
 

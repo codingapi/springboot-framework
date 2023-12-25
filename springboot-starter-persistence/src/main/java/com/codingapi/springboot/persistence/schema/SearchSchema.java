@@ -12,7 +12,7 @@ public abstract class SearchSchema {
         this.property = schema.getSchemaProperty();
     }
 
-    public abstract String getById();
+    public abstract String schema();
 
     public Object getByIdValue(Object domain) {
         return property.getIdBeanProperty().get(domain);

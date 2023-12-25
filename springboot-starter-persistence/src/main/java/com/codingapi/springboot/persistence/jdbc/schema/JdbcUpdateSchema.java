@@ -11,7 +11,7 @@ public class JdbcUpdateSchema extends UpdateSchema {
     }
 
     @Override
-    public String updateSchema() {
+    public String schema() {
         StringBuilder sql = new StringBuilder();
         sql.append("UPDATE ").append(property.getSchemaName()).append(" SET ");
         for (BeanProperty property : property.getProperties(false)) {

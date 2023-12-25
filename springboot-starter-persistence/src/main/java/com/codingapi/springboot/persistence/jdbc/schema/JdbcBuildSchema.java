@@ -13,7 +13,7 @@ public class JdbcBuildSchema extends BuildSchema {
     }
 
     @Override
-    public String createSchema() {
+    public String schema() {
         StringBuilder sql = new StringBuilder();
         sql.append("CREATE TABLE IF NOT EXISTS ");
         sql.append(property.getSchemaName());

@@ -15,7 +15,7 @@ public class JdbcSchemaExecutor implements SchemaExecutor {
 
     @Override
     public void create(Schema schema) {
-        jdbcTemplate.execute(schema.buildSchema().createSchema());
+        jdbcTemplate.execute(schema.buildSchema().schema());
     }
 
 

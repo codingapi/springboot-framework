@@ -5,7 +5,7 @@ import com.codingapi.springboot.persistence.property.SchemaProperty;
 
 public abstract class UpdateSchema {
 
-    public abstract String updateSchema();
+    public abstract String schema();
 
     protected final SchemaProperty property;
 

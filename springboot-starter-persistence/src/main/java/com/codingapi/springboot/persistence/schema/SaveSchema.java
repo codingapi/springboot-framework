@@ -16,11 +16,11 @@ public abstract class SaveSchema  {
         this.property = schema.getSchemaProperty();
     }
 
-    public String saveSchema() {
-        return saveSchema(true);
+    public String schema() {
+        return schema(true);
     }
 
-    public abstract String saveSchema(boolean hasId);
+    public abstract String schema(boolean hasId);
 
 
     public Object[] getSaveValues(Object object, boolean hasId) {

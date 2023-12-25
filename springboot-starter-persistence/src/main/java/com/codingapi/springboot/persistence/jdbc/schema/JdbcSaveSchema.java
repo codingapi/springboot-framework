@@ -11,7 +11,7 @@ public class JdbcSaveSchema extends SaveSchema {
     }
 
     @Override
-    public String saveSchema(boolean hasId) {
+    public String schema(boolean hasId) {
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO ");
         sql.append(property.getSchemaName());

@@ -10,7 +10,7 @@ public class DomainClassRegister {
 
     private final List<Class<?>> classes;
 
-    public final static DomainClassRegister INSTANCE = new DomainClassRegister();
+    private final static DomainClassRegister INSTANCE = new DomainClassRegister();
 
     private DomainClassRegister() {
         this.classes = new ArrayList<>();
@@ -24,6 +24,10 @@ public class DomainClassRegister {
         return this.classes.stream()
                 .anyMatch(clazz -> clazz.equals(domainClass));
 
+    }
+
+    public static DomainClassRegister getInstance() {
+        return INSTANCE;
     }
 
 }

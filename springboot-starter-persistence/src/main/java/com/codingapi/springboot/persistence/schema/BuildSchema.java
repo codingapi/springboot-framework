@@ -4,7 +4,7 @@ import com.codingapi.springboot.persistence.property.SchemaProperty;
 
 public abstract class BuildSchema {
 
-    public abstract String createSchema();
+    public abstract String schema();
 
     protected final SchemaProperty property;
 

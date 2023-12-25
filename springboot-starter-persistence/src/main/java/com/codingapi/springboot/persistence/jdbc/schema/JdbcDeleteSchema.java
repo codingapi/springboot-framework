@@ -10,7 +10,7 @@ public class JdbcDeleteSchema extends DeleteSchema {
     }
 
     @Override
-    public String deleteSchema() {
+    public String schema() {
         return "DELETE FROM " + property.getSchemaName() + " WHERE id = ?";
     }
 }
