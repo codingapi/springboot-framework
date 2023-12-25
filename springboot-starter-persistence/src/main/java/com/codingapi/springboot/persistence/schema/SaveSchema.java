@@ -1,5 +1,7 @@
 package com.codingapi.springboot.persistence.schema;
 
+import com.codingapi.springboot.persistence.property.Property;
+import com.codingapi.springboot.persistence.property.SchemaProperty;
 import lombok.Getter;
 
 import java.util.ArrayList;

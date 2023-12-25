@@ -1,7 +1,7 @@
-package com.codingapi.springboot.persistence.jdbc;
+package com.codingapi.springboot.persistence.jdbc.executor;
 
 import com.codingapi.springboot.persistence.schema.Schema;
-import com.codingapi.springboot.persistence.schema.SchemaExecutor;
+import com.codingapi.springboot.persistence.schema.executor.SchemaExecutor;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;

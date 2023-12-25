@@ -1,6 +1,6 @@
 package com.codingapi.springboot.persistence.jdbc.schema;
 
-import com.codingapi.springboot.persistence.schema.Property;
+import com.codingapi.springboot.persistence.property.Property;
 import com.codingapi.springboot.persistence.schema.SaveSchema;
 import com.codingapi.springboot.persistence.schema.Schema;
 

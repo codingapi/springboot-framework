@@ -1,4 +1,4 @@
-package com.codingapi.springboot.persistence.jdbc;
+package com.codingapi.springboot.persistence.jdbc.impl;
 
 import com.codingapi.springboot.persistence.jdbc.schema.JdbcSchema;
 import com.codingapi.springboot.persistence.schema.Schema;

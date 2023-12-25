@@ -1,4 +1,4 @@
-package com.codingapi.springboot.persistence.schema;
+package com.codingapi.springboot.persistence.property;
 
 import lombok.Getter;
 import org.yaml.snakeyaml.introspector.PropertyUtils;

@@ -2,7 +2,7 @@ package com.codingapi.springboot.persistence.scanner;
 
 import com.codingapi.springboot.persistence.register.DomainClassRegister;
 import com.codingapi.springboot.persistence.schema.Schema;
-import com.codingapi.springboot.persistence.schema.SchemaExecutor;
+import com.codingapi.springboot.persistence.schema.executor.SchemaExecutor;
 import com.codingapi.springboot.persistence.schema.SchemaFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;

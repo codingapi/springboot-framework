@@ -1,7 +1,10 @@
 package com.codingapi.springboot.persistence.jdbc;
 
 import com.codingapi.springboot.persistence.DomainPersistence;
-import com.codingapi.springboot.persistence.schema.SchemaExecutor;
+import com.codingapi.springboot.persistence.jdbc.executor.JdbcSchemaExecutor;
+import com.codingapi.springboot.persistence.jdbc.impl.JdbcDomainPersistence;
+import com.codingapi.springboot.persistence.jdbc.impl.JdbcSchemaFactory;
+import com.codingapi.springboot.persistence.schema.executor.SchemaExecutor;
 import com.codingapi.springboot.persistence.schema.SchemaFactory;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;

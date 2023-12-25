@@ -1,4 +1,4 @@
-package com.codingapi.springboot.persistence.schema;
+package com.codingapi.springboot.persistence.property;
 
 import lombok.extern.slf4j.Slf4j;
 

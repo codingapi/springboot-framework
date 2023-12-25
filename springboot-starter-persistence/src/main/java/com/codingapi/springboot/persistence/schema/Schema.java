@@ -1,6 +1,7 @@
 package com.codingapi.springboot.persistence.schema;
 
 
+import com.codingapi.springboot.persistence.property.SchemaProperty;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 

@@ -1,5 +1,6 @@
 package com.codingapi.springboot.persistence.schema;
 
+import com.codingapi.springboot.persistence.property.SchemaProperty;
 import lombok.Getter;
 
 @Getter
