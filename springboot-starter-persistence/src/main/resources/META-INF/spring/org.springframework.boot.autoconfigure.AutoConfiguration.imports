@@ -1,0 +1,2 @@
+com.codingapi.springboot.persistence.AutoConfiguration
+com.codingapi.springboot.persistence.jdbc.JdbcAutoConfiguration
