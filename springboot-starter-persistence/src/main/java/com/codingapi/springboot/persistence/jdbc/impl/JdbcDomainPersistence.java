@@ -15,6 +15,7 @@ import org.springframework.jdbc.support.KeyHolder;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
 
 @AllArgsConstructor
 public class JdbcDomainPersistence implements DomainPersistence {
@@ -60,7 +61,7 @@ public class JdbcDomainPersistence implements DomainPersistence {
     }
 
     @Override
-    public void delete(Class<?> domainClazz,Object id) {
+    public void delete(Class<?> domainClazz, Object id) {
         Schema schema = SchemaContext.getINSTANCE().getSchema(domainClazz);
         if (schema != null) {
             String sql = schema.deleteSchema().deleteSchema();
@@ -75,5 +76,15 @@ public class JdbcDomainPersistence implements DomainPersistence {
             UpdateSchema updateSchema = schema.updateSchema();
             jdbcTemplate.update(updateSchema.updateSchema(), updateSchema.getUpdateValues(domain));
         }
+    }
+
+
+    @Override
+    public <T> List<T> find(Class<T> domainClass, String sql, Object... fields) {
+        Schema schema = SchemaContext.getINSTANCE().getSchema(domainClass);
+        if (schema != null) {
+            return jdbcTemplate.query(sql, fields, new BeanPropertyRowMapper<>(domainClass));
+        }
+        return null;
     }
 }

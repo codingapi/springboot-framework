@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
 @Slf4j
 @SpringBootTest
 public class DemoRepositoryTests {
@@ -50,5 +52,11 @@ public class DemoRepositoryTests {
         demo.setId(100);
         demo.setName("123456");
         demoRepository.update(demo);
+    }
+
+    @Test
+    void getByName() {
+        List<Demo> list = demoRepository.findByName("demo");
+        log.info("list: {}", list);
     }
 }
