@@ -37,4 +37,23 @@ public class MvcEndpointMapping {
         handlerMapping.registerMapping(mappingInfo, handler, method);
     }
 
+    /**
+     * remove mvc mapping
+     * @param url           mapping url
+     * @param requestMethod request method
+     */
+    public void removeMapping(String url, RequestMethod requestMethod) {
+        RequestMappingInfo.BuilderConfiguration options = new RequestMappingInfo.BuilderConfiguration();
+        options.setPatternParser(new PathPatternParser());
+
+        RequestMappingInfo mappingInfo = RequestMappingInfo
+                .paths(url)
+                .methods(requestMethod)
+                .produces(MediaType.APPLICATION_JSON_VALUE)
+                .options(options)
+                .build();
+
+        handlerMapping.unregisterMapping(mappingInfo);
+    }
+
 }

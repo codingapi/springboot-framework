@@ -48,6 +48,27 @@ public class DynamicMappingRegister {
         mvcEndpointMapping.addMapping(mapping, requestMethod, handler, method);
     }
 
+    /**
+     * test dynamic mapping
+     * @param dynamicMapping dynamic mapping
+     * @return result
+     */
+    @ResponseBody
+    public Object test(DynamicMapping dynamicMapping)  {
+        return switch (dynamicMapping.getType()) {
+            case JDBC ->
+                    new JdbcMapping(jdbcTemplate, dynamicMapping.getSql(), dynamicMapping.getClazz(), dynamicMapping.getParams()).execute();
+            case HQL ->
+                    new HqlMapping(dynamicQuery, dynamicMapping.getSql(), dynamicMapping.getClazz(), dynamicMapping.getParams()).execute();
+            case JDBC_MAP ->
+                    new JdbcMapMapping(jdbcTemplate, dynamicMapping.getSql(), dynamicMapping.getParams()).execute();
+        };
+    }
+
+    /**
+     * add dynamic mapping
+     * @param dynamicMapping dynamic mapping
+     */
     public void addMapping(DynamicMapping dynamicMapping)  {
         switch (dynamicMapping.getType()) {
             case JDBC:
@@ -64,6 +85,14 @@ public class DynamicMappingRegister {
         }
     }
 
+    /**
+     * remove mapping
+     * @param mapping mapping
+     * @param requestMethod request method
+     */
+    public void removeMapping(String mapping,RequestMethod requestMethod)  {
+        mvcEndpointMapping.removeMapping(mapping,requestMethod);
+    }
 
 
     @SneakyThrows

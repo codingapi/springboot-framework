@@ -35,11 +35,13 @@
         <jsonwebtoken.jjwt.version>0.12.3</jsonwebtoken.jjwt.version>
         <commons-io.version>2.15.0</commons-io.version>
         <commons-dbutils.version>1.8.1</commons-dbutils.version>
+        <commons-text.version>1.11.0</commons-text.version>
         <org.reflections.version>0.10.2</org.reflections.version>
         <perf4j.version>0.9.16</perf4j.version>
         <bcprov-jdk15on.version>1.70</bcprov-jdk15on.version>
         <commons-crypto.version>1.2.0</commons-crypto.version>
         <snakeyaml.version>2.2</snakeyaml.version>
+        <apache-groovy.version>4.0.15</apache-groovy.version>
     </properties>
 
     <dependencies>
@@ -155,6 +157,30 @@
                 <groupId>commons-dbutils</groupId>
                 <artifactId>commons-dbutils</artifactId>
                 <version>${commons-dbutils.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>${commons-text.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.groovy</groupId>
+                <artifactId>groovy</artifactId>
+                <version>${apache-groovy.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.groovy</groupId>
+                <artifactId>groovy-json</artifactId>
+                <version>${apache-groovy.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.groovy</groupId>
+                <artifactId>groovy-xml</artifactId>
+                <version>${apache-groovy.version}</version>
             </dependency>
 
         </dependencies>
