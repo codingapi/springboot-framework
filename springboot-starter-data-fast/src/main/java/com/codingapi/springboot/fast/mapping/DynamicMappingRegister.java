@@ -1,50 +1,48 @@
 package com.codingapi.springboot.fast.mapping;
 
 import com.codingapi.springboot.fast.dynamic.DynamicQuery;
+import com.codingapi.springboot.fast.jdbc.JdbcQuery;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-import org.apache.commons.text.CaseUtils;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.lang.reflect.Method;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@AllArgsConstructor
 public class DynamicMappingRegister {
 
     private final MvcEndpointMapping mvcEndpointMapping;
 
     private final DynamicQuery dynamicQuery;
 
-    private final JdbcTemplate jdbcTemplate;
+    private final JdbcQuery jdbcQuery;
 
+    public DynamicMappingRegister(MvcEndpointMapping mvcEndpointMapping, DynamicQuery dynamicQuery, JdbcTemplate jdbcTemplate) {
+        this.mvcEndpointMapping = mvcEndpointMapping;
+        this.dynamicQuery = dynamicQuery;
+        this.jdbcQuery = new JdbcQuery(jdbcTemplate);
+    }
 
-    private void addJdbcMapping(String mapping, RequestMethod requestMethod,String sql,Class<?> clazz, Object ... params)  {
-        Object handler = new JdbcMapping( jdbcTemplate,sql,clazz,params);
-        Method method =  getJdbcMethod();
+    private void addJdbcMapping(String mapping, RequestMethod requestMethod, String sql, Class<?> clazz, Object ... params)  {
+        JdbcMapping handler = new JdbcMapping(jdbcQuery,sql,clazz,params);
+        Method method =  handler.getJdbcMethod();
         mvcEndpointMapping.addMapping(mapping, requestMethod, handler, method);
     }
 
 
     private void addJdbcMapping(String mapping, RequestMethod requestMethod,String sql, Object ... params)  {
-        Object handler = new JdbcMapMapping( jdbcTemplate,sql,params);
-        Method method =  getJdbcMapMethod();
+        JdbcMapMapping handler = new JdbcMapMapping(jdbcQuery,sql,params);
+        Method method =  handler.getJdbcMapMethod();
         mvcEndpointMapping.addMapping(mapping, requestMethod, handler, method);
     }
 
 
     private void addHqlMapping(String mapping, RequestMethod requestMethod,String hql,Class<?> clazz, Object ... params)  {
-        Object handler = new HqlMapping(dynamicQuery,hql,clazz,params);
-        Method method =  getHqlMethod();
+        HqlMapping handler = new HqlMapping(dynamicQuery,hql,clazz,params);
+        Method method =  handler.getHqlMethod();
         mvcEndpointMapping.addMapping(mapping, requestMethod, handler, method);
     }
 
@@ -57,11 +55,11 @@ public class DynamicMappingRegister {
     public Object test(DynamicMapping dynamicMapping)  {
         return switch (dynamicMapping.getType()) {
             case JDBC ->
-                    new JdbcMapping(jdbcTemplate, dynamicMapping.getSql(), dynamicMapping.getClazz(), dynamicMapping.getParams()).execute();
+                    new JdbcMapping(jdbcQuery, dynamicMapping.getSql(), dynamicMapping.getClazz(), dynamicMapping.getParams()).execute();
             case HQL ->
                     new HqlMapping(dynamicQuery, dynamicMapping.getSql(), dynamicMapping.getClazz(), dynamicMapping.getParams()).execute();
             case JDBC_MAP ->
-                    new JdbcMapMapping(jdbcTemplate, dynamicMapping.getSql(), dynamicMapping.getParams()).execute();
+                    new JdbcMapMapping(jdbcQuery, dynamicMapping.getSql(), dynamicMapping.getParams()).execute();
         };
     }
 
@@ -95,64 +93,46 @@ public class DynamicMappingRegister {
     }
 
 
-    @SneakyThrows
-    private Method getJdbcMethod(){
-        return JdbcMapping.class.getDeclaredMethod("execute");
-    }
 
-    @SneakyThrows
-    private Method getJdbcMapMethod(){
-        return JdbcMapMapping.class.getDeclaredMethod("execute");
-    }
-
-    @SneakyThrows
-    private Method getHqlMethod(){
-        return HqlMapping.class.getDeclaredMethod("execute");
-    }
 
 
     @AllArgsConstructor
     public static class JdbcMapMapping{
 
-        private final JdbcTemplate jdbcTemplate;
+        private final JdbcQuery jdbcQuery;
         private final String sql;
         private final Object[] params;
 
         @ResponseBody
         public List<Map<String,Object>> execute() {
-            return jdbcTemplate.query(sql, params, new CamelCaseRowMapper());
+            return jdbcQuery.queryForList(sql, params);
         }
 
-        private static class CamelCaseRowMapper implements RowMapper<Map<String, Object>> {
-
-            @Override
-            public Map<String, Object> mapRow(ResultSet rs, int rowNum) throws SQLException {
-                ResultSetMetaData metaData = rs.getMetaData();
-                int columnCount = metaData.getColumnCount();
-                Map<String, Object> map = new HashMap<>(columnCount);
-                for (int i = 1; i <= columnCount; i++) {
-                    String columnName = metaData.getColumnLabel(i);
-                    map.put(CaseUtils.toCamelCase(columnName,false), rs.getObject(i));
-                }
-                return map;
-            }
+        @SneakyThrows
+        private Method getJdbcMapMethod(){
+            return this.getClass().getDeclaredMethod("execute");
         }
+
     }
 
 
     @AllArgsConstructor
     public static class JdbcMapping{
 
-        private final JdbcTemplate jdbcTemplate;
+        private final JdbcQuery jdbcQuery;
         private final String sql;
         private final Class<?> clazz;
         private final Object[] params;
 
         @ResponseBody
         public List<?> execute() {
-            return jdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(clazz));
+            return jdbcQuery.queryForList(sql, clazz, params);
         }
 
+        @SneakyThrows
+        private Method getJdbcMethod(){
+            return this.getClass().getDeclaredMethod("execute");
+        }
 
 
     }
@@ -169,6 +149,11 @@ public class DynamicMappingRegister {
         @ResponseBody
         public List<?> execute() {
             return dynamicQuery.listQuery(clazz,hql, params);
+        }
+
+        @SneakyThrows
+        private Method getHqlMethod(){
+            return this.getClass().getDeclaredMethod("execute");
         }
     }
 

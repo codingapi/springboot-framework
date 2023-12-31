@@ -1,6 +1,7 @@
 package com.codingapi.springboot.fast.mapping;
 
 import com.codingapi.springboot.fast.dynamic.DynamicQuery;
+import com.codingapi.springboot.fast.jdbc.JdbcQuery;
 import com.codingapi.springboot.fast.script.DynamicScript;
 import com.codingapi.springboot.fast.script.ScriptContext;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,7 +15,7 @@ public class DynamicScriptRegister {
 
     public DynamicScriptRegister(MvcEndpointMapping mvcEndpointMapping, DynamicQuery dynamicQuery, JdbcTemplate jdbcTemplate) {
         this.mvcEndpointMapping = mvcEndpointMapping;
-        ScriptContext.getInstance().init(dynamicQuery, jdbcTemplate);
+        ScriptContext.getInstance().init(dynamicQuery, new JdbcQuery(jdbcTemplate));
     }
 
 

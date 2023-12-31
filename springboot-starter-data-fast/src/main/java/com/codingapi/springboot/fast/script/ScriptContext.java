@@ -1,8 +1,8 @@
 package com.codingapi.springboot.fast.script;
 
 import com.codingapi.springboot.fast.dynamic.DynamicQuery;
+import com.codingapi.springboot.fast.jdbc.JdbcQuery;
 import lombok.Getter;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 public class ScriptContext {
 
@@ -18,12 +18,12 @@ public class ScriptContext {
     @Getter
     private DynamicQuery dynamicQuery;
     @Getter
-    private JdbcTemplate jdbcTemplate;
+    private JdbcQuery jdbcQuery;
 
 
-    public void init(DynamicQuery dynamicQuery, JdbcTemplate jdbcTemplate) {
+    public void init(DynamicQuery dynamicQuery, JdbcQuery jdbcQuery) {
         this.dynamicQuery = dynamicQuery;
-        this.jdbcTemplate = jdbcTemplate;
+        this.jdbcQuery = jdbcQuery;
     }
 
 }
