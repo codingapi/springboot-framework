@@ -3,8 +3,7 @@ package com.codingapi.springboot.fast;
 import com.codingapi.springboot.fast.dynamic.DynamicQuery;
 import com.codingapi.springboot.fast.executor.JpaExecutor;
 import com.codingapi.springboot.fast.manager.EntityManagerInitializer;
-import com.codingapi.springboot.fast.mapping.DynamicMappingRegister;
-import com.codingapi.springboot.fast.mapping.DynamicScriptRegister;
+import com.codingapi.springboot.fast.mapping.MvcMappingRegister;
 import com.codingapi.springboot.fast.mapping.MvcEndpointMapping;
 import com.codingapi.springboot.fast.registrar.MvcMappingRegistrar;
 import org.springframework.aop.Advisor;
@@ -32,15 +31,10 @@ public class DataFastConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DynamicMappingRegister dynamicMapping(MvcEndpointMapping mvcEndpointMapping, DynamicQuery dynamicQuery, JdbcTemplate jdbcTemplate) {
-        return new DynamicMappingRegister(mvcEndpointMapping, dynamicQuery, jdbcTemplate);
+    public MvcMappingRegister mvcMappingRegister(MvcEndpointMapping mvcEndpointMapping, DynamicQuery dynamicQuery, JdbcTemplate jdbcTemplate) {
+        return new MvcMappingRegister(mvcEndpointMapping, dynamicQuery, jdbcTemplate);
     }
 
-    @Bean
-    @ConditionalOnMissingBean
-    public DynamicScriptRegister dynamicScriptRegister(MvcEndpointMapping mvcEndpointMapping, DynamicQuery dynamicQuery, JdbcTemplate jdbcTemplate) {
-        return new DynamicScriptRegister(mvcEndpointMapping, dynamicQuery, jdbcTemplate);
-    }
 
 
     @Bean(initMethod = "registerMvcMapping")

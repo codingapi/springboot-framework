@@ -1,19 +1,16 @@
-package com.codingapi.springboot.fast.script;
+package com.codingapi.springboot.fast.mapping;
 
 import com.codingapi.springboot.fast.dynamic.DynamicQuery;
 import com.codingapi.springboot.fast.jdbc.JdbcQuery;
 import lombok.Getter;
 
-public class ScriptContext {
+public class MvcRunningContext {
 
     @Getter
-    private final static ScriptContext instance = new ScriptContext();
+    private final static MvcRunningContext instance = new MvcRunningContext();
 
-
-    private ScriptContext() {
-
+    private MvcRunningContext() {
     }
-
 
     @Getter
     private DynamicQuery dynamicQuery;

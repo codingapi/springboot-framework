@@ -1,26 +1,25 @@
-package com.codingapi.springboot.fast.script;
+package com.codingapi.springboot.fast.mapping;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.lang.reflect.Method;
 
-@Setter
 @Getter
-public class DynamicScript {
+public abstract class BaseMapping {
 
-    private String script;
-    private String mapping;
-    private RequestMethod requestMethod;
+    protected String mapping;
+    protected RequestMethod requestMethod;
+
+    public BaseMapping(String mapping, RequestMethod requestMethod) {
+        this.mapping = mapping;
+        this.requestMethod = requestMethod;
+    }
 
 
     @ResponseBody
-    public Object execute() {
-        ScriptContext context = ScriptContext.getInstance();
-        return ScriptRuntime.running(script,context);
-    }
+    public abstract Object execute();
 
     public Method getExecuteMethod() {
         try {
@@ -29,6 +28,4 @@ public class DynamicScript {
             throw new RuntimeException(e);
         }
     }
-
-
 }
