@@ -1,6 +1,5 @@
-package com.codingapi.springboot.fast.mapping;
+package com.codingapi.springboot.fast.script;
 
-import com.codingapi.springboot.fast.script.ScriptRuntime;
 import com.codingapi.springboot.framework.dto.response.MultiResponse;
 import com.codingapi.springboot.framework.dto.response.Response;
 import com.codingapi.springboot.framework.dto.response.SingleResponse;
@@ -30,16 +29,15 @@ public class ScriptMapping {
     }
 
     @ResponseBody
-    public Response execute() {
-        MvcRunningContext context = MvcRunningContext.getInstance();
-        Object result = ScriptRuntime.running(script,context);
-        if(result instanceof List || result.getClass().isArray()){
+    Response execute() {
+        Object result = ScriptRuntime.running(script);
+        if (result instanceof List || result.getClass().isArray()) {
             return SingleResponse.of(result);
-        }else{
-            if(result instanceof MultiResponse){
-                return (MultiResponse<?>)result;
+        } else {
+            if (result instanceof MultiResponse) {
+                return (MultiResponse<?>) result;
             }
-            if(result instanceof Page<?>){
+            if (result instanceof Page<?>) {
                 return MultiResponse.of((Page<?>) result);
             }
             return SingleResponse.of(result);
@@ -54,7 +52,6 @@ public class ScriptMapping {
             throw new RuntimeException(e);
         }
     }
-
 
 
 }

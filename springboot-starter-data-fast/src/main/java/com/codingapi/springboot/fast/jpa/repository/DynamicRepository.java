@@ -1,5 +1,6 @@
-package com.codingapi.springboot.fast.jpa;
+package com.codingapi.springboot.fast.jpa.repository;
 
+import com.codingapi.springboot.fast.jpa.JpaQueryContext;
 import org.springframework.core.ResolvableType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

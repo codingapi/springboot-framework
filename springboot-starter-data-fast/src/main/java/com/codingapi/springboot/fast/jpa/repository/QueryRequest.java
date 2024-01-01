@@ -1,4 +1,4 @@
-package com.codingapi.springboot.fast.jpa;
+package com.codingapi.springboot.fast.jpa.repository;
 
 import com.codingapi.springboot.framework.dto.request.Filter;
 import com.codingapi.springboot.framework.dto.request.PageRequest;

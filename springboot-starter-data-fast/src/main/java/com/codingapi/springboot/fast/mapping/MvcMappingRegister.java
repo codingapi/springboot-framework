@@ -1,11 +1,7 @@
 package com.codingapi.springboot.fast.mapping;
 
-import com.codingapi.springboot.fast.jpa.JPAQuery;
-import com.codingapi.springboot.fast.jdbc.JdbcQuery;
-import com.codingapi.springboot.framework.dto.response.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
@@ -18,10 +14,6 @@ public class MvcMappingRegister {
 
     private final RequestMappingHandlerMapping handlerMapping;
 
-    public MvcMappingRegister(RequestMappingHandlerMapping handlerMapping, JPAQuery JPAQuery, JdbcTemplate jdbcTemplate) {
-        this.handlerMapping = handlerMapping;
-        MvcRunningContext.getInstance().init(JPAQuery, new JdbcQuery(jdbcTemplate));
-    }
 
     /**
      * add mvc mapping
@@ -48,6 +40,7 @@ public class MvcMappingRegister {
 
     /**
      * remove mvc mapping
+     *
      * @param url           mapping url
      * @param requestMethod request method
      */
@@ -64,28 +57,6 @@ public class MvcMappingRegister {
 
         handlerMapping.unregisterMapping(mappingInfo);
     }
-
-
-
-    /**
-     * test dynamic mapping
-     * @param scriptMapping dynamic mapping
-     **/
-    public void addMapping(ScriptMapping scriptMapping) {
-        this.addMapping(scriptMapping.getMapping(), scriptMapping.getRequestMethod(),
-                scriptMapping, scriptMapping.getExecuteMethod());
-    }
-
-
-    /**
-     * test dynamic mapping
-     * @param scriptMapping dynamic mapping
-     * @return result
-     */
-    public Response test(ScriptMapping scriptMapping) {
-        return scriptMapping.execute();
-    }
-
 
 
 }
