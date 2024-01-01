@@ -45,7 +45,7 @@ public class ScriptMapping {
     }
 
 
-    public Method getExecuteMethod() {
+    Method getExecuteMethod() {
         try {
             return this.getClass().getDeclaredMethod("execute");
         } catch (NoSuchMethodException e) {
