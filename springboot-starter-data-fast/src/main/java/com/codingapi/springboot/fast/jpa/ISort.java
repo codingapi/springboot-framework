@@ -1,4 +1,4 @@
-package com.codingapi.springboot.fast.sort;
+package com.codingapi.springboot.fast.jpa;
 
 public interface ISort {
 

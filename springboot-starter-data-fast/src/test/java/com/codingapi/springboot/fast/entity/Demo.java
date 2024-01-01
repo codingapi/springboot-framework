@@ -1,6 +1,6 @@
 package com.codingapi.springboot.fast.entity;
 
-import com.codingapi.springboot.fast.sort.ISort;
+import com.codingapi.springboot.fast.jpa.ISort;
 import lombok.Getter;
 import lombok.Setter;
 

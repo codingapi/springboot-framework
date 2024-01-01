@@ -1,6 +1,6 @@
 package com.codingapi.springboot.fast.mapping;
 
-import com.codingapi.springboot.fast.dynamic.DynamicQuery;
+import com.codingapi.springboot.fast.jpa.JPAQuery;
 import com.codingapi.springboot.fast.jdbc.JdbcQuery;
 import lombok.Getter;
 
@@ -13,13 +13,13 @@ public class MvcRunningContext {
     }
 
     @Getter
-    private DynamicQuery dynamicQuery;
+    private JPAQuery JPAQuery;
     @Getter
     private JdbcQuery jdbcQuery;
 
 
-    public void init(DynamicQuery dynamicQuery, JdbcQuery jdbcQuery) {
-        this.dynamicQuery = dynamicQuery;
+    public void init(JPAQuery JPAQuery, JdbcQuery jdbcQuery) {
+        this.JPAQuery = JPAQuery;
         this.jdbcQuery = jdbcQuery;
     }
 

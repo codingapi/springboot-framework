@@ -10,17 +10,22 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 
 @Setter
 @Getter
-public class ScriptMapping extends BaseMapping{
+public class ScriptMapping {
 
+    private String mapping;
+    private RequestMethod requestMethod;
     private String script;
 
+
     public ScriptMapping(String mapping, RequestMethod requestMethod, String script) {
-        super(mapping, requestMethod);
+        this.mapping = mapping;
+        this.requestMethod = requestMethod;
         this.script = script;
     }
 
@@ -41,6 +46,14 @@ public class ScriptMapping extends BaseMapping{
         }
     }
 
+
+    public Method getExecuteMethod() {
+        try {
+            return this.getClass().getDeclaredMethod("execute");
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
 

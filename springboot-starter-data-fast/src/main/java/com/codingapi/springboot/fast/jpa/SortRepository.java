@@ -1,4 +1,4 @@
-package com.codingapi.springboot.fast.sort;
+package com.codingapi.springboot.fast.jpa;
 
 import com.codingapi.springboot.framework.dto.request.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;

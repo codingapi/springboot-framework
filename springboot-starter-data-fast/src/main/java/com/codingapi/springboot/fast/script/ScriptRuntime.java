@@ -15,7 +15,7 @@ public class ScriptRuntime {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         ScriptRequest request =  new ScriptRequest(attributes.getRequest());
         binding.setVariable("$request", request);
-        binding.setVariable("$jpa", context.getDynamicQuery());
+        binding.setVariable("$jpa", context.getJPAQuery());
         binding.setVariable("$jdbc", context.getJdbcQuery());
         GroovyShell groovyShell = new GroovyShell(binding);
         Script userScript = groovyShell.parse(script);

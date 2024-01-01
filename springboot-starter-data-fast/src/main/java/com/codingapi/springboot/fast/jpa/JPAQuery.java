@@ -1,4 +1,4 @@
-package com.codingapi.springboot.fast.dynamic;
+package com.codingapi.springboot.fast.jpa;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -10,7 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import java.util.List;
 
 @AllArgsConstructor
-public class DynamicQuery {
+public class JPAQuery {
 
     private final EntityManager entityManager;
 
