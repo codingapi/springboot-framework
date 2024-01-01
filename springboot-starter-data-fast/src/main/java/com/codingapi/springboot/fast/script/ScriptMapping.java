@@ -6,7 +6,6 @@ import com.codingapi.springboot.framework.dto.response.SingleResponse;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.lang.reflect.Method;
@@ -18,13 +17,13 @@ import java.util.List;
 public class ScriptMapping {
 
     private String mapping;
-    private RequestMethod requestMethod;
+    private ScriptMethod scriptMethod;
     private String script;
 
 
-    public ScriptMapping(String mapping, RequestMethod requestMethod, String script) {
+    public ScriptMapping(String mapping, ScriptMethod scriptMethod, String script) {
         this.mapping = mapping;
-        this.requestMethod = requestMethod;
+        this.scriptMethod = scriptMethod;
         this.script = script;
     }
 

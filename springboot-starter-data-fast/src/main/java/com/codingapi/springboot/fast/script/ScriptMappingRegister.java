@@ -3,7 +3,6 @@ package com.codingapi.springboot.fast.script;
 import com.codingapi.springboot.fast.mapping.MvcMappingRegister;
 import com.codingapi.springboot.framework.dto.response.Response;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 @AllArgsConstructor
 public class ScriptMappingRegister {
@@ -16,7 +15,7 @@ public class ScriptMappingRegister {
      * @param scriptMapping dynamic mapping
      **/
     public void addMapping(ScriptMapping scriptMapping) {
-        mappingRegister.addMapping(scriptMapping.getMapping(), scriptMapping.getRequestMethod(),
+        mappingRegister.addMapping(scriptMapping.getMapping(), scriptMapping.getScriptMethod().toRequestMethod(),
                 scriptMapping, scriptMapping.getExecuteMethod());
     }
 
@@ -38,8 +37,8 @@ public class ScriptMappingRegister {
      * @param url           mapping url
      * @param requestMethod request method
      */
-    public void removeMapping(String url, RequestMethod requestMethod){
-        mappingRegister.removeMapping(url, requestMethod);
+    public void removeMapping(String url, ScriptMethod scriptMethod){
+        mappingRegister.removeMapping(url, scriptMethod.toRequestMethod());
     }
 
 
