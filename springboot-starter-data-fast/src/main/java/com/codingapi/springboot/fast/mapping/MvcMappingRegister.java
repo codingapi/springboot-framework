@@ -2,7 +2,7 @@ package com.codingapi.springboot.fast.mapping;
 
 import com.codingapi.springboot.fast.dynamic.DynamicQuery;
 import com.codingapi.springboot.fast.jdbc.JdbcQuery;
-import com.codingapi.springboot.framework.dto.response.SingleResponse;
+import com.codingapi.springboot.framework.dto.response.Response;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -22,7 +22,7 @@ public class MvcMappingRegister {
      * @param SQLMapping dynamic mapping
      * @return result
      */
-    public SingleResponse<Object> test(SQLMapping sqlMapping)  {
+    public Response test(SQLMapping sqlMapping)  {
         return sqlMapping.execute();
     }
 
@@ -50,7 +50,7 @@ public class MvcMappingRegister {
      * @param scriptMapping dynamic mapping
      * @return result
      */
-    public SingleResponse<Object> test(ScriptMapping scriptMapping) {
+    public Response test(ScriptMapping scriptMapping) {
         return scriptMapping.execute();
     }
 
