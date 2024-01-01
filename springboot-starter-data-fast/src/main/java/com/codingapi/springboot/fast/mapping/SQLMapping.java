@@ -1,5 +1,6 @@
 package com.codingapi.springboot.fast.mapping;
 
+import com.codingapi.springboot.framework.dto.response.SingleResponse;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -42,11 +43,11 @@ public class SQLMapping extends BaseMapping{
 
 
     @ResponseBody
-    public Object execute() {
+    public SingleResponse<Object> execute() {
         return switch (type) {
-            case JDBC -> MvcRunningContext.getInstance().getJdbcQuery().queryForList(sql, clazz, params);
-            case HQL -> MvcRunningContext.getInstance().getDynamicQuery().listQuery(clazz, sql, params);
-            case JDBC_MAP -> MvcRunningContext.getInstance().getJdbcQuery().queryForList(sql, params);
+            case JDBC -> SingleResponse.of(MvcRunningContext.getInstance().getJdbcQuery().queryForList(sql, clazz, params));
+            case HQL -> SingleResponse.of(MvcRunningContext.getInstance().getDynamicQuery().listQuery(clazz, sql, params));
+            case JDBC_MAP -> SingleResponse.of(MvcRunningContext.getInstance().getJdbcQuery().queryForList(sql, params));
         };
     }
 

@@ -1,6 +1,7 @@
 package com.codingapi.springboot.fast.mapping;
 
 import com.codingapi.springboot.fast.script.ScriptRuntime;
+import com.codingapi.springboot.framework.dto.response.SingleResponse;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,9 +20,9 @@ public class ScriptMapping extends BaseMapping{
     }
 
     @ResponseBody
-    public Object execute() {
+    public SingleResponse<Object> execute() {
         MvcRunningContext context = MvcRunningContext.getInstance();
-        return ScriptRuntime.running(script,context);
+        return SingleResponse.of(ScriptRuntime.running(script,context));
     }
 
 

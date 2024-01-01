@@ -1,5 +1,6 @@
 package com.codingapi.springboot.fast.mapping;
 
+import com.codingapi.springboot.framework.dto.response.SingleResponse;
 import lombok.Getter;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,7 +20,7 @@ public abstract class BaseMapping {
 
 
     @ResponseBody
-    public abstract Object execute();
+    public abstract SingleResponse<Object> execute();
 
     public Method getExecuteMethod() {
         try {
