@@ -245,7 +245,6 @@
                 <module>springboot-starter</module>
                 <module>springboot-starter-security-jwt</module>
                 <module>springboot-starter-data-fast</module>
-                <module>springboot-starter-persistence</module>
             </modules>
         </profile>
 
@@ -257,7 +256,6 @@
                 <module>springboot-starter</module>
                 <module>springboot-starter-security-jwt</module>
                 <module>springboot-starter-data-fast</module>
-                <module>springboot-starter-persistence</module>
             </modules>
 
             <build>
@@ -307,8 +305,6 @@
                 <module>springboot-starter</module>
                 <module>springboot-starter-security-jwt</module>
                 <module>springboot-starter-data-fast</module>
-                <module>springboot-starter-id-generator</module>
-                <module>springboot-starter-persistence</module>
             </modules>
 
 
