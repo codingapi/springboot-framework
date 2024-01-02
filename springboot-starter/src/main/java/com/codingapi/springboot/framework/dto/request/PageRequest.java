@@ -24,7 +24,7 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
     private org.springframework.data.domain.PageRequest pageRequest;
 
     public PageRequest(int current, int pageSize, Sort sort) {
-        super(current > 0 ? current-- : 0, pageSize, sort);
+        super(current, pageSize, sort);
         this.current = current;
         this.pageSize = pageSize;
         this.pageRequest = org.springframework.data.domain.PageRequest.of(current, pageSize, sort);
@@ -99,17 +99,17 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
     }
 
     @Override
-    public org.springframework.data.domain.PageRequest next() {
+    public PageRequest next() {
         return new PageRequest(current + 1, getPageSize(), getSort());
     }
 
     @Override
-    public org.springframework.data.domain.PageRequest previous() {
+    public PageRequest previous() {
         return current == 0 ? this : new PageRequest(current - 1, getPageSize(), getSort());
     }
 
     @Override
-    public org.springframework.data.domain.PageRequest first() {
+    public PageRequest first() {
         return new PageRequest(0, getPageSize(), getSort());
     }
 
