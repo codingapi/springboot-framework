@@ -18,12 +18,6 @@ maven install
         <version>${last.version}</version>
     </dependency>
     
-     <!-- Id自增策略框架 -->
-    <dependency>
-        <groupId>com.codingapi.springboot</groupId>
-        <artifactId>springboot-starter-id-generator</artifactId>
-        <version>${last.version}</version>
-    </dependency>
     
      <!-- security&jwt权限框架 -->
      <dependency>
@@ -35,7 +29,6 @@ maven install
 
 
 [springboot-starter](./springboot-starter)  
-[springboot-starter-security-jwt](./springboot-starter-security-jwt)  
-[springboot-starter-id-generator](./springboot-starter-id-generator)  
+[springboot-starter-security-jwt](./springboot-starter-security-jwt)
 [springboot-starter-data-fast](./springboot-starter-data-fast.md)  
  

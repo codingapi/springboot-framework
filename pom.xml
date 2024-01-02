@@ -6,13 +6,13 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.5</version>
+        <version>3.1.7</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>com.codingapi.springboot</groupId>
     <artifactId>springboot-parent</artifactId>
-    <version>3.1.6</version>
+    <version>3.1.8.dev</version>
 
     <url>https://github.com/codingapi/springboot-framewrok</url>
     <name>springboot-parent</name>
@@ -35,11 +35,14 @@
         <jsonwebtoken.jjwt.version>0.12.3</jsonwebtoken.jjwt.version>
         <commons-io.version>2.15.0</commons-io.version>
         <commons-dbutils.version>1.8.1</commons-dbutils.version>
+        <commons-text.version>1.11.0</commons-text.version>
         <org.reflections.version>0.10.2</org.reflections.version>
         <perf4j.version>0.9.16</perf4j.version>
-        <bcprov-jdk15on.version>1.70</bcprov-jdk15on.version>
+        <bcprov-jdk18on.version>1.77</bcprov-jdk18on.version>
         <commons-crypto.version>1.2.0</commons-crypto.version>
         <snakeyaml.version>2.2</snakeyaml.version>
+        <apache-groovy.version>4.0.15</apache-groovy.version>
+        <h2.version>2.2.224</h2.version>
     </properties>
 
     <dependencies>
@@ -74,9 +77,16 @@
         <dependencies>
 
             <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.version}</version>
+            </dependency>
+
+
+            <dependency>
                 <groupId>org.bouncycastle</groupId>
-                <artifactId>bcprov-jdk15on</artifactId>
-                <version>${bcprov-jdk15on.version}</version>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>${bcprov-jdk18on.version}</version>
             </dependency>
 
             <dependency>
@@ -157,6 +167,30 @@
                 <version>${commons-dbutils.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>${commons-text.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.groovy</groupId>
+                <artifactId>groovy</artifactId>
+                <version>${apache-groovy.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.groovy</groupId>
+                <artifactId>groovy-json</artifactId>
+                <version>${apache-groovy.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.groovy</groupId>
+                <artifactId>groovy-xml</artifactId>
+                <version>${apache-groovy.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -219,7 +253,6 @@
                 <module>springboot-starter</module>
                 <module>springboot-starter-security-jwt</module>
                 <module>springboot-starter-data-fast</module>
-                <module>springboot-starter-id-generator</module>
             </modules>
         </profile>
 
@@ -231,7 +264,6 @@
                 <module>springboot-starter</module>
                 <module>springboot-starter-security-jwt</module>
                 <module>springboot-starter-data-fast</module>
-                <module>springboot-starter-id-generator</module>
             </modules>
 
             <build>
@@ -281,7 +313,6 @@
                 <module>springboot-starter</module>
                 <module>springboot-starter-security-jwt</module>
                 <module>springboot-starter-data-fast</module>
-                <module>springboot-starter-id-generator</module>
             </modules>
 
 

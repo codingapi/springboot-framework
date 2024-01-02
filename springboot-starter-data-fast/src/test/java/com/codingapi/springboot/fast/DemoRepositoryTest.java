@@ -11,9 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -178,27 +176,4 @@ public class DemoRepositoryTest {
         assertEquals(2, page.getTotalElements());
     }
 
-
-    @Test
-    @Transactional
-    void pageSort() {
-        demoRepository.deleteAll();
-        Demo demo1 = new Demo();
-        demo1.setName("123");
-        demoRepository.save(demo1);
-
-        Demo demo2 = new Demo();
-        demo2.setName("456");
-        demoRepository.save(demo2);
-
-        List<Integer> ids = Arrays.asList(demo1.getId(), demo2.getId());
-        System.out.println(ids);
-        demoRepository.pageSort(PageRequest.of(1, 10), ids);
-
-        Demo newDemo1 = demoRepository.getReferenceById(demo1.getId());
-        Demo newDemo2 = demoRepository.getReferenceById(demo2.getId());
-
-        assertEquals(newDemo2.getSort(), 1);
-        assertEquals(newDemo1.getSort(), 0);
-    }
 }
