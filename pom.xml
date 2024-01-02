@@ -38,7 +38,7 @@
         <commons-text.version>1.11.0</commons-text.version>
         <org.reflections.version>0.10.2</org.reflections.version>
         <perf4j.version>0.9.16</perf4j.version>
-        <bcprov-jdk15on.version>1.70</bcprov-jdk15on.version>
+        <bcprov-jdk18on.version>1.77</bcprov-jdk18on.version>
         <commons-crypto.version>1.2.0</commons-crypto.version>
         <snakeyaml.version>2.2</snakeyaml.version>
         <apache-groovy.version>4.0.15</apache-groovy.version>
@@ -77,8 +77,8 @@
 
             <dependency>
                 <groupId>org.bouncycastle</groupId>
-                <artifactId>bcprov-jdk15on</artifactId>
-                <version>${bcprov-jdk15on.version}</version>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>${bcprov-jdk18on.version}</version>
             </dependency>
 
             <dependency>
