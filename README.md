@@ -18,7 +18,6 @@ v.3.x 为springboot 3.x版本,使用jdk17版本
 
 * springboot-starter | Springboot领域驱动框架
 * springboot-starter-data-fast | 快速数据呈现框架
-* springboot-starter-id-generator | Id自增策略框架
 * springboot-starter-security-jwt | security&jwt权限框架
 
 ## SpringBoot DDD Architecture | SpringBoot DDD 框架图
@@ -39,13 +38,6 @@ v.3.x 为springboot 3.x版本,使用jdk17版本
      <dependency>
         <groupId>com.codingapi.springboot</groupId>
         <artifactId>springboot-starter-data-fast</artifactId>
-        <version>${last.version}</version>
-    </dependency>
-    
-     <!-- Id自增策略框架 -->
-    <dependency>
-        <groupId>com.codingapi.springboot</groupId>
-        <artifactId>springboot-starter-id-generator</artifactId>
         <version>${last.version}</version>
     </dependency>
     
