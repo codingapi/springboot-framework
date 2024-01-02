@@ -2,52 +2,7 @@ springboot-starter-data-fast
 
 基于JPA的快速API能力服务
 
-## FastController  快速API能力服务
-```java
-package com.codingapi.springboot.example.query;
-
-import com.codingapi.springboot.example.infrastructure.jpa.entity.DemoEntity;
-import com.codingapi.springboot.example.infrastructure.jpa.pojo.PageSearch;
-import com.codingapi.springboot.fast.annotation.FastController;
-import com.codingapi.springboot.fast.annotation.FastMapping;
-import com.codingapi.springboot.framework.dto.response.MultiResponse;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestMethod;
-
-@FastController
-public interface FastDemoApi {
-
-
-    @PreAuthorize(value = "hasRole('ROLE_ADMIN')")
-    @FastMapping(
-            method = RequestMethod.GET,
-            mapping = "/api/demo/findByName1",
-            value = "select d from DemoEntity d where name = :name",
-            countQuery = "select count(d) from DemoEntity d where name = :name")
-    MultiResponse<DemoEntity> findByName1(PageSearch query);
-
-
-
-    @PreAuthorize(value = "hasRole('ROLE_USER')")
-    @FastMapping(
-            method = RequestMethod.GET,
-            mapping = "/api/demo/findByName2",
-            value = "select d from DemoEntity d where name = :name",
-            countQuery = "select count(d) from DemoEntity d where name = :name")
-    MultiResponse<DemoEntity> findByName2(PageSearch query);
-
-}
-
-```
-@FastController 用于标记当前接口为Fast接口  
-@FastMapping 用于标记当前接口的映射关系  
-mapping为接口映射路径，method为接口请求方法  
-value为查询语句，countQuery为查询总数语句，query为查询参数，支持分页查询，排序查询，查询参数等等  
-MultiResponse为返回结果
-@PreAuthorize(value = "hasRole('ROLE_USER')") 用于标记当前接口的权限，如果不需要权限可以不用添加
-
 ## FastRepository 的使用教程
-
 
 继承FastRepository接口，实现自定义的接口，即可使用FastRepository的能力
 ```java
@@ -189,41 +144,98 @@ public interface DemoRepository extends FastRepository<Demo,Integer> {
         }
 
 ```
-## SortRepository的使用教程
 
-```java
+## ScriptMapping 教程
 
-public interface DemoRepository extends FastRepository<Demo,Integer>, SortRepository<Demo,Integer> {
+通过动态添加mvc mapping实现查询功能.
 
-}
 
 ```
+ScriptMapping scriptMapping = new ScriptMapping({mapinggUrl}, {mapinggMethod}, {mappingGrovvry});
+scriptMappingRegister.addMapping(scriptMapping);
 
-SortRepository的能力展示
+```
+mapinggUrl 是mvc接口的地址    
+mapinggMethod 是mvc接口的请求方式  
+mappingGrovvry 是执行的查询脚本
 
-```java
+脚本实例代码：
+* 动态分页查询
+```
+// 获取name的请求参数
+var name = $request.getParameter("name","");
+var pageNumber = $request.getParameter("pageNumber",0);
+var pageSize = $request.getParameter("pageSize",10);
+// 创建分页对象
+var pageRequest = $request.pageRequest(pageNumber,pageSize);
+// 动态组织sql
+var sql = "select * from api_mapping where 1 =1 ";
+var countSql = "select count(1) from api_mapping where 1 =1 ";
+// 动态组织参数
+var params = [];
+if(!"".equals(name)){
+   sql += " and name = ? ";
+   countSql += " and name = ? ";
+   params.push(name);
+}
+sql += " limit ?,?";
+// 添加分页参数
+params.add(pageRequest.getOffset());
+params.add(pageRequest.getPageSize());
+// 执行分页查询
+return $jdbc.queryForPage(sql,countSql,pageRequest,params.toArray());
+```
+* 动态条件查询
+```
+// 获取name的请求参数
+var name = $request.getParameter("name","");
+// 动态组织sql
+String sql = "select * from api_mapping where 1=1 ";
+// 动态组织参数
+var params = [];
+if(!"".equals(name)){
+    sql += " and name = ? ";
+    params.add(name);
+}
+// 执行查询
+return $jdbc.queryForList(sql,params.toArray());
+```
 
-    @Test
-    @Transactional
-    void pageSort() {
-        demoRepository.deleteAll();
-        Demo demo1 = new Demo();
-        demo1.setName("123");
-        demoRepository.save(demo1);
+脚本语法介绍：
+* $request
+```
+// 获取参数name的值，如果参数不存在，则返回默认值
+var name = $request.getParameter("name","");
+// 获取分页对象
+var pageRequest = $request.pageRequest(0,10);
+// 获取分页对象的页码
+var pageNumber = pageRequest.getPageNumber();
+// 获取分页对象的每页记录数
+var pageSize = pageRequest.getPageSize();
+// 获取分页对象的偏移量
+var offset = pageRequest.getOffset();
+```
+* $jdbc
+```
+// 查询jdbcSQL $jdbc.queryForList({sql},{params})
 
-        Demo demo2 = new Demo();
-        demo2.setName("456");
-        demoRepository.save(demo2);
+// 查询无条件的数据
+var res = $jdbc.queryForList("select * from api_mapping");
+// 查询有条件的数据
+var res = $jdbc.queryForList("select * from api_mapping where name = ?",name);
+// 查询多条件的数据
+var res = $jdbc.queryForList("select * from api_mapping where name = ? and url = ?",name,url);
 
-        List<Integer> ids = Arrays.asList(demo1.getId(), demo2.getId());
-        System.out.println(ids);
-        demoRepository.pageSort(PageRequest.of(1, 10), ids);
+// 分页查询 $jdbc.queryForPage({sql},{countSql},{pageRequest},{params})
+var res = $jdbc.queryForPage("select * from api_mapping where name = ? and url = ?",
+"select count(1) from api_mapping where name = ? and url = ?",pageRequest,params.toArray());
+```
+* $jpa
+```
+// 查询jpa $jpa.listQuery({clazz},{sql},{params})
 
-        Demo newDemo1 = demoRepository.getReferenceById(demo1.getId());
-        Demo newDemo2 = demoRepository.getReferenceById(demo2.getId());
-
-        assertEquals(newDemo2.getSort(), 1);
-        assertEquals(newDemo1.getSort(), 0);
-    }
-
+// 查询无条件的数据
+var res = $jpa.listQuery(com.example.entity.NodeEntity.class,"from NodeEntity");
+// 查询有条件的数据
+var res = $jpa.listQuery(com.example.entity.NodeEntity.class,"from NodeEntity where name = ?",name);
 ```

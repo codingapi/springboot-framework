@@ -1,18 +1,16 @@
 package com.codingapi.springboot.fast.entity;
 
-import com.codingapi.springboot.fast.sort.ISort;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.*;
-
+import lombok.ToString;
 
 @Setter
 @Getter
 @Entity
 @Table(name = "t_demo")
-public class Demo implements ISort {
-
+@ToString
+public class Demo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

@@ -1,9 +1,8 @@
 package com.codingapi.springboot.fast.manager;
 
+import javax.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;
-
-import javax.persistence.EntityManager;
 
 @AllArgsConstructor
 public class EntityManagerInitializer implements InitializingBean {

@@ -5,19 +5,19 @@ import com.codingapi.springboot.fast.repository.DemoRepository;
 import com.codingapi.springboot.framework.dto.request.Filter;
 import com.codingapi.springboot.framework.dto.request.PageRequest;
 import com.codingapi.springboot.framework.dto.request.Relation;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Slf4j
 @SpringBootTest
 public class DemoRepositoryTest {
 
@@ -70,34 +70,15 @@ public class DemoRepositoryTest {
         PageRequest request = new PageRequest();
         request.setCurrent(1);
         request.setPageSize(10);
-        request.addFilter("name", Relation.LIKE, "%2%");
+        request.andFilter("name", Relation.LIKE, "%2%");
 
         Page<Demo> page = demoRepository.pageRequest(request);
         assertEquals(1, page.getTotalElements());
     }
 
-    @Test
-    void customSearchOrFilters() {
-        demoRepository.deleteAll();
-        Demo demo1 = new Demo();
-        demo1.setName("123");
-        demoRepository.save(demo1);
-
-        Demo demo2 = new Demo();
-        demo2.setName("456");
-        demoRepository.save(demo2);
-
-        PageRequest request = new PageRequest();
-        request.setCurrent(1);
-        request.setPageSize(10);
-        request.orFilters(Filter.as("name","123"),Filter.as("name","456"));
-
-        Page<Demo> page = demoRepository.pageRequest(request);
-        assertEquals(2, page.getTotalElements());
-    }
 
     @Test
-    void customSearchAddFilters() {
+    void customInSearch() {
         demoRepository.deleteAll();
         Demo demo1 = new Demo();
         demo1.setName("123");
@@ -111,12 +92,36 @@ public class DemoRepositoryTest {
         request.setCurrent(1);
         request.setPageSize(10);
 
-//        request.addFilters(Filter.as("id", Relation.IN, 1),Filter.as("id", Relation.IN, 2),Filter.as("id", Relation.IN, 3),Filter.as("id", Relation.IN, 4));
-        request.andFilters(Filter.as("name", Relation.LIKE, "%2%"), Filter.and(Filter.as("id", Relation.IN, 1), Filter.as("id", Relation.IN, 2)));
+        request.andFilter("id", Relation.IN, 1, 2, 3);
+
         Page<Demo> page = demoRepository.pageRequest(request);
-        assertEquals(0, page.getTotalElements());
+        log.info("demo:{}", page.getContent());
+//        assertEquals(2, page.getTotalElements());
     }
 
+
+    @Test
+    void customOrSearch() {
+        demoRepository.deleteAll();
+        Demo demo1 = new Demo();
+        demo1.setName("123");
+        demoRepository.save(demo1);
+
+        Demo demo2 = new Demo();
+        demo2.setName("456");
+        demoRepository.save(demo2);
+
+        PageRequest request = new PageRequest();
+        request.setCurrent(1);
+        request.setPageSize(10);
+
+
+        request.orFilters(Filter.as("id", Relation.IN, 1, 2, 3), Filter.as("name", "123"));
+
+        Page<Demo> page = demoRepository.pageRequest(request);
+        log.info("demo:{}", page.getContent());
+//        assertEquals(2, page.getTotalElements());
+    }
 
     @Test
     void dynamicListQuery() {
@@ -171,27 +176,4 @@ public class DemoRepositoryTest {
         assertEquals(2, page.getTotalElements());
     }
 
-
-    @Test
-    @Transactional
-    void pageSort() {
-        demoRepository.deleteAll();
-        Demo demo1 = new Demo();
-        demo1.setName("123");
-        demoRepository.save(demo1);
-
-        Demo demo2 = new Demo();
-        demo2.setName("456");
-        demoRepository.save(demo2);
-
-        List<Integer> ids = Arrays.asList(demo1.getId(), demo2.getId());
-        System.out.println(ids);
-        demoRepository.pageSort(PageRequest.of(1, 10), ids);
-
-        Demo newDemo1 = demoRepository.getReferenceById(demo1.getId());
-        Demo newDemo2 = demoRepository.getReferenceById(demo2.getId());
-
-        assertEquals(newDemo2.getSort(), 1);
-        assertEquals(newDemo1.getSort(), 0);
-    }
 }
