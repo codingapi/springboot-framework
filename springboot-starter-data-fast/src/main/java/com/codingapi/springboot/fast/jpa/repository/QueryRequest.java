@@ -3,17 +3,20 @@ package com.codingapi.springboot.fast.jpa.repository;
 import com.codingapi.springboot.framework.dto.request.Filter;
 import com.codingapi.springboot.framework.dto.request.PageRequest;
 import com.codingapi.springboot.framework.dto.request.RequestFilter;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Example;
 
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.criteria.*;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 public class QueryRequest {
 
@@ -52,10 +55,22 @@ public class QueryRequest {
 
 
     private List<String> getClazzProperties() {
+        return getClazzProperties(clazz);
+    }
+
+    private List<String> getClazzProperties(Class<?> clazz) {
         List<String> properties = new ArrayList<>();
         PropertyDescriptor[] descriptors = BeanUtils.getPropertyDescriptors(clazz);
         for (PropertyDescriptor descriptor : descriptors) {
-            properties.add(descriptor.getName());
+            Class<?> propertyType = descriptor.getPropertyType();
+            String name = descriptor.getName();
+            if (propertyType.getPackage() != null && !propertyType.getPackage().getName().startsWith("java")) {
+                List<String> childProperties = getClazzProperties(propertyType);
+                for (String child : childProperties) {
+                    properties.add(name + "." + child);
+                }
+            }
+            properties.add(name);
         }
         return properties;
     }
@@ -73,91 +88,113 @@ public class QueryRequest {
         return orderList;
     }
 
+    private Path getPathByKey(Root root, String key) {
+        String[] keys = key.split("\\.");
+        if (keys.length > 1) {
+            String lastKey = keys[keys.length-1];
+            From current = root;
+            for (int i=0;i< keys.length-1;i++) {
+                String item  = keys[i];
+                Set<Join> joins = current.getJoins();
+                for (Join<?, ?> join : joins) {
+                    if (join.getModel().getBindableJavaType().getSimpleName().equalsIgnoreCase(item)) {
+                        current = join;
+                    }
+                }
+            }
+            return current.get(lastKey);
+        } else {
+            return root.get(key);
+        }
+    }
+
 
     private <T> Predicate toPredicate(Filter filter, CriteriaBuilder criteriaBuilder, Root<T> root, List<String> properties) {
         String key = filter.getKey();
         if (filter.isAndFilters() || filter.isOrFilters() || properties.contains(key)) {
 
+            Path path = getPathByKey(root, key);
+
             if (filter.isEqual()) {
-                return criteriaBuilder.equal(root.get(key), filter.getValue()[0]);
+                return criteriaBuilder.equal(path, filter.getValue()[0]);
             }
 
             if (filter.isLike()) {
                 String matchValue = (String) filter.getValue()[0];
-                return criteriaBuilder.like(root.get(key), "%" + matchValue + "%");
+                return criteriaBuilder.like(path, "%" + matchValue + "%");
             }
 
             if (filter.isBetween()) {
                 Object value1 = filter.getValue()[0];
                 Object value2 = filter.getValue()[2];
                 if (value1 instanceof Integer && value2 instanceof Integer) {
-                    return criteriaBuilder.between(root.get(key), (Integer) value1, (Integer) value2);
+                    return criteriaBuilder.between(path, (Integer) value1, (Integer) value2);
                 }
 
                 if (value1 instanceof Long && value2 instanceof Long) {
-                    return criteriaBuilder.between(root.get(key), (Long) value1, (Long) value2);
+                    return criteriaBuilder.between(path, (Long) value1, (Long) value2);
                 }
 
                 if (value1 instanceof Date && value2 instanceof Date) {
-                    return criteriaBuilder.between(root.get(key), (Date) value1, (Date) value2);
+                    return criteriaBuilder.between(path, (Date) value1, (Date) value2);
                 }
             }
 
             if (filter.isGreaterThan()) {
                 Object value = filter.getValue()[0];
                 if (value instanceof Integer) {
-                    return criteriaBuilder.greaterThan(root.get(key), (Integer) value);
+                    return criteriaBuilder.greaterThan(path, (Integer) value);
                 }
                 if (value instanceof Long) {
-                    return criteriaBuilder.greaterThan(root.get(key), (Long) value);
+                    return criteriaBuilder.greaterThan(path, (Long) value);
                 }
                 if (value instanceof Date) {
-                    return criteriaBuilder.greaterThan(root.get(key), (Date) value);
+                    return criteriaBuilder.greaterThan(path, (Date) value);
                 }
             }
 
             if (filter.isGreaterThanEqual()) {
                 Object value = filter.getValue()[0];
                 if (value instanceof Integer) {
-                    return criteriaBuilder.greaterThanOrEqualTo(root.get(key), (Integer) value);
+                    return criteriaBuilder.greaterThanOrEqualTo(path, (Integer) value);
                 }
                 if (value instanceof Long) {
-                    return criteriaBuilder.greaterThanOrEqualTo(root.get(key), (Long) value);
+                    return criteriaBuilder.greaterThanOrEqualTo(path, (Long) value);
                 }
                 if (value instanceof Date) {
-                    return criteriaBuilder.greaterThanOrEqualTo(root.get(key), (Date) value);
+                    return criteriaBuilder.greaterThanOrEqualTo(path, (Date) value);
                 }
             }
 
             if (filter.isLessThan()) {
                 Object value = filter.getValue()[0];
                 if (value instanceof Integer) {
-                    return criteriaBuilder.lessThan(root.get(key), (Integer) value);
+                    return criteriaBuilder.lessThan(path, (Integer) value);
                 }
                 if (value instanceof Long) {
-                    return criteriaBuilder.lessThan(root.get(key), (Long) value);
+                    return criteriaBuilder.lessThan(path, (Long) value);
                 }
                 if (value instanceof Date) {
-                    return criteriaBuilder.lessThan(root.get(key), (Date) value);
+                    return criteriaBuilder.lessThan(path, (Date) value);
                 }
             }
 
             if (filter.isLessThanEqual()) {
                 Object value = filter.getValue()[0];
                 if (value instanceof Integer) {
-                    return criteriaBuilder.lessThanOrEqualTo(root.get(key), (Integer) value);
+                    return criteriaBuilder.lessThanOrEqualTo(path, (Integer) value);
                 }
                 if (value instanceof Long) {
-                    return criteriaBuilder.lessThanOrEqualTo(root.get(key), (Long) value);
+                    return criteriaBuilder.lessThanOrEqualTo(path, (Long) value);
                 }
                 if (value instanceof Date) {
-                    return criteriaBuilder.lessThanOrEqualTo(root.get(key), (Date) value);
+                    return criteriaBuilder.lessThanOrEqualTo(path, (Date) value);
                 }
             }
 
             if (filter.isIn()) {
                 Object[] value = filter.getValue();
-                CriteriaBuilder.In<Object> in = criteriaBuilder.in(root.get(key));
+                CriteriaBuilder.In<Object> in = criteriaBuilder.in(path);
                 for (Object item : value) {
                     in.value(item);
                 }
@@ -192,10 +229,33 @@ public class QueryRequest {
     }
 
 
+    private void fetchJoins(From root, Class<?> clazz) {
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.getAnnotation(OneToOne.class) != null) {
+                Join<?, ?> join = root.join(field.getName(), JoinType.INNER);
+                this.fetchJoins(join, field.getType());
+            }
+            if (field.getAnnotation(ManyToOne.class) != null) {
+                Join<?, ?> join = root.join(field.getName(), JoinType.INNER);
+                this.fetchJoins(join, field.getType());
+            }
+            if (field.getAnnotation(OneToMany.class) != null) {
+                Join<?, ?> join = root.join(field.getName(), JoinType.INNER);
+                this.fetchJoins(join, field.getType());
+            }
+            if (field.getAnnotation(ManyToMany.class) != null) {
+                Join<?, ?> join = root.join(field.getName(), JoinType.INNER);
+                this.fetchJoins(join, field.getType());
+            }
+        }
+    }
+
     public <T> List<Predicate> getPredicate(Root<T> root, CriteriaBuilder criteriaBuilder) {
         List<Predicate> predicates = new ArrayList<>();
         List<String> properties = getClazzProperties();
         RequestFilter requestFilter = request.getRequestFilter();
+        this.fetchJoins(root, clazz);
         for (Filter filter : requestFilter.getFilters()) {
             Predicate predicate = toPredicate(filter, criteriaBuilder, root, properties);
             if (predicate != null) {

@@ -2,21 +2,21 @@ package com.codingapi.springboot.fast.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 
+@Entity
 @Setter
 @Getter
-@Entity
-@ToString
-@Table(name = "t_demo")
-public class Demo {
+@Table(name = "t_user")
+public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String name;
 
-    private Integer sort;
+    @OneToOne
+    private Profile profile;
 }
