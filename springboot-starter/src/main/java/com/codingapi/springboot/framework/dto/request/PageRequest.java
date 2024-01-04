@@ -1,12 +1,12 @@
 package com.codingapi.springboot.framework.dto.request;
 
-import javax.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 public class PageRequest extends org.springframework.data.domain.PageRequest {
@@ -44,6 +44,7 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
 
     public void setCurrent(int current) {
         this.current = current > 0 ? current - 1 : 0;
+        this.requestFilter.deleteFilter("current");
     }
 
     public String getParameter(String key) {
@@ -91,6 +92,7 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
+        this.requestFilter.deleteFilter("pageSize");
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.codingapi.springboot.framework.dto.request;
 
-
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -97,5 +96,10 @@ public class RequestFilter {
 
     public Filter getFilter(String name) {
         return this.filterMap.get(name);
+    }
+
+    public void deleteFilter(String current) {
+        this.filterMap.remove(current);
+        this.filterList.removeIf(item -> item.getKey().equals(current));
     }
 }
