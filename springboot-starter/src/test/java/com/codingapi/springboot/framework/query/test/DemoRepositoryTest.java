@@ -43,7 +43,7 @@ public class DemoRepositoryTest {
         demoRepository.save(demo2);
 
         PageRequest request = new PageRequest();
-        request.setCurrent(1);
+        request.setCurrent(0);
         request.setPageSize(10);
 
 
@@ -67,7 +67,7 @@ public class DemoRepositoryTest {
         demoRepository.save(demo2);
 
         PageRequest request = new PageRequest();
-        request.setCurrent(1);
+        request.setCurrent(0);
         request.setPageSize(10);
 
         request.addSort(Sort.by("id").descending());

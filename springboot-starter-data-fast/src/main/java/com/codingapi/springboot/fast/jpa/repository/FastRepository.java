@@ -30,10 +30,16 @@ public interface FastRepository<T, ID> extends JpaRepository<T, ID>, JpaSpecific
     default Page<T> pageRequest(PageRequest request) {
         if (request.hasFilter()) {
             Class<T> clazz = getDomainClass();
-            DynamicRequest dynamicRequest = new DynamicRequest(request,clazz);
+            DynamicRequest dynamicRequest = new DynamicRequest(request, clazz);
             return dynamicPageQuery(dynamicRequest.getHql(), request, dynamicRequest.getParams());
         }
         return findAll((org.springframework.data.domain.PageRequest) request);
+    }
+
+
+    default Page<T> searchRequest(SearchRequest request) {
+        Class<T> clazz = getDomainClass();
+        return pageRequest(request.toPageRequest(clazz));
     }
 
 }

@@ -50,6 +50,8 @@ public class DynamicRequest {
             }
         }
 
+        System.out.println(hql);
+        System.out.println(params);
         return hql.toString();
     }
 
