@@ -116,7 +116,12 @@ public class DemoRepositoryTest {
         request.setPageSize(10);
 
 
-        request.orFilters(Filter.as("id", Relation.IN, 1, 2, 3), Filter.as("name", "123"));
+//        request.andFilter(Filter.as("id", Relation.IN, 1, 2, 3), Filter.as("name", "123"));
+        request.addFilter("name", "456").orFilters(Filter.as("id", Relation.IN, 1, 2, 3), Filter.as("name", "123"));
+
+        request.addSort(Sort.by("id").descending());
+
+
 
         Page<Demo> page = demoRepository.pageRequest(request);
         log.info("demo:{}", page.getContent());
