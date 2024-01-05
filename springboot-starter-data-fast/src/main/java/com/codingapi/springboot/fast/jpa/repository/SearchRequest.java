@@ -16,7 +16,9 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
-
+/**
+ *  HttpServletRequest 请求参数解析成 PageRequest对象
+ */
 public class SearchRequest {
 
     private int current;
@@ -60,13 +62,13 @@ public class SearchRequest {
         }
 
         public void addFilter(String key, String value) {
-            Class<?> keyClass = getKeyClass(key);
+            Class<?> keyClass = getKeyType(key);
             Object v = JSON.parseObject(value, keyClass);
             pageRequest.addFilter(key, Relation.EQUAL, v);
         }
 
         public void addFilter(String key, List<String> value) {
-            Class<?> keyClass = getKeyClass(key);
+            Class<?> keyClass = getKeyType(key);
             pageRequest.addFilter(key, Relation.IN, value.stream()
                     .map(v -> JSON.parseObject(v, keyClass))
                     .toArray()
@@ -74,7 +76,7 @@ public class SearchRequest {
         }
 
 
-        private Class<?> getKeyClass(String key) {
+        private Class<?> getKeyType(String key) {
             String[] keys = key.split("\\.");
             Class<?> keyClass = clazz;
             for (String k : keys) {

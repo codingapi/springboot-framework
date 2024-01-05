@@ -3,13 +3,18 @@ package com.codingapi.springboot.fast.jpa.repository;
 import com.codingapi.springboot.framework.dto.request.Filter;
 import com.codingapi.springboot.framework.dto.request.PageRequest;
 import com.codingapi.springboot.framework.dto.request.RequestFilter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class DynamicRequest {
+/**
+ * 动态条件查询组装
+ */
+@Slf4j
+class DynamicSQLBuilder {
 
     private final PageRequest request;
     private final Class<?> clazz;
@@ -17,13 +22,13 @@ public class DynamicRequest {
     private final List<Object> params = new ArrayList<>();
     private int paramIndex = 1;
 
-    public DynamicRequest(PageRequest request, Class<?> clazz) {
+    public DynamicSQLBuilder(PageRequest request, Class<?> clazz) {
         this.request = request;
         this.clazz = clazz;
     }
 
 
-    public String getHql() {
+    public String getHQL() {
         StringBuilder hql = new StringBuilder("FROM " + clazz.getSimpleName() + " WHERE ");
         RequestFilter requestFilter = request.getRequestFilter();
         if (requestFilter.hasFilter()) {
@@ -50,8 +55,8 @@ public class DynamicRequest {
             }
         }
 
-        System.out.println(hql);
-        System.out.println(params);
+        log.debug("hql:{}", hql);
+        log.debug("params:{}", params);
         return hql.toString();
     }
 
