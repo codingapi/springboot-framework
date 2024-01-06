@@ -89,8 +89,8 @@ public class RequestFilter {
         return this.filterMap.get(name);
     }
 
-    public void deleteFilter(String current) {
-        this.filterMap.remove(current);
-        this.filterList.removeIf(item -> item.getKey().equals(current));
+    public void removeFilter(String key) {
+        this.filterMap.remove(key);
+        this.filterList.removeIf(item -> item.getKey().equals(key));
     }
 }

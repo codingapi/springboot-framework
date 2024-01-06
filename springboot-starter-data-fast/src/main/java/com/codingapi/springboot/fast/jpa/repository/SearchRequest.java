@@ -3,6 +3,7 @@ package com.codingapi.springboot.fast.jpa.repository;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.codingapi.springboot.framework.dto.request.Filter;
 import com.codingapi.springboot.framework.dto.request.PageRequest;
 import com.codingapi.springboot.framework.dto.request.Relation;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,6 +46,32 @@ public class SearchRequest {
         this.pageSize = pageSize;
         this.removeKeys.add("pageSize");
     }
+
+    public void addSort(Sort sort) {
+        pageRequest.addSort(sort);
+    }
+
+    public void removeFilter(String key) {
+        pageRequest.removeFilter(key);
+    }
+
+    public PageRequest addFilter(String key, Relation relation, Object... value) {
+        return pageRequest.addFilter(key, relation, value);
+    }
+
+    public PageRequest addFilter(String key, Object... value) {
+        return pageRequest.addFilter(key, value);
+    }
+
+    public PageRequest andFilter(Filter... filters) {
+        return pageRequest.andFilter(filters);
+    }
+
+    public PageRequest orFilters(Filter... filters) {
+        return pageRequest.orFilters(filters);
+    }
+
+
 
     private String decode(String value) {
         return new String(Base64.getDecoder().decode(value));

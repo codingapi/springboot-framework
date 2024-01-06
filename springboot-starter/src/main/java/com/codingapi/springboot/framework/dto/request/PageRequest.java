@@ -125,6 +125,10 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
         }
     }
 
+    public void removeFilter(String key) {
+        requestFilter.removeFilter(key);
+    }
+
     public PageRequest addFilter(String key, Relation relation, Object... value) {
         requestFilter.addFilter(key, relation, value);
         return this;
