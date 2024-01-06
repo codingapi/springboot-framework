@@ -1,11 +1,8 @@
-package com.codingapi.springboot.fast.jpa.repository;
+package com.codingapi.springboot.framework.dto.request;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.codingapi.springboot.framework.dto.request.Filter;
-import com.codingapi.springboot.framework.dto.request.PageRequest;
-import com.codingapi.springboot.framework.dto.request.Relation;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.util.StringUtils;
@@ -120,7 +117,7 @@ public class SearchRequest {
 
     }
 
-    PageRequest toPageRequest(Class<?> clazz) {
+    public PageRequest toPageRequest(Class<?> clazz) {
         pageRequest.setCurrent(current);
         pageRequest.setPageSize(pageSize);
 
