@@ -1,17 +1,14 @@
-package com.codingapi.springboot.fast.jpa.repository;
+package com.codingapi.springboot.framework.dto.request;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.codingapi.springboot.framework.dto.request.Filter;
-import com.codingapi.springboot.framework.dto.request.PageRequest;
-import com.codingapi.springboot.framework.dto.request.Relation;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -20,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- *  HttpServletRequest 请求参数解析成 PageRequest对象
+ * HttpServletRequest 请求参数解析成 PageRequest对象
  */
 public class SearchRequest {
 
@@ -120,7 +117,7 @@ public class SearchRequest {
 
     }
 
-    PageRequest toPageRequest(Class<?> clazz) {
+    public PageRequest toPageRequest(Class<?> clazz) {
         pageRequest.setCurrent(current);
         pageRequest.setPageSize(pageSize);
 
@@ -161,7 +158,7 @@ public class SearchRequest {
         }
 
         Enumeration<String> enumeration = request.getParameterNames();
-        while (enumeration.hasMoreElements()){
+        while (enumeration.hasMoreElements()) {
             String key = enumeration.nextElement();
             if (!removeKeys.contains(key)) {
                 String value = request.getParameter(key);
