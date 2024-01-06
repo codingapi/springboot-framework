@@ -9,7 +9,7 @@ class PageRequestTest {
     @Test
     void test(){
         PageRequest pageRequest = new PageRequest();
-        pageRequest.setCurrent(2);
+        pageRequest.setCurrent(1);
         pageRequest.setPageSize(10);
 
         assertEquals(pageRequest.getCurrent(),1);

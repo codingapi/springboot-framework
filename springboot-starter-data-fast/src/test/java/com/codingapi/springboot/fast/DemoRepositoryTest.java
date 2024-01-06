@@ -47,7 +47,7 @@ public class DemoRepositoryTest {
         demoRepository.save(demo2);
 
         PageRequest request = new PageRequest();
-        request.setCurrent(1);
+        request.setCurrent(0);
         request.setPageSize(10);
         request.addFilter("name", "123");
 
@@ -68,9 +68,9 @@ public class DemoRepositoryTest {
         demoRepository.save(demo2);
 
         PageRequest request = new PageRequest();
-        request.setCurrent(1);
+        request.setCurrent(0);
         request.setPageSize(10);
-        request.andFilter("name", Relation.LIKE, "%2%");
+        request.addFilter("name", Relation.LIKE, "%2%");
 
         Page<Demo> page = demoRepository.pageRequest(request);
         assertEquals(1, page.getTotalElements());
@@ -89,10 +89,10 @@ public class DemoRepositoryTest {
         demoRepository.save(demo2);
 
         PageRequest request = new PageRequest();
-        request.setCurrent(1);
+        request.setCurrent(0);
         request.setPageSize(10);
 
-        request.andFilter("id", Relation.IN, 1, 2, 3);
+        request.addFilter("id", Relation.IN, 1, 2, 3);
 
         Page<Demo> page = demoRepository.pageRequest(request);
         log.info("demo:{}", page.getContent());
@@ -112,7 +112,7 @@ public class DemoRepositoryTest {
         demoRepository.save(demo2);
 
         PageRequest request = new PageRequest();
-        request.setCurrent(1);
+        request.setCurrent(0);
         request.setPageSize(10);
 
 
@@ -167,7 +167,7 @@ public class DemoRepositoryTest {
         demoRepository.save(demo2);
 
         PageRequest request = new PageRequest();
-        request.setCurrent(1);
+        request.setCurrent(0);
         request.setPageSize(10);
 
         request.addSort(Sort.by("id").descending());

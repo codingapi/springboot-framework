@@ -1,6 +1,5 @@
 package com.codingapi.springboot.framework.dto.request;
 
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,7 +25,7 @@ public class Filter {
     }
 
     public Filter(String key, Filter... value) {
-        this(key, null, value);
+        this(key, null,  value);
     }
 
     public static Filter as(String key, Relation relation, Object... value) {

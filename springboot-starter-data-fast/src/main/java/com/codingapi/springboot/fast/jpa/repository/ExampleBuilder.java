@@ -8,12 +8,15 @@ import org.springframework.data.domain.Example;
 
 import java.beans.PropertyDescriptor;
 
-public class ExampleRequest {
+/**
+ *  Example组装
+ */
+class ExampleBuilder {
 
     private final PageRequest request;
     private final Class<?> clazz;
 
-    public ExampleRequest(PageRequest request, Class<?> clazz) {
+    public ExampleBuilder(PageRequest request, Class<?> clazz) {
         this.request = request;
         this.clazz = clazz;
     }
