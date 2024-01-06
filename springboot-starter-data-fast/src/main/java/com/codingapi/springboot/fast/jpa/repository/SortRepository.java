@@ -15,12 +15,14 @@ public interface SortRepository<T extends ISort, ID> extends JpaRepository<T, ID
     default void reSort(SortRequest request) {
         if (request != null && !request.getIds().isEmpty()) {
             List<T> list = new ArrayList<>();
-            int minSort = 0;
+            int minSort = Integer.MAX_VALUE;
             for (Object objectId : request.getIds()) {
                 ID id = (ID) objectId;
                 T t = getReferenceById(id);
                 if (t.getSort() != null && t.getSort() < minSort) {
                     minSort = t.getSort();
+                }else{
+                    minSort = 0;
                 }
                 list.add(t);
             }
