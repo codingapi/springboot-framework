@@ -31,7 +31,7 @@ public interface DynamicRepository<T, ID> extends JpaRepository<T, ID> {
     }
 
     default Page<T> dynamicPageQuery(String sql, PageRequest request, Object... params) {
-        return (Page<T>) JpaQueryContext.getInstance().getJPAQuery().pageQuery(getEntityClass(), sql, "select count(1) " + sql, request, params);
+        return (Page<T>) JpaQueryContext.getInstance().getJPAQuery().pageQuery(getEntityClass(), sql, request, params);
     }
 
     default <V> Page<V> dynamicPageQuery(Class<V> clazz, String sql, String countSql, PageRequest request, Object... params) {
