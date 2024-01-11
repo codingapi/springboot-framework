@@ -1,25 +1,25 @@
 package com.codingapi.springboot.framework.dto.request;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Optional;
 
 public class PageRequest extends org.springframework.data.domain.PageRequest {
 
     @Getter
+    @Setter
     private int current;
+
+    @Setter
+    @Getter
     private int pageSize;
 
     @Getter
     private final RequestFilter requestFilter = new RequestFilter();
 
-    @Getter
-    private HttpServletRequest servletRequest;
 
     private org.springframework.data.domain.PageRequest pageRequest;
 
@@ -28,41 +28,11 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
         this.current = current;
         this.pageSize = pageSize;
         this.pageRequest = org.springframework.data.domain.PageRequest.of(current, pageSize, sort);
-
-        try {
-            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-            this.servletRequest = attributes.getRequest();
-            requestFilter.syncParameter(servletRequest);
-        } catch (Exception e) {
-        }
     }
 
 
     public PageRequest() {
         this(0, 20, Sort.unsorted());
-    }
-
-    public void setCurrent(int current) {
-        this.current = current > 0 ? current - 1 : 0;
-        this.requestFilter.deleteFilter("current");
-    }
-
-    public String getParameter(String key) {
-        return servletRequest.getParameter(key);
-    }
-
-    public String getParameter(String key, String defaultValue) {
-        String result = servletRequest.getParameter(key);
-        return result == null ? defaultValue : result;
-    }
-
-    public int getIntParameter(String key) {
-        return Integer.parseInt(servletRequest.getParameter(key));
-    }
-
-    public int getIntParameter(String key, int defaultValue) {
-        String result = servletRequest.getParameter(key);
-        return result == null ? defaultValue : Integer.parseInt(result);
     }
 
     public String getStringFilter(String key) {
@@ -85,15 +55,6 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
         return requestFilter.hasFilter();
     }
 
-    @Override
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-        this.requestFilter.deleteFilter("pageSize");
-    }
 
     @Override
     public Sort getSort() {
@@ -164,7 +125,11 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
         }
     }
 
-    public PageRequest andFilter(String key, Relation relation, Object... value) {
+    public void removeFilter(String key) {
+        requestFilter.removeFilter(key);
+    }
+
+    public PageRequest addFilter(String key, Relation relation, Object... value) {
         requestFilter.addFilter(key, relation, value);
         return this;
     }
@@ -174,8 +139,8 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
         return this;
     }
 
-    public PageRequest andFilter(Filter... value) {
-        requestFilter.andFilters(value);
+    public PageRequest andFilter(Filter... filters) {
+        requestFilter.andFilters(filters);
         return this;
     }
 

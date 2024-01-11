@@ -1,9 +1,11 @@
 package com.codingapi.springboot.framework.dto.request;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RequestFilter {
 
@@ -38,17 +40,6 @@ public class RequestFilter {
         filterList.removeIf(item -> item.getKey().equals(filter.getKey()));
         filterList.add(filter);
         filterMap.put(filter.getKey(), filter);
-    }
-
-    public void syncParameter(HttpServletRequest servletRequest) {
-        Enumeration<String> enumeration = servletRequest.getParameterNames();
-        while (enumeration.hasMoreElements()) {
-            String key = enumeration.nextElement();
-            String value = servletRequest.getParameter(key);
-            if (StringUtils.hasText(value)) {
-                addFilter(key, value);
-            }
-        }
     }
 
 
@@ -98,8 +89,8 @@ public class RequestFilter {
         return this.filterMap.get(name);
     }
 
-    public void deleteFilter(String current) {
-        this.filterMap.remove(current);
-        this.filterList.removeIf(item -> item.getKey().equals(current));
+    public void removeFilter(String key) {
+        this.filterMap.remove(key);
+        this.filterList.removeIf(item -> item.getKey().equals(key));
     }
 }

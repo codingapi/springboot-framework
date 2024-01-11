@@ -24,6 +24,11 @@ public class JPAQuery {
         return query.getResultList();
     }
 
+
+    public Page<?> pageQuery(Class<?> clazz, String sql, PageRequest pageRequest, Object... params) {
+        return pageQuery(clazz,sql,"select count(1) " + sql,pageRequest,params);
+    }
+
     public Page<?> pageQuery(Class<?> clazz, String sql, String countSql, PageRequest pageRequest, Object... params) {
         TypedQuery<?> query = entityManager.createQuery(sql, clazz);
         if (params != null) {
