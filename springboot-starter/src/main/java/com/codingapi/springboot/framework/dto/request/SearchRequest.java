@@ -87,14 +87,21 @@ public class SearchRequest {
 
         public void addFilter(String key, String value) {
             Class<?> keyClass = getKeyType(key);
-            Object v = JSON.parseObject(value, keyClass);
+            Object v = parseObject(value, keyClass);
             pageRequest.addFilter(key, Relation.EQUAL, v);
+        }
+
+        private Object parseObject(String value, Class<?> keyClass) {
+            if(value.getClass().equals(keyClass)) {
+                return value;
+            }
+            return JSON.parseObject(value, keyClass);
         }
 
         public void addFilter(String key, List<String> value) {
             Class<?> keyClass = getKeyType(key);
             pageRequest.addFilter(key, Relation.IN, value.stream()
-                    .map(v -> JSON.parseObject(v, keyClass))
+                    .map(v -> parseObject(v, keyClass))
                     .toArray()
             );
         }
