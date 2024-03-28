@@ -29,6 +29,17 @@ public class CodingApiSecurityProperties {
     private String ignoreUrls = "/open/**";
 
     /**
+     * aes key
+     */
+    private String aseKey = "QUNEWCQlXiYqJCNYQ1phc0FDRFgkJV4mKiQjWENaYXM=";
+
+    /**
+     * aes iv
+     */
+    private String aseIv = "QUNYRkdIQEVEUyNYQ1phcw==";
+
+
+    /**
      * 启用禁用CSRF
      */
     private boolean disableCsrf = true;

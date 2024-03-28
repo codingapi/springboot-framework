@@ -10,7 +10,7 @@ public class JWTTokenGatewayImpl implements TokenGateway {
     private final Jwt jwt;
 
     public JWTTokenGatewayImpl(SecurityJWTProperties properties) {
-        this.jwt = new Jwt(properties.getSecretKey(), properties.getJwtTime(), properties.getJwtRestTime());
+        this.jwt = new Jwt(properties.getSecretKey(), properties.getValidTime(), properties.getRestTime());
     }
 
     @Override

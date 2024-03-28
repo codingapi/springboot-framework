@@ -4,10 +4,10 @@ import java.util.List;
 
 public interface TokenGateway {
 
-    Token create(String username, String password, List<String> authorities, String extra);
+    Token create(String username, String iv, List<String> authorities, String extra);
 
-    default Token create(String username, String password, List<String> authorities) {
-        return create(username, password, authorities, null);
+    default Token create(String username, String iv, List<String> authorities) {
+        return create(username, iv, authorities, null);
     }
 
     default Token create(String username, List<String> authorities) {

@@ -2,7 +2,7 @@ package com.codingapi.springboot.security.gateway;
 
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.springboot.framework.serializable.JsonSerializable;
-import com.codingapi.springboot.security.jwt.MyAES;
+import com.codingapi.springboot.security.crypto.AESTools;
 import com.codingapi.springboot.security.exception.TokenExpiredException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,7 +34,7 @@ public class Token implements JsonSerializable {
         this.username = username;
         this.extra = extra;
         if(iv!=null) {
-            this.iv = MyAES.getInstance().encode(iv);
+            this.iv = AESTools.getInstance().encode(iv);
         }
         this.authorities = authorities;
         this.expireTime = System.currentTimeMillis() + expireValue;
@@ -56,7 +56,7 @@ public class Token implements JsonSerializable {
         if(iv==null){
             return null;
         }
-        return MyAES.getInstance().decode(iv);
+        return AESTools.getInstance().decode(iv);
     }
 
 
