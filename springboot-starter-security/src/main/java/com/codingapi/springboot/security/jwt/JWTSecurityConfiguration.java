@@ -21,8 +21,15 @@ public class JWTSecurityConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public TokenGateway jwtTokenGateway(SecurityJWTProperties properties) {
-        return new JWTTokenGatewayImpl(properties);
+    public JwtTokenGateway jwtTokenGateway(SecurityJWTProperties properties) {
+        return new JwtTokenGateway(properties);
+    }
+
+
+    @Bean
+    @ConditionalOnMissingBean
+    public TokenGateway jwtTokenGatewayImpl(JwtTokenGateway jwtTokenGateway) {
+        return new JWTTokenGatewayImpl(jwtTokenGateway);
     }
 
 }

@@ -12,16 +12,16 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-public class Jwt {
+public class JwtTokenGateway {
 
     private final SecretKey key;
     private final int validTime;
     private final int restTime;
 
-    public Jwt(String secretKey, int validTime, int restTime) {
-        this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
-        this.validTime = validTime;
-        this.restTime = restTime;
+    public JwtTokenGateway(SecurityJWTProperties properties) {
+        this.key = Keys.hmacShaKeyFor(properties.getSecretKey().getBytes(StandardCharsets.UTF_8));
+        this.validTime = properties.getValidTime();
+        this.restTime = properties.getRestTime();
     }
 
     public Token create(String username, List<String> authorities, String extra){

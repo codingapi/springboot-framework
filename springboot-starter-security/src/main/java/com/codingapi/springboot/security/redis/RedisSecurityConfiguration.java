@@ -22,8 +22,14 @@ public class RedisSecurityConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public TokenGateway redisTokenGateway(RedisTemplate<String, String> redisTemplate, SecurityRedisProperties properties) {
-        return new RedisTokenGatewayImpl(redisTemplate, properties);
+    public RedisTokenGateway redisTokenGateway(RedisTemplate<String, String> redisTemplate, SecurityRedisProperties properties) {
+        return new RedisTokenGateway(redisTemplate, properties);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public TokenGateway redisTokenGatewayImpl(RedisTokenGateway redisTokenGateway) {
+        return new RedisTokenGatewayImpl(redisTokenGateway);
     }
 
 }

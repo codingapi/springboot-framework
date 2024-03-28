@@ -7,19 +7,19 @@ import java.util.List;
 
 public class JWTTokenGatewayImpl implements TokenGateway {
 
-    private final Jwt jwt;
+    private final JwtTokenGateway jwtTokenGateway;
 
-    public JWTTokenGatewayImpl(SecurityJWTProperties properties) {
-        this.jwt = new Jwt(properties.getSecretKey(), properties.getValidTime(), properties.getRestTime());
+    public JWTTokenGatewayImpl(JwtTokenGateway jwtTokenGateway) {
+        this.jwtTokenGateway = jwtTokenGateway;
     }
 
     @Override
     public Token create(String username, String password, List<String> authorities, String extra) {
-        return jwt.create(username, password, authorities, extra);
+        return jwtTokenGateway.create(username, password, authorities, extra);
     }
 
     @Override
     public Token parser(String sign) {
-        return jwt.parser(sign);
+        return jwtTokenGateway.parser(sign);
     }
 }
