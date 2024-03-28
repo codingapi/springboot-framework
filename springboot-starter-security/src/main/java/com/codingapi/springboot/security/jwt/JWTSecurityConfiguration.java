@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConditionalOnProperty(prefix = "codingapi.security.jwt", name = "enable", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "codingapi.security.jwt", name = "enable", havingValue = "true")
 public class JWTSecurityConfiguration {
 
 

@@ -1,6 +1,5 @@
 package com.codingapi.springboot.security.redis;
 
-import com.codingapi.springboot.security.gateway.Token;
 import com.codingapi.springboot.security.gateway.TokenGateway;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -23,7 +22,7 @@ public class RedisSecurityConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public TokenGateway redisTokenGateway(RedisTemplate<String, Token> redisTemplate, SecurityRedisProperties properties) {
+    public TokenGateway redisTokenGateway(RedisTemplate<String, String> redisTemplate, SecurityRedisProperties properties) {
         return new RedisTokenGatewayImpl(redisTemplate, properties);
     }
 
