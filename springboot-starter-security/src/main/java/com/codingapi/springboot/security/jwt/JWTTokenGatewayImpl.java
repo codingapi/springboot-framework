@@ -15,7 +15,7 @@ public class JWTTokenGatewayImpl implements TokenGateway {
 
     @Override
     public Token create(String username, String password, List<String> authorities, String extra) {
-        return jwt.create(username, authorities, extra);
+        return jwt.create(username, password, authorities, extra);
     }
 
     @Override

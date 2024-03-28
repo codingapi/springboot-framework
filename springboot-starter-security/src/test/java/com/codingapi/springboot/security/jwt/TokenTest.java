@@ -2,6 +2,7 @@ package com.codingapi.springboot.security.jwt;
 
 import com.codingapi.springboot.security.exception.TokenExpiredException;
 import com.codingapi.springboot.security.gateway.Token;
+import com.codingapi.springboot.security.gateway.TokenGateway;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TokenTest {
 
     @Autowired
-    private Jwt jwt;
+    private TokenGateway tokenGateway;
 
     @Test
     void verify1() throws TokenExpiredException {
@@ -23,10 +24,10 @@ class TokenTest {
         String iv = "123456";
         List<String> authorities = Collections.singletonList("ADMIN");
 
-        Token token =jwt.create(username,iv,authorities);
+        Token token =tokenGateway.create(username,iv,authorities);
         token.verify();
 
-        Token data = jwt.parser(token.getToken());
+        Token data = tokenGateway.parser(token.getToken());
         assertEquals(data.decodeIv(),iv);
         assertEquals(data.getAuthorities(),authorities);
     }
@@ -36,10 +37,10 @@ class TokenTest {
         String username = "admin";
         List<String> authorities = Collections.singletonList("ADMIN");
 
-        Token token =jwt.create(username,authorities);
+        Token token =tokenGateway.create(username,authorities);
         token.verify();
 
-        Token data = jwt.parser(token.getToken());
+        Token data = tokenGateway.parser(token.getToken());
         assertEquals(data.getUsername(),username);
         assertEquals(data.getAuthorities(),authorities);
     }
@@ -53,10 +54,10 @@ class TokenTest {
         String extra = testVO.toJson();
         List<String> authorities = Collections.singletonList("ADMIN");
 
-        Token token =jwt.create(username,authorities,extra);
+        Token token =tokenGateway.create(username,authorities,extra);
         token.verify();
 
-        Token data = jwt.parser(token.getToken());
+        Token data = tokenGateway.parser(token.getToken());
         assertEquals(data.parseExtra(TestVO.class).getName(), testVO.getName());
         assertEquals(data.getAuthorities(),authorities);
     }
