@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 public class RedisTokenGateway {
 
@@ -45,6 +46,18 @@ public class RedisTokenGateway {
         Set<String> keys = redisTemplate.keys(username + ":*");
         if (keys != null && !keys.isEmpty()) {
             redisTemplate.delete(keys);
+        }
+    }
+
+    public void removeUsername(String username, Predicate<Token> predicate) {
+        Set<String> keys = redisTemplate.keys(username + ":*");
+        if (keys != null && !keys.isEmpty()) {
+            for (String key : keys) {
+                Token token = parser(key);
+                if (token != null && predicate.test(token)) {
+                    redisTemplate.delete(key);
+                }
+            }
         }
     }
 
