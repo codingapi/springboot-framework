@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.codingapi.springboot.security.configurer.WebSecurityConfigurer,\
+com.codingapi.springboot.security.jwt.JWTSecurityConfiguration,\
+com.codingapi.springboot.security.AutoConfiguration

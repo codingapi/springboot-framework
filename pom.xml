@@ -12,7 +12,7 @@
 
     <groupId>com.codingapi.springboot</groupId>
     <artifactId>springboot-parent</artifactId>
-    <version>3.1.10</version>
+    <version>3.2.0.dev</version>
 
     <url>https://github.com/codingapi/springboot-framewrok</url>
     <name>springboot-parent</name>
@@ -145,7 +145,7 @@
 
             <dependency>
                 <groupId>com.codingapi.springboot</groupId>
-                <artifactId>springboot-starter-security-jwt</artifactId>
+                <artifactId>springboot-starter-security</artifactId>
                 <version>${codingapi.framework.version}</version>
             </dependency>
 
@@ -251,7 +251,7 @@
             </activation>
             <modules>
                 <module>springboot-starter</module>
-                <module>springboot-starter-security-jwt</module>
+                <module>springboot-starter-security</module>
                 <module>springboot-starter-data-fast</module>
             </modules>
         </profile>
@@ -262,7 +262,7 @@
 
             <modules>
                 <module>springboot-starter</module>
-                <module>springboot-starter-security-jwt</module>
+                <module>springboot-starter-security</module>
                 <module>springboot-starter-data-fast</module>
             </modules>
 
@@ -311,7 +311,7 @@
 
             <modules>
                 <module>springboot-starter</module>
-                <module>springboot-starter-security-jwt</module>
+                <module>springboot-starter-security</module>
                 <module>springboot-starter-data-fast</module>
             </modules>
 
