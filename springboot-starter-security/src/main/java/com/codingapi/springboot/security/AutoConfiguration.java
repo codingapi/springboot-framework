@@ -16,8 +16,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -88,19 +90,26 @@ public class AutoConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity security, TokenGateway tokenGateway, SecurityLoginHandler loginHandler,
                                            CodingApiSecurityProperties properties, AuthenticationTokenFilter authenticationTokenFilter) throws Exception {
         //disable basic auth
-        security.httpBasic().disable();
+        security.httpBasic(AbstractHttpConfigurer::disable);
 
         //before add addCorsMappings to enable cors.
-        security.cors();
-        if (properties.isDisableCsrf()) {
-            security.csrf().disable();
-        }
-        security.apply(new HttpSecurityConfigurer(tokenGateway, loginHandler, properties, authenticationTokenFilter));
-        security
-                .exceptionHandling()
-                .authenticationEntryPoint(new MyUnAuthenticationEntryPoint())
-                .accessDeniedHandler(new MyAccessDeniedHandler())
-                .and()
+        security.cors(httpSecurityCorsConfigurer -> {
+            if (properties.isDisableCors()) {
+                httpSecurityCorsConfigurer.disable();
+            }
+        });
+
+        security.csrf(httpSecurityCsrfConfigurer -> {
+            if (properties.isDisableCsrf()) {
+                httpSecurityCsrfConfigurer.disable();
+            }
+        });
+
+
+        security.with(new HttpSecurityConfigurer(tokenGateway, loginHandler, properties, authenticationTokenFilter), Customizer.withDefaults());
+        security.exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
+                        httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(new MyUnAuthenticationEntryPoint())
+                                .accessDeniedHandler(new MyAccessDeniedHandler()))
                 .authorizeHttpRequests(
                         registry -> {
                             registry.requestMatchers(properties.getIgnoreUrls()).permitAll()
@@ -109,15 +118,13 @@ public class AutoConfiguration {
                         }
                 )
                 //default login url :/login
-                .formLogin()
-                .loginProcessingUrl(properties.getLoginProcessingUrl())
-                .permitAll()
-                .and()
+                .formLogin(httpSecurityFormLoginConfigurer ->
+                        httpSecurityFormLoginConfigurer.loginPage(properties.getLoginProcessingUrl())
+                )
                 //default logout url :/logout
-                .logout()
-                .logoutUrl(properties.getLogoutUrl())
-                .addLogoutHandler(new MyLogoutHandler())
-                .logoutSuccessHandler(new MyLogoutSuccessHandler());
+                .logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer.logoutUrl(properties.getLogoutUrl())
+                        .addLogoutHandler(new MyLogoutHandler())
+                        .logoutSuccessHandler(new MyLogoutSuccessHandler()));
 
         return security.build();
     }

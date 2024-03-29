@@ -8,11 +8,12 @@ import com.codingapi.springboot.security.gateway.TokenGateway;
 import com.codingapi.springboot.security.properties.CodingApiSecurityProperties;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.web.DefaultSecurityFilterChain;
 
 @AllArgsConstructor
-public class HttpSecurityConfigurer extends AbstractHttpConfigurer<HttpSecurityConfigurer, HttpSecurity> {
+public class HttpSecurityConfigurer extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
     private final TokenGateway tokenGateway;
 
@@ -23,7 +24,7 @@ public class HttpSecurityConfigurer extends AbstractHttpConfigurer<HttpSecurityC
     @Override
     public void configure(HttpSecurity security) throws Exception {
         AuthenticationManager manager = security.getSharedObject(AuthenticationManager.class);
-        security.addFilter(new MyLoginFilter(manager, tokenGateway, securityLoginHandler, securityJwtProperties));
+        security.addFilter(new MyLoginFilter(manager, tokenGateway,securityLoginHandler, securityJwtProperties));
         security.addFilter(new MyAuthenticationFilter(manager, securityJwtProperties, tokenGateway, authenticationTokenFilter));
     }
 }
