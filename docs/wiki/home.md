@@ -22,13 +22,13 @@ maven install
      <!-- security&jwt权限框架 -->
      <dependency>
         <groupId>com.codingapi.springboot</groupId>
-        <artifactId>springboot-starter-security-jwt</artifactId>
+        <artifactId>springboot-starter-security</artifactId>
         <version>${last.version}</version>
      </dependency>
 ```
 
 
 [springboot-starter](./springboot-starter)  
-[springboot-starter-security-jwt](./springboot-starter-security-jwt)
-[springboot-starter-data-fast](./springboot-starter-data-fast.md)  
+[springboot-starter-security](./springboot-starter-security)  
+[springboot-starter-data-fast](./springboot-starter-data-fast.md)   
  
