@@ -1,18 +1,28 @@
-springboot-starter-security-jwt 功能介绍
+springboot-starter-security 功能介绍
+
+支持无状态的JWT和有状态的redis两种不同的token机制
 
 配置文件,默认参数即说明
 ```properties
+# JWT开关
+codingapi.security.jwt.enable=true
 # JWT密钥 需大于32位的字符串
-codingapi.security.jwt-secret=codingapi.security.jwt.secretkey
+codingapi.security.jwt.secret-key=codingapi.security.jwt.secretkey
+
+# JWT 有效时间(毫秒) 15分钟有效期 1000*60*15=900000
+codingapi.security.jwt.valid-time=900000
+# JWT 更换令牌时间(毫秒) 10分钟后更换令牌 1000*60*10=600000
+codingapi.security.jwt.rest-time=600000
+
 # JWT AES密钥
 codingapi.security.ase-key=QUNEWCQlXiYqJCNYQ1phc0FDRFgkJV4mKiQjWENaYXM=
 # JWT AES IV
 codingapi.security.aes-iv=QUNYRkdIQEVEUyNYQ1phcw==
 
-# JWT 有效时间(毫秒) 15分钟有效期 1000*60*15=900000
-codingapi.security.jwt-time=900000
-# JWT 更换令牌时间(毫秒) 10分钟后更换令牌 1000*60*10=600000
-codingapi.security.jwt-rest-time=600000
+# Redis开关
+#codingapi.security.redis.enable=true
+#spring.data.redis.host=localhost
+#spring.data.redis.port=6379
 
 # Security 配置 请求权限拦截地址
 codingapi.security.authenticated-urls=/api/**
