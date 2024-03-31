@@ -17,7 +17,7 @@ codingapi.security.jwt.rest-time=600000
 # JWT AES密钥
 codingapi.security.ase-key=QUNEWCQlXiYqJCNYQ1phc0FDRFgkJV4mKiQjWENaYXM=
 # JWT AES IV
-codingapi.security.aes-iv=QUNYRkdIQEVEUyNYQ1phcw==
+codingapi.security.ase-iv=QUNYRkdIQEVEUyNYQ1phcw==
 
 # Redis开关
 #codingapi.security.redis.enable=true
