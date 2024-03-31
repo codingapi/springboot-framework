@@ -18,7 +18,7 @@ v.3.x 为springboot 3.x版本,使用jdk17版本
 
 * springboot-starter | Springboot领域驱动框架
 * springboot-starter-data-fast | 快速数据呈现框架
-* springboot-starter-security-jwt | security&jwt权限框架
+* springboot-starter-security | security权限框架支持基于JWT的无状态权限认证与Redis的有状态权限认证
 
 ## SpringBoot DDD Architecture | SpringBoot DDD 框架图
 
@@ -44,7 +44,7 @@ v.3.x 为springboot 3.x版本,使用jdk17版本
      <!-- security&jwt权限框架 -->
      <dependency>
         <groupId>com.codingapi.springboot</groupId>
-        <artifactId>springboot-starter-security-jwt</artifactId>
+        <artifactId>springboot-starter-security</artifactId>
         <version>${last.version}</version>
      </dependency>
      

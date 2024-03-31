@@ -1,0 +1,5 @@
+com.codingapi.springboot.security.configurer.WebSecurityConfigurer
+com.codingapi.springboot.security.crypto.SecurityCryptoConfiguration
+com.codingapi.springboot.security.jwt.JWTSecurityConfiguration
+com.codingapi.springboot.security.redis.RedisSecurityConfiguration
+com.codingapi.springboot.security.AutoConfiguration
