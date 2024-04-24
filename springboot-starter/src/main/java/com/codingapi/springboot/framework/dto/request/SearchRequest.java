@@ -3,6 +3,8 @@ package com.codingapi.springboot.framework.dto.request;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.domain.Sort;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -12,9 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * HttpServletRequest 请求参数解析成 PageRequest对象
@@ -46,17 +46,21 @@ public class SearchRequest {
         this.removeKeys.add("pageSize");
     }
 
-    private String decode(String value) {
-        return new String(Base64.getDecoder().decode(value));
-    }
-
-
     public void addSort(Sort sort) {
         pageRequest.addSort(sort);
     }
 
     public void removeFilter(String key) {
         pageRequest.removeFilter(key);
+        this.removeKeys.add(key);
+    }
+
+    public String getParameter(String key) {
+        return request.getParameter(key);
+    }
+
+    public String[] getParameterValues(String key) {
+        return request.getParameterValues(key);
     }
 
     public PageRequest addFilter(String key, Relation relation, Object... value) {
@@ -75,6 +79,12 @@ public class SearchRequest {
         return pageRequest.orFilters(filters);
     }
 
+
+    private String decode(String value) {
+        return new String(Base64.getDecoder().decode(value));
+    }
+
+
     static class ClassContent {
 
         private final Class<?> clazz;
@@ -85,6 +95,12 @@ public class SearchRequest {
             this.pageRequest = pageRequest;
         }
 
+        public void addFilter(String key, Relation relation, String value) {
+            Class<?> keyClass = getKeyType(key);
+            Object v = parseObject(value, keyClass);
+            pageRequest.addFilter(key, relation, v);
+        }
+
         public void addFilter(String key, String value) {
             Class<?> keyClass = getKeyType(key);
             Object v = parseObject(value, keyClass);
@@ -92,7 +108,7 @@ public class SearchRequest {
         }
 
         private Object parseObject(String value, Class<?> keyClass) {
-            if(value.getClass().equals(keyClass)) {
+            if (value.getClass().equals(keyClass)) {
                 return value;
             }
             return JSON.parseObject(value, keyClass);
@@ -124,11 +140,36 @@ public class SearchRequest {
 
     }
 
+    @Setter
+    @Getter
+    static class ParamOperation {
+        private String key;
+        private String type;
+
+        public Relation getOperation() {
+            return Relation.valueOf(type);
+        }
+    }
+
+    private List<ParamOperation> loadParamOperations() {
+        String params = request.getParameter("params");
+        if (StringUtils.hasLength(params)) {
+            params = decode(params);
+            if (JSON.isValid(params)) {
+                removeKeys.add("params");
+                return JSON.parseArray(params, ParamOperation.class);
+            }
+        }
+        return null;
+    }
+
     public PageRequest toPageRequest(Class<?> clazz) {
         pageRequest.setCurrent(current);
         pageRequest.setPageSize(pageSize);
 
         ClassContent content = new ClassContent(clazz, pageRequest);
+
+        List<ParamOperation> loadParams = loadParamOperations();
 
         String sort = request.getParameter("sort");
         if (StringUtils.hasLength(sort)) {
@@ -157,24 +198,34 @@ public class SearchRequest {
                 for (String key : jsonObject.keySet()) {
                     JSONArray value = jsonObject.getJSONArray(key);
                     if (value != null && !value.isEmpty()) {
-                        List<String> values = value.stream().map(Object::toString).collect(Collectors.toList());
+                        List<String> values = value.stream().map(Object::toString).toList();
                         content.addFilter(key, values);
                     }
                 }
             }
         }
 
-        Enumeration<String> enumeration = request.getParameterNames();
-        while (enumeration.hasMoreElements()) {
-            String key = enumeration.nextElement();
+
+        request.getParameterNames().asIterator().forEachRemaining(key -> {
             if (!removeKeys.contains(key)) {
                 String value = request.getParameter(key);
                 if (StringUtils.hasLength(value)) {
-                    content.addFilter(key, value);
+                    if (loadParams != null) {
+                        ParamOperation operation = loadParams.stream()
+                                .filter(paramOperation -> paramOperation.getKey().equals(key))
+                                .findFirst()
+                                .orElse(null);
+                        if (operation != null) {
+                            content.addFilter(key, operation.getOperation(), value);
+                        } else {
+                            content.addFilter(key, value);
+                        }
+                    } else {
+                        content.addFilter(key, value);
+                    }
                 }
             }
-        }
-
+        });
 
         return pageRequest;
     }
