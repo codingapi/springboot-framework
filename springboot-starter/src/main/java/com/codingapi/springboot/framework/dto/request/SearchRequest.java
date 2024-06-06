@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Enumeration;
 import java.util.List;
 
 /**
@@ -21,7 +22,9 @@ import java.util.List;
  */
 public class SearchRequest {
 
+    @Getter
     private int current;
+    @Getter
     private int pageSize;
 
     private final HttpServletRequest request;
@@ -61,6 +64,16 @@ public class SearchRequest {
 
     public String[] getParameterValues(String key) {
         return request.getParameterValues(key);
+    }
+
+
+    public List<String> getParameterNames() {
+        Enumeration<String> enumeration = request.getParameterNames();
+        List<String> list = new ArrayList<>();
+        while (enumeration.hasMoreElements()) {
+            list.add(enumeration.nextElement());
+        }
+        return list;
     }
 
     public PageRequest addFilter(String key, Relation relation, Object... value) {
