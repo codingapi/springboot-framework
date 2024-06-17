@@ -66,12 +66,12 @@ public class AutoConfiguration {
     public SecurityLoginHandler securityLoginHandler() {
         return new SecurityLoginHandler() {
             @Override
-            public void preHandle(HttpServletRequest request, HttpServletResponse response, LoginRequest handler) throws Exception {
+            public void preHandle(HttpServletRequest request, HttpServletResponse response, LoginRequest loginRequest) throws Exception {
 
             }
 
             @Override
-            public LoginResponse postHandle(HttpServletRequest request, HttpServletResponse response, LoginRequest handler, Token token) {
+            public LoginResponse postHandle(HttpServletRequest request, HttpServletResponse response, LoginRequest loginRequest, Token token) {
                 LoginResponse loginResponse = new LoginResponse();
                 loginResponse.setToken(token.getToken());
                 loginResponse.setUsername(token.getUsername());
