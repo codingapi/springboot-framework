@@ -1,9 +1,10 @@
 package com.codingapi.springboot.fast;
 
 import com.codingapi.springboot.fast.manager.EntityManagerInitializer;
-import com.codingapi.springboot.fast.mapping.MvcMappingRegister;
-import com.codingapi.springboot.fast.script.ScriptMappingRegister;
+import com.codingapi.springboot.fast.mapping.FastMvcMappingRegister;
+import com.codingapi.springboot.fast.script.FastScriptMappingRegister;
 import jakarta.persistence.EntityManager;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -18,8 +19,8 @@ public class DataFastConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public MvcMappingRegister mvcMappingRegister(RequestMappingHandlerMapping handlerMapping) {
-        return new MvcMappingRegister(handlerMapping);
+    public FastMvcMappingRegister fastMvcMappingRegister(@Qualifier("requestMappingHandlerMapping") RequestMappingHandlerMapping requestMappingHandlerMapping) {
+        return new FastMvcMappingRegister(requestMappingHandlerMapping);
     }
 
 
@@ -31,8 +32,8 @@ public class DataFastConfiguration {
 
 
     @Bean
-    public ScriptMappingRegister scriptMappingRegister(MvcMappingRegister mvcMappingRegister) {
-        return new ScriptMappingRegister(mvcMappingRegister);
+    public FastScriptMappingRegister fastScriptMappingRegister(FastMvcMappingRegister fastMvcMappingRegister) {
+        return new FastScriptMappingRegister(fastMvcMappingRegister);
     }
 
 }
