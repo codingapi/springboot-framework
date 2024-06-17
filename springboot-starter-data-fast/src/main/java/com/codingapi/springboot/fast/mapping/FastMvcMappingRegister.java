@@ -10,7 +10,7 @@ import org.springframework.web.util.pattern.PathPatternParser;
 import java.lang.reflect.Method;
 
 @AllArgsConstructor
-public class MvcMappingRegister {
+public class FastMvcMappingRegister {
 
     private final RequestMappingHandlerMapping handlerMapping;
 

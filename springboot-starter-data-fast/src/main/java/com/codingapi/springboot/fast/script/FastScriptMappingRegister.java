@@ -1,13 +1,13 @@
 package com.codingapi.springboot.fast.script;
 
-import com.codingapi.springboot.fast.mapping.MvcMappingRegister;
+import com.codingapi.springboot.fast.mapping.FastMvcMappingRegister;
 import com.codingapi.springboot.framework.dto.response.Response;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class ScriptMappingRegister {
+public class FastScriptMappingRegister {
 
-    private final MvcMappingRegister mappingRegister;
+    private final FastMvcMappingRegister mappingRegister;
 
     /**
      * test dynamic mapping

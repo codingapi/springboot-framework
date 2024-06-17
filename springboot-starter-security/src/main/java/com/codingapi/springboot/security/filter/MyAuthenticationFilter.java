@@ -66,7 +66,7 @@ public class MyAuthenticationFilter extends BasicAuthenticationFilter {
                 }
 
                 SecurityContextHolder.getContext().setAuthentication(token.getAuthenticationToken());
-                authenticationTokenFilter.doFilter(request, response, chain);
+                authenticationTokenFilter.doFilter(request, response);
             }
         }
         chain.doFilter(request, response);

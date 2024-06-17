@@ -76,15 +76,10 @@ public class MyLoginFilter extends UsernamePasswordAuthenticationFilter {
                 user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()),
                 TokenContext.getExtra());
 
-        LoginResponse login = new LoginResponse();
-        login.setUsername(user.getUsername());
-        login.setToken(token.getToken());
-        login.setAuthorities(token.getAuthorities());
+        LoginResponse loginResponse = loginHandler.postHandle(request, response, loginRequest, token);
 
-        String content = JSONObject.toJSONString(SingleResponse.of(login));
+        String content = JSONObject.toJSONString(SingleResponse.of(loginResponse));
         IOUtils.write(content, response.getOutputStream(), StandardCharsets.UTF_8);
-
-        loginHandler.postHandle(request, response, loginRequest, token);
 
         LoginRequestContext.getInstance().clean();
     }
