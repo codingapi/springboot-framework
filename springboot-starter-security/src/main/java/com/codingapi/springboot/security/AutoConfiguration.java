@@ -79,7 +79,7 @@ public class AutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public AuthenticationTokenFilter authenticationTokenFilter() {
-        return (request, response, chain) -> {
+        return (request, response) -> {
 
         };
     }
