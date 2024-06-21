@@ -1,6 +1,8 @@
 package com.codingapi.springboot.fast.mapping;
 
+import jakarta.annotation.Resource;
 import lombok.AllArgsConstructor;
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -9,11 +11,14 @@ import org.springframework.web.util.pattern.PathPatternParser;
 
 import java.lang.reflect.Method;
 
-@AllArgsConstructor
-public class MvcMappingRegister {
+public class FastMvcMappingRegister {
 
     private final RequestMappingHandlerMapping handlerMapping;
 
+    public FastMvcMappingRegister(
+            RequestMappingHandlerMapping handlerMapping) {
+        this.handlerMapping = handlerMapping;
+    }
 
     /**
      * add mvc mapping

@@ -1,13 +1,13 @@
 package com.codingapi.springboot.fast.script;
 
-import com.codingapi.springboot.fast.mapping.MvcMappingRegister;
+import com.codingapi.springboot.fast.mapping.FastMvcMappingRegister;
 import com.codingapi.springboot.framework.dto.response.Response;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class ScriptMappingRegister {
+public class FastScriptMappingRegister {
 
-    private final MvcMappingRegister mappingRegister;
+    private final FastMvcMappingRegister fastMvcMappingRegister;
 
     /**
      * test dynamic mapping
@@ -15,7 +15,7 @@ public class ScriptMappingRegister {
      * @param scriptMapping dynamic mapping
      **/
     public void addMapping(ScriptMapping scriptMapping) {
-        mappingRegister.addMapping(scriptMapping.getMapping(), scriptMapping.getScriptMethod().toRequestMethod(),
+        fastMvcMappingRegister.addMapping(scriptMapping.getMapping(), scriptMapping.getScriptMethod().toRequestMethod(),
                 scriptMapping, scriptMapping.getExecuteMethod());
     }
 
@@ -38,7 +38,7 @@ public class ScriptMappingRegister {
      * @param requestMethod request method
      */
     public void removeMapping(String url, ScriptMethod scriptMethod){
-        mappingRegister.removeMapping(url, scriptMethod.toRequestMethod());
+        fastMvcMappingRegister.removeMapping(url, scriptMethod.toRequestMethod());
     }
 
 

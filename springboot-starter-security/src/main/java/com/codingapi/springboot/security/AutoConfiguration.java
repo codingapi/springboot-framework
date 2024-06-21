@@ -3,6 +3,7 @@ package com.codingapi.springboot.security;
 import com.codingapi.springboot.security.configurer.HttpSecurityConfigurer;
 import com.codingapi.springboot.security.controller.VersionController;
 import com.codingapi.springboot.security.dto.request.LoginRequest;
+import com.codingapi.springboot.security.dto.response.LoginResponse;
 import com.codingapi.springboot.security.filter.*;
 import com.codingapi.springboot.security.gateway.Token;
 import com.codingapi.springboot.security.gateway.TokenGateway;
@@ -65,13 +66,17 @@ public class AutoConfiguration {
     public SecurityLoginHandler securityLoginHandler() {
         return new SecurityLoginHandler() {
             @Override
-            public void preHandle(HttpServletRequest request, HttpServletResponse response, LoginRequest handler) throws Exception {
+            public void preHandle(HttpServletRequest request, HttpServletResponse response, LoginRequest loginRequest) throws Exception {
 
             }
 
             @Override
-            public void postHandle(HttpServletRequest request, HttpServletResponse response, LoginRequest handler, Token token) {
-
+            public LoginResponse postHandle(HttpServletRequest request, HttpServletResponse response, LoginRequest loginRequest, Token token) {
+                LoginResponse loginResponse = new LoginResponse();
+                loginResponse.setToken(token.getToken());
+                loginResponse.setUsername(token.getUsername());
+                loginResponse.setAuthorities(token.getAuthorities());
+                return loginResponse;
             }
         };
     }
@@ -79,7 +84,7 @@ public class AutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public AuthenticationTokenFilter authenticationTokenFilter() {
-        return (request, response, chain) -> {
+        return (request, response) -> {
 
         };
     }
