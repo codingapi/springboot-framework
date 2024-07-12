@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * HttpServletRequest 请求参数解析成 PageRequest对象
@@ -211,15 +212,17 @@ public class SearchRequest {
                 for (String key : jsonObject.keySet()) {
                     JSONArray value = jsonObject.getJSONArray(key);
                     if (value != null && !value.isEmpty()) {
-                        List<String> values = value.stream().map(Object::toString).toList();
+                        List<String> values = value.stream().map(Object::toString).collect(Collectors.toList());
                         content.addFilter(key, values);
                     }
                 }
             }
         }
 
+        Enumeration<String> enumeration = request.getParameterNames();
 
-        request.getParameterNames().asIterator().forEachRemaining(key -> {
+        while (enumeration.hasMoreElements()){
+            String key = enumeration.nextElement();
             if (!removeKeys.contains(key)) {
                 String value = request.getParameter(key);
                 if (StringUtils.hasLength(value)) {
@@ -238,8 +241,7 @@ public class SearchRequest {
                     }
                 }
             }
-        });
-
+        }
         return pageRequest;
     }
 

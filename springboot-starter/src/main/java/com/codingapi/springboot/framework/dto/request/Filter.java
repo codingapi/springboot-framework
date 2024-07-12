@@ -25,7 +25,7 @@ public class Filter {
     }
 
     public Filter(String key, Filter... value) {
-        this(key, null,  value);
+        this(key, null, value);
     }
 
     public static Filter as(String key, Relation relation, Object... value) {
