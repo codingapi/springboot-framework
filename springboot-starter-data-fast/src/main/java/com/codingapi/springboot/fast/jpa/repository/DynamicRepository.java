@@ -1,22 +1,15 @@
 package com.codingapi.springboot.fast.jpa.repository;
 
 import com.codingapi.springboot.fast.jpa.JpaQueryContext;
-import org.springframework.core.ResolvableType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import java.util.List;
 
 @NoRepositoryBean
 @SuppressWarnings("unchecked")
-public interface DynamicRepository<T, ID> extends JpaRepository<T, ID> {
-
-    default Class<?> getEntityClass() {
-        ResolvableType resolvableType = ResolvableType.forClass(this.getClass()).as(DynamicRepository.class);
-        return resolvableType.getGeneric(new int[]{0}).resolve();
-    }
+public interface DynamicRepository<T, ID> extends BaseRepository<T, ID> {
 
     default List<T> dynamicListQuery(String sql, Object... params) {
         return (List<T>) JpaQueryContext.getInstance().getJPAQuery().listQuery(getEntityClass(), sql, params);
