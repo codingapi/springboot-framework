@@ -51,11 +51,20 @@ public class JdbcQuery {
         return new PageImpl<>(list, pageRequest, count);
     }
 
+    public <T> Page<T> queryForPage(String sql, Class<T> clazz, PageRequest pageRequest, Object... params) {
+        String countSql = "select count(1) "+sql;
+        return this.queryForPage(sql, countSql, clazz, pageRequest, params);
+    }
+
     public Page<Map<String, Object>> queryForPage(String sql, String countSql, PageRequest pageRequest, Object... params) {
         List<Map<String, Object>> list = jdbcTemplate.query(sql, params, new CamelCaseRowMapper());
-
         long count = this.countQuery(countSql, params);
         return new PageImpl<>(list, pageRequest, count);
+    }
+
+    public Page<Map<String, Object>> queryForPage(String sql, PageRequest pageRequest, Object... params) {
+        String countSql = "select count(1) "+sql;
+        return this.queryForPage(sql, countSql, pageRequest, params);
     }
 
 
