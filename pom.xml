@@ -12,7 +12,7 @@
 
     <groupId>com.codingapi.springboot</groupId>
     <artifactId>springboot-parent</artifactId>
-    <version>3.3.0.dev</version>
+    <version>3.3.0.dev1</version>
 
     <url>https://github.com/codingapi/springboot-framewrok</url>
     <name>springboot-parent</name>
@@ -254,6 +254,7 @@
                 <module>springboot-starter-security</module>
                 <module>springboot-starter-data-fast</module>
                 <module>springboot-starter-flow</module>
+                <module>examples</module>
             </modules>
         </profile>
 
