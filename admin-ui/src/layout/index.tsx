@@ -9,7 +9,7 @@ import {config} from "@/config/theme";
 import "./index.scss";
 import {useSelector} from "react-redux";
 import {RootState} from "@/store/Redux";
-import NotFount from "@/layout/pages/NotFound";
+import NotFound from "@/layout/pages/NotFound";
 
 const welcomePath = config.welcomePath;
 const loginPath = config.loginPath;
@@ -97,7 +97,7 @@ const Layout = () => {
         >
             <Routes>
                 {MenuRouteManager.getInstance().getRoutes()}
-                <Route path={"/*"} key={"404"} element={<NotFount/>}/>
+                <Route path={"/*"} key={"404"} element={<NotFound/>}/>
             </Routes>
         </ProLayout>
     );
