@@ -1,6 +1,7 @@
 package com.codingapi.springboot.security.crypto;
 
 import com.codingapi.springboot.framework.crypto.AES;
+import lombok.Getter;
 import lombok.SneakyThrows;
 
 import java.nio.charset.StandardCharsets;
@@ -8,6 +9,7 @@ import java.util.Base64;
 
 public class AESTools {
 
+    @Getter
     private final static AESTools instance = new AESTools();
 
     private AES aes;
@@ -17,10 +19,6 @@ public class AESTools {
 
     void init(AES aes) {
         this.aes = aes;
-    }
-
-    public static AESTools getInstance() {
-        return instance;
     }
 
     @SneakyThrows
