@@ -10,7 +10,7 @@ public interface IOutTrigger {
 
     /**
      * 出口触发
-     * @param node 节点
+     * @param record 节点
      * @return 下一个节点
      */
     FlowNode trigger(FlowRecord record);

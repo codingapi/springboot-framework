@@ -6,6 +6,9 @@ import java.util.List;
 
 public interface FlowRecordRepository {
 
+    /**
+     * 保存记录
+     */
     void save(FlowRecord flowRecord);
 
     /**
