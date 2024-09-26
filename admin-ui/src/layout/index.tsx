@@ -9,7 +9,7 @@ import {config} from "@/config/theme";
 import "./index.scss";
 import {useSelector} from "react-redux";
 import {RootState} from "@/store/Redux";
-import NotFount from "@/layout/pages/NotFount";
+import NotFount from "@/layout/pages/NotFound";
 
 const welcomePath = config.welcomePath;
 const loginPath = config.loginPath;
