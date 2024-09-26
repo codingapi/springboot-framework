@@ -253,6 +253,7 @@
                 <module>springboot-starter</module>
                 <module>springboot-starter-security</module>
                 <module>springboot-starter-data-fast</module>
+                <module>springboot-starter-flow</module>
             </modules>
         </profile>
 
@@ -264,6 +265,7 @@
                 <module>springboot-starter</module>
                 <module>springboot-starter-security</module>
                 <module>springboot-starter-data-fast</module>
+                <module>springboot-starter-flow</module>
             </modules>
 
             <build>
@@ -313,6 +315,7 @@
                 <module>springboot-starter</module>
                 <module>springboot-starter-security</module>
                 <module>springboot-starter-data-fast</module>
+                <module>springboot-starter-flow</module>
             </modules>
 
 
