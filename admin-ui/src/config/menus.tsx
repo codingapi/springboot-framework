@@ -22,6 +22,12 @@ export const menus = [
         page: 'role',
     },
     {
+        path: '/node',
+        name: '节点管理',
+        icon: "NodeIndexOutlined",
+        page: 'node',
+    },
+    {
         path: '/menu',
         name: '菜单',
         icon: "MenuOutlined",

@@ -85,6 +85,9 @@ const Layout = () => {
             }}
             menuItemRender={(item, dom) => (
                 <div
+                    style={{
+                        width:"100%"
+                    }}
                     onClick={() => {
                         const currentPath = item.path || welcomePath
                         setPathname(currentPath);
