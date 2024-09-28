@@ -16,10 +16,10 @@ export const menus = [
         page: 'welcome',
     },
     {
-        path: '/role',
+        path: '/jar',
         name: '权限',
         icon: "SmileOutlined",
-        page: 'role',
+        page: 'jar',
     },
     {
         path: '/node',

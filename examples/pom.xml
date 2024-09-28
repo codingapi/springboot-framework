@@ -8,6 +8,7 @@
         <module>example-application</module>
         <module>example-domain</module>
         <module>example-infrastructure-jpa</module>
+        <module>example-jar</module>
     </modules>
     <parent>
         <groupId>com.codingapi.springboot</groupId>

@@ -1,10 +1,9 @@
-package com.codingapi.example.infrastructure.jpa.config;
+package com.codingapi.jar;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -14,26 +13,25 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 
-
 @Configuration
 @EnableJpaRepositories(
-        basePackages = "com.codingapi.example",
-        entityManagerFactoryRef = "mainEntityManagerFactory",
-        transactionManagerRef = "mainTransactionManager"
+        basePackages = "com.codingapi.jar.repository",
+        entityManagerFactoryRef = "hiEntityManagerFactory",
+        transactionManagerRef = "hiTransactionManager"
 )
-public class ExampleJpaConfiguration {
+public class DemoAutoConfiguration {
 
-    @Primary
-    @Bean(name = "mainEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean mainEntityManagerFactory() {
+
+    @Bean(name = "hiEntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean hiEntityManagerFactory() {
         DataSource dataSource = DataSourceBuilder.create()
-                .url("jdbc:h2:file:./node.db")
+                .url("jdbc:h2:file:./hi.db")
                 .driverClassName("org.h2.Driver")
                 .build();
 
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
-        em.setPackagesToScan("com.codingapi.example");
+        em.setPackagesToScan("com.codingapi.jar.entity");
 
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
@@ -41,14 +39,13 @@ public class ExampleJpaConfiguration {
         return em;
     }
 
-    @Primary
-    @Bean(name = "mainTransactionManager")
-    public PlatformTransactionManager mainTransactionManager(
-            @Qualifier(value = "mainEntityManagerFactory")
-            LocalContainerEntityManagerFactoryBean mainEntityManagerFactory) {
+    @Bean(name = "hiTransactionManager")
+    public PlatformTransactionManager hiTransactionManager(
+            @Qualifier(value = "hiEntityManagerFactory") LocalContainerEntityManagerFactoryBean hiEntityManagerFactory) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(mainEntityManagerFactory.getObject());
+        transactionManager.setEntityManagerFactory(hiEntityManagerFactory.getObject());
         return transactionManager;
     }
+
 
 }

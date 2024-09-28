@@ -1,6 +1,6 @@
 package com.codingapi.example;
 
-import org.springframework.boot.SpringApplication;
+import com.codingapi.springboot.framework.boot.DynamicApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ExampleApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ExampleApplication.class, args);
+        DynamicApplication.run(ExampleApplication.class, args);
     }
 
 }
