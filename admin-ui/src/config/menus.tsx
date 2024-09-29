@@ -22,6 +22,12 @@ export const menus = [
         page: 'jar',
     },
     {
+        path: '/flow',
+        name: '流程',
+        icon: "SmileOutlined",
+        page: 'flow',
+    },
+    {
         path: '/node',
         name: '节点管理',
         icon: "NodeIndexOutlined",

@@ -6,6 +6,8 @@
     "@ant-design/icons": "^5.4.0",
     "@ant-design/pro-components": "^2.7.19",
     "@babel/standalone": "^7.25.6",
+    "@logicflow/core": "^2.0.5",
+    "@logicflow/extension": "^2.0.9",
     "@reduxjs/toolkit": "^2.2.7",
     "@types/babel__standalone": "^7.1.7",
     "@types/node": "^16.18.108",
