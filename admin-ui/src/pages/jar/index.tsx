@@ -1,24 +1,22 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {PageContainer, ProForm, ProFormText} from "@ant-design/pro-components";
 import ProFormUploader from "@/components/Form/ProFormUploader";
 import {restart, upload} from "@/api/jar";
-import {Button} from "antd";
+import {Button, Space} from "antd";
 
 const JarPage = () => {
 
     const [form] = ProForm.useForm();
-
-    useEffect(() => {
-        form.setFieldsValue({
-            classname: "com.codingapi.jar.controller.HelloController"
-        });
-    }, []);
 
     return (
         <PageContainer>
 
             <ProForm
                 form={form}
+                initialValues={{
+                    classname: "com.codingapi.jar.controller.HelloController"
+                }}
+                submitter={false}
                 onFinish={async (values) => {
                     const data = values.content[0].response;
                     const filename = values.content[0].name;
@@ -45,11 +43,28 @@ const JarPage = () => {
 
             </ProForm>
 
-            <Button
-                onClick={async () => {
-                    await restart();
-                }}
-            >重启服务</Button>
+            <Space>
+                <Button
+                    onClick={() => {
+                        form.resetFields();
+                        form.setFieldsValue({
+                            classname: "com.codingapi.jar.controller.HelloController"
+                        });
+                    }}>重置</Button>
+                <Button
+                    type={"primary"}
+                    onClick={() => {
+                        form.submit();
+                    }}>提交</Button>
+                <Button
+                    type={"primary"}
+                    danger={true}
+                    onClick={async () => {
+                        await restart();
+                    }}
+                >重启服务</Button>
+            </Space>
+
 
         </PageContainer>
     )
