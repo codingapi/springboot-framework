@@ -20,15 +20,21 @@ import java.nio.file.Paths;
 @RequestMapping("/api/jar/")
 public class JarController {
 
-
     @PostMapping("/upload")
     public Response upload(@RequestBody JarRequest request) throws Exception {
         String jarFile = "./jars/" + request.getFilename();
         IOUtils.write(request.getUploadStream(), Files.newOutputStream(Paths.get(jarFile)));
 
         URLClassLoader classLoader = ClassLoaderUtils.createClassLoader(jarFile);
-        Class<?> clazz = classLoader.loadClass("com.codingapi.jar.controller.HelloController");
+        Class<?> clazz = classLoader.loadClass(request.getClassName());
         log.info("class:{}",clazz);
+
+        return Response.buildSuccess();
+    }
+
+
+    @PostMapping("/restart")
+    public Response restart() {
         DynamicApplication.restart();
         return Response.buildSuccess();
     }

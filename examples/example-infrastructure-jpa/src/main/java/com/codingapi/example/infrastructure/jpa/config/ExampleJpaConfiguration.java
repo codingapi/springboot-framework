@@ -13,6 +13,8 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Configuration
@@ -37,7 +39,10 @@ public class ExampleJpaConfiguration {
 
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
-
+        // 设置Hibernate的属性，包括自动创建表的策略
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("hibernate.hbm2ddl.auto", "update"); // "create", "create-drop", or "update" can be used
+        em.setJpaPropertyMap(properties);
         return em;
     }
 
