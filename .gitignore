@@ -35,4 +35,4 @@ build/
 *.trace.db
 
 ### jars ###
-./jars/
+/jars/
