@@ -1,0 +1,36 @@
+.flow-content {
+  border: 1px solid #ebeef5;
+  background-color: #fff;
+  transition: 0.3s;
+  padding: 15px 16px;
+  border-radius: 12px;
+  height: 85vh;
+  position: relative;
+
+  .flow-panel {
+    position: absolute;
+    left: 5px;
+    width: 120px;
+    padding: 0 13px 20px;
+    background: #f3f5f8;
+    box-shadow: 0 0 10px 1px rgb(228, 224, 219);
+    border-radius: 6px;
+    z-index: 101;
+  }
+
+  .flow-view {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .flow-control {
+    position: absolute;
+    top: 25px;
+    right: 60px;
+    z-index: 2;
+  }
+}
+
