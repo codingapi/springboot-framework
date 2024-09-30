@@ -4,6 +4,7 @@ import ReactDOM from "react-dom/client";
 import {ProForm} from "@ant-design/pro-components";
 import "./index.scss";
 import {CheckCircleFilled, SettingFilled} from "@ant-design/icons";
+import SettingPanel from "@/components/Flow/nodes/SettingPanel";
 
 type OverProperties = {
     name: string;
@@ -31,6 +32,15 @@ export const OverView: React.FC<OverProperties> = (props) => {
                     }}
                 />
             )}
+
+            <SettingPanel
+                visible={visible}
+                setVisible={setVisible}
+                properties={props}
+                onSettingChange={(values) => {
+                    props.update && props.update(values);
+                }}
+            />
         </div>
     );
 }

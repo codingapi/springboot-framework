@@ -4,11 +4,13 @@ import ReactDOM from "react-dom/client";
 import {ProForm} from "@ant-design/pro-components";
 import "./index.scss";
 import {PlayCircleFilled, SettingFilled} from "@ant-design/icons";
+import SettingPanel from "@/components/Flow/nodes/SettingPanel";
 
 type StartProperties = {
     name: string;
     update?: (values: any) => void;
     settingVisible?: boolean;
+
 }
 
 export const StartView: React.FC<StartProperties> = (props) => {
@@ -31,6 +33,15 @@ export const StartView: React.FC<StartProperties> = (props) => {
                     }}
                 />
             )}
+
+            <SettingPanel
+                visible={visible}
+                setVisible={setVisible}
+                properties={props}
+                onSettingChange={(values) => {
+                    props.update && props.update(values);
+                }}
+            />
         </div>
     );
 }
