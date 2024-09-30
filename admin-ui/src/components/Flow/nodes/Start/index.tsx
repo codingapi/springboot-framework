@@ -1,7 +1,6 @@
-import {HtmlNode, HtmlNodeModel, Model} from '@logicflow/core';
+import {HtmlNode, HtmlNodeModel} from '@logicflow/core';
 import React from "react";
 import ReactDOM from "react-dom/client";
-import {ProForm} from "@ant-design/pro-components";
 import "./index.scss";
 import {PlayCircleFilled, SettingFilled} from "@ant-design/icons";
 import SettingPanel from "@/components/Flow/nodes/SettingPanel";
@@ -15,7 +14,6 @@ type StartProperties = {
 
 export const StartView: React.FC<StartProperties> = (props) => {
     const [visible, setVisible] = React.useState(false);
-    const [form] = ProForm.useForm();
 
     return (
         <div className="start-node">

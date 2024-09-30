@@ -1,7 +1,6 @@
 import {HtmlNode, HtmlNodeModel} from '@logicflow/core';
 import React from "react";
 import ReactDOM from "react-dom/client";
-import {ProForm} from "@ant-design/pro-components";
 import "./index.scss";
 import {PlusCircleFilled, SettingFilled} from "@ant-design/icons";
 import SettingPanel from "@/components/Flow/nodes/SettingPanel";
@@ -14,7 +13,6 @@ type NodeProperties = {
 
 export const NodeView: React.FC<NodeProperties> = (props) => {
     const [visible, setVisible] = React.useState(false);
-    const [form] = ProForm.useForm();
 
     return (
         <div className="node-node">

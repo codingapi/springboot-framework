@@ -1,7 +1,6 @@
 import {HtmlNode, HtmlNodeModel} from '@logicflow/core';
 import React from "react";
 import ReactDOM from "react-dom/client";
-import {ProForm} from "@ant-design/pro-components";
 import "./index.scss";
 import {CheckCircleFilled, SettingFilled} from "@ant-design/icons";
 import SettingPanel from "@/components/Flow/nodes/SettingPanel";
@@ -14,7 +13,6 @@ type OverProperties = {
 
 export const OverView: React.FC<OverProperties> = (props) => {
     const [visible, setVisible] = React.useState(false);
-    const [form] = ProForm.useForm();
 
     return (
         <div className="over-node">
