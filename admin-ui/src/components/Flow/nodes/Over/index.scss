@@ -1,0 +1,35 @@
+
+$color: #ea3f21;
+
+.over-node {
+  display: flex;
+  align-items: center;
+  max-width: 200px;
+  max-height: 40px;
+  border: 1px solid $color;
+  border-radius: 12px;
+  padding: 10px;
+  position: relative;
+
+  .icon {
+    margin-left: 10px;
+    position: absolute;
+    color: $color;
+    font-size: 16px;
+    left: 0;
+  }
+
+  .title {
+    margin-left: 25px;
+    font-size: 14px;
+  }
+
+  .setting {
+    margin-right: 10px;
+    font-size: 14px;
+    position: absolute;
+    color: $color;
+    right: 0;
+  }
+
+}

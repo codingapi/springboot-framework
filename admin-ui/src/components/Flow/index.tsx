@@ -6,31 +6,24 @@ import "./index.scss";
 import {LogicFlow} from "@logicflow/core";
 import {DndPanel, Menu, MiniMap, Snapshot} from "@logicflow/extension";
 import Start from "@/components/Flow/nodes/Start";
+import Node from "@/components/Flow/nodes/Node";
+import Over from "@/components/Flow/nodes/Over";
 import ControlPanel from "@/components/Flow/layout/ControlPanel";
 import NodePanel from "@/components/Flow/layout/NodePanel";
+import {Button, message, Space} from "antd";
+import {SaveOutlined} from "@ant-design/icons";
 
+interface FlowProps {
+    data: LogicFlow.GraphConfigData;
+    onSave: (data: string) => void;
+}
 
-const Flow = () => {
+const Flow: React.FC<FlowProps> = (props) => {
     const container = useRef<HTMLDivElement | null>(null);
     const lfRef = useRef<LogicFlow | null>(null);
     const [mapVisible, setMapVisible] = React.useState(false);
 
-    const data = {
-        nodes: [
-            {
-                id: '1',
-                type: 'start-node',
-                x: 350,
-                y: 100,
-                properties: {
-                    name: 'turbo',
-                    body: 'hello',
-                },
-            },
-        ],
-        edges: [],
-    }
-
+    const data = props.data;
 
     useEffect(() => {
         const SilentConfig = {
@@ -48,6 +41,10 @@ const Flow = () => {
             },
             plugins: [Menu, DndPanel, MiniMap, Snapshot],
             grid: false,
+            keyboard:{
+                enabled: true,
+            },
+            edgeType: 'bezier',
         });
 
         lfRef.current.setTheme({
@@ -57,12 +54,61 @@ const Flow = () => {
             },
         });
         lfRef.current.register(Start);
+        lfRef.current.register(Node);
+        lfRef.current.register(Over);
+
         lfRef.current.render(data);
+
     }, []);
+
+
+    const nodeVerify = async (type: string) => {
+        //@ts-ignore
+        const nodes = lfRef.current?.getGraphData().nodes;
+        if (type === 'start-node') {
+            for (let i = 0; i < nodes.length; i++) {
+                if (nodes[i].type === type) {
+                    message.error('开始节点只能有一个');
+                    return false;
+                }
+            }
+        }
+        if (type === 'over-node') {
+            for (let i = 0; i < nodes.length; i++) {
+                if (nodes[i].type === type) {
+                    message.error('结束节点只能有一个');
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
     return (
         <div className="flow-content">
-            <NodePanel className={"flow-panel"}/>
+            <div className={"flow-tools"}>
+                <Space>
+                    <Button
+                        type={"primary"}
+                        icon={<SaveOutlined/>}
+                        onClick={() => {
+                            const data = lfRef.current?.getGraphData();
+                            props.onSave(JSON.stringify(data));
+                        }}
+                    >保存</Button>
+                </Space>
+            </div>
+            <NodePanel
+                className={"flow-panel"}
+                onDrag={async (type, properties) => {
+                    if (await nodeVerify(type)) {
+                        lfRef.current?.dnd.startDrag({
+                            type: type,
+                            properties: properties
+                        });
+                    }
+                }}
+            />
             <ControlPanel
                 className={"flow-control"}
                 onZoomIn={() => {

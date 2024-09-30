@@ -1,10 +1,12 @@
-
+.panel-title{
+  text-align: center;
+}
 .node-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
+  margin: 10px;
+
   .node-item {
+    cursor: pointer;
+    user-select: none;
     margin-top: 10px;
     margin-bottom: 10px;
   }

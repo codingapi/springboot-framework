@@ -1,20 +1,46 @@
 import React from "react";
-import {Button} from "antd";
 import "./NodePanel.scss";
+import {StartView} from "@/components/Flow/nodes/Start";
+import {NodeView} from "@/components/Flow/nodes/Node";
+import {OverView} from "@/components/Flow/nodes/Over";
 
-interface NodePanelProps{
-    className:string
+interface NodePanelProps {
+    className: string,
+    onDrag: (type: string, properties: any) => void;
 }
 
-const NodePanel:React.FC<NodePanelProps> = (props)=>{
+const NodePanel: React.FC<NodePanelProps> = (props) => {
 
     return (
         <div className={props.className}>
-            <h3>节点</h3>
+            <h3 className={"panel-title"}>流程节点</h3>
             <div className={"node-content"}>
-                <Button className={"node-item"}>开始节点</Button>
-                <Button className={"node-item"}>流程节点</Button>
-                <Button className={"node-item"}>结束节点</Button>
+                <div
+                    className={"node-item"}
+                    onMouseDown={() => {
+                        props.onDrag('start-node', {name: '开始节点'});
+                    }}
+                >
+                    <StartView name={"开始节点"}/>
+                </div>
+
+                <div
+                    className={"node-item"}
+                    onMouseDown={() => {
+                        props.onDrag('node-node', {name: '流程节点'});
+                    }}
+                >
+                    <NodeView name={"流程节点"}/>
+                </div>
+
+                <div
+                    className={"node-item"}
+                    onMouseDown={() => {
+                        props.onDrag('over-node', {name: '结束节点'});
+                    }}
+                >
+                    <OverView name={"结束节点"}/>
+                </div>
             </div>
         </div>
     )
