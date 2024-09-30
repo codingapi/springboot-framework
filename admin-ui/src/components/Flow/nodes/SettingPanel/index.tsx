@@ -9,49 +9,73 @@ interface SettingPanelProps {
     onSettingChange: (values: any) => void;
 }
 
-const SettingPanel:React.FC<SettingPanelProps> = (props)=>{
+const SettingPanel: React.FC<SettingPanelProps> = (props) => {
 
     const [form] = ProForm.useForm();
 
     return (
         <DrawerForm
             form={form}
+            layout={"vertical"}
             initialValues={props.properties}
             title={"节点设置"}
             width={"40%"}
-            onFinish={async (values)=>{
+            onFinish={async (values) => {
                 props.onSettingChange(values);
                 props.setVisible(false);
             }}
             submitter={false}
             drawerProps={{
-                onClose: ()=>{
+                onClose: () => {
                     props.setVisible(false);
                 },
-                destroyOnClose:true,
-                extra:(
+                destroyOnClose: true,
+                extra: (
                     <Space>
                         <Button
                             type={"primary"}
-                            onClick={()=>{
+                            onClick={() => {
                                 form.submit();
                             }}
                         >确认</Button>
                         <Button
-                            onClick={()=>{
+                            onClick={() => {
                                 form.resetFields();
                                 props.setVisible(false);
                             }}
                         >取消</Button>
                     </Space>
                 ),
-                footer:false
+                footer: false
             }}
             open={props.visible}
         >
             <Divider>
                 基本信息
             </Divider>
+            <ProForm.Group>
+                <ProFormText
+                    name={"code"}
+                    label={"节点编码"}
+                    rules={[
+                        {
+                            required: true,
+                            message: "请输入节点编码"
+                        }
+                    ]}
+                />
+
+                <ProFormText
+                    name={"name"}
+                    label={"节点名称"}
+                    rules={[
+                        {
+                            required: true,
+                            message: "请输入节点名称"
+                        }
+                    ]}
+                />
+            </ProForm.Group>
             <ProFormSelect
                 name={"type"}
                 label={"节点类型"}
@@ -70,28 +94,6 @@ const SettingPanel:React.FC<SettingPanelProps> = (props)=>{
                         label: "非会签",
                         value: "NO_SIGN"
                     },
-                ]}
-            />
-
-            <ProFormText
-                name={"name"}
-                label={"节点名称"}
-                rules={[
-                    {
-                        required: true,
-                        message: "请输入节点名称"
-                    }
-                ]}
-            />
-
-            <ProFormText
-                name={"code"}
-                label={"节点编码"}
-                rules={[
-                    {
-                        required: true,
-                        message: "请输入节点编码"
-                    }
                 ]}
             />
 

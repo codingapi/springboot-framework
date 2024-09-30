@@ -4,6 +4,7 @@ import ReactDOM from "react-dom/client";
 import "./index.scss";
 import {PlayCircleFilled, SettingFilled} from "@ant-design/icons";
 import SettingPanel from "@/components/Flow/nodes/SettingPanel";
+import {message} from "antd";
 
 type StartProperties = {
     name: string;

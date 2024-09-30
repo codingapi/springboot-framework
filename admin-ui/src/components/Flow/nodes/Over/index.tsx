@@ -50,6 +50,20 @@ class OverModel extends HtmlNodeModel {
         this.text.editable = false;
         this.menu = [];
 
+        this.sourceRules = [
+            {
+                message: `不允许输出`,
+                validate: (sourceNode, targetNode:any, sourceAnchor, targetAnchor) => {
+                    const edges = this.graphModel.getNodeIncomingEdge(targetNode.id);
+                    if (edges.length >= 0) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                },
+            },
+        ];
+
         this.anchorsOffset = [
             // [this.width / 2, 0],
             // [0, this.height / 2],
