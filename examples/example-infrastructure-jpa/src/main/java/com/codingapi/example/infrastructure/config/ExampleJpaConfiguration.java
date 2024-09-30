@@ -1,4 +1,4 @@
-package com.codingapi.example.infrastructure.jpa.config;
+package com.codingapi.example.infrastructure.config;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.jdbc.DataSourceBuilder;

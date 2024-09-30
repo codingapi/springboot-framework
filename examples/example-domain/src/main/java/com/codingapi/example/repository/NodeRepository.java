@@ -10,6 +10,6 @@ public interface NodeRepository {
 
     void save(Node node);
 
-    void delete(int id);
+    void delete(long id);
 
 }

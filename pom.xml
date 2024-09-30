@@ -151,7 +151,7 @@
 
             <dependency>
                 <groupId>com.codingapi.springboot</groupId>
-                <artifactId>springboot-starter-id-generator</artifactId>
+                <artifactId>springboot-starter-flow</artifactId>
                 <version>${codingapi.framework.version}</version>
             </dependency>
 

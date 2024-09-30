@@ -17,13 +17,20 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.codingapi.springboot</groupId>
+            <artifactId>springboot-starter-flow</artifactId>
+        </dependency>
+    </dependencies>
+
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.8</version>
+                <version>0.8.12</version>
                 <executions>
                     <execution>
                         <goals>

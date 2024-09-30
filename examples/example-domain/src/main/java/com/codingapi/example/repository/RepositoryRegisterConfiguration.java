@@ -20,7 +20,7 @@ public class RepositoryRegisterConfiguration {
             }
 
             @Override
-            public void delete(int id) {
+            public void delete(long id) {
             }
         };
     }

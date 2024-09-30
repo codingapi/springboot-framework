@@ -1,7 +1,8 @@
 package com.codingapi.example.controller;
 
 import com.codingapi.example.domain.Node;
-import com.codingapi.example.infrastructure.jpa.jpa.JpaNodeRepository;
+import com.codingapi.example.infrastructure.entity.NodeEntity;
+import com.codingapi.example.infrastructure.jpa.NodeEntityRepository;
 import com.codingapi.example.service.NodeService;
 import com.codingapi.springboot.framework.dto.request.IdRequest;
 import com.codingapi.springboot.framework.dto.request.SearchRequest;
@@ -17,11 +18,11 @@ public class NodeController {
 
     private final NodeService nodeService;
 
-    private final JpaNodeRepository jpaNodeRepository;
+    private final NodeEntityRepository nodeEntityRepository;
 
     @GetMapping("/list")
-    public MultiResponse<Node> list(SearchRequest request) {
-        return MultiResponse.of(jpaNodeRepository.searchRequest(request));
+    public MultiResponse<NodeEntity> list(SearchRequest request) {
+        return MultiResponse.of(nodeEntityRepository.searchRequest(request));
     }
 
     @PostMapping("/save")
