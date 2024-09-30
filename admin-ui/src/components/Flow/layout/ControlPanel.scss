@@ -1,9 +1,8 @@
 
 .control-content{
-  height: 130px;
   width: 30px;
-  background: #f3f5f8;
   border-radius: 12px;
+  background-color: white;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -11,10 +10,10 @@
   position: absolute;
   top: 6px;
   left: 10px;
-  z-index: 999;
   padding: 4px 0;
   box-shadow: 3px 0 2px 1px rgb(228, 224, 219);
-  i {
-    cursor: pointer;
+  .control-item{
+    margin-top: 10px;
+    margin-bottom: 10px;
   }
 }

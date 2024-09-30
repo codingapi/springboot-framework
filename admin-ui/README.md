@@ -11,7 +11,7 @@ This is a simple React App with Webpack5 & Typescript.
 6. Support Redux for State Management
 7. Support Mock Server for API Mocking
 8. Support Monaco Editor for Code Editor
-9. Support Access Control for Menu & Page Components
+9. Support Access ControlPanel for Menu & Page Components
 
 ## Running
 ```shell

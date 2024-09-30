@@ -4,13 +4,13 @@ import ReactDOM from "react-dom/client";
 import {DrawerForm, ProForm, ProFormText} from "@ant-design/pro-components";
 
 
-type CustomProperties = {
+type StartProperties = {
     name: string;
     body: string;
     update: (values: any) => void
 }
 
-const Hello: React.FC<CustomProperties> = (props) => {
+const StartView: React.FC<StartProperties> = (props) => {
     const [visible, setVisible] = React.useState(false);
     const [form] = ProForm.useForm();
 
@@ -53,7 +53,7 @@ const Hello: React.FC<CustomProperties> = (props) => {
     );
 }
 
-class BoxxModel extends HtmlNodeModel {
+class StartModel extends HtmlNodeModel {
     setAttributes() {
         this.width = 140;
         this.height = 220;
@@ -61,12 +61,12 @@ class BoxxModel extends HtmlNodeModel {
     }
 }
 
-class BoxxNode extends HtmlNode {
+class StartNode extends HtmlNode {
     setHtml(rootEl: SVGForeignObjectElement) {
-        const {properties} = this.props.model as HtmlNodeModel<CustomProperties>;
+        const {properties} = this.props.model as HtmlNodeModel<StartProperties>;
         const div = document.createElement('div');
         ReactDOM.createRoot(div).render(
-            <Hello
+            <StartView
                 name={properties.name}
                 body={properties.body}
                 update={async (values) => {
@@ -80,10 +80,10 @@ class BoxxNode extends HtmlNode {
     }
 }
 
-const boxx = {
-    type: 'boxx',
-    view: BoxxNode,
-    model: BoxxModel,
+const Start = {
+    type: 'start-node',
+    view: StartNode,
+    model: StartModel,
 };
 
-export default boxx;
+export default Start;

@@ -1,8 +1,11 @@
 
-.node-content{
-  margin-top: 10px;
+.node-content {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
+  .node-item {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
 }

@@ -1,6 +1,5 @@
 .flow-content {
   border: 1px solid #ebeef5;
-  background-color: #fff;
   transition: 0.3s;
   padding: 15px 16px;
   border-radius: 12px;
@@ -9,10 +8,10 @@
 
   .flow-panel {
     position: absolute;
-    left: 5px;
+    left: 15px;
     width: 120px;
     padding: 0 13px 20px;
-    background: #f3f5f8;
+    background-color: white;
     box-shadow: 0 0 10px 1px rgb(228, 224, 219);
     border-radius: 6px;
     z-index: 101;
@@ -27,10 +26,18 @@
   }
 
   .flow-control {
+    background-color: white;
+    box-shadow: 0 0 10px 1px rgb(228, 224, 219);
     position: absolute;
     top: 25px;
-    right: 60px;
-    z-index: 2;
+    right: 50px;
+    z-index: 101;
   }
 }
+
+.lf-mini-map {
+  border: none !important;
+  box-shadow: 3px 0 10px 1px rgb(228, 224, 219);
+}
+
 

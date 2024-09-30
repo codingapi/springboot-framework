@@ -10,15 +10,11 @@ const NodePanel:React.FC<NodePanelProps> = (props)=>{
 
     return (
         <div className={props.className}>
-            <h3>Nodes</h3>
+            <h3>节点</h3>
             <div className={"node-content"}>
-                <Button>Node1</Button>
-            </div>
-            <div className={"node-content"}>
-                <Button>Node2</Button>
-            </div>
-            <div className={"node-content"}>
-                <Button>Node3</Button>
+                <Button className={"node-item"}>开始节点</Button>
+                <Button className={"node-item"}>流程节点</Button>
+                <Button className={"node-item"}>结束节点</Button>
             </div>
         </div>
     )
