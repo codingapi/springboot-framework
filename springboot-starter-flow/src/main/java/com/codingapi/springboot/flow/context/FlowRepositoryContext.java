@@ -83,11 +83,19 @@ public class FlowRepositoryContext {
         flowRecordRepository.delete(flowRecord);
     }
 
+    public FlowNode getFlowNodeById(long id) {
+        return flowNodeRepository.getFlowNodeById(id);
+    }
+
     public FlowRecord getFlowRecordById(long id) {
         return flowRecordRepository.getFlowRecordById(id);
     }
 
     public FlowWork getFlowWorkById(long flowWorkId) {
         return flowWorkRepository.getFlowWorkById(flowWorkId);
+    }
+
+    public BindDataSnapshot getBindDataSnapshotById(long id) {
+        return bindDataSnapshotRepository.getBindDataSnapshotById(id);
     }
 }

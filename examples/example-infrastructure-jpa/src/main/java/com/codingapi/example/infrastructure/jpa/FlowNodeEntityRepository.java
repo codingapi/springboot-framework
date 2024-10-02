@@ -5,4 +5,5 @@ import com.codingapi.springboot.fast.jpa.repository.FastRepository;
 
 public interface FlowNodeEntityRepository extends FastRepository<FlowNodeEntity,Long> {
 
+    FlowNodeEntity getFlowNodeEntityById(long id);
 }

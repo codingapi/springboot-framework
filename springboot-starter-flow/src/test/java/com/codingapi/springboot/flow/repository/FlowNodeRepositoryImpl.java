@@ -19,4 +19,9 @@ public class FlowNodeRepositoryImpl implements FlowNodeRepository {
             flowNode.setUpdateTime(System.currentTimeMillis());
         }
     }
+
+    @Override
+    public FlowNode getFlowNodeById(long id) {
+        return nodes.stream().filter(flowNode -> flowNode.getId() == id).findFirst().orElse(null);
+    }
 }

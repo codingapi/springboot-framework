@@ -16,6 +16,10 @@ public class BindDataSnapshotRepositoryImpl implements BindDataSnapshotRepositor
             snapshots.add(snapshot);
             snapshot.setId(snapshots.size());
         }
+    }
 
+    @Override
+    public BindDataSnapshot getBindDataSnapshotById(long id) {
+        return snapshots.stream().filter(snapshot -> snapshot.getId() == id).findFirst().orElse(null);
     }
 }

@@ -20,4 +20,9 @@ public class BindDataSnapshotRepositoryImpl implements BindDataSnapshotRepositor
         entity = bindDataSnapshotEntityRepository.save(entity);
         snapshot.setId(entity.getId());
     }
+
+    @Override
+    public BindDataSnapshot getBindDataSnapshotById(long id) {
+        return BindDataSnapshotConvertor.convert(bindDataSnapshotEntityRepository.getBindDataSnapshotEntityById(id));
+    }
 }

@@ -5,4 +5,6 @@ import com.codingapi.springboot.flow.domain.FlowNode;
 public interface FlowNodeRepository {
 
     void save(FlowNode flowNode);
+
+    FlowNode getFlowNodeById(long id);
 }

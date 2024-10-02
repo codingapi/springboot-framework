@@ -20,4 +20,9 @@ public class FlowNodeRepositoryImpl implements FlowNodeRepository {
         entity =  flowNodeEntityRepository.save(entity);
         flowNode.setId(entity.getId());
     }
+
+    @Override
+    public FlowNode getFlowNodeById(long id) {
+        return FlowNodeConvertor.convert(flowNodeEntityRepository.getFlowNodeEntityById(id));
+    }
 }
