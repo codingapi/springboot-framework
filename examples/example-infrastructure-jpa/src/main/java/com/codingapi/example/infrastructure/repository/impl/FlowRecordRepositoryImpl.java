@@ -3,19 +3,23 @@ package com.codingapi.example.infrastructure.repository.impl;
 import com.codingapi.example.infrastructure.convert.FlowRecordConvertor;
 import com.codingapi.example.infrastructure.entity.flow.FlowRecordEntity;
 import com.codingapi.example.infrastructure.jpa.FlowRecordEntityRepository;
+import com.codingapi.springboot.flow.context.FlowRepositoryContext;
 import com.codingapi.springboot.flow.domain.FlowRecord;
 import com.codingapi.springboot.flow.em.NodeStatus;
 import com.codingapi.springboot.flow.repository.FlowRecordRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-@AllArgsConstructor
 public class FlowRecordRepositoryImpl implements FlowRecordRepository {
 
     private final FlowRecordEntityRepository flowRecordEntityRepository;
+
+    public FlowRecordRepositoryImpl(FlowRecordEntityRepository flowRecordEntityRepository) {
+        this.flowRecordEntityRepository = flowRecordEntityRepository;
+        FlowRepositoryContext.getInstance().bind(this);
+    }
 
     @Override
     public void save(FlowRecord flowRecord) {

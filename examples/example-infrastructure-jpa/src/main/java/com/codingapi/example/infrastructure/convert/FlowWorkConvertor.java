@@ -50,12 +50,14 @@ public class FlowWorkConvertor {
         entity.setDescription(flowWork.getDescription());
         entity.setTitle(flowWork.getTitle());
         entity.setSchema(flowWork.getSchema());
-        entity.setNodeIds(
-                flowWork.getNodes().stream()
-                        .map(FlowNode::getId)
-                        .map(String::valueOf)
-                        .collect(Collectors.joining(","))
-        );
+        if(flowWork.getNodes()!=null) {
+            entity.setNodeIds(
+                    flowWork.getNodes().stream()
+                            .map(FlowNode::getId)
+                            .map(String::valueOf)
+                            .collect(Collectors.joining(","))
+            );
+        }
 
         return entity;
     }

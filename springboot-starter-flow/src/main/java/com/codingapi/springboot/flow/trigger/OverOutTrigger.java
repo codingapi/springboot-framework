@@ -1,12 +1,14 @@
 package com.codingapi.springboot.flow.trigger;
 
-import com.codingapi.springboot.flow.domain.FlowNode;
-import com.codingapi.springboot.flow.domain.FlowRecord;
+public class OverOutTrigger extends ScriptOutTrigger{
 
-public class OverOutTrigger implements IOutTrigger{
+    public OverOutTrigger(String script, Object... params) {
+        super(script, params);
+    }
 
-    @Override
-    public FlowNode trigger(FlowRecord record) {
-        return null;
+    public OverOutTrigger(){
+        this("""
+                return null;
+                """);
     }
 }

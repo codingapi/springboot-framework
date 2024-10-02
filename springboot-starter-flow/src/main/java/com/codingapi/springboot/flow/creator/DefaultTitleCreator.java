@@ -1,19 +1,22 @@
 package com.codingapi.springboot.flow.creator;
 
-import com.codingapi.springboot.flow.domain.FlowRecord;
+public class DefaultTitleCreator extends ScriptTitleCreator {
 
-public class DefaultTitleCreator implements ITitleCreator {
+    public DefaultTitleCreator(String script) {
+        super(script);
+    }
 
-    @Override
-    public String createTitle(FlowRecord record) {
-        if (record.getNode().isOver()) {
-            return String.format("%s-%s",
-                    record.getNode().getFlowWork().getTitle(),
-                    record.getNode().getName());
-        }
-        return String.format("%s-%s-%s",
-                record.getNode().getFlowWork().getTitle(),
-                record.getNode().getName(),
-                record.getOperatorUser().getName());
+    public DefaultTitleCreator(){
+        this("""
+                 if (record.getNode().isOver()) {
+                    return String.format("%s-%s",
+                            record.getNode().getFlowWork().getTitle(),
+                            record.getNode().getName());
+                }
+                return String.format("%s-%s-%s",
+                        record.getNode().getFlowWork().getTitle(),
+                        record.getNode().getName(),
+                        record.getOperatorUser().getName());
+                """);
     }
 }

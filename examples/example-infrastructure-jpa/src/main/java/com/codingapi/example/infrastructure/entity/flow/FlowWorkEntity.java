@@ -1,9 +1,6 @@
 package com.codingapi.example.infrastructure.entity.flow;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,6 +22,7 @@ public class FlowWorkEntity {
     /**
      * 流程描述
      */
+    @Lob
     private String description;
     /**
      * 流程创建者
@@ -54,5 +52,6 @@ public class FlowWorkEntity {
     /**
      * 界面设计脚本
      */
+    @Lob
     private String schema;
 }

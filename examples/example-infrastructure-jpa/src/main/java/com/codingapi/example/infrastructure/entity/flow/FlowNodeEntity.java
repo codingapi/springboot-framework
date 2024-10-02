@@ -2,10 +2,7 @@ package com.codingapi.example.infrastructure.entity.flow;
 
 import com.codingapi.springboot.flow.em.FlowType;
 import com.codingapi.springboot.flow.em.NodeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,6 +36,7 @@ public class FlowNodeEntity {
     /**
      * 节点标题创建规则
      */
+    @Lob
     private String titleCreatorScript;
     /**
      * 节点类型 | 分为发起、审批、结束
@@ -55,10 +53,12 @@ public class FlowNodeEntity {
     /**
      * 操作者匹配器
      */
+    @Lob
     private String outOperatorMatcherScript;
     /**
      * 出口触发器
      */
+    @Lob
     private String outTriggerScript;
 
     /**
@@ -87,11 +87,13 @@ public class FlowNodeEntity {
     /**
      * 异常触发器，当流程发生异常时异常通常是指找不到审批人，将会触发异常触发器，异常触发器可以是一个节点
      */
+    @Lob
     private String errTriggerScript;
 
     /**
      * 异常操作者匹配器
      */
+    @Lob
     private String errOperatorMatcherScript;
 
 

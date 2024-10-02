@@ -3,10 +3,7 @@ package com.codingapi.example.infrastructure.entity.flow;
 import com.codingapi.springboot.flow.em.FlowStatus;
 import com.codingapi.springboot.flow.em.NodeStatus;
 import com.codingapi.springboot.flow.em.RecodeState;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -67,6 +64,7 @@ public class FlowRecordEntity {
     /**
      * 审批意见
      */
+    @Lob
     private String opinion;
     /**
      * 流程状态 ｜ 进行中、已完成
@@ -79,6 +77,7 @@ public class FlowRecordEntity {
     /**
      * 异常信息
      */
+    @Lob
     private String errMessage;
     /**
      * 绑定数据的快照

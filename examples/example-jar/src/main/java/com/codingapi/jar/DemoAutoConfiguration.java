@@ -42,6 +42,7 @@ public class DemoAutoConfiguration {
         // 设置Hibernate的属性，包括自动创建表的策略
         Map<String, Object> properties = new HashMap<>();
         properties.put("hibernate.hbm2ddl.auto", "update"); // "create", "create-drop", or "update" can be used
+        properties.put("hibernate.show_sql", "true");
         em.setJpaPropertyMap(properties);
         return em;
     }

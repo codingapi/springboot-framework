@@ -56,13 +56,25 @@ public class FlowNodeConvertor {
         entity.setView(flowNode.getView());
         entity.setType(flowNode.getType());
         entity.setUpdateTime(flowNode.getUpdateTime());
-        entity.setNext(ConvertUtils.list2String(flowNode.getNext()));
+        if(flowNode.getNext()!=null) {
+            entity.setNext(ConvertUtils.list2String(flowNode.getNext()));
+        }
         entity.setCreateUserId(flowNode.getCreateUser().getId());
-        entity.setErrOperatorMatcherScript(((ScriptOperatorMatcher) (flowNode.getErrOperatorMatcher())).getScript());
-        entity.setErrTriggerScript(((ScriptErrTrigger) (flowNode.getErrTrigger())).getScript());
-        entity.setOutOperatorMatcherScript(((ScriptOperatorMatcher) (flowNode.getOutOperatorMatcher())).getScript());
-        entity.setOutTriggerScript(((ScriptOutTrigger) (flowNode.getOutTrigger())).getScript());
-        entity.setTitleCreatorScript(((ScriptTitleCreator) (flowNode.getTitleCreator())).getScript());
+        if(flowNode.getErrOperatorMatcher()!=null) {
+            entity.setErrOperatorMatcherScript(((ScriptOperatorMatcher) (flowNode.getErrOperatorMatcher())).getScript());
+        }
+        if(flowNode.getErrTrigger()!=null) {
+            entity.setErrTriggerScript(((ScriptErrTrigger) (flowNode.getErrTrigger())).getScript());
+        }
+        if(flowNode.getOutOperatorMatcher()!=null) {
+            entity.setOutOperatorMatcherScript(((ScriptOperatorMatcher) (flowNode.getOutOperatorMatcher())).getScript());
+        }
+        if(flowNode.getOutTrigger()!=null) {
+            entity.setOutTriggerScript(((ScriptOutTrigger) (flowNode.getOutTrigger())).getScript());
+        }
+        if(flowNode.getTitleCreator()!=null) {
+            entity.setTitleCreatorScript(((ScriptTitleCreator) (flowNode.getTitleCreator())).getScript());
+        }
         entity.setFlowWorkId(flowNode.getFlowWork().getId());
 
 
