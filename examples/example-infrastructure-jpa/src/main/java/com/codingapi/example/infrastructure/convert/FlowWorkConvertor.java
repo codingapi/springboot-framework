@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 
 public class FlowWorkConvertor {
 
+    public static final ThreadLocal<FlowWork> current = new ThreadLocal<>();
+
     public static FlowWork convert(FlowWorkEntity entity){
         if(entity==null){
             return null;
@@ -25,8 +27,12 @@ public class FlowWorkConvertor {
         flowWork.setDescription(entity.getDescription());
         flowWork.setTitle(entity.getTitle());
         flowWork.setSchema(entity.getSchema());
+
+        current.set(flowWork);
+
         flowWork.setNodes(
-                ConvertUtils.string2List(entity.getNodeIds()).stream()
+                ConvertUtils.string2List(entity.getNodeIds())
+                        .stream()
                         .map(Long::parseLong)
                         .map(FlowRepositoryContext.getInstance()::getFlowNodeById)
                         .toList()

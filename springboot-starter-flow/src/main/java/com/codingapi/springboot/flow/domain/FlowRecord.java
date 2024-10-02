@@ -284,6 +284,7 @@ public class FlowRecord {
             }
             this.updateTime();
             this.nodeStatus = NodeStatus.TODO;
+            FlowRepositoryContext.getInstance().save(this);
         }
     }
 

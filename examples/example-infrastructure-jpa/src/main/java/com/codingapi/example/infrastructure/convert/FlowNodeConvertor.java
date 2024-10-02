@@ -6,6 +6,7 @@ import com.codingapi.springboot.fast.manager.EntityManagerContent;
 import com.codingapi.springboot.flow.context.FlowRepositoryContext;
 import com.codingapi.springboot.flow.creator.ScriptTitleCreator;
 import com.codingapi.springboot.flow.domain.FlowNode;
+import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.matcher.ScriptOperatorMatcher;
 import com.codingapi.springboot.flow.trigger.ScriptErrTrigger;
 import com.codingapi.springboot.flow.trigger.ScriptOutTrigger;
@@ -27,15 +28,32 @@ public class FlowNodeConvertor {
         flowNode.setView(entity.getView());
         flowNode.setType(entity.getType());
         flowNode.setUpdateTime(entity.getUpdateTime());
-        flowNode.setNext(ConvertUtils.string2List(entity.getNext()));
+        if(entity.getNext()!=null) {
+            flowNode.setNext(ConvertUtils.string2List(entity.getNext()));
+        }
         flowNode.setCreateUser(FlowRepositoryContext.getInstance().getOperatorById(entity.getCreateUserId()));
-        flowNode.setErrOperatorMatcher(new ScriptOperatorMatcher(entity.getErrOperatorMatcherScript()));
-        flowNode.setErrTrigger(new ScriptErrTrigger(entity.getErrTriggerScript()));
-        flowNode.setOutTrigger(new ScriptOutTrigger(entity.getOutTriggerScript()));
-        flowNode.setOutOperatorMatcher(new ScriptOperatorMatcher(entity.getOutOperatorMatcherScript()));
-        flowNode.setTitleCreator(new ScriptTitleCreator(entity.getTitleCreatorScript()));
-        flowNode.setFlowWork(FlowRepositoryContext.getInstance().getFlowWorkById(entity.getFlowWorkId()));
+        if(entity.getErrOperatorMatcherScript()!=null) {
+            flowNode.setErrOperatorMatcher(new ScriptOperatorMatcher(entity.getErrOperatorMatcherScript()));
+        }
+        if(entity.getErrTriggerScript()!=null) {
+            flowNode.setErrTrigger(new ScriptErrTrigger(entity.getErrTriggerScript()));
+        }
+        if(entity.getOutTriggerScript()!=null) {
+            flowNode.setOutTrigger(new ScriptOutTrigger(entity.getOutTriggerScript()));
+        }
+        if(entity.getOutOperatorMatcherScript()!=null) {
+            flowNode.setOutOperatorMatcher(new ScriptOperatorMatcher(entity.getOutOperatorMatcherScript()));
+        }
+        if(entity.getTitleCreatorScript()!=null) {
+            flowNode.setTitleCreator(new ScriptTitleCreator(entity.getTitleCreatorScript()));
+        }
 
+        FlowWork flowWork =  FlowWorkConvertor.current.get();
+        if(flowWork!=null){
+            flowNode.setFlowWork(flowWork);
+        }else {
+            flowNode.setFlowWork(FlowRepositoryContext.getInstance().getFlowWorkById(entity.getFlowWorkId()));
+        }
         EntityManagerContent.getInstance().detach(entity);
 
         return flowNode;
@@ -75,6 +93,7 @@ public class FlowNodeConvertor {
         if(flowNode.getTitleCreator()!=null) {
             entity.setTitleCreatorScript(((ScriptTitleCreator) (flowNode.getTitleCreator())).getScript());
         }
+
         entity.setFlowWorkId(flowNode.getFlowWork().getId());
 
 

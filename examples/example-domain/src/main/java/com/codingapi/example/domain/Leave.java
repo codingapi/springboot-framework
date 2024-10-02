@@ -1,7 +1,9 @@
 package com.codingapi.example.domain;
 
 import com.codingapi.springboot.flow.data.IBindData;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.text.DateFormat;
@@ -9,6 +11,8 @@ import java.text.SimpleDateFormat;
 
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Leave implements IBindData {
 
     /**
