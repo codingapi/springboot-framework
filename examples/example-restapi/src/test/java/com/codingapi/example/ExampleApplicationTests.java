@@ -1,6 +1,7 @@
 package com.codingapi.example;
 
 import com.codingapi.example.domain.Node;
+import com.codingapi.example.em.State;
 import com.codingapi.example.repository.NodeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ class ExampleApplicationTests {
     @Test
     @Transactional
     void save() {
-        Node node = new Node(1,"node1","http://node1", Node.State.ENABLE);
+        Node node = new Node(1,"node1","http://node1", State.ENABLE);
         nodeRepository.save(node);
 
         Assert.isTrue(node.getId() > 0, "nodeRepository save error.");

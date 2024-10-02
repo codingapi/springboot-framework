@@ -1,4 +1,4 @@
-package com.codingapi.example.infrastructure.entity;
+package com.codingapi.example.infrastructure.entity.flow;
 
 import jakarta.persistence.*;
 import lombok.Getter;

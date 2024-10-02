@@ -13,17 +13,17 @@
     <parent>
         <groupId>com.codingapi.springboot</groupId>
         <artifactId>springboot-parent</artifactId>
-        <version>3.3.0.dev1</version>
+        <version>3.3.0.dev2</version>
     </parent>
 
     <artifactId>springboot-example</artifactId>
-    <version>3.3.0.dev1</version>
+    <version>3.3.0.dev2</version>
 
     <name>springboot-example</name>
     <description>springboot-example project for Spring Boot</description>
     <properties>
         <java.version>17</java.version>
-        <codingapi.framework.version>3.3.0.dev</codingapi.framework.version>
+        <codingapi.framework.version>${project.version}</codingapi.framework.version>
     </properties>
 
     <dependencies>

@@ -1,7 +1,7 @@
 package com.codingapi.example.infrastructure.repository.impl;
 
 import com.codingapi.example.infrastructure.convert.BindDataSnapshotConvertor;
-import com.codingapi.example.infrastructure.entity.BindDataSnapshotEntity;
+import com.codingapi.example.infrastructure.entity.flow.BindDataSnapshotEntity;
 import com.codingapi.example.infrastructure.jpa.BindDataSnapshotEntityRepository;
 import com.codingapi.springboot.flow.data.BindDataSnapshot;
 import com.codingapi.springboot.flow.repository.BindDataSnapshotRepository;

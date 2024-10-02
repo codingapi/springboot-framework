@@ -11,4 +11,9 @@ public class FlowWorkRepositoryImpl implements FlowWorkRepository {
     public void save(FlowWork flowWork) {
 
     }
+
+    @Override
+    public FlowWork getFlowWorkById(long flowWorkId) {
+        return null;
+    }
 }

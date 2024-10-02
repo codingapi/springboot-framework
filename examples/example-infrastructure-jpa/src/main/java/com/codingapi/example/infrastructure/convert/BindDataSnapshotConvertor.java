@@ -1,6 +1,6 @@
 package com.codingapi.example.infrastructure.convert;
 
-import com.codingapi.example.infrastructure.entity.BindDataSnapshotEntity;
+import com.codingapi.example.infrastructure.entity.flow.BindDataSnapshotEntity;
 import com.codingapi.springboot.fast.manager.EntityManagerContent;
 import com.codingapi.springboot.flow.data.BindDataSnapshot;
 

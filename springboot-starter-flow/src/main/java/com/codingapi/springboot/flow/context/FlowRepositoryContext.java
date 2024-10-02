@@ -50,6 +50,10 @@ public class FlowRepositoryContext {
         return flowOperatorRepository.findOperatorByIds(operatorIds);
     }
 
+    public IFlowOperator getOperatorById(long operatorId){
+        return flowOperatorRepository.getOperatorById(operatorId);
+    }
+
     public void save(FlowWork flowWork){
         flowWorkRepository.save(flowWork);
     }
@@ -81,5 +85,9 @@ public class FlowRepositoryContext {
 
     public FlowRecord getFlowRecordById(long id) {
         return flowRecordRepository.getFlowRecordById(id);
+    }
+
+    public FlowWork getFlowWorkById(long flowWorkId) {
+        return flowWorkRepository.getFlowWorkById(flowWorkId);
     }
 }

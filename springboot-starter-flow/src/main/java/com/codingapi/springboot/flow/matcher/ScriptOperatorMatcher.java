@@ -3,11 +3,13 @@ package com.codingapi.springboot.flow.matcher;
 import com.codingapi.springboot.flow.domain.FlowRecord;
 import com.codingapi.springboot.flow.operator.IFlowOperator;
 import com.codingapi.springboot.flow.script.ScriptRuntime;
+import lombok.Getter;
 
 import java.util.List;
 
 public class ScriptOperatorMatcher implements IOperatorMatcher {
 
+    @Getter
     private final String script;
     private final Object[] params;
 

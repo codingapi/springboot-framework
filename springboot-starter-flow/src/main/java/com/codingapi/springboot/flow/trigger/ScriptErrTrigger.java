@@ -5,13 +5,13 @@ import com.codingapi.springboot.flow.domain.FlowRecord;
 import com.codingapi.springboot.flow.script.ScriptRuntime;
 import lombok.Getter;
 
-public class ScriptOutTrigger implements IOutTrigger {
+public class ScriptErrTrigger implements IErrTrigger {
 
     @Getter
     private final String script;
     private final Object[] params;
 
-    public ScriptOutTrigger(String script, Object... params) {
+    public ScriptErrTrigger(String script, Object... params) {
         this.script = script;
         this.params = params;
     }
