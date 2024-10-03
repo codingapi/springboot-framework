@@ -79,6 +79,7 @@ public class FlowWorkBuilder {
             FlowRepositoryContext.getInstance().save(flowWork);
             list.forEach(FlowRepositoryContext.getInstance()::save);
             flowWork.setNodes(list);
+            FlowRepositoryContext.getInstance().save(flowWork);
             return flowWork;
         }
 

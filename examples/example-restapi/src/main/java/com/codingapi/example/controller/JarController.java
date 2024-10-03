@@ -1,6 +1,6 @@
 package com.codingapi.example.controller;
 
-import com.codingapi.example.JarRequest;
+import com.codingapi.example.pojo.JarRequest;
 import com.codingapi.springboot.framework.boot.DynamicApplication;
 import com.codingapi.springboot.framework.dto.response.Response;
 import com.codingapi.springboot.framework.utils.ClassLoaderUtils;

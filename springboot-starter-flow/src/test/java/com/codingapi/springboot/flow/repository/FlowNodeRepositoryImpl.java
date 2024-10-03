@@ -24,4 +24,9 @@ public class FlowNodeRepositoryImpl implements FlowNodeRepository {
     public FlowNode getFlowNodeById(long id) {
         return nodes.stream().filter(flowNode -> flowNode.getId() == id).findFirst().orElse(null);
     }
+
+    @Override
+    public void delete(FlowNode flowNode) {
+        nodes.remove(flowNode);
+    }
 }

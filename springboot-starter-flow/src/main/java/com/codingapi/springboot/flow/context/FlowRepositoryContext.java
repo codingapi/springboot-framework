@@ -83,6 +83,14 @@ public class FlowRepositoryContext {
         flowRecordRepository.delete(flowRecord);
     }
 
+    public void delete(FlowNode flowNode) {
+        flowNodeRepository.delete(flowNode);
+    }
+
+    public void delete(FlowWork flowWork) {
+        flowWorkRepository.delete(flowWork);
+    }
+
     public FlowNode getFlowNodeById(long id) {
         return flowNodeRepository.getFlowNodeById(id);
     }

@@ -1,5 +1,6 @@
 package com.codingapi.springboot.flow.domain;
 
+import com.codingapi.springboot.flow.context.FlowRepositoryContext;
 import com.codingapi.springboot.flow.data.IBindData;
 import com.codingapi.springboot.flow.operator.IFlowOperator;
 import lombok.Getter;
@@ -84,5 +85,13 @@ public class FlowWork {
         long processId = System.currentTimeMillis();
         FlowRecord record = startNode.createRecord(processId, 0, bindData, operatorUser, operatorUser);
         record.submit(null, bindData);
+    }
+
+    /**
+     * 删除流程
+     */
+    public void delete() {
+        this.getNodes().forEach(FlowRepositoryContext.getInstance()::delete);
+        FlowRepositoryContext.getInstance().delete(this);
     }
 }

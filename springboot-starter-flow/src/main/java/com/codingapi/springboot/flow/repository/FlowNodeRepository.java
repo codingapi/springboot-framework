@@ -7,4 +7,6 @@ public interface FlowNodeRepository {
     void save(FlowNode flowNode);
 
     FlowNode getFlowNodeById(long id);
+
+    void delete(FlowNode flowNode);
 }

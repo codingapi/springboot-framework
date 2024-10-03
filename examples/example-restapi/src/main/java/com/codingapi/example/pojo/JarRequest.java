@@ -1,4 +1,4 @@
-package com.codingapi.example;
+package com.codingapi.example.pojo;
 
 import lombok.Getter;
 import lombok.Setter;

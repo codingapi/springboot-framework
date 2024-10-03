@@ -29,4 +29,9 @@ public class FlowNodeRepositoryImpl implements FlowNodeRepository {
     public FlowNode getFlowNodeById(long id) {
         return FlowNodeConvertor.convert(flowNodeEntityRepository.getFlowNodeEntityById(id));
     }
+
+    @Override
+    public void delete(FlowNode flowNode) {
+        flowNodeEntityRepository.deleteById(flowNode.getId());
+    }
 }

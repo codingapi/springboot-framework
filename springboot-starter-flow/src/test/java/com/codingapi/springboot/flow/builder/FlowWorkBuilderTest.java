@@ -91,6 +91,8 @@ class FlowWorkBuilderTest {
         assertTrue(flowWork.isEnable());
         assertFalse(flowWork.isLock());
 
+        flowWork.delete();
+
     }
 
 

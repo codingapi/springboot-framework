@@ -31,7 +31,6 @@ import java.util.List;
 public class FlowRunner implements ApplicationRunner {
 
     private final UserRepository userRepository;
-    private final FlowWorkRepository flowWorkRepository;
     private final FlowRecordRepository flowRecordRepository;
 
     @Override
@@ -98,9 +97,6 @@ public class FlowRunner implements ApplicationRunner {
                 .relation("start", "depart", "boss", "over")
                 .relation("start", "boss", "over")
                 .build();
-
-        flowWorkRepository.save(flowWork);
-
 
         // 创建请假数据
         Leave leave = new Leave(1, "desc", user, 1, "2020-01-01", "2020-01-05");
