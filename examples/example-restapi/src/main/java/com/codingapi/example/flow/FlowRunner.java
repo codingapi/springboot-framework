@@ -2,6 +2,7 @@ package com.codingapi.example.flow;
 
 import com.codingapi.example.domain.Leave;
 import com.codingapi.example.domain.User;
+import com.codingapi.example.gateway.PasswordEncoder;
 import com.codingapi.example.repository.UserRepository;
 import com.codingapi.springboot.flow.builder.FlowNodeFactory;
 import com.codingapi.springboot.flow.builder.FlowWorkBuilder;
@@ -14,7 +15,6 @@ import com.codingapi.springboot.flow.em.NodeStatus;
 import com.codingapi.springboot.flow.matcher.IOperatorMatcher;
 import com.codingapi.springboot.flow.matcher.ScriptOperatorMatcher;
 import com.codingapi.springboot.flow.repository.FlowRecordRepository;
-import com.codingapi.springboot.flow.repository.FlowWorkRepository;
 import com.codingapi.springboot.flow.trigger.IOutTrigger;
 import com.codingapi.springboot.flow.trigger.ScriptOutTrigger;
 import lombok.AllArgsConstructor;
@@ -32,19 +32,20 @@ public class FlowRunner implements ApplicationRunner {
 
     private final UserRepository userRepository;
     private final FlowRecordRepository flowRecordRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        User admin = new User("admin");
+        User admin = new User("admin",passwordEncoder);
         userRepository.save(admin);
 
-        User user = new User("user");
+        User user = new User("user",passwordEncoder);
         userRepository.save(user);
 
-        User depart = new User("depart");
+        User depart = new User("depart",passwordEncoder);
         userRepository.save(depart);
 
-        User boss = new User("boss");
+        User boss = new User("boss",passwordEncoder);
         userRepository.save(boss);
 
         IOperatorMatcher anyOperatorMatcher = new ScriptOperatorMatcher(

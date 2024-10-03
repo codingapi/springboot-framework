@@ -25,7 +25,26 @@ export const menus = [
         path: '/flow',
         name: '流程',
         icon: "SmileOutlined",
-        page: 'flow',
+        routes: [
+            {
+                path: '/flow/work',
+                name: '流程管理',
+                icon: "SmileOutlined",
+                page: 'flow/work',
+            },
+            {
+                path: '/flow/todo',
+                name: '我的待办',
+                icon: "SmileOutlined",
+                page: 'flow/todo',
+            },
+            {
+                path: '/flow/done',
+                name: '我的已办',
+                icon: "SmileOutlined",
+                page: 'flow/done',
+            }
+        ]
     },
     {
         path: '/node',

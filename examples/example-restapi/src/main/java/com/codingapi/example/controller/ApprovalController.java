@@ -1,11 +1,13 @@
 package com.codingapi.example.controller;
 
 import com.codingapi.example.pojo.ApprovalRequest;
+import com.codingapi.example.repository.UserRepository;
 import com.codingapi.springboot.flow.domain.FlowRecord;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.repository.FlowRecordRepository;
 import com.codingapi.springboot.framework.dto.response.MultiResponse;
 import com.codingapi.springboot.framework.dto.response.Response;
+import com.codingapi.springboot.security.gateway.TokenContext;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,16 +17,17 @@ import org.springframework.web.bind.annotation.*;
 public class ApprovalController {
 
     private final FlowRecordRepository flowRecordRepository;
+    private final UserRepository userRepository;
 
     @GetMapping("/todo")
     public MultiResponse<FlowRecord> todo() {
-        long operatorId = 1;
+        long operatorId =userRepository.getUserByUsername(TokenContext.current().getUsername()).getId();
         return MultiResponse.of(flowRecordRepository.findTodoFlowRecordByOperatorId(operatorId));
     }
 
     @GetMapping("/done")
     public MultiResponse<FlowRecord> done() {
-        long operatorId = 1;
+        long operatorId =userRepository.getUserByUsername(TokenContext.current().getUsername()).getId();
         return MultiResponse.of(flowRecordRepository.findDoneFlowRecordByOperatorId(operatorId));
     }
 
