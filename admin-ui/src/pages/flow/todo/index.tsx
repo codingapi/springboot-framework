@@ -42,10 +42,17 @@ const FlowPage = () => {
                 columns={columns}
                 request={async (params, sort, filter) => {
                     const res = await todo();
-                    return {
-                        data: res.data.list,
-                        success: true,
+                    if(res.success){
+                        return {
+                            data: res.data.list,
+                            success: true,
+                        }
                     }
+                    return {
+                        data: [],
+                        success: false,
+                    }
+
                 }}
             />
         </PageContainer>
