@@ -1,6 +1,7 @@
 import React from "react";
 import {DrawerForm, ProForm, ProFormSelect, ProFormText} from "@ant-design/pro-components";
 import {Button, Divider, Space} from "antd";
+import ProFormCode from "@/components/Form/ProFormCode";
 
 interface SettingPanelProps {
     visible: boolean;
@@ -110,30 +111,29 @@ const NodeSettingPanel: React.FC<SettingPanelProps> = (props) => {
                 节点配置
             </Divider>
 
-            <ProFormText
-                name={"outTrigger"}
-                label={"出口设置"}
-            />
-
-            <ProFormText
+            <ProFormCode
                 name={"outOperatorMatcher"}
                 label={"操作人员"}
+            />
+
+            <ProFormCode
+                name={"outTrigger"}
+                label={"出口设置"}
             />
 
             <Divider>
                 异常配置
             </Divider>
 
-            <ProFormText
-                name={"errorTrigger"}
-                label={"异常出口"}
-            />
-
-            <ProFormText
+            <ProFormCode
                 name={"errorOperatorMatcher"}
                 label={"异常操作人员"}
             />
 
+            <ProFormCode
+                name={"errorTrigger"}
+                label={"异常出口"}
+            />
 
         </DrawerForm>
     )

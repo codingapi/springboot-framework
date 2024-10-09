@@ -1,7 +1,7 @@
 import React, {Suspense, useState} from "react";
 import {Button, Col, Input, Row, Select, Space, Spin} from "antd";
 import ProFormCode from "@/components/Form/ProFormCode";
-import {PageContainer} from "@ant-design/pro-components";
+import {PageContainer, ProForm} from "@ant-design/pro-components";
 import loadComponent from "@/framework/DynamicLoad/DynamicCode";
 import {useRoutesContext} from "@/framework/Routes/RoutesProvider";
 
@@ -67,7 +67,6 @@ const Test1 = () => {
             title={"动态加载代码"}
             extra={(
                 <Space>
-
                     <Button
                         type={"primary"}
                         onClick={() => {
@@ -92,16 +91,18 @@ const Test1 = () => {
         >
             <Row>
                 <Col span={12}>
-                    <ProFormCode
-                        value={code}
-                        style={{
-                            height: 500,
-                        }}
-                        language={"javascript"}
-                        onChange={(value) => {
-                            setCode(value);
-                        }}
-                    />
+                    <ProForm
+                        submitter={false}
+                    >
+                        <ProFormCode
+                            name={"code"}
+                            codeEditorProps={{
+                                style:{
+                                    height: 500
+                                }
+                            }}
+                        />
+                    </ProForm>
                 </Col>
                 <Col span={12}>
                     {RemoteTestComponent && (
