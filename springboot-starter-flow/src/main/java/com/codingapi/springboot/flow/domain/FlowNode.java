@@ -136,6 +136,17 @@ public class FlowNode {
     }
 
     /**
+     * 获取上一节点
+     * @return 上一节点
+     */
+    public FlowNode getPreNode() {
+        if (this.getParentCode() == null) {
+            return flowWork.getFlowNode(FlowNode.CODE_START);
+        }
+        return flowWork.getFlowNode(this.getParentCode());
+    }
+
+    /**
      * 匹配操作者
      *
      * @param operator 操作者
@@ -152,18 +163,20 @@ public class FlowNode {
      * 创建流程记录
      */
     public FlowRecord createRecord(long processId,
-                                   long parentId,
+                                   long preRecordId,
+                                   String preNodeCode,
                                    IBindData bindData,
                                    IFlowOperator operatorUser,
                                    IFlowOperator createOperatorUser) {
-        return createRecord(null,parentId, processId, bindData, operatorUser, createOperatorUser);
+        return createRecord(null,preRecordId,preNodeCode, processId, bindData, operatorUser, createOperatorUser);
     }
 
     /**
      * 创建流程记录
      */
     public FlowRecord createRecord(Opinion opinion,
-                                   long parentId,
+                                   long preRecordId,
+                                   String preNodeCode,
                                    long processId,
                                    IBindData bindData,
                                    IFlowOperator operatorUser,
@@ -172,7 +185,8 @@ public class FlowNode {
         record.bindData(bindData);
         record.setProcessId(processId);
         record.setNode(this);
-        record.setParentId(parentId);
+        record.setPreRecordId(preRecordId);
+        record.setPreNodeCode(preNodeCode);
         record.setWork(flowWork);
         record.setOpinion(opinion);
         record.setOperatorUser(operatorUser);

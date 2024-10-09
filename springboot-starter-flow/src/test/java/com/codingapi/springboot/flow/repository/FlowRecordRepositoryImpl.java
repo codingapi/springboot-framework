@@ -1,7 +1,6 @@
 package com.codingapi.springboot.flow.repository;
 
 import com.codingapi.springboot.flow.domain.FlowRecord;
-import com.codingapi.springboot.flow.repository.FlowRecordRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +42,7 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository {
 
     @Override
     public List<FlowRecord> findChildrenFlowRecordByParentId(long parentId) {
-        return records.stream().filter(flowRecord -> flowRecord.getParentId() == parentId).collect(Collectors.toList());
+        return records.stream().filter(flowRecord -> flowRecord.getPreRecordId() == parentId).collect(Collectors.toList());
     }
 
     @Override

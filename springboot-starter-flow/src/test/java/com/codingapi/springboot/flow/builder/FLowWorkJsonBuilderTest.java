@@ -14,7 +14,7 @@ public class FLowWorkJsonBuilderTest {
 
         JSONObject jsonObject = JSONObject.parseObject(json);
 
-        FlowWork flowWork =  FlowWorkJsonBuilder.Builder(null).build(jsonObject);
+        FlowWork flowWork =  FlowNodeCreator.Builder(null).create(jsonObject);
 
         assertEquals(3, flowWork.getNodes().size());
 

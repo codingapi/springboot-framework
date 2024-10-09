@@ -1,22 +1,19 @@
 package com.codingapi.example.flow;
 
+import com.alibaba.fastjson.JSONObject;
 import com.codingapi.example.domain.Leave;
 import com.codingapi.example.domain.User;
 import com.codingapi.example.gateway.PasswordEncoder;
 import com.codingapi.example.repository.UserRepository;
-import com.codingapi.springboot.flow.builder.FlowNodeFactory;
+import com.codingapi.springboot.flow.builder.FlowNodeCreator;
 import com.codingapi.springboot.flow.builder.FlowWorkBuilder;
+import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.FlowRecord;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.em.FlowStatus;
-import com.codingapi.springboot.flow.em.FlowType;
 import com.codingapi.springboot.flow.em.NodeStatus;
-import com.codingapi.springboot.flow.matcher.IOperatorMatcher;
-import com.codingapi.springboot.flow.matcher.ScriptOperatorMatcher;
 import com.codingapi.springboot.flow.repository.FlowRecordRepository;
-import com.codingapi.springboot.flow.trigger.IOutTrigger;
-import com.codingapi.springboot.flow.trigger.ScriptOutTrigger;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
@@ -48,55 +45,14 @@ public class FlowRunner implements ApplicationRunner {
         User boss = new User("boss",passwordEncoder);
         userRepository.save(boss);
 
-        IOperatorMatcher anyOperatorMatcher = new ScriptOperatorMatcher(
-                """
-                return [operator.getId()];
-                """);
-        IOperatorMatcher departOperatorMatcher = new ScriptOperatorMatcher("""
-                return [{departId}];
-                """.replaceAll("\\{departId}",String.valueOf(depart.getId())));
-
-        IOperatorMatcher bossOperatorMatcher = new ScriptOperatorMatcher("""
-                return [{bossId}];
-                """.replaceAll("\\{bossId}",String.valueOf(boss.getId())));
-
-        IOutTrigger userOutTrigger = new ScriptOutTrigger(
-                """
-                var leave = record.getBindData();
-                if (leave.getLeaveDays() >= 3) {
-                    return record.getNextNodeByCode("boss");
-                } else {
-                    return record.getNextNodeByCode("depart");
-                }
-                """);
-
-        IOutTrigger departOutTrigger = new ScriptOutTrigger(
-                """
-                return record.getNextNodeByCode("depart");
-                """
-        );
-
-        IOutTrigger bossOutTrigger = new ScriptOutTrigger(
-                """
-                if(record.getOpinion().isPass()){
-                    return record.getNextNodeByCode("over");
-                }else{
-                    return record.getPreNode();
-                }
-                """);
-
-        FlowWork flowWork = FlowWorkBuilder
-                .Builder(admin)
+        String schema = "{\"nodes\":[{\"id\":\"6fd8585a-2d74-4d82-a6bc-ff6b52a542fe\",\"type\":\"start-node\",\"x\":934,\"y\":183,\"properties\":{\"name\":\"开始节点\",\"code\":\"start\",\"type\":\"NO_SIGN\",\"view\":\"default\",\"outOperatorMatcher\":\" return [operator.getId()];\",\"outTrigger\":\"var leave = record.getBindData();\\nif (leave.getLeaveDays() >= 3) {\\n    return record.getNextNodeByCode(\\\"boss\\\");\\n} else {\\n    return record.getNextNodeByCode(\\\"depart\\\");\\n}\"}},{\"id\":\"45d491c6-e8cf-4658-b5fd-3daf70ec0bd5\",\"type\":\"node-node\",\"x\":668,\"y\":364,\"properties\":{\"name\":\"部门经理审批\",\"code\":\"depart\",\"type\":\"NO_SIGN\",\"view\":\"default\",\"outOperatorMatcher\":\"return [3];\",\"outTrigger\":\" return record.getNextNodeByCode(\\\"depart\\\");\",\"errTrigger\":\"\",\"errOperatorMatcher\":\"\"}},{\"id\":\"c429698f-f17a-472a-81f0-7b62e540463b\",\"type\":\"over-node\",\"x\":986,\"y\":669,\"properties\":{\"name\":\"结束节点\",\"code\":\"over\",\"type\":\"NO_SIGN\",\"view\":\"default\"}},{\"id\":\"30910885-3326-4156-9e29-3299e2c49190\",\"type\":\"node-node\",\"x\":965,\"y\":445,\"properties\":{\"name\":\"总经理审批\",\"code\":\"boss\",\"type\":\"NO_SIGN\",\"view\":\"default\",\"outOperatorMatcher\":\"return [4];\",\"outTrigger\":\"if(record.getOpinion().isPass()){\\n    return record.getNextNodeByCode(\\\"over\\\");\\n}else{\\n    return record.getPreNode();\\n}\",\"errTrigger\":\"\",\"errOperatorMatcher\":\"\"}}],\"edges\":[{\"id\":\"ce303095-00b4-42da-b9e4-19fcfd096c91\",\"type\":\"bezier\",\"properties\":{},\"sourceNodeId\":\"6fd8585a-2d74-4d82-a6bc-ff6b52a542fe\",\"targetNodeId\":\"45d491c6-e8cf-4658-b5fd-3daf70ec0bd5\",\"startPoint\":{\"x\":934,\"y\":205.5},\"endPoint\":{\"x\":668,\"y\":341.5},\"pointsList\":[{\"x\":934,\"y\":205.5},{\"x\":934,\"y\":305.5},{\"x\":668,\"y\":241.5},{\"x\":668,\"y\":341.5}]},{\"id\":\"d85b3419-a6ba-439d-a364-7d563877d786\",\"type\":\"bezier\",\"properties\":{},\"sourceNodeId\":\"6fd8585a-2d74-4d82-a6bc-ff6b52a542fe\",\"targetNodeId\":\"30910885-3326-4156-9e29-3299e2c49190\",\"startPoint\":{\"x\":934,\"y\":205.5},\"endPoint\":{\"x\":965,\"y\":422.5},\"pointsList\":[{\"x\":934,\"y\":205.5},{\"x\":934,\"y\":305.5},{\"x\":965,\"y\":322.5},{\"x\":965,\"y\":422.5}]},{\"id\":\"a2b3e4d8-924f-4187-a1f7-581421d05c8e\",\"type\":\"bezier\",\"properties\":{},\"sourceNodeId\":\"30910885-3326-4156-9e29-3299e2c49190\",\"targetNodeId\":\"c429698f-f17a-472a-81f0-7b62e540463b\",\"startPoint\":{\"x\":965,\"y\":467.5},\"endPoint\":{\"x\":986,\"y\":646.5},\"pointsList\":[{\"x\":965,\"y\":467.5},{\"x\":965,\"y\":567.5},{\"x\":986,\"y\":546.5},{\"x\":986,\"y\":646.5}]},{\"id\":\"1ae8f9a8-8146-4826-a27e-b721e875bc0e\",\"type\":\"bezier\",\"properties\":{},\"sourceNodeId\":\"45d491c6-e8cf-4658-b5fd-3daf70ec0bd5\",\"targetNodeId\":\"30910885-3326-4156-9e29-3299e2c49190\",\"startPoint\":{\"x\":768,\"y\":364},\"endPoint\":{\"x\":865,\"y\":445},\"pointsList\":[{\"x\":768,\"y\":364},{\"x\":868,\"y\":364},{\"x\":765,\"y\":445},{\"x\":865,\"y\":445}]}]}";
+        System.out.println(schema);
+        List<FlowNode> nodes  = FlowNodeCreator.Builder(admin).create(JSONObject.parseObject(schema));
+        FlowWork flowWork = FlowWorkBuilder.Builder(admin)
                 .title("请假流程")
                 .description("请假流程")
-                .nodes()
-                .node(FlowNodeFactory.Builder(admin).startNode("发起请假", anyOperatorMatcher, userOutTrigger))
-                .node(FlowNodeFactory.Builder(admin).node("部门经理审批", "depart", FlowType.NOT_SIGN, departOutTrigger, departOperatorMatcher))
-                .node(FlowNodeFactory.Builder(admin).node("总经理审批", "boss", FlowType.NOT_SIGN, bossOutTrigger, bossOperatorMatcher))
-                .node(FlowNodeFactory.Builder(admin).overNode("结束"))
-                .relations()
-                .relation("start", "depart", "boss", "over")
-                .relation("start", "boss", "over")
+                .schema(schema)
+                .nodes(nodes)
                 .build();
 
         // 创建请假数据
@@ -153,9 +109,10 @@ public class FlowRunner implements ApplicationRunner {
         // 用户重新提交
         Leave bindData = (Leave) userTodoRecord.getBindData();
         bindData.setEndDate("2020-01-04");
+        System.out.println(bindData.getLeaveDays());
         userTodoRecord.submit(Opinion.pass("好的，领导，我只请3天假"), bindData);
 
-        // 用户的待办列表
+        // 用户的已待列表
         userRecords = flowRecordRepository.findDoneFlowRecordByOperatorId(user.getId());
         assertEquals(2, userRecords.size());
 
@@ -178,7 +135,7 @@ public class FlowRunner implements ApplicationRunner {
 
     private void assertEquals(Object value, Object targetValue) {
         if(value!=targetValue){
-            throw new RuntimeException("value:"+value+" targetValue:"+targetValue);
+            throw new RuntimeException("value:"+value+" ,targetValue:"+targetValue);
         }
     }
 }

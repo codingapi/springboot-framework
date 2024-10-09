@@ -3,7 +3,6 @@ package com.codingapi.springboot.flow.builder;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.springboot.flow.domain.FlowNode;
-import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.em.FlowType;
 import com.codingapi.springboot.flow.matcher.ScriptOperatorMatcher;
 import com.codingapi.springboot.flow.operator.IFlowOperator;
@@ -15,44 +14,23 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FlowWorkJsonBuilder {
+public class FlowNodeCreator {
 
-    private final FlowWork flowWork = new FlowWork();
+    private final IFlowOperator operator;
 
-    private FlowWorkJsonBuilder(IFlowOperator createOperator) {
-        flowWork.setEnable(true);
-        flowWork.setLock(false);
-        flowWork.setCreateUser(createOperator);
-        flowWork.setCreateTime(System.currentTimeMillis());
+    private FlowNodeCreator(IFlowOperator operator) {
+        this.operator = operator;
     }
 
-    public static FlowWorkJsonBuilder Builder(IFlowOperator createOperator) {
-        return new FlowWorkJsonBuilder(createOperator);
+    public static FlowNodeCreator Builder(IFlowOperator createOperator) {
+        return new FlowNodeCreator(createOperator);
     }
 
-
-    public FlowWork build(JSONObject jsonObject) {
-        WorkBuilder workBuilder = new WorkBuilder(jsonObject);
-        flowWork.setTitle(workBuilder.getTitle());
-        flowWork.setDescription(workBuilder.getDescription());
-        flowWork.setSchema(jsonObject.toJSONString());
+    public List<FlowNode> create(JSONObject jsonObject) {
         NodeBuilder nodeBuilder = new NodeBuilder(jsonObject);
-        flowWork.setNodes(nodeBuilder.getNodes());
-        flowWork.setUpdateTime(System.currentTimeMillis());
-        return flowWork;
+        return nodeBuilder.getNodes();
     }
 
-
-    private record WorkBuilder(JSONObject jsonObject) {
-
-        public String getTitle() {
-            return jsonObject.getString("title");
-        }
-
-        public String getDescription() {
-            return jsonObject.getString("description");
-        }
-    }
 
     private final class NodeBuilder {
         private final JSONObject jsonObject;
@@ -110,7 +88,7 @@ public class FlowWorkJsonBuilder {
                 String outOperatorMatcher = properties.getString("outOperatorMatcher");
                 String errOperatorMatcher = properties.getString("errOperatorMatcher");
 
-                FlowNode flowNode = FlowNodeFactory.Builder(flowWork.getCreateUser())
+                FlowNode flowNode = FlowNodeFactory.Builder(operator)
                         .node(id, name, code, view, FlowType.parser(type),
                                 StringUtils.isBlank(outTrigger) ? null : new ScriptOutTrigger(outTrigger),
                                 StringUtils.isBlank(outOperatorMatcher) ? null : new ScriptOperatorMatcher(outOperatorMatcher),

@@ -30,7 +30,12 @@ public class FlowRecordEntity {
     /**
      * 父节点id
      */
-    private long parentId;
+    private long preRecordId;
+
+    /**
+     * 上一个节点编码
+     */
+    private String preNodeCode;
 
     /**
      * 节点

@@ -23,7 +23,8 @@ public class FlowRecordConvertor {
         flowRecord.setErrMessage(entity.getErrMessage());
         flowRecord.setNodeStatus(entity.getNodeStatus());
         flowRecord.setOpinion(JSONObject.parseObject(entity.getOpinion(), Opinion.class));
-        flowRecord.setParentId(entity.getParentId());
+        flowRecord.setPreRecordId(entity.getPreRecordId());
+        flowRecord.setPreNodeCode(entity.getPreNodeCode());
         flowRecord.setTitle(entity.getTitle());
         flowRecord.setState(entity.getState());
         flowRecord.setWork(FlowRepositoryContext.getInstance().getFlowWorkById(entity.getWorkId()));
@@ -51,7 +52,8 @@ public class FlowRecordConvertor {
         entity.setErrMessage(flowRecord.getErrMessage());
         entity.setNodeStatus(flowRecord.getNodeStatus());
         entity.setOpinion(JSONObject.toJSONString(flowRecord.getOpinion()));
-        entity.setParentId(flowRecord.getParentId());
+        entity.setPreRecordId(flowRecord.getPreRecordId());
+        entity.setPreNodeCode(flowRecord.getPreNodeCode());
         entity.setTitle(flowRecord.getTitle());
         entity.setState(flowRecord.getState());
         entity.setWorkId(flowRecord.getWork().getId());

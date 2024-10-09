@@ -38,6 +38,11 @@ public class FlowWorkBuilder {
         return new FlowNodeBuilder();
     }
 
+    public Relations nodes(List<FlowNode> nodes) {
+        nodes.forEach(flowNode -> flowNode.setFlowWork(flowWork));
+        return new Relations(nodes);
+    }
+
     public FlowWorkBuilder schema(String schema) {
         flowWork.setSchema(schema);
         return this;
@@ -53,10 +58,6 @@ public class FlowWorkBuilder {
         return this;
     }
 
-    public FlowWork build() {
-        flowWork.setUpdateTime(System.currentTimeMillis());
-        return flowWork;
-    }
 
     public class Relations{
         private final List<FlowNode> list;
@@ -75,7 +76,6 @@ public class FlowWorkBuilder {
             if(flowNode==null){
                 throw new RuntimeException("start node not found");
             }
-            list.add(flowNode);
             FlowRepositoryContext.getInstance().save(flowWork);
             list.forEach(FlowRepositoryContext.getInstance()::save);
             flowWork.setNodes(list);

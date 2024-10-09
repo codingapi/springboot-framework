@@ -35,8 +35,8 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository {
     }
 
     @Override
-    public List<FlowRecord> findChildrenFlowRecordByParentId(long parentId) {
-        return flowRecordEntityRepository.findFlowRecordEntityByParentId(parentId)
+    public List<FlowRecord> findChildrenFlowRecordByParentId(long preRecordId) {
+        return flowRecordEntityRepository.findFlowRecordEntityByPreRecordId(preRecordId)
                 .stream().map(FlowRecordConvertor::convert).toList();
     }
 

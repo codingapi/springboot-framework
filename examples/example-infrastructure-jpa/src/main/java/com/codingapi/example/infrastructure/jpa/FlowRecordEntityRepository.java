@@ -10,7 +10,7 @@ public interface FlowRecordEntityRepository extends FastRepository<FlowRecordEnt
 
     FlowRecordEntity getFlowRecordEntityById(long id);
 
-    List<FlowRecordEntity> findFlowRecordEntityByParentId(long parentId);
+    List<FlowRecordEntity> findFlowRecordEntityByPreRecordId(long preRecordId);
 
     List<FlowRecordEntity> findFlowRecordEntityByProcessId(long processId);
 

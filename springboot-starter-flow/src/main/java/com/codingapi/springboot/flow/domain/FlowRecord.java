@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -46,7 +47,12 @@ public class FlowRecord {
     /**
      * 父节点id
      */
-    private long parentId;
+    private long preRecordId;
+
+    /**
+     * 上一个节点编码
+     */
+    private String preNodeCode;
 
     /**
      * 节点
@@ -164,9 +170,7 @@ public class FlowRecord {
         FlowRepositoryContext.getInstance().save(this);
     }
 
-    public List<FlowRecord> loadCurrentNodeRecords() {
-        return FlowRepositoryContext.getInstance().findChildrenFlowRecordByParentId(parentId);
-    }
+
 
     /**
      * 提交流程
@@ -184,8 +188,8 @@ public class FlowRecord {
 
         // 会签的情况下要根据所有的审批情况来判断是否进入下一个节点
         if (this.isSign()) {
-            // 当前节点的审批情况
-            List<FlowRecord> records = this.loadCurrentNodeRecords();
+            // 当前的审批情况
+            List<FlowRecord> records = FlowRepositoryContext.getInstance().findChildrenFlowRecordByParentId(preRecordId);
             for (FlowRecord record : records) {
                 if (record.isTodo()) {
                     return;
@@ -197,7 +201,7 @@ public class FlowRecord {
         if (nextNode != null) {
             // 是否为结束节点
             if (nextNode.isOver()) {
-                FlowRecord nextRecord = nextNode.createRecord(processId, id, bindData, operatorUser, createOperatorUser);
+                FlowRecord nextRecord = nextNode.createRecord(processId, id, node.getCode(), bindData, operatorUser, createOperatorUser);
                 nextRecord.setNodeStatus(NodeStatus.DONE);
                 nextRecord.setFlowStatus(FlowStatus.FINISH);
 
@@ -212,9 +216,9 @@ public class FlowRecord {
                 EventPusher.push(new FlowRecordEvent(nextRecord));
             } else {
                 // 退回上一节点的情况
-                if (nextNode.isCode(node.getParentCode())) {
-                    IFlowOperator preOperator = FlowRepositoryContext.getInstance().getFlowRecordById(parentId).getOperatorUser();
-                    FlowRecord nextRecord = nextNode.createRecord(processId, id, bindData, preOperator, createOperatorUser);
+                if (nextNode.isCode(preNodeCode)) {
+                    IFlowOperator preOperator = FlowRepositoryContext.getInstance().getFlowRecordById(preRecordId).getOperatorUser();
+                    FlowRecord nextRecord = nextNode.createRecord(processId, id, node.getCode(), bindData, preOperator, createOperatorUser);
                     FlowRepositoryContext.getInstance().save(nextRecord);
                 } else {
                     // 获取下一个节点的操作者
@@ -235,7 +239,7 @@ public class FlowRecord {
                     }
                     // 创建下一个节点的记录
                     for (IFlowOperator operator : operators) {
-                        FlowRecord nextRecord = nextNode.createRecord(processId, id, bindData, operator, createOperatorUser);
+                        FlowRecord nextRecord = nextNode.createRecord(processId, id, node.getCode(), bindData, operator, createOperatorUser);
                         FlowRepositoryContext.getInstance().save(nextRecord);
                     }
                 }
@@ -250,13 +254,13 @@ public class FlowRecord {
     }
 
     /**
-     * 获取上一个节点
+     * 获取上一次审批的节点
      */
     public FlowNode getPreNode() {
-        if (node.getParentCode() == null) {
-            return work.getFlowNode(FlowNode.CODE_START);
+        if (StringUtils.hasLength(preNodeCode)) {
+            return work.getFlowNode(preNodeCode);
         }
-        return work.getFlowNode(node.getParentCode());
+        return null;
     }
 
     /**

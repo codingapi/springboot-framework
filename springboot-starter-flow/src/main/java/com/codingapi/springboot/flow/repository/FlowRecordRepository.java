@@ -21,11 +21,11 @@ public interface FlowRecordRepository {
 
 
     /**
-     * 根据父节点id查询子节点
-     * @param parentId 父节点id
+     * 根据上一节查询下一节点的审批列表
+     * @param preRecordId 上一节点的id
      * @return 子节点
      */
-    List<FlowRecord> findChildrenFlowRecordByParentId(long parentId);
+    List<FlowRecord> findChildrenFlowRecordByParentId(long preRecordId);
 
 
     /**

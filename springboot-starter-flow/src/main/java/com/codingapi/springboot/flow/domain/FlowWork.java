@@ -1,7 +1,7 @@
 package com.codingapi.springboot.flow.domain;
 
 import com.alibaba.fastjson.JSONObject;
-import com.codingapi.springboot.flow.builder.FlowWorkJsonBuilder;
+import com.codingapi.springboot.flow.builder.FlowNodeCreator;
 import com.codingapi.springboot.flow.context.FlowRepositoryContext;
 import com.codingapi.springboot.flow.data.IBindData;
 import com.codingapi.springboot.flow.operator.IFlowOperator;
@@ -62,14 +62,17 @@ public class FlowWork {
      */
     private String schema;
 
+    /**
+     * 重新加载流程设计
+     * @param schema 流程设计脚本
+     */
     public void reloadScheme(String schema) {
         if(StringUtils.isEmpty(schema)){
             return;
         }
         JSONObject jsonObject = JSONObject.parseObject(schema);
-        FlowWork buildFlow = FlowWorkJsonBuilder.Builder(createUser).build(jsonObject);
         this.schema = schema;
-        this.nodes = buildFlow.getNodes();
+        this.nodes = FlowNodeCreator.Builder(createUser).create(jsonObject);
     }
 
     public FlowNode startNode() {
@@ -96,7 +99,7 @@ public class FlowWork {
         FlowNode startNode = startNode();
         startNode.verifyOperator(operatorUser);
         long processId = System.currentTimeMillis();
-        FlowRecord record = startNode.createRecord(processId, 0, bindData, operatorUser, operatorUser);
+        FlowRecord record = startNode.createRecord(processId, 0,null, bindData, operatorUser, operatorUser);
         record.submit(null, bindData);
     }
 

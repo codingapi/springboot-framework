@@ -75,8 +75,8 @@ public class FlowRepositoryContext {
         return flowRecordRepository.findAllFlowRecordByProcessId(processId);
     }
 
-    public List<FlowRecord> findChildrenFlowRecordByParentId(long parentId) {
-        return flowRecordRepository.findChildrenFlowRecordByParentId(parentId);
+    public List<FlowRecord> findChildrenFlowRecordByParentId(long preRecordId) {
+        return flowRecordRepository.findChildrenFlowRecordByParentId(preRecordId);
     }
 
     public void delete(FlowRecord flowRecord) {
