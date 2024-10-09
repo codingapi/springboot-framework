@@ -1,8 +1,11 @@
 package com.codingapi.springboot.flow.domain;
 
+import com.alibaba.fastjson.JSONObject;
+import com.codingapi.springboot.flow.builder.FlowWorkJsonBuilder;
 import com.codingapi.springboot.flow.context.FlowRepositoryContext;
 import com.codingapi.springboot.flow.data.IBindData;
 import com.codingapi.springboot.flow.operator.IFlowOperator;
+import io.micrometer.common.util.StringUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +61,16 @@ public class FlowWork {
      * 界面设计脚本
      */
     private String schema;
+
+    public void reloadScheme(String schema) {
+        if(StringUtils.isEmpty(schema)){
+            return;
+        }
+        JSONObject jsonObject = JSONObject.parseObject(schema);
+        FlowWork buildFlow = FlowWorkJsonBuilder.Builder(createUser).build(jsonObject);
+        this.schema = schema;
+        this.nodes = buildFlow.getNodes();
+    }
 
     public FlowNode startNode() {
         return getFlowNode(FlowNode.CODE_START);

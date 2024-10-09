@@ -31,7 +31,7 @@ public class FlowController {
     @PostMapping("/schema")
     public Response schema(@RequestBody FlowRequest.SchemaRequest request) {
         FlowWork flowWork = flowWorkRepository.getFlowWorkById(request.getId());
-        flowWork.setSchema(request.getSchema());
+        flowWork.reloadScheme(request.getSchema());
         flowWorkRepository.save(flowWork);
         return Response.buildSuccess();
     }
@@ -39,9 +39,9 @@ public class FlowController {
     @PostMapping("/save")
     public Response save(@RequestBody FlowRequest.BuildRequest request) {
         FlowWork flowWork = flowWorkRepository.getFlowWorkById(request.getId());
-        long operatorId =userRepository.getUserByUsername(TokenContext.current().getUsername()).getId();
+        long operatorId = userRepository.getUserByUsername(TokenContext.current().getUsername()).getId();
         IFlowOperator operator = FlowRepositoryContext.getInstance().getOperatorById(operatorId);
-        if(flowWork == null){
+        if (flowWork == null) {
             flowWork = new FlowWork();
             flowWork.setEnable(true);
             flowWork.setLock(false);
@@ -57,7 +57,7 @@ public class FlowController {
     @PostMapping("/create")
     public Response create(@RequestBody FlowRequest.CreateRequest createRequest) {
         FlowWork flowWork = flowWorkRepository.getFlowWorkById(createRequest.getFlowWorkId());
-        long operatorId =userRepository.getUserByUsername(TokenContext.current().getUsername()).getId();
+        long operatorId = userRepository.getUserByUsername(TokenContext.current().getUsername()).getId();
         IFlowOperator operator = FlowRepositoryContext.getInstance().getOperatorById(operatorId);
         flowWork.createNode(createRequest.getLeave(), operator);
         return Response.buildSuccess();

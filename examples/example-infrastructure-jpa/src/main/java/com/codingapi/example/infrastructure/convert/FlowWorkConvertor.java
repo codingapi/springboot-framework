@@ -27,7 +27,7 @@ public class FlowWorkConvertor {
         flowWork.setLock(entity.isLock());
         flowWork.setDescription(entity.getDescription());
         flowWork.setTitle(entity.getTitle());
-        flowWork.setSchema(entity.getSchema());
+        flowWork.reloadScheme(entity.getSchema());
 
         current.set(flowWork);
 

@@ -16,6 +16,12 @@ export const menus = [
         page: 'welcome',
     },
     {
+        path: '/user',
+        name: '用户列表',
+        icon: "UserOutlined",
+        page: 'user',
+    },
+    {
         path: '/jar',
         name: '权限',
         icon: "SmileOutlined",
