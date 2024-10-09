@@ -5,13 +5,17 @@ import "./index.scss";
 import {PlayCircleFilled, SettingFilled} from "@ant-design/icons";
 import StartSettingPanel from "@/components/Flow/panel/start";
 
-type StartProperties = {
+type StartProperties ={
     name: string;
     code: string;
+    view: string;
+    outTrigger:string;
+    outOperatorMatcher:string;
 }
 
 interface StartProps {
     name: string;
+    code?: string;
     settingVisible?: boolean;
     update?: (values: any) => void;
     properties?: StartProperties;
@@ -25,9 +29,14 @@ export const StartView: React.FC<StartProps> = (props) => {
             <PlayCircleFilled
                 className={"icon"}
             />
-            <span
-                className={"title"}
-            >{props.name}</span>
+            <div>
+                <span className={"code"}>
+                    {props.code && (
+                        <> ({props.code})</>
+                    )}
+                </span>
+                <span className={"title"}>{props.name}</span>
+            </div>
             {props.settingVisible && (
                 <SettingFilled
                     className={"setting"}
@@ -73,6 +82,7 @@ class StartNode extends HtmlNode {
         ReactDOM.createRoot(div).render(
             <StartView
                 name={properties.name}
+                code={properties.code}
                 properties={properties}
                 settingVisible={true}
                 update={async (values) => {

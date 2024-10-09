@@ -51,6 +51,7 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.17.7",
+    "@types/lodash-es": "^4.17.12",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^12.0.2",
     "css-loader": "^7.1.2",

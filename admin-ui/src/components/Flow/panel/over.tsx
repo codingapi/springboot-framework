@@ -54,6 +54,17 @@ const OverSettingPanel: React.FC<SettingPanelProps> = (props) => {
                 基本信息
             </Divider>
             <ProFormText
+                name={"name"}
+                label={"节点名称"}
+                rules={[
+                    {
+                        required: true,
+                        message: "请输入节点名称"
+                    }
+                ]}
+            />
+
+            <ProFormText
                 name={"code"}
                 label={"节点编码"}
                 disabled={true}
@@ -61,17 +72,6 @@ const OverSettingPanel: React.FC<SettingPanelProps> = (props) => {
                     {
                         required: true,
                         message: "请输入节点编码"
-                    }
-                ]}
-            />
-
-            <ProFormText
-                name={"name"}
-                label={"节点名称"}
-                rules={[
-                    {
-                        required: true,
-                        message: "请输入节点名称"
                     }
                 ]}
             />

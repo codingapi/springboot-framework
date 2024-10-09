@@ -54,6 +54,17 @@ const NodeSettingPanel: React.FC<SettingPanelProps> = (props) => {
                 基本信息
             </Divider>
             <ProFormText
+                name={"name"}
+                label={"节点名称"}
+                rules={[
+                    {
+                        required: true,
+                        message: "请输入节点名称"
+                    }
+                ]}
+            />
+
+            <ProFormText
                 name={"code"}
                 label={"节点编码"}
                 rules={[
@@ -74,17 +85,6 @@ const NodeSettingPanel: React.FC<SettingPanelProps> = (props) => {
                 ]}
             />
 
-
-            <ProFormText
-                name={"name"}
-                label={"节点名称"}
-                rules={[
-                    {
-                        required: true,
-                        message: "请输入节点名称"
-                    }
-                ]}
-            />
             <ProFormSelect
                 name={"type"}
                 label={"节点类型"}

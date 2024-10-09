@@ -11,6 +11,7 @@ import Over from "@/components/Flow/nodes/Over";
 import ControlPanel from "@/components/Flow/layout/ControlPanel";
 import NodePanel from "@/components/Flow/layout/NodePanel";
 import {message} from "antd";
+import {copy} from "@/components/Flow/panel/shortcuts";
 
 export interface FlowActionType {
     getData:()=>any;
@@ -22,8 +23,8 @@ interface FlowProps {
 }
 
 const Flow: React.FC<FlowProps> = (props) => {
-    const container = useRef<HTMLDivElement | null>(null);
-    const lfRef = useRef<LogicFlow | null>(null);
+    const container = useRef<HTMLDivElement>(null);
+    const lfRef = useRef<LogicFlow>(null);
     const [mapVisible, setMapVisible] = React.useState(false);
 
     if(props.actionRef){
@@ -37,11 +38,13 @@ const Flow: React.FC<FlowProps> = (props) => {
     const data = props?.data || {};
     useEffect(() => {
         const SilentConfig = {
+            isSilentMode: false,
             stopScrollGraph: true,
             stopMoveGraph: true,
             stopZoomGraph: true,
         };
 
+        //@ts-ignore
         lfRef.current = new LogicFlow({
             //@ts-ignore
             container: container.current,
@@ -53,6 +56,15 @@ const Flow: React.FC<FlowProps> = (props) => {
             grid: false,
             keyboard:{
                 enabled: true,
+                shortcuts: [
+                    {
+                        keys: ['ctrl + v', 'cmd + v'],
+                        callback: () => {
+                            // @ts-ignore
+                            return copy(lfRef.current);
+                        }
+                    }
+                ]
             },
             edgeType: 'bezier',
         });
@@ -68,6 +80,10 @@ const Flow: React.FC<FlowProps> = (props) => {
         lfRef.current.register(Over);
 
         lfRef.current.render(data);
+
+        lfRef.current.on('node:add', (data) => {
+            console.log('node:add', data);
+        });
 
     }, []);
 

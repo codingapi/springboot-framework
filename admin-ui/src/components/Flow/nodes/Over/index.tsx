@@ -8,9 +8,12 @@ import OverSettingPanel from "@/components/Flow/panel/over";
 type OverProperties = {
     name: string;
     code: string;
+    view: string;
 }
-interface OverProps{
+
+interface OverProps {
     name: string;
+    code?: string;
     update?: (values: any) => void;
     settingVisible?: boolean;
     properties?: OverProperties;
@@ -24,9 +27,14 @@ export const OverView: React.FC<OverProps> = (props) => {
             <CheckCircleFilled
                 className={"icon"}
             />
-            <span
-                className={"title"}
-            >{props.name}</span>
+            <div>
+                <span className={"code"}>
+                    {props.code && (
+                        <> ({props.code})</>
+                    )}
+                </span>
+                <span className={"title"}>{props.name}</span>
+            </div>
             {props.settingVisible && (
                 <SettingFilled
                     className={"setting"}
@@ -58,7 +66,7 @@ class OverModel extends HtmlNodeModel {
         this.sourceRules = [
             {
                 message: `不允许输出`,
-                validate: (sourceNode, targetNode:any, sourceAnchor, targetAnchor) => {
+                validate: (sourceNode, targetNode: any, sourceAnchor, targetAnchor) => {
                     const edges = this.graphModel.getNodeIncomingEdge(targetNode.id);
                     if (edges.length >= 0) {
                         return false;
@@ -87,6 +95,7 @@ class OverNode extends HtmlNode {
         ReactDOM.createRoot(div).render(
             <OverView
                 name={properties.name}
+                code={properties.code}
                 properties={properties}
                 settingVisible={true}
                 update={async (values) => {
@@ -100,7 +109,7 @@ class OverNode extends HtmlNode {
     }
 }
 
-export default  {
+export default {
     type: 'over-node',
     view: OverNode,
     model: OverModel,

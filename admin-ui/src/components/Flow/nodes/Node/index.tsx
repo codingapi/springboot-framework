@@ -8,10 +8,18 @@ import NodeSettingPanel from "@/components/Flow/panel/node";
 type NodeProperties = {
     name: string;
     code: string;
+    view: string;
+    type: string;
+
+    outOperatorMatcher: string;
+    outTrigger: string;
+    errTrigger: string;
+    errOperatorMatcher: string;
 }
 
 interface NodeProps {
     name: string;
+    code?: string;
     update?: (values: any) => void;
     settingVisible?: boolean;
     properties?: NodeProperties;
@@ -25,9 +33,14 @@ export const NodeView: React.FC<NodeProps> = (props) => {
             <PlusCircleFilled
                 className={"icon"}
             />
-            <span
-                className={"title"}
-            >{props.name}</span>
+            <div>
+                <span className={"code"}>
+                    {props.code && (
+                        <> ({props.code})</>
+                    )}
+                </span>
+                <span className={"title"}>{props.name}</span>
+            </div>
 
             {props.settingVisible && (
                 <SettingFilled
@@ -75,6 +88,7 @@ class NodeNode extends HtmlNode {
         ReactDOM.createRoot(div).render(
             <NodeView
                 name={properties.name}
+                code={properties.code}
                 properties={properties}
                 settingVisible={true}
                 update={async (values) => {
