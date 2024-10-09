@@ -6,6 +6,7 @@ import com.codingapi.springboot.fast.manager.EntityManagerContent;
 import com.codingapi.springboot.flow.context.FlowRepositoryContext;
 import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.FlowWork;
+import org.springframework.util.StringUtils;
 
 import java.util.stream.Collectors;
 
@@ -30,12 +31,14 @@ public class FlowWorkConvertor {
 
         current.set(flowWork);
 
-        flowWork.setNodes(
-                ConvertUtils.string2List(entity.getNodeIds())
-                        .stream()
-                        .map(FlowRepositoryContext.getInstance()::getFlowNodeById)
-                        .toList()
-        );
+        if(StringUtils.hasLength(entity.getNodeIds())) {
+            flowWork.setNodes(
+                    ConvertUtils.string2List(entity.getNodeIds())
+                            .stream()
+                            .map(FlowRepositoryContext.getInstance()::getFlowNodeById)
+                            .toList()
+            );
+        }
 
         EntityManagerContent.getInstance().detach(entity);
         return flowWork;

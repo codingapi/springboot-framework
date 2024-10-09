@@ -24,4 +24,7 @@ export async function create(body: any) {
     return post('/api/flow/create', body);
 }
 
+export async function save(body: any) {
+    return post('/api/flow/save', body);
+}
 
