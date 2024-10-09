@@ -40,7 +40,7 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                             {
                                 name: '流程节点',
                                 code: 'flow',
-                                flowType:'SIGN',
+                                type:'SIGN',
                                 view:'default',
 
                                 outOperatorMatcher: '',

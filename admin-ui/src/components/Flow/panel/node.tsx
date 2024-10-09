@@ -113,23 +113,11 @@ const NodeSettingPanel: React.FC<SettingPanelProps> = (props) => {
             <ProFormText
                 name={"outTrigger"}
                 label={"出口设置"}
-                rules={[
-                    {
-                        required: true,
-                        message: "请输入节点出口"
-                    }
-                ]}
             />
 
             <ProFormText
                 name={"outOperatorMatcher"}
                 label={"操作人员"}
-                rules={[
-                    {
-                        required: true,
-                        message: "请输入操作人员"
-                    }
-                ]}
             />
 
             <Divider>
