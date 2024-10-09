@@ -18,4 +18,6 @@ public interface FlowRecordEntityRepository extends FastRepository<FlowRecordEnt
 
     List<FlowRecordEntity> findFlowRecordEntityByOperatorUserIdAndNodeStatus(long operatorUserId, NodeStatus nodeStatus);
 
+    List<FlowRecordEntity> findFlowRecordEntityByOperatorUserIdAndPreRecordId(long operatorUserId,long preRecordId);
+
 }

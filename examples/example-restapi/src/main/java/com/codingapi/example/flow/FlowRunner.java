@@ -56,7 +56,8 @@ public class FlowRunner implements ApplicationRunner {
                 .build();
 
         // 创建请假数据
-        Leave leave = new Leave(1, "desc", user, 1, "2020-01-01", "2020-01-05");
+        Leave leave = new Leave(1,
+                "desc", user, 1, "2020-01-01", "2020-01-05");
         log.info("leave days:{}", leave.getLeaveDays());
         // 发起请假流程
         flowWork.createNode(leave, user);

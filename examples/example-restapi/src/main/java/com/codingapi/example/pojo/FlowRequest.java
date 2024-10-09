@@ -1,6 +1,5 @@
 package com.codingapi.example.pojo;
 
-import com.codingapi.example.domain.Leave;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,10 +8,13 @@ public class FlowRequest {
 
     @Setter
     @Getter
-    public static class CreateRequest{
+    public static class CreateRequest {
         private long flowWorkId;
-        private Leave leave;
+        private String desc;
+        private String startDate;
+        private String endDate;
     }
+
 
     @Setter
     @Getter

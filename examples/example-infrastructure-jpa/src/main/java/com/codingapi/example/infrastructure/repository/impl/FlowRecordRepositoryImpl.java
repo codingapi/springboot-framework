@@ -47,6 +47,12 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository {
     }
 
     @Override
+    public List<FlowRecord> findCreateFlowRecordByOperatorId(long operatorId) {
+        return  flowRecordEntityRepository.findFlowRecordEntityByOperatorUserIdAndPreRecordId(operatorId,0)
+                .stream().map(FlowRecordConvertor::convert).toList();
+    }
+
+    @Override
     public List<FlowRecord> findTodoFlowRecordByOperatorId(long operatorId) {
         return flowRecordEntityRepository.findFlowRecordEntityByOperatorUserIdAndNodeStatus(operatorId, NodeStatus.TODO)
                 .stream().map(FlowRecordConvertor::convert).toList();

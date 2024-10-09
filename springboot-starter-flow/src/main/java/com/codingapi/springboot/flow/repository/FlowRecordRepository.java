@@ -37,6 +37,14 @@ public interface FlowRecordRepository {
     List<FlowRecord> findAllFlowRecordByOperatorId(long operatorId);
 
     /**
+     * 查询用户下的发起的流程记录
+     *
+     * @param operatorId 用户id
+     * @return 流程记录
+     */
+    List<FlowRecord> findCreateFlowRecordByOperatorId(long operatorId);
+
+    /**
      * 查询用户下的待办流程记录
      *
      * @param operatorId 用户id

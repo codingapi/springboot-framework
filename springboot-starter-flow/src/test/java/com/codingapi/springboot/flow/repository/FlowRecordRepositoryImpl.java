@@ -31,6 +31,11 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository {
     }
 
     @Override
+    public List<FlowRecord> findCreateFlowRecordByOperatorId(long operatorId) {
+        return records.stream().filter(flowRecord -> flowRecord.getOperatorUser().getId() == operatorId && flowRecord.getPreRecordId()==0).collect(Collectors.toList());
+    }
+
+    @Override
     public List<FlowRecord> findTodoFlowRecordByOperatorId(long operatorId) {
         return records.stream().filter(flowRecord -> flowRecord.getOperatorUser().getId() == operatorId && flowRecord.isTodo() && !flowRecord.isFinish()).collect(Collectors.toList());
     }

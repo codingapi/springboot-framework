@@ -139,6 +139,7 @@ public class FlowNode {
      * 获取上一节点
      * @return 上一节点
      */
+    @JsonIgnore
     public FlowNode getPreNode() {
         if (this.getParentCode() == null) {
             return flowWork.getFlowNode(FlowNode.CODE_START);
@@ -211,6 +212,11 @@ public class FlowNode {
         return this.titleCreator.createTitle(record);
     }
 
+    /**
+     * 触发下一个节点
+     * @param record 流程记录
+     * @return 下一个节点
+     */
     public FlowNode triggerNextNode(FlowRecord record) {
         if (outTrigger != null) {
             return outTrigger.trigger(record);
@@ -218,6 +224,11 @@ public class FlowNode {
         return null;
     }
 
+    /**
+     * 触发异常节点
+     * @param record 流程记录
+     * @return 异常节点
+     */
     public FlowNode triggerErrorNode(FlowRecord record) {
         if (errTrigger != null) {
             return errTrigger.trigger(record);

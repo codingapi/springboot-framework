@@ -1,6 +1,10 @@
 package com.codingapi.example.controller;
 
+import com.codingapi.example.domain.Leave;
+import com.codingapi.example.domain.User;
+import com.codingapi.example.infrastructure.jpa.LeaveEntityRepository;
 import com.codingapi.example.pojo.FlowRequest;
+import com.codingapi.example.repository.LeaveRepository;
 import com.codingapi.example.repository.UserRepository;
 import com.codingapi.springboot.flow.context.FlowRepositoryContext;
 import com.codingapi.springboot.flow.domain.FlowWork;
@@ -22,6 +26,7 @@ public class FlowController {
 
     private final FlowWorkRepository flowWorkRepository;
     private final UserRepository userRepository;
+    private final LeaveRepository leaveRepository;
 
     @GetMapping("/list")
     public MultiResponse<FlowWork> list(SearchRequest request) {
@@ -59,7 +64,16 @@ public class FlowController {
         FlowWork flowWork = flowWorkRepository.getFlowWorkById(createRequest.getFlowWorkId());
         long operatorId = userRepository.getUserByUsername(TokenContext.current().getUsername()).getId();
         IFlowOperator operator = FlowRepositoryContext.getInstance().getOperatorById(operatorId);
-        flowWork.createNode(createRequest.getLeave(), operator);
+
+        Leave leave = new Leave();
+        leave.setDesc(createRequest.getDesc());
+        leave.setStartDate(createRequest.getStartDate());
+        leave.setEndDate(createRequest.getEndDate());
+        leave.setCreateTime(System.currentTimeMillis());
+        leave.setUser((User) operator);
+
+        leaveRepository.save(leave);
+        flowWork.createNode(leave, operator);
         return Response.buildSuccess();
     }
 

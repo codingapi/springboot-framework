@@ -39,6 +39,12 @@ export const menus = [
                 page: 'flow/work',
             },
             {
+                path: '/flow/creator',
+                name: '发起流程',
+                icon: "SmileOutlined",
+                page: 'flow/creator',
+            },
+            {
                 path: '/flow/todo',
                 name: '我的待办',
                 icon: "SmileOutlined",

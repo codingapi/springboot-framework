@@ -31,6 +31,12 @@ public class ApprovalController {
         return MultiResponse.of(flowRecordRepository.findDoneFlowRecordByOperatorId(operatorId));
     }
 
+    @GetMapping("/creator")
+    public MultiResponse<FlowRecord> creator() {
+        long operatorId =userRepository.getUserByUsername(TokenContext.current().getUsername()).getId();
+        return MultiResponse.of(flowRecordRepository.findCreateFlowRecordByOperatorId(operatorId));
+    }
+
     @PostMapping("/submit")
     public Response submit(@RequestBody ApprovalRequest.SubmitRequest request) {
         FlowRecord flowRecord = flowRecordRepository.getFlowRecordById(request.getRecordId());
