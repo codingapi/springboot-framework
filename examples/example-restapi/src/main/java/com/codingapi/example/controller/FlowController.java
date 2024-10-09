@@ -28,6 +28,13 @@ public class FlowController {
         return MultiResponse.of(flowWorkRepository.list(request));
     }
 
+    @PostMapping("/schema")
+    public Response schema(@RequestBody FlowRequest.SchemaRequest request) {
+        FlowWork flowWork = flowWorkRepository.getFlowWorkById(request.getId());
+        flowWork.setSchema(request.getSchema());
+        flowWorkRepository.save(flowWork);
+        return Response.buildSuccess();
+    }
 
     @PostMapping("/save")
     public Response save(@RequestBody FlowRequest.BuildRequest request) {

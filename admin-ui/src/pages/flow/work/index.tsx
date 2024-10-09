@@ -1,7 +1,7 @@
 import React from "react";
 import Flow, {FlowActionType} from "@/components/Flow";
 import {ActionType, ModalForm, PageContainer, ProForm, ProFormText, ProTable} from "@ant-design/pro-components";
-import {list, save} from "@/api/flow";
+import {list, save, schema} from "@/api/flow";
 import {Button, Drawer, message, Popconfirm, Space} from "antd";
 
 const FlowPage = () => {
@@ -12,12 +12,24 @@ const FlowPage = () => {
     const [form] = ProForm.useForm();
     const actionRef = React.useRef<ActionType>();
 
-    const [schema,setSchema] = React.useState<any>(null);
+    const [current,setCurrent] = React.useState<any>(null);
 
 
     const handlerSave = async (values:any)=>{
         const res = await save(values);
         setEditorVisible(false);
+        if(res.success){
+            message.success("保存成功");
+        }
+        actionRef.current?.reload();
+    }
+
+    const handlerSchema = async (json:any)=>{
+        const res = await schema({
+            id:current.id,
+            schema:json
+        });
+        setVisible(false);
         if(res.success){
             message.success("保存成功");
         }
@@ -66,9 +78,9 @@ const FlowPage = () => {
                     编辑
                 </a>,
                 <a
-                    key="editable"
+                    key="design"
                     onClick={() => {
-                        setSchema(record.schema);
+                        setCurrent(record);
                         setVisible(true);
                     }}
                 >
@@ -158,8 +170,9 @@ const FlowPage = () => {
                 width={"100%"}
                 open={visible}
                 onClose={() => {
-                    setVisible(false)
+                    setVisible(false);
                 }}
+                destroyOnClose={true}
                 style={{
                     padding: 0,
                     margin: 0
@@ -169,10 +182,10 @@ const FlowPage = () => {
 
                         <Button
                             type={"primary"}
-                            onClick={() => {
+                            onClick={async () => {
                                 const data = flowActionType.current?.getData();
                                 const json = JSON.stringify(data);
-                                console.log(json);
+                                await handlerSchema(json);
                             }}
                         >
                             保存
@@ -189,7 +202,7 @@ const FlowPage = () => {
                 }
             >
                 <Flow
-                    data={schema}
+                    data={current?.schema?JSON.parse(current?.schema):null}
                     actionRef={flowActionType}
                 />
             </Drawer>

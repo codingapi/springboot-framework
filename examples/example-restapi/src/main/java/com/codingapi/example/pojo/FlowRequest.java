@@ -21,4 +21,11 @@ public class FlowRequest {
         private String title;
         private String description;
     }
+
+    @Setter
+    @Getter
+    public static class SchemaRequest {
+        private long id;
+        private String schema;
+    }
 }

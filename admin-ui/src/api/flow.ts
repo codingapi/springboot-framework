@@ -28,3 +28,7 @@ export async function save(body: any) {
     return post('/api/flow/save', body);
 }
 
+export async function schema(body: any) {
+    return post('/api/flow/schema', body);
+}
+
