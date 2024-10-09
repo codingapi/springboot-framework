@@ -12,17 +12,13 @@ public class FlowNodeRepositoryImpl implements FlowNodeRepository {
 
     @Override
     public void save(FlowNode flowNode) {
-        if(flowNode.getId()==0){
-            nodes.add(flowNode);
-            flowNode.setId(nodes.size());
-        }else {
-            flowNode.setUpdateTime(System.currentTimeMillis());
-        }
+        nodes.add(flowNode);
+        flowNode.setUpdateTime(System.currentTimeMillis());
     }
 
     @Override
-    public FlowNode getFlowNodeById(long id) {
-        return nodes.stream().filter(flowNode -> flowNode.getId() == id).findFirst().orElse(null);
+    public FlowNode getFlowNodeById(String id) {
+        return nodes.stream().filter(flowNode -> flowNode.getId() .equals(id)).findFirst().orElse(null);
     }
 
     @Override

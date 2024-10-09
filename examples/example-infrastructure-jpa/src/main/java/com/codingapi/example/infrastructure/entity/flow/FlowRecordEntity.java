@@ -35,7 +35,7 @@ public class FlowRecordEntity {
     /**
      * 节点
      */
-    private long nodeId;
+    private String nodeId;
     /**
      * 流程标题
      */

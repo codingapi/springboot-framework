@@ -8,6 +8,7 @@ import StartSettingPanel from "@/components/Flow/panel/start";
 type StartProperties ={
     name: string;
     code: string;
+    type: string;
     view: string;
     outTrigger:string;
     outOperatorMatcher:string;

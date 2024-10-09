@@ -15,8 +15,7 @@ public class FlowNodeEntity {
      * 节点id
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private String id;
 
     /**
      * 节点编码

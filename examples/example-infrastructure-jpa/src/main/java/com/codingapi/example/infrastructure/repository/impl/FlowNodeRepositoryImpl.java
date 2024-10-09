@@ -26,7 +26,7 @@ public class FlowNodeRepositoryImpl implements FlowNodeRepository {
     }
 
     @Override
-    public FlowNode getFlowNodeById(long id) {
+    public FlowNode getFlowNodeById(String id) {
         return FlowNodeConvertor.convert(flowNodeEntityRepository.getFlowNodeEntityById(id));
     }
 

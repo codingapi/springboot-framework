@@ -9,6 +9,7 @@ import com.codingapi.springboot.flow.operator.IFlowOperator;
 import com.codingapi.springboot.flow.trigger.IErrTrigger;
 import com.codingapi.springboot.flow.trigger.IOutTrigger;
 import com.codingapi.springboot.flow.trigger.OverOutTrigger;
+import com.codingapi.springboot.flow.utils.IDGenerator;
 import lombok.AllArgsConstructor;
 
 public class FlowNodeFactory {
@@ -17,13 +18,18 @@ public class FlowNodeFactory {
     public static class Builder {
         private IFlowOperator createUser;
 
+        public FlowNode startNode(String id,String name, IOperatorMatcher operatorMatcher, IOutTrigger outTrigger) {
+            return startNode(id, name, FlowNode.VIEW_DEFAULT, operatorMatcher, outTrigger);
+        }
+
         public FlowNode startNode(String name, IOperatorMatcher operatorMatcher, IOutTrigger outTrigger) {
-            return startNode(name, FlowNode.VIEW_DEFAULT, operatorMatcher, outTrigger);
+            return startNode(IDGenerator.generator(), name, FlowNode.VIEW_DEFAULT, operatorMatcher, outTrigger);
         }
 
 
-        public FlowNode startNode(String name, String view, IOperatorMatcher operatorMatcher, IOutTrigger outTrigger) {
+        public FlowNode startNode(String id,String name, String view, IOperatorMatcher operatorMatcher, IOutTrigger outTrigger) {
             FlowNode flowNode = new FlowNode();
+            flowNode.setId(id);
             flowNode.setName(name);
             flowNode.setType(NodeType.START);
             flowNode.setCode(FlowNode.CODE_START);
@@ -39,7 +45,12 @@ public class FlowNodeFactory {
         }
 
         public FlowNode overNode(String name) {
+            return overNode(IDGenerator.generator(), name);
+        }
+
+        public FlowNode overNode(String id,String name) {
             FlowNode flowNode = new FlowNode();
+            flowNode.setId(id);
             flowNode.setName(name);
             flowNode.setType(NodeType.OVER);
             flowNode.setCode(FlowNode.CODE_OVER);
@@ -55,23 +66,34 @@ public class FlowNodeFactory {
 
         public FlowNode node(String name,
                              String code,
+                             FlowType flowType,
+                             IOutTrigger outTrigger,
+                             IOperatorMatcher outOperatorMatcher) {
+            return node(IDGenerator.generator(),name, code, FlowNode.VIEW_DEFAULT, flowType, outTrigger, outOperatorMatcher);
+        }
+
+        public FlowNode node(String name,
+                             String code,
                              String view,
                              FlowType flowType,
                              IOutTrigger outTrigger,
                              IOperatorMatcher outOperatorMatcher) {
-            return node(name, code, view, flowType, outTrigger, outOperatorMatcher, null, null);
+            return node(IDGenerator.generator(),name, code, view, flowType, outTrigger, outOperatorMatcher, null, null);
         }
 
-
-        public FlowNode node(String name,
+        public FlowNode node(String id,
+                             String name,
                              String code,
+                             String view,
                              FlowType flowType,
                              IOutTrigger outTrigger,
                              IOperatorMatcher outOperatorMatcher) {
-            return node(name, code, FlowNode.VIEW_DEFAULT, flowType, outTrigger, outOperatorMatcher, null, null);
+            return node(id,name, code, view, flowType, outTrigger, outOperatorMatcher, null, null);
         }
 
-        public FlowNode node(String name,
+
+        public FlowNode node(String id,
+                             String name,
                              String code,
                              String view,
                              FlowType flowType,
@@ -80,6 +102,7 @@ public class FlowNodeFactory {
                              IErrTrigger errTrigger,
                              IOperatorMatcher errOperatorMatcher) {
             FlowNode flowNode = new FlowNode();
+            flowNode.setId(id);
             flowNode.setName(name);
             flowNode.setType(NodeType.APPROVAL);
             flowNode.setCode(code);

@@ -15,5 +15,11 @@ public enum FlowType {
     NOT_SIGN;
 
 
-
+    public static FlowType parser(String type) {
+        if (type.equals("SIGN")) {
+            return SIGN;
+        } else {
+            return NOT_SIGN;
+        }
+    }
 }

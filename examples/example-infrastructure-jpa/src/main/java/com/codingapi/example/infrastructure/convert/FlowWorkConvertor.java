@@ -33,7 +33,6 @@ public class FlowWorkConvertor {
         flowWork.setNodes(
                 ConvertUtils.string2List(entity.getNodeIds())
                         .stream()
-                        .map(Long::parseLong)
                         .map(FlowRepositoryContext.getInstance()::getFlowNodeById)
                         .toList()
         );

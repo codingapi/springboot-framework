@@ -91,7 +91,7 @@ public class FlowRepositoryContext {
         flowWorkRepository.delete(flowWork);
     }
 
-    public FlowNode getFlowNodeById(long id) {
+    public FlowNode getFlowNodeById(String id) {
         return flowNodeRepository.getFlowNodeById(id);
     }
 

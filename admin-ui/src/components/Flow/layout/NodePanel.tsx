@@ -22,6 +22,7 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                             {
                                 name: '开始节点',
                                 code: 'start',
+                                type:'NO_SIGN',
                                 view:'default',
 
                                 outOperatorMatcher: '',
@@ -61,6 +62,7 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                             {
                                 name: '结束节点',
                                 code: 'over',
+                                type:'NO_SIGN',
                                 view:'default',
                             }
                         );

@@ -36,7 +36,7 @@ public class FlowNode {
     /**
      * 节点id
      */
-    private long id;
+    private String id;
 
     /**
      * 节点编码

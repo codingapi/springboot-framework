@@ -6,7 +6,7 @@ public interface FlowNodeRepository {
 
     void save(FlowNode flowNode);
 
-    FlowNode getFlowNodeById(long id);
+    FlowNode getFlowNodeById(String id);
 
     void delete(FlowNode flowNode);
 }
