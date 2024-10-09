@@ -3,15 +3,20 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.scss";
 import {CheckCircleFilled, SettingFilled} from "@ant-design/icons";
-import SettingPanel from "@/components/Flow/nodes/SettingPanel";
+import OverSettingPanel from "@/components/Flow/panel/over";
 
 type OverProperties = {
     name: string;
+    code: string;
+}
+interface OverProps{
+    name: string;
     update?: (values: any) => void;
     settingVisible?: boolean;
+    properties?: OverProperties;
 }
 
-export const OverView: React.FC<OverProperties> = (props) => {
+export const OverView: React.FC<OverProps> = (props) => {
     const [visible, setVisible] = React.useState(false);
 
     return (
@@ -31,10 +36,10 @@ export const OverView: React.FC<OverProperties> = (props) => {
                 />
             )}
 
-            <SettingPanel
+            <OverSettingPanel
                 visible={visible}
                 setVisible={setVisible}
-                properties={props}
+                properties={props.properties}
                 onSettingChange={(values) => {
                     props.update && props.update(values);
                 }}
@@ -46,7 +51,7 @@ export const OverView: React.FC<OverProperties> = (props) => {
 class OverModel extends HtmlNodeModel {
     setAttributes() {
         this.width = 200;
-        this.height = 40;
+        this.height = 45;
         this.text.editable = false;
         this.menu = [];
 
@@ -82,6 +87,7 @@ class OverNode extends HtmlNode {
         ReactDOM.createRoot(div).render(
             <OverView
                 name={properties.name}
+                properties={properties}
                 settingVisible={true}
                 update={async (values) => {
                     this.props.model.setProperties(values);

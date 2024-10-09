@@ -18,7 +18,16 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                 <div
                     className={"node-item"}
                     onMouseDown={() => {
-                        props.onDrag('start-node', {name: '开始节点'});
+                        props.onDrag('start-node',
+                            {
+                                name: '开始节点',
+                                code: 'start',
+                                view:'default',
+
+                                outOperatorMatcher: '',
+                                outTrigger: '',
+                            }
+                        );
                     }}
                 >
                     <StartView name={"开始节点"}/>
@@ -27,19 +36,37 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                 <div
                     className={"node-item"}
                     onMouseDown={() => {
-                        props.onDrag('node-node', {name: '流程节点'});
+                        props.onDrag('node-node',
+                            {
+                                name: '流程节点',
+                                code: 'flow',
+                                flowType:'SIGN',
+                                view:'default',
+
+                                outOperatorMatcher: '',
+                                outTrigger: '',
+                                errTrigger:'',
+                                errOperatorMatcher:''
+                            }
+                        );
                     }}
                 >
-                    <NodeView name={"流程节点"}/>
+                    <NodeView name={"流程节点"} />
                 </div>
 
                 <div
                     className={"node-item"}
                     onMouseDown={() => {
-                        props.onDrag('over-node', {name: '结束节点'});
+                        props.onDrag('over-node',
+                            {
+                                name: '结束节点',
+                                code: 'over',
+                                view:'default',
+                            }
+                        );
                     }}
                 >
-                    <OverView name={"结束节点"}/>
+                    <OverView name={"结束节点"} />
                 </div>
             </div>
         </div>

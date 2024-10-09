@@ -3,17 +3,21 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.scss";
 import {PlayCircleFilled, SettingFilled} from "@ant-design/icons";
-import SettingPanel from "@/components/Flow/nodes/SettingPanel";
-import {message} from "antd";
+import StartSettingPanel from "@/components/Flow/panel/start";
 
 type StartProperties = {
     name: string;
-    update?: (values: any) => void;
-    settingVisible?: boolean;
-
+    code: string;
 }
 
-export const StartView: React.FC<StartProperties> = (props) => {
+interface StartProps {
+    name: string;
+    settingVisible?: boolean;
+    update?: (values: any) => void;
+    properties?: StartProperties;
+}
+
+export const StartView: React.FC<StartProps> = (props) => {
     const [visible, setVisible] = React.useState(false);
 
     return (
@@ -33,10 +37,10 @@ export const StartView: React.FC<StartProperties> = (props) => {
                 />
             )}
 
-            <SettingPanel
+            <StartSettingPanel
                 visible={visible}
                 setVisible={setVisible}
-                properties={props}
+                properties={props.properties}
                 onSettingChange={(values) => {
                     props.update && props.update(values);
                 }}
@@ -48,7 +52,7 @@ export const StartView: React.FC<StartProperties> = (props) => {
 class StartModel extends HtmlNodeModel {
     setAttributes() {
         this.width = 200;
-        this.height = 40;
+        this.height = 45;
         this.text.editable = false;
         this.menu = [];
 
@@ -69,6 +73,7 @@ class StartNode extends HtmlNode {
         ReactDOM.createRoot(div).render(
             <StartView
                 name={properties.name}
+                properties={properties}
                 settingVisible={true}
                 update={async (values) => {
                     this.props.model.setProperties(values);
@@ -81,7 +86,7 @@ class StartNode extends HtmlNode {
     }
 }
 
-export default  {
+export default {
     type: 'start-node',
     view: StartNode,
     model: StartModel,

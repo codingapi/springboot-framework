@@ -3,15 +3,21 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.scss";
 import {PlusCircleFilled, SettingFilled} from "@ant-design/icons";
-import SettingPanel from "@/components/Flow/nodes/SettingPanel";
+import NodeSettingPanel from "@/components/Flow/panel/node";
 
 type NodeProperties = {
     name: string;
-    update?: (values: any) => void;
-    settingVisible?: boolean;
+    code: string;
 }
 
-export const NodeView: React.FC<NodeProperties> = (props) => {
+interface NodeProps {
+    name: string;
+    update?: (values: any) => void;
+    settingVisible?: boolean;
+    properties?: NodeProperties;
+}
+
+export const NodeView: React.FC<NodeProps> = (props) => {
     const [visible, setVisible] = React.useState(false);
 
     return (
@@ -32,10 +38,10 @@ export const NodeView: React.FC<NodeProperties> = (props) => {
                 />
             )}
 
-            <SettingPanel
+            <NodeSettingPanel
                 visible={visible}
                 setVisible={setVisible}
-                properties={props}
+                properties={props.properties}
                 onSettingChange={(values) => {
                     props.update && props.update(values);
                 }}
@@ -47,7 +53,7 @@ export const NodeView: React.FC<NodeProperties> = (props) => {
 class NodeModel extends HtmlNodeModel {
     setAttributes() {
         this.width = 200;
-        this.height = 40;
+        this.height = 45;
         this.text.editable = false;
         this.menu = [];
 
@@ -69,6 +75,7 @@ class NodeNode extends HtmlNode {
         ReactDOM.createRoot(div).render(
             <NodeView
                 name={properties.name}
+                properties={properties}
                 settingVisible={true}
                 update={async (values) => {
                     this.props.model.setProperties(values);

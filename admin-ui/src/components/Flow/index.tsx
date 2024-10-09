@@ -10,12 +10,15 @@ import Node from "@/components/Flow/nodes/Node";
 import Over from "@/components/Flow/nodes/Over";
 import ControlPanel from "@/components/Flow/layout/ControlPanel";
 import NodePanel from "@/components/Flow/layout/NodePanel";
-import {Button, message, Space} from "antd";
-import {SaveOutlined} from "@ant-design/icons";
+import {message} from "antd";
+
+export interface FlowActionType {
+    getData:()=>any;
+}
 
 interface FlowProps {
-    data: LogicFlow.GraphConfigData;
-    onSave: (data: string) => void;
+    data?: LogicFlow.GraphConfigData;
+    actionRef?:React.Ref<any>
 }
 
 const Flow: React.FC<FlowProps> = (props) => {
@@ -23,8 +26,15 @@ const Flow: React.FC<FlowProps> = (props) => {
     const lfRef = useRef<LogicFlow | null>(null);
     const [mapVisible, setMapVisible] = React.useState(false);
 
-    const data = props.data;
+    if(props.actionRef){
+        React.useImperativeHandle(props.actionRef, () => ({
+            getData: () => {
+                return lfRef.current?.getGraphData();
+            }
+        }),[props]);
+    }
 
+    const data = props?.data || {};
     useEffect(() => {
         const SilentConfig = {
             stopScrollGraph: true,
@@ -86,18 +96,6 @@ const Flow: React.FC<FlowProps> = (props) => {
 
     return (
         <div className="flow-content">
-            <div className={"flow-tools"}>
-                <Space>
-                    <Button
-                        type={"primary"}
-                        icon={<SaveOutlined/>}
-                        onClick={() => {
-                            const data = lfRef.current?.getGraphData();
-                            props.onSave(JSON.stringify(data));
-                        }}
-                    >保存</Button>
-                </Space>
-            </div>
             <NodePanel
                 className={"flow-panel"}
                 onDrag={async (type, properties) => {

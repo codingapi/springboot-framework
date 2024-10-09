@@ -9,7 +9,7 @@ interface SettingPanelProps {
     onSettingChange: (values: any) => void;
 }
 
-const SettingPanel: React.FC<SettingPanelProps> = (props) => {
+const NodeSettingPanel: React.FC<SettingPanelProps> = (props) => {
 
     const [form] = ProForm.useForm();
 
@@ -53,29 +53,38 @@ const SettingPanel: React.FC<SettingPanelProps> = (props) => {
             <Divider>
                 基本信息
             </Divider>
-            <ProForm.Group>
-                <ProFormText
-                    name={"code"}
-                    label={"节点编码"}
-                    rules={[
-                        {
-                            required: true,
-                            message: "请输入节点编码"
-                        }
-                    ]}
-                />
+            <ProFormText
+                name={"code"}
+                label={"节点编码"}
+                rules={[
+                    {
+                        required: true,
+                        message: "请输入节点编码"
+                    }
+                ]}
+            />
+            <ProFormText
+                name={"view"}
+                label={"试图名称"}
+                rules={[
+                    {
+                        required: true,
+                        message: "请输入试图名称"
+                    }
+                ]}
+            />
 
-                <ProFormText
-                    name={"name"}
-                    label={"节点名称"}
-                    rules={[
-                        {
-                            required: true,
-                            message: "请输入节点名称"
-                        }
-                    ]}
-                />
-            </ProForm.Group>
+
+            <ProFormText
+                name={"name"}
+                label={"节点名称"}
+                rules={[
+                    {
+                        required: true,
+                        message: "请输入节点名称"
+                    }
+                ]}
+            />
             <ProFormSelect
                 name={"type"}
                 label={"节点类型"}
@@ -143,4 +152,4 @@ const SettingPanel: React.FC<SettingPanelProps> = (props) => {
 
 }
 
-export default SettingPanel;
+export default NodeSettingPanel;
