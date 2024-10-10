@@ -1,8 +1,10 @@
 package com.codingapi.springboot.flow.builder;
 
 import com.alibaba.fastjson.JSONObject;
-import com.codingapi.springboot.flow.domain.FlowWork;
+import com.codingapi.springboot.flow.domain.FlowNode;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -14,9 +16,9 @@ public class FLowWorkJsonBuilderTest {
 
         JSONObject jsonObject = JSONObject.parseObject(json);
 
-        FlowWork flowWork =  FlowNodeCreator.Builder(null).create(jsonObject);
+        List<FlowNode> flowNodes =  FlowNodeCreator.Builder(null).create(jsonObject);
 
-        assertEquals(3, flowWork.getNodes().size());
+        assertEquals(3, flowNodes.size());
 
     }
 }
