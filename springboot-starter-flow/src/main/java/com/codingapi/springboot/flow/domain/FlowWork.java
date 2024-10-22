@@ -173,12 +173,13 @@ public class FlowWork {
 
         long workId = this.getId();
         String processId = generateProcessId();
-        FlowContent content = new FlowContent(this, start, operator, operator, snapshot, opinion);
+        long preId = 0;
+        FlowContent content = new FlowContent(this, start, operator, operator, snapshot.toBindData(), opinion);
         String recordTitle = start.generateTitle(content);
         if (start.matcher(content)) {
-            return Collections.singletonList(start.createRecord(workId, processId, recordTitle, operator, operator, snapshot, opinion));
+            return Collections.singletonList(start.createRecord(workId, processId, preId, recordTitle, operator, operator, snapshot, opinion));
         }
-        List<FlowRecord> errorRecordList = this.errMatcher(start, processId, operator, operator, snapshot, opinion);
+        List<FlowRecord> errorRecordList = this.errMatcher(start, processId, preId, operator, operator, snapshot, opinion);
         if (errorRecordList.isEmpty()) {
             throw new IllegalArgumentException("operator not match.");
         }
@@ -191,15 +192,16 @@ public class FlowWork {
      *
      * @param currentNode     当前节点
      * @param processId       流程id
+     * @param preId           上一条流程记录id
      * @param createOperator  创建操作者
      * @param currentOperator 当前操作者
      * @param snapshot        绑定数据
      * @param opinion         意见
      * @return 流程记录
      */
-    private List<FlowRecord> errMatcher(FlowNode currentNode, String processId, IFlowOperator createOperator, IFlowOperator currentOperator, BindDataSnapshot snapshot, Opinion opinion) {
+    private List<FlowRecord> errMatcher(FlowNode currentNode, String processId, long preId, IFlowOperator createOperator, IFlowOperator currentOperator, BindDataSnapshot snapshot, Opinion opinion) {
         if (currentNode.hasErrTrigger()) {
-            FlowContent flowContent = new FlowContent(this, currentNode, createOperator, currentOperator, snapshot, opinion);
+            FlowContent flowContent = new FlowContent(this, currentNode, createOperator, currentOperator, snapshot.toBindData(), opinion);
             ErrorResult errorResult = currentNode.errMatcher(flowContent);
             if (errorResult == null) {
                 throw new IllegalArgumentException("errMatcher match error.");
@@ -210,10 +212,10 @@ public class FlowWork {
                 List<FlowRecord> records = new ArrayList<>();
                 List<IFlowOperator> operators = ((OperatorResult) errorResult).getOperators();
                 for (IFlowOperator operator : operators) {
-                    FlowContent content = new FlowContent(this, currentNode, createOperator, operator, snapshot, opinion);
+                    FlowContent content = new FlowContent(this, currentNode, createOperator, operator, snapshot.toBindData(), opinion);
                     if (currentNode.matcher(content)) {
                         String recordTitle = currentNode.generateTitle(content);
-                        FlowRecord record = currentNode.createRecord(this.getId(), processId, recordTitle, createOperator, operator, snapshot, opinion);
+                        FlowRecord record = currentNode.createRecord(this.getId(), processId, preId, recordTitle, createOperator, operator, snapshot, opinion);
                         records.add(record);
                     }
                 }
@@ -223,10 +225,10 @@ public class FlowWork {
             if (errorResult.isNode()) {
                 String nodeCode = ((NodeResult) errorResult).getNode();
                 FlowNode node = getNodeByCode(nodeCode);
-                FlowContent content = new FlowContent(this, node, createOperator, currentOperator, snapshot, opinion);
+                FlowContent content = new FlowContent(this, node, createOperator, currentOperator, snapshot.toBindData(), opinion);
                 if (node.matcher(content)) {
-                    String recordTitle =  node.generateTitle(content);
-                    return Collections.singletonList(node.createRecord(this.getId(), processId, recordTitle, createOperator, currentOperator, snapshot, opinion));
+                    String recordTitle = node.generateTitle(content);
+                    return Collections.singletonList(node.createRecord(this.getId(), processId, preId, recordTitle, createOperator, currentOperator, snapshot, opinion));
                 }
             }
             throw new IllegalArgumentException("errMatcher not match.");

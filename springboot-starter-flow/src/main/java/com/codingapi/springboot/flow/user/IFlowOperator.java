@@ -9,4 +9,11 @@ public interface IFlowOperator {
      */
     long getUserId();
 
+
+    /**
+     * 获取用户名称
+     * @return 名称
+     */
+    String getName();
+
 }

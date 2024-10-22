@@ -1,6 +1,6 @@
 package com.codingapi.springboot.flow.domain;
 
-import com.codingapi.springboot.flow.trigger.IOutTrigger;
+import com.codingapi.springboot.flow.trigger.OutTrigger;
 import lombok.Getter;
 import org.springframework.util.StringUtils;
 
@@ -39,7 +39,7 @@ public class FlowRelation {
     /**
      * 出口触发器
      */
-    private IOutTrigger outTrigger;
+    private OutTrigger outTrigger;
 
 
     /**
@@ -52,7 +52,7 @@ public class FlowRelation {
      */
     private long updateTime;
 
-    public FlowRelation(String id, String name, FlowNode source, FlowNode target, IOutTrigger outTrigger, boolean defaultOut) {
+    public FlowRelation(String id, String name, FlowNode source, FlowNode target, OutTrigger outTrigger, boolean defaultOut) {
         this.id = id;
         this.name = name;
         this.source = source;

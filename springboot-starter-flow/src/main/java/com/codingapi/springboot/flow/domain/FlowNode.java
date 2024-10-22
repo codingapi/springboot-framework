@@ -7,9 +7,9 @@ import com.codingapi.springboot.flow.em.FlowStatus;
 import com.codingapi.springboot.flow.em.NodeType;
 import com.codingapi.springboot.flow.em.RecodeType;
 import com.codingapi.springboot.flow.error.ErrorResult;
-import com.codingapi.springboot.flow.error.IErrTrigger;
-import com.codingapi.springboot.flow.generator.ITitleGenerator;
-import com.codingapi.springboot.flow.matcher.IOperatorMatcher;
+import com.codingapi.springboot.flow.error.ErrTrigger;
+import com.codingapi.springboot.flow.generator.TitleGenerator;
+import com.codingapi.springboot.flow.matcher.OperatorMatcher;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import lombok.Getter;
@@ -44,7 +44,7 @@ public class FlowNode {
     /**
      * 节点标题创建规则
      */
-    private ITitleGenerator titleGenerator;
+    private TitleGenerator titleGenerator;
 
     /**
      * 节点类型 | 分为发起、审批、结束
@@ -64,7 +64,7 @@ public class FlowNode {
     /**
      * 操作者匹配器
      */
-    private IOperatorMatcher operatorMatcher;
+    private OperatorMatcher operatorMatcher;
 
     /**
      * 创建时间
@@ -84,14 +84,16 @@ public class FlowNode {
      * 异常触发器，当流程发生异常时异常通常是指找不到审批人，将会触发异常触发器，异常触发器可以是一个节点
      */
     @Setter
-    private IErrTrigger errTrigger;
+    private ErrTrigger errTrigger;
 
 
     public FlowNode(String id, String name,
                     String code, String view,
                     NodeType type, ApprovalType approvalType,
-                    ITitleGenerator titleGenerator,
-                    IOperatorMatcher operatorMatcher) {
+                    TitleGenerator titleGenerator,
+                    OperatorMatcher operatorMatcher,
+                    long timeout,
+                    ErrTrigger errTrigger) {
         this.id = id;
         this.code = code;
         this.name = name;
@@ -102,6 +104,8 @@ public class FlowNode {
         this.operatorMatcher = operatorMatcher;
         this.createTime = System.currentTimeMillis();
         this.updateTime = System.currentTimeMillis();
+        this.errTrigger = errTrigger;
+        this.timeout = timeout;
     }
 
 
@@ -122,6 +126,7 @@ public class FlowNode {
      *
      * @param workId          流程设计id
      * @param processId       流程id
+     * @param preId           上一条流程记录id
      * @param title           流程标题
      * @param createOperator  流程操作者
      * @param currentOperator 当前操作者
@@ -131,6 +136,7 @@ public class FlowNode {
      */
     public FlowRecord createRecord(long workId,
                                    String processId,
+                                   long preId,
                                    String title,
                                    IFlowOperator createOperator,
                                    IFlowOperator currentOperator,
@@ -146,13 +152,25 @@ public class FlowNode {
         record.setBindClass(snapshot.getClazzName());
         record.setOpinion(opinion);
         record.setCurrentOperatorId(currentOperator.getUserId());
-        record.setPreId(0);
+        record.setPreId(preId);
         record.setTitle(title);
-        record.setTimeoutTime(System.currentTimeMillis() + this.timeout);
+        record.setTimeoutTime(this.getTimeoutTime());
         record.setRecodeType(RecodeType.TODO);
         record.setErrMessage(null);
         record.setSnapshotId(snapshot.getId());
         return record;
+    }
+
+
+    /**
+     * 获取超时时间
+     * @return 超时时间
+     */
+    private long getTimeoutTime() {
+        if(this.timeout>0) {
+            return System.currentTimeMillis() + this.timeout;
+        }
+        return 0;
     }
 
     /**
