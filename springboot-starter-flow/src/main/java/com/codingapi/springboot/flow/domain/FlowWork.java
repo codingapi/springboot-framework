@@ -1,42 +1,37 @@
 package com.codingapi.springboot.flow.domain;
 
-import com.alibaba.fastjson.JSONObject;
-import com.codingapi.springboot.flow.builder.FlowNodeCreator;
-import com.codingapi.springboot.flow.context.FlowRepositoryContext;
-import com.codingapi.springboot.flow.data.IBindData;
-import com.codingapi.springboot.flow.operator.IFlowOperator;
-import io.micrometer.common.util.StringUtils;
+import com.codingapi.springboot.flow.user.IFlowOperator;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 流程的设计，约定流程的节点配置与配置
+ * 流程设计
  */
-@Slf4j
-@Setter
 @Getter
 public class FlowWork {
 
     /**
      * 流程的设计id
      */
+    @Setter
     private long id;
     /**
      * 流程标题
      */
+    @Setter
     private String title;
     /**
      * 流程描述
      */
+    @Setter
     private String description;
     /**
      * 流程创建者
      */
-    private IFlowOperator createUser;
+    private IFlowOperator<?> createUser;
     /**
      * 创建时间
      */
@@ -69,89 +64,53 @@ public class FlowWork {
      */
     private String schema;
 
+
+    public FlowWork(IFlowOperator<?> createUser) {
+        this.createUser = createUser;
+        this.createTime = System.currentTimeMillis();
+        this.updateTime = System.currentTimeMillis();
+        this.enable = true;
+        this.lock = false;
+        this.nodes = new ArrayList<>();
+        this.relations = new ArrayList<>();
+    }
+
+
     /**
-     * 重新加载流程设计
+     * schema解析流程设计
      *
-     * @param schema 流程设计脚本
+     * @param schema schema
      */
-    public void reloadScheme(String schema) {
-        if (StringUtils.isEmpty(schema)) {
-            return;
-        }
-        JSONObject jsonObject = JSONObject.parseObject(schema);
+    public void schema(String schema) {
         this.schema = schema;
-        this.nodes = FlowNodeCreator.Builder(createUser).create(jsonObject);
-    }
-
-    public FlowNode startNode() {
-        return getFlowNode(FlowNode.CODE_START);
+        //todo 解析schema
     }
 
     /**
-     * 获取节点
+     * 添加节点
      *
-     * @param code 节点编码
-     * @return 节点
+     * @param node 节点
      */
-    public FlowNode getFlowNode(String code) {
-        return nodes.stream().filter(node -> node.getCode().equals(code)).findFirst().orElse(null);
+    public void addNode(FlowNode node) {
+        List<String> codes = nodes.stream().map(FlowNode::getCode).toList();
+        if (codes.contains(node.getCode())) {
+            throw new RuntimeException("node code is exist");
+        }
+        nodes.add(node);
     }
 
-    /**
-     * 创建流程节点
-     *
-     * @param bindData     绑定数据
-     * @param operatorUser 操作者
-     */
-    public void createNode(IBindData bindData, IFlowOperator operatorUser) {
-        FlowNode startNode = startNode();
-        startNode.verifyOperator(operatorUser);
-        long processId = System.currentTimeMillis();
-        FlowRecord record = startNode.createRecord(processId, 0, null, bindData, operatorUser, operatorUser);
-        record.submit(null, bindData);
+    public void addRelation(FlowRelation relation) {
+        relations.add(relation);
     }
 
-    /**
-     * 删除流程
-     */
-    public void delete() {
-        this.getNodes().forEach(FlowRepositoryContext.getInstance()::delete);
-        FlowRepositoryContext.getInstance().delete(this);
-    }
 
-    /**
-     * 获取下一个节点
-     * @param flowNode 当前节点
-     * @param record 流程记录
-     * @return 下一个节点
-     */
-    public FlowNode getNextNode(FlowNode flowNode, FlowRecord record) {
-        List<FlowRelation> nextFlows = getNextNodesByRelation(flowNode);
-        if (!nextFlows.isEmpty()) {
-            List<FlowNode> nextNodes = new ArrayList<>();
-            for (FlowRelation flowRelation : nextFlows) {
-                FlowNode node = flowRelation.trigger(record);
-                if (node != null) {
-                    nextNodes.add(node);
-
-                    if (flowRelation.isDefaultOut()) {
-                        return node;
-                    }
-                }
-            }
-            if (!nextNodes.isEmpty()) {
-                return nextNodes.get(0);
+    public FlowNode getNodeByCode(String code) {
+        for (FlowNode node : nodes) {
+            if (node.getCode().equals(code)) {
+                return node;
             }
         }
         return null;
     }
-
-
-    private List<FlowRelation> getNextNodesByRelation(FlowNode flowNode) {
-        return relations.stream()
-                .filter(relation -> relation.getSource().getCode().equals(flowNode.getCode()))
-                .toList();
-    }
-
 
 }

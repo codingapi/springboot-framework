@@ -1,8 +1,5 @@
 package com.codingapi.springboot.flow.em;
 
-/**
- * 分为发起、审批、结束
- */
 public enum NodeType {
 
     /**
@@ -17,5 +14,4 @@ public enum NodeType {
      * 结束
      */
     OVER;
-
 }

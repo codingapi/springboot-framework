@@ -1,12 +1,12 @@
 package com.codingapi.springboot.flow.domain;
 
-import com.codingapi.springboot.flow.operator.IFlowOperator;
 import com.codingapi.springboot.flow.trigger.IOutTrigger;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
-import lombok.Setter;
+import org.springframework.util.StringUtils;
 
-@Setter
+/**
+ * 流程关系
+ */
 @Getter
 public class FlowRelation {
 
@@ -39,14 +39,8 @@ public class FlowRelation {
     /**
      * 出口触发器
      */
-    @JsonIgnore
     private IOutTrigger outTrigger;
 
-    /**
-     * 设计者
-     */
-    @JsonIgnore
-    private IFlowOperator createUser;
 
     /**
      * 创建时间
@@ -58,21 +52,35 @@ public class FlowRelation {
      */
     private long updateTime;
 
-
-    public FlowRelation(String id, FlowNode source, FlowNode target, IOutTrigger outTrigger, IFlowOperator createUser, boolean defaultOut) {
+    public FlowRelation(String id, String name, FlowNode source, FlowNode target, IOutTrigger outTrigger, boolean defaultOut) {
         this.id = id;
+        this.name = name;
         this.source = source;
         this.target = target;
+        this.defaultOut = defaultOut;
         this.outTrigger = outTrigger;
-        this.createUser = createUser;
         this.createTime = System.currentTimeMillis();
         this.updateTime = System.currentTimeMillis();
-        this.defaultOut = defaultOut;
+        this.verify();
     }
 
 
-    public FlowNode trigger(FlowRecord record){
-        return outTrigger.trigger(record);
-    }
+    private void verify() {
 
+        if (!StringUtils.hasLength(id)) {
+            throw new RuntimeException("id is null");
+        }
+
+        if (!StringUtils.hasLength(name)) {
+            throw new RuntimeException("name is null");
+        }
+
+        if (source == null || target == null) {
+            throw new RuntimeException("source or target is null");
+        }
+
+        if (outTrigger == null) {
+            throw new RuntimeException("outTrigger is null");
+        }
+    }
 }
