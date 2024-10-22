@@ -67,10 +67,17 @@ public class FlowNode {
     private long updateTime;
 
     /**
+     * 超时时间（毫秒）
+     */
+    private long timeout;
+
+    /**
      * 异常触发器，当流程发生异常时异常通常是指找不到审批人，将会触发异常触发器，异常触发器可以是一个节点
      */
     @Setter
     private IErrTrigger errTrigger;
+
+
 
 
     public FlowNode(String id, String name,

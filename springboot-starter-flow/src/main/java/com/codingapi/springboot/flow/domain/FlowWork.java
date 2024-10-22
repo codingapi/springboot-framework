@@ -1,6 +1,7 @@
 package com.codingapi.springboot.flow.domain;
 
 import com.codingapi.springboot.flow.user.IFlowOperator;
+import com.codingapi.springboot.flow.utils.IDGenerator;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -111,6 +112,14 @@ public class FlowWork {
             }
         }
         return null;
+    }
+
+    /**
+     * 生成流程id
+     * @return 流程id
+     */
+    public String generateProcessId(){
+        return IDGenerator.generate();
     }
 
 }
