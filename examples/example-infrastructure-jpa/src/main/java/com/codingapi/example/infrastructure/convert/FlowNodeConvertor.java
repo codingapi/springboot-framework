@@ -42,7 +42,7 @@ public class FlowNodeConvertor {
             flowNode.setOutTrigger(new ScriptOutTrigger(entity.getOutTriggerScript()));
         }
         if(entity.getOutOperatorMatcherScript()!=null) {
-            flowNode.setOutOperatorMatcher(new ScriptOperatorMatcher(entity.getOutOperatorMatcherScript()));
+            flowNode.setOperatorMatcher(new ScriptOperatorMatcher(entity.getOutOperatorMatcherScript()));
         }
         if(entity.getTitleCreatorScript()!=null) {
             flowNode.setTitleCreator(new ScriptTitleCreator(entity.getTitleCreatorScript()));
@@ -84,8 +84,8 @@ public class FlowNodeConvertor {
         if(flowNode.getErrTrigger()!=null) {
             entity.setErrTriggerScript(((ScriptErrTrigger) (flowNode.getErrTrigger())).getScript());
         }
-        if(flowNode.getOutOperatorMatcher()!=null) {
-            entity.setOutOperatorMatcherScript(((ScriptOperatorMatcher) (flowNode.getOutOperatorMatcher())).getScript());
+        if(flowNode.getOperatorMatcher()!=null) {
+            entity.setOutOperatorMatcherScript(((ScriptOperatorMatcher) (flowNode.getOperatorMatcher())).getScript());
         }
         if(flowNode.getOutTrigger()!=null) {
             entity.setOutTriggerScript(((ScriptOutTrigger) (flowNode.getOutTrigger())).getScript());

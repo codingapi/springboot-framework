@@ -21,7 +21,7 @@ public class FlowRelation {
     private String name;
 
     /**
-     *  源节点
+     * 源节点
      */
     private FlowNode source;
 
@@ -29,6 +29,12 @@ public class FlowRelation {
      * 目标节点
      */
     private FlowNode target;
+
+
+    /**
+     * 是否默认出口
+     */
+    private boolean defaultOut;
 
     /**
      * 出口触发器
@@ -43,7 +49,7 @@ public class FlowRelation {
     private IFlowOperator createUser;
 
     /**
-     *  创建时间
+     * 创建时间
      */
     private long createTime;
 
@@ -52,5 +58,21 @@ public class FlowRelation {
      */
     private long updateTime;
 
+
+    public FlowRelation(String id, FlowNode source, FlowNode target, IOutTrigger outTrigger, IFlowOperator createUser, boolean defaultOut) {
+        this.id = id;
+        this.source = source;
+        this.target = target;
+        this.outTrigger = outTrigger;
+        this.createUser = createUser;
+        this.createTime = System.currentTimeMillis();
+        this.updateTime = System.currentTimeMillis();
+        this.defaultOut = defaultOut;
+    }
+
+
+    public FlowNode trigger(FlowRecord record){
+        return outTrigger.trigger(record);
+    }
 
 }

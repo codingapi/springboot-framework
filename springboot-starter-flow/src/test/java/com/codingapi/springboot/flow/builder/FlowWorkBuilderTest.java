@@ -79,13 +79,15 @@ class FlowWorkBuilderTest {
                 .title("请假流程")
                 .description("请假流程")
                 .nodes()
-                .node(FlowNodeFactory.Builder(admin).startNode("发起请假",anyOperatorMatcher, userOutTrigger))
-                .node(FlowNodeFactory.Builder(admin).node("部门经理审批", "depart", FlowType.NOT_SIGN, departOutTrigger, departOperatorMatcher))
-                .node(FlowNodeFactory.Builder(admin).node("总经理审批", "boss", FlowType.NOT_SIGN, bossOutTrigger, bossOperatorMatcher))
+                .node(FlowNodeFactory.Builder(admin).startNode("发起请假",anyOperatorMatcher))
+                .node(FlowNodeFactory.Builder(admin).node("部门经理审批", "depart", FlowType.NOT_SIGN, departOperatorMatcher))
+                .node(FlowNodeFactory.Builder(admin).node("总经理审批", "boss", FlowType.NOT_SIGN, bossOperatorMatcher))
                 .node(FlowNodeFactory.Builder(admin).overNode("结束"))
                 .relations()
-                .relation("start", "depart", "boss", "over")
-                .relation("start", "boss", "over")
+                .relation("1","start", "depart", userOutTrigger, false)
+                .relation("2","start", "boss", userOutTrigger,false)
+                .relation("3","depart", "boss", departOutTrigger,false)
+                .relation("4","boss", "over", bossOutTrigger,false)
                 .build();
         assertNotNull(flowWork);
         assertTrue(flowWork.isEnable());
@@ -157,13 +159,15 @@ class FlowWorkBuilderTest {
                 .title("请假流程")
                 .description("请假流程")
                 .nodes()
-                .node(FlowNodeFactory.Builder(admin).node("发起请假","start",FlowType.NOT_SIGN, userOutTrigger,anyOperatorMatcher))
-                .node(FlowNodeFactory.Builder(admin).node("部门经理审批", "depart", FlowType.NOT_SIGN, departOutTrigger, departOperatorMatcher))
-                .node(FlowNodeFactory.Builder(admin).node("总经理审批", "boss", FlowType.NOT_SIGN, bossOutTrigger, bossOperatorMatcher))
-                .node(FlowNodeFactory.Builder(admin).node("结束","over",FlowType.NOT_SIGN, null, null))
+                .node(FlowNodeFactory.Builder(admin).node("发起请假","start",FlowType.NOT_SIGN,anyOperatorMatcher))
+                .node(FlowNodeFactory.Builder(admin).node("部门经理审批", "depart", FlowType.NOT_SIGN, departOperatorMatcher))
+                .node(FlowNodeFactory.Builder(admin).node("总经理审批", "boss", FlowType.NOT_SIGN, bossOperatorMatcher))
+                .node(FlowNodeFactory.Builder(admin).node("结束","over",FlowType.NOT_SIGN, null))
                 .relations()
-                .relation("start", "depart", "boss", "over")
-                .relation("start", "boss", "over")
+                .relation("1","start", "depart", userOutTrigger, false)
+                .relation("2","start", "boss", userOutTrigger,false)
+                .relation("3","depart", "boss", departOutTrigger,false)
+                .relation("4","boss", "over", bossOutTrigger,false)
                 .build();
         assertNotNull(flowWork);
         assertTrue(flowWork.isEnable());

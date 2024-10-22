@@ -7,7 +7,6 @@ import com.codingapi.springboot.flow.em.*;
 import com.codingapi.springboot.flow.matcher.IOperatorMatcher;
 import com.codingapi.springboot.flow.operator.IFlowOperator;
 import com.codingapi.springboot.flow.trigger.IErrTrigger;
-import com.codingapi.springboot.flow.trigger.IOutTrigger;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
@@ -75,13 +74,7 @@ public class FlowNode {
      * 操作者匹配器
      */
     @JsonIgnore
-    private IOperatorMatcher outOperatorMatcher;
-    /**
-     * 出口触发器
-     */
-    @JsonIgnore
-    private IOutTrigger outTrigger;
-
+    private IOperatorMatcher operatorMatcher;
     /**
      * 下一个节点数组，系统将根据出口配置，选择下一个节点
      */
@@ -115,13 +108,6 @@ public class FlowNode {
     private IErrTrigger errTrigger;
 
     /**
-     * 异常操作者匹配器
-     */
-    @JsonIgnore
-    private IOperatorMatcher errOperatorMatcher;
-
-
-    /**
      * 添加下一个节点
      *
      * @param flowNode 下一个节点
@@ -153,7 +139,7 @@ public class FlowNode {
      * @param operator 操作者
      */
     public void verifyOperator(IFlowOperator operator) {
-        List<? extends IFlowOperator> operators = OperatorMatcher.matcher(outOperatorMatcher, operator);
+        List<? extends IFlowOperator> operators = OperatorMatcher.matcher(operatorMatcher, operator);
         List<Long> operatorIds = operators.stream().map(IFlowOperator::getId).toList();
         if (!operatorIds.contains(operator.getId())) {
             throw new RuntimeException("operator not match.");
@@ -218,10 +204,7 @@ public class FlowNode {
      * @return 下一个节点
      */
     public FlowNode triggerNextNode(FlowRecord record) {
-        if (outTrigger != null) {
-            return outTrigger.trigger(record);
-        }
-        return null;
+        return flowWork.getNextNode(this, record);
     }
 
     /**
@@ -251,18 +234,9 @@ public class FlowNode {
      * @return 操作者
      */
     public List<? extends IFlowOperator> matchOutOperators(FlowRecord record) {
-        return OperatorMatcher.matcher(outOperatorMatcher, record);
+        return OperatorMatcher.matcher(operatorMatcher, record);
     }
 
-    /**
-     * 匹配出口操作者
-     *
-     * @param record 流程记录
-     * @return 操作者
-     */
-    public List<? extends IFlowOperator> matchErrorOperators(FlowRecord record) {
-        return OperatorMatcher.matcher(errOperatorMatcher, record);
-    }
 
     /**
      * 是否为指定节点

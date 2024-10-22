@@ -225,17 +225,8 @@ public class FlowRecord {
                     List<? extends IFlowOperator> operators = nextNode.matchOutOperators(this);
                     if (operators.isEmpty()) {
                         // 如果没有找到下一个节点的操作者，则进入错误处理模式
-                        nextNode = nextNode.triggerErrorNode(this);
-                        operators = nextNode.matchErrorOperators(this);
-                        // 如果没有找到错误处理模式，则进入异常
-                        if (operators.isEmpty()) {
-
-                            String errMessage = "next node operator not found.";
-                            this.setError(errMessage);
-                            FlowRepositoryContext.getInstance().save(this);
-
-                            throw new RuntimeException(errMessage);
-                        }
+                        // nextNode = nextNode.triggerErrorNode(this);
+                        throw new RuntimeException("next node operator not found.");
                     }
                     // 创建下一个节点的记录
                     for (IFlowOperator operator : operators) {

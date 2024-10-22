@@ -2,11 +2,12 @@ package com.codingapi.springboot.flow.builder;
 
 import com.codingapi.springboot.flow.context.FlowRepositoryContext;
 import com.codingapi.springboot.flow.domain.FlowNode;
+import com.codingapi.springboot.flow.domain.FlowRelation;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.operator.IFlowOperator;
+import com.codingapi.springboot.flow.trigger.IOutTrigger;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class FlowWorkBuilder {
@@ -59,26 +60,38 @@ public class FlowWorkBuilder {
     }
 
 
-    public class Relations{
+    public class Relations {
         private final List<FlowNode> list;
+        private final List<FlowRelation> relations;
 
         private Relations(List<FlowNode> list) {
             this.list = list;
+            this.relations = new ArrayList<>();
         }
 
-        public Relations relation(String... codes) {
-            relationNodes(codes);
+        public Relations relation(String id, String source, String target, IOutTrigger outTrigger, boolean defaultOut) {
+            FlowNode sourceNode = getFlowNodeByCode(source);
+            if (sourceNode == null) {
+                throw new RuntimeException(source + " not found node");
+            }
+            FlowNode targetNode = getFlowNodeByCode(target);
+            if (targetNode == null) {
+                throw new RuntimeException(target + " not found node");
+            }
+            FlowRelation flowRelation = new FlowRelation(id, sourceNode, targetNode, outTrigger, flowWork.getCreateUser(), defaultOut);
+            relations.add(flowRelation);
             return this;
         }
 
         public FlowWork build() {
             FlowNode flowNode = getFlowNodeByCode(FlowNode.CODE_START);
-            if(flowNode==null){
+            if (flowNode == null) {
                 throw new RuntimeException("start node not found");
             }
             FlowRepositoryContext.getInstance().save(flowWork);
             list.forEach(FlowRepositoryContext.getInstance()::save);
             flowWork.setNodes(list);
+            flowWork.setRelations(relations);
             FlowRepositoryContext.getInstance().save(flowWork);
             return flowWork;
         }
@@ -90,25 +103,6 @@ public class FlowWorkBuilder {
                 }
             }
             return null;
-        }
-
-        private void relationNodes(String[] codes) {
-            int length = codes.length;
-            if (length >= 2) {
-                String first = codes[0];
-                FlowNode firstNode = getFlowNodeByCode(first);
-                if (firstNode == null) {
-                    throw new RuntimeException(first+" not found node");
-                }
-                String next = codes[1];
-                FlowNode nexNode = getFlowNodeByCode(next);
-                if (nexNode == null) {
-                    throw new RuntimeException(next+" not found node");
-                }
-                nexNode.setParentCode(first);
-                firstNode.addNextNode(nexNode);
-                relationNodes(Arrays.copyOfRange(codes, 1, length));
-            }
         }
     }
 

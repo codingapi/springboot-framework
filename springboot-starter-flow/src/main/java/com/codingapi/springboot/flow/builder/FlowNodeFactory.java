@@ -7,8 +7,6 @@ import com.codingapi.springboot.flow.em.NodeType;
 import com.codingapi.springboot.flow.matcher.IOperatorMatcher;
 import com.codingapi.springboot.flow.operator.IFlowOperator;
 import com.codingapi.springboot.flow.trigger.IErrTrigger;
-import com.codingapi.springboot.flow.trigger.IOutTrigger;
-import com.codingapi.springboot.flow.trigger.OverOutTrigger;
 import com.codingapi.springboot.flow.utils.IDGenerator;
 import lombok.AllArgsConstructor;
 
@@ -18,16 +16,16 @@ public class FlowNodeFactory {
     public static class Builder {
         private IFlowOperator createUser;
 
-        public FlowNode startNode(String id,String name, IOperatorMatcher operatorMatcher, IOutTrigger outTrigger) {
-            return startNode(id, name, FlowNode.VIEW_DEFAULT, operatorMatcher, outTrigger);
+        public FlowNode startNode(String id,String name, IOperatorMatcher operatorMatcher) {
+            return startNode(id, name, FlowNode.VIEW_DEFAULT, operatorMatcher);
         }
 
-        public FlowNode startNode(String name, IOperatorMatcher operatorMatcher, IOutTrigger outTrigger) {
-            return startNode(IDGenerator.generator(), name, FlowNode.VIEW_DEFAULT, operatorMatcher, outTrigger);
+        public FlowNode startNode(String name, IOperatorMatcher operatorMatcher) {
+            return startNode(IDGenerator.generator(), name, FlowNode.VIEW_DEFAULT, operatorMatcher);
         }
 
 
-        public FlowNode startNode(String id,String name, String view, IOperatorMatcher operatorMatcher, IOutTrigger outTrigger) {
+        public FlowNode startNode(String id,String name, String view, IOperatorMatcher operatorMatcher) {
             FlowNode flowNode = new FlowNode();
             flowNode.setId(id);
             flowNode.setName(name);
@@ -39,8 +37,7 @@ public class FlowNodeFactory {
             flowNode.setCreateTime(System.currentTimeMillis());
             flowNode.setUpdateTime(System.currentTimeMillis());
             flowNode.setCreateUser(createUser);
-            flowNode.setOutOperatorMatcher(operatorMatcher);
-            flowNode.setOutTrigger(outTrigger);
+            flowNode.setOperatorMatcher(operatorMatcher);
             return flowNode;
         }
 
@@ -55,7 +52,6 @@ public class FlowNodeFactory {
             flowNode.setType(NodeType.OVER);
             flowNode.setCode(FlowNode.CODE_OVER);
             flowNode.setView(FlowNode.VIEW_DEFAULT);
-            flowNode.setOutTrigger(new OverOutTrigger());
             flowNode.setTitleCreator(new DefaultTitleCreator());
             flowNode.setFlowType(FlowType.NOT_SIGN);
             flowNode.setCreateTime(System.currentTimeMillis());
@@ -67,18 +63,16 @@ public class FlowNodeFactory {
         public FlowNode node(String name,
                              String code,
                              FlowType flowType,
-                             IOutTrigger outTrigger,
-                             IOperatorMatcher outOperatorMatcher) {
-            return node(IDGenerator.generator(),name, code, FlowNode.VIEW_DEFAULT, flowType, outTrigger, outOperatorMatcher);
+                             IOperatorMatcher operatorMatcher) {
+            return node(IDGenerator.generator(),name, code, FlowNode.VIEW_DEFAULT, flowType,  operatorMatcher);
         }
 
         public FlowNode node(String name,
                              String code,
                              String view,
                              FlowType flowType,
-                             IOutTrigger outTrigger,
-                             IOperatorMatcher outOperatorMatcher) {
-            return node(IDGenerator.generator(),name, code, view, flowType, outTrigger, outOperatorMatcher, null, null);
+                             IOperatorMatcher operatorMatcher) {
+            return node(IDGenerator.generator(),name, code, view, flowType, operatorMatcher, null);
         }
 
         public FlowNode node(String id,
@@ -86,9 +80,8 @@ public class FlowNodeFactory {
                              String code,
                              String view,
                              FlowType flowType,
-                             IOutTrigger outTrigger,
-                             IOperatorMatcher outOperatorMatcher) {
-            return node(id,name, code, view, flowType, outTrigger, outOperatorMatcher, null, null);
+                             IOperatorMatcher operatorMatcher) {
+            return node(id,name, code, view, flowType, operatorMatcher, null);
         }
 
 
@@ -97,10 +90,8 @@ public class FlowNodeFactory {
                              String code,
                              String view,
                              FlowType flowType,
-                             IOutTrigger outTrigger,
-                             IOperatorMatcher outOperatorMatcher,
-                             IErrTrigger errTrigger,
-                             IOperatorMatcher errOperatorMatcher) {
+                             IOperatorMatcher operatorMatcher,
+                             IErrTrigger errTrigger) {
             FlowNode flowNode = new FlowNode();
             flowNode.setId(id);
             flowNode.setName(name);
@@ -113,12 +104,8 @@ public class FlowNodeFactory {
             flowNode.setUpdateTime(System.currentTimeMillis());
             flowNode.setCreateUser(createUser);
 
-            flowNode.setOutTrigger(outTrigger);
-            flowNode.setOutOperatorMatcher(outOperatorMatcher);
-
+            flowNode.setOperatorMatcher(operatorMatcher);
             flowNode.setErrTrigger(errTrigger);
-            flowNode.setErrOperatorMatcher(errOperatorMatcher);
-
             return flowNode;
         }
 

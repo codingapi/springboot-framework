@@ -82,18 +82,15 @@ public class FlowNodeCreator {
                 String code = properties.getString("code");
                 String view = properties.getString("view");
                 String type = properties.getString("type");
-                String outTrigger = properties.getString("outTrigger");
                 String errTrigger = properties.getString("errTrigger");
 
                 String outOperatorMatcher = properties.getString("outOperatorMatcher");
-                String errOperatorMatcher = properties.getString("errOperatorMatcher");
 
                 FlowNode flowNode = FlowNodeFactory.Builder(operator)
                         .node(id, name, code, view, FlowType.parser(type),
-                                StringUtils.isBlank(outTrigger) ? null : new ScriptOutTrigger(outTrigger),
                                 StringUtils.isBlank(outOperatorMatcher) ? null : new ScriptOperatorMatcher(outOperatorMatcher),
-                                StringUtils.isBlank(errTrigger) ? null : new ScriptErrTrigger(errTrigger),
-                                StringUtils.isBlank(errOperatorMatcher) ? null : new ScriptOperatorMatcher(errOperatorMatcher));
+                                StringUtils.isBlank(errTrigger) ? null : new ScriptErrTrigger(errTrigger)
+                        );
                 this.nodes.add(flowNode);
             }
 
