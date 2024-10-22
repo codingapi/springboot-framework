@@ -5,7 +5,7 @@ import com.codingapi.springboot.flow.user.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserRepository implements FlowOperatorRepository<Long> {
+public class UserRepository implements FlowOperatorRepository {
 
     private final List<User> cache = new ArrayList<>();
 

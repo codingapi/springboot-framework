@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public class User implements IFlowOperator<Long>{
+public class User implements IFlowOperator{
 
     @Setter
     private long id;
@@ -16,7 +16,7 @@ public class User implements IFlowOperator<Long>{
     }
 
     @Override
-    public Long getUserId() {
+    public long getUserId() {
         return id;
     }
 }

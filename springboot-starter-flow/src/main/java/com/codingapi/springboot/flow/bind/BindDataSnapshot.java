@@ -3,8 +3,10 @@ package com.codingapi.springboot.flow.bind;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.SneakyThrows;
 
+/**
+ * 数据快照
+ */
 @Setter
 @Getter
 public class BindDataSnapshot {
@@ -28,8 +30,11 @@ public class BindDataSnapshot {
     private String clazzName;
 
 
-    @SneakyThrows
     public IBindData toBindData(){
-        return JSONObject.parseObject(snapshot,(Class<? extends IBindData>) Class.forName(clazzName));
+        try {
+            return JSONObject.parseObject(snapshot, (Class<? extends IBindData>) Class.forName(clazzName));
+        }catch (Exception e){
+            throw new IllegalArgumentException("bind data error");
+        }
     }
 }

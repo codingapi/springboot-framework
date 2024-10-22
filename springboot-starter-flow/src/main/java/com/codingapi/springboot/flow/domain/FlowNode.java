@@ -1,12 +1,21 @@
 package com.codingapi.springboot.flow.domain;
 
+import com.codingapi.springboot.flow.bind.BindDataSnapshot;
+import com.codingapi.springboot.flow.content.FlowContent;
 import com.codingapi.springboot.flow.em.ApprovalType;
+import com.codingapi.springboot.flow.em.FlowStatus;
 import com.codingapi.springboot.flow.em.NodeType;
+import com.codingapi.springboot.flow.em.RecodeType;
+import com.codingapi.springboot.flow.error.ErrorResult;
+import com.codingapi.springboot.flow.error.IErrTrigger;
 import com.codingapi.springboot.flow.generator.ITitleGenerator;
 import com.codingapi.springboot.flow.matcher.IOperatorMatcher;
-import com.codingapi.springboot.flow.trigger.IErrTrigger;
+import com.codingapi.springboot.flow.record.FlowRecord;
+import com.codingapi.springboot.flow.user.IFlowOperator;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 /**
  * 流程节点
@@ -78,11 +87,9 @@ public class FlowNode {
     private IErrTrigger errTrigger;
 
 
-
-
     public FlowNode(String id, String name,
                     String code, String view,
-                    NodeType type,ApprovalType approvalType,
+                    NodeType type, ApprovalType approvalType,
                     ITitleGenerator titleGenerator,
                     IOperatorMatcher operatorMatcher) {
         this.id = id;
@@ -98,4 +105,84 @@ public class FlowNode {
     }
 
 
+    /**
+     * 匹配操作者
+     *
+     * @param flowContent 操作内容
+     * @return 是否匹配
+     */
+    public boolean matcher(FlowContent flowContent) {
+        List<Long> ids = this.operatorMatcher.matcher(flowContent);
+        return ids.contains(flowContent.getCurrentOperator().getUserId());
+    }
+
+
+    /**
+     * 开始流程
+     *
+     * @param workId          流程设计id
+     * @param processId       流程id
+     * @param title           流程标题
+     * @param createOperator  流程操作者
+     * @param currentOperator 当前操作者
+     * @param snapshot        快照数据
+     * @param opinion         审批意见
+     * @return 流程记录
+     */
+    public FlowRecord createRecord(long workId,
+                                   String processId,
+                                   String title,
+                                   IFlowOperator createOperator,
+                                   IFlowOperator currentOperator,
+                                   BindDataSnapshot snapshot,
+                                   Opinion opinion) {
+        FlowRecord record = new FlowRecord();
+        record.setProcessId(processId);
+        record.setNodeId(this.id);
+        record.setCreateTime(System.currentTimeMillis());
+        record.setWorkId(workId);
+        record.setFlowStatus(FlowStatus.RUNNING);
+        record.setCreateOperatorId(createOperator.getUserId());
+        record.setBindClass(snapshot.getClazzName());
+        record.setOpinion(opinion);
+        record.setCurrentOperatorId(currentOperator.getUserId());
+        record.setPreId(0);
+        record.setTitle(title);
+        record.setTimeoutTime(System.currentTimeMillis() + this.timeout);
+        record.setRecodeType(RecodeType.TODO);
+        record.setErrMessage(null);
+        record.setSnapshotId(snapshot.getId());
+        return record;
+    }
+
+    /**
+     * 异常匹配
+     *
+     * @param flowContent 操作内容
+     */
+    public ErrorResult errMatcher(FlowContent flowContent) {
+        if (errTrigger != null) {
+            return errTrigger.trigger(flowContent);
+        }
+        return null;
+    }
+
+    /**
+     * 是否有异常触发器
+     *
+     * @return 是否有异常触发器
+     */
+    public boolean hasErrTrigger() {
+        return errTrigger != null;
+    }
+
+    /**
+     * 生成标题
+     *
+     * @param flowContent 流程内容
+     * @return 标题
+     */
+    public String generateTitle(FlowContent flowContent) {
+        return titleGenerator.generate(flowContent);
+    }
 }

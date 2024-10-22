@@ -20,7 +20,7 @@ public class FlowWorkBuilder {
     }
 
 
-    public static FlowWorkBuilder builder(IFlowOperator<?> flowOperator) {
+    public static FlowWorkBuilder builder(IFlowOperator flowOperator) {
         return new FlowWorkBuilder(new FlowWork(flowOperator));
     }
 

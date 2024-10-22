@@ -1,5 +1,7 @@
 package com.codingapi.springboot.flow.build;
 
+import com.codingapi.springboot.flow.content.FlowContent;
+import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.em.ApprovalType;
 import com.codingapi.springboot.flow.generator.ITitleGenerator;
@@ -8,6 +10,8 @@ import com.codingapi.springboot.flow.repository.UserRepository;
 import com.codingapi.springboot.flow.trigger.IOutTrigger;
 import com.codingapi.springboot.flow.user.User;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -22,13 +26,27 @@ public class FlowBuildTest {
         userRepository.save(user);
 
         ITitleGenerator titleGenerator = new ITitleGenerator() {
-
+            @Override
+            public String generate(FlowContent flowContent) {
+                User user = (User) flowContent.getCurrentOperator();
+                return String.format("%s发起了请假申请", user.getName());
+            }
         };
 
         IOperatorMatcher operatorMatcher = new IOperatorMatcher() {
+
+            @Override
+            public List<Long> matcher(FlowContent flowContent) {
+                return List.of(flowContent.getCurrentOperator().getUserId());
+            }
         };
 
         IOutTrigger outTrigger = new IOutTrigger() {
+
+            @Override
+            public FlowNode trigger(FlowContent flowContent) {
+                return null;
+            }
         };
 
         FlowWork flowWork = FlowWorkBuilder.builder(user)

@@ -1,11 +1,18 @@
 package com.codingapi.springboot.flow.domain;
 
+import com.codingapi.springboot.flow.bind.BindDataSnapshot;
+import com.codingapi.springboot.flow.content.FlowContent;
+import com.codingapi.springboot.flow.error.ErrorResult;
+import com.codingapi.springboot.flow.error.NodeResult;
+import com.codingapi.springboot.flow.error.OperatorResult;
+import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import com.codingapi.springboot.flow.utils.IDGenerator;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -32,7 +39,7 @@ public class FlowWork {
     /**
      * 流程创建者
      */
-    private IFlowOperator<?> createUser;
+    private IFlowOperator createUser;
     /**
      * 创建时间
      */
@@ -66,7 +73,12 @@ public class FlowWork {
     private String schema;
 
 
-    public FlowWork(IFlowOperator<?> createUser) {
+    /**
+     * 构造函数
+     *
+     * @param createUser 创建者
+     */
+    public FlowWork(IFlowOperator createUser) {
         this.createUser = createUser;
         this.createTime = System.currentTimeMillis();
         this.updateTime = System.currentTimeMillis();
@@ -95,16 +107,27 @@ public class FlowWork {
     public void addNode(FlowNode node) {
         List<String> codes = nodes.stream().map(FlowNode::getCode).toList();
         if (codes.contains(node.getCode())) {
-            throw new RuntimeException("node code is exist");
+            throw new IllegalArgumentException("node code is exist");
         }
         nodes.add(node);
     }
 
+    /**
+     * 添加关系
+     *
+     * @param relation 关系
+     */
     public void addRelation(FlowRelation relation) {
         relations.add(relation);
     }
 
 
+    /**
+     * 获取节点
+     *
+     * @param code 节点编码
+     * @return 节点
+     */
     public FlowNode getNodeByCode(String code) {
         for (FlowNode node : nodes) {
             if (node.getCode().equals(code)) {
@@ -114,12 +137,102 @@ public class FlowWork {
         return null;
     }
 
+
+    /**
+     * 获取开始节点
+     *
+     * @return 开始节点
+     */
+    private FlowNode getStartNode() {
+        return getNodeByCode(FlowNode.CODE_START);
+    }
+
     /**
      * 生成流程id
+     *
      * @return 流程id
      */
-    public String generateProcessId(){
+    public String generateProcessId() {
         return IDGenerator.generate();
     }
+
+
+    /**
+     * 启动流程
+     *
+     * @param operator 操作者
+     * @param snapshot 绑定数据
+     * @param opinion  意见
+     * @return 流程记录
+     */
+    public List<FlowRecord> startFlow(IFlowOperator operator, BindDataSnapshot snapshot, Opinion opinion) {
+        FlowNode start = this.getStartNode();
+        if (start == null) {
+            throw new IllegalArgumentException("start node not found");
+        }
+
+        long workId = this.getId();
+        String processId = generateProcessId();
+        FlowContent content = new FlowContent(this, start, operator, operator, snapshot, opinion);
+        String recordTitle = start.generateTitle(content);
+        if (start.matcher(content)) {
+            return Collections.singletonList(start.createRecord(workId, processId, recordTitle, operator, operator, snapshot, opinion));
+        }
+        List<FlowRecord> errorRecordList = this.errMatcher(start, processId, operator, operator, snapshot, opinion);
+        if (errorRecordList.isEmpty()) {
+            throw new IllegalArgumentException("operator not match.");
+        }
+        return errorRecordList;
+    }
+
+
+    /**
+     * 异常匹配
+     *
+     * @param currentNode     当前节点
+     * @param processId       流程id
+     * @param createOperator  创建操作者
+     * @param currentOperator 当前操作者
+     * @param snapshot        绑定数据
+     * @param opinion         意见
+     * @return 流程记录
+     */
+    private List<FlowRecord> errMatcher(FlowNode currentNode, String processId, IFlowOperator createOperator, IFlowOperator currentOperator, BindDataSnapshot snapshot, Opinion opinion) {
+        if (currentNode.hasErrTrigger()) {
+            FlowContent flowContent = new FlowContent(this, currentNode, createOperator, currentOperator, snapshot, opinion);
+            ErrorResult errorResult = currentNode.errMatcher(flowContent);
+            if (errorResult == null) {
+                throw new IllegalArgumentException("errMatcher match error.");
+            }
+
+            // 匹配操作者
+            if (errorResult.isOperator()) {
+                List<FlowRecord> records = new ArrayList<>();
+                List<IFlowOperator> operators = ((OperatorResult) errorResult).getOperators();
+                for (IFlowOperator operator : operators) {
+                    FlowContent content = new FlowContent(this, currentNode, createOperator, operator, snapshot, opinion);
+                    if (currentNode.matcher(content)) {
+                        String recordTitle = currentNode.generateTitle(content);
+                        FlowRecord record = currentNode.createRecord(this.getId(), processId, recordTitle, createOperator, operator, snapshot, opinion);
+                        records.add(record);
+                    }
+                }
+                return records;
+            }
+            // 匹配节点
+            if (errorResult.isNode()) {
+                String nodeCode = ((NodeResult) errorResult).getNode();
+                FlowNode node = getNodeByCode(nodeCode);
+                FlowContent content = new FlowContent(this, node, createOperator, currentOperator, snapshot, opinion);
+                if (node.matcher(content)) {
+                    String recordTitle =  node.generateTitle(content);
+                    return Collections.singletonList(node.createRecord(this.getId(), processId, recordTitle, createOperator, currentOperator, snapshot, opinion));
+                }
+            }
+            throw new IllegalArgumentException("errMatcher not match.");
+        }
+        throw new IllegalArgumentException("operator not match.");
+    }
+
 
 }

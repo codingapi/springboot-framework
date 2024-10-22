@@ -6,10 +6,8 @@ import java.util.List;
 
 /**
  * 流程操作者 仓库
- *
- * @param <ID> ID
  */
-public interface FlowOperatorRepository<ID> {
+public interface FlowOperatorRepository {
 
     /**
      * 根据ID查询流程用户
@@ -17,6 +15,6 @@ public interface FlowOperatorRepository<ID> {
      * @param ids IDs
      * @return List of IFlowOperator
      */
-    List<? extends IFlowOperator<ID>> findByIds(List<ID> ids);
+    List<? extends IFlowOperator> findByIds(List<Long> ids);
 
 }

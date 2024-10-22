@@ -1,18 +1,25 @@
 package com.codingapi.springboot.flow.record;
 
-import com.codingapi.springboot.flow.bind.BindDataSnapshot;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.em.FlowStatus;
 import com.codingapi.springboot.flow.em.RecodeType;
 import lombok.Getter;
+import lombok.Setter;
 
+@Setter
 @Getter
-public class FlowRecord<ID> {
+public class FlowRecord {
 
     /**
      * 流程记录id
      */
     private long id;
+
+    /**
+     * 上一个流程记录id
+     */
+    private long preId;
+
     /**
      * 工作id
      */
@@ -26,6 +33,7 @@ public class FlowRecord<ID> {
      * 节点
      */
     private String nodeId;
+
     /**
      * 流程标题
      */
@@ -33,7 +41,7 @@ public class FlowRecord<ID> {
     /**
      * 当前操作者
      */
-    private ID currentOperatorId;
+    private long currentOperatorId;
     /**
      * 节点状态 | 待办、已办
      */
@@ -51,7 +59,7 @@ public class FlowRecord<ID> {
     /**
      * 发起者id
      */
-    private ID createOperatorId;
+    private long createOperatorId;
     /**
      * 审批意见
      */
@@ -64,8 +72,14 @@ public class FlowRecord<ID> {
      * 异常信息
      */
     private String errMessage;
+
+    /**
+     * 绑定数据的类
+     */
+    private String bindClass;
+
     /**
      * 绑定数据的快照
      */
-    private BindDataSnapshot snapshotId;
+    private long snapshotId;
 }

@@ -15,4 +15,9 @@ public class Opinion {
         this.opinion = opinion;
         this.success = success;
     }
+
+
+    public static Opinion success(String opinion){
+        return new Opinion(opinion,true);
+    }
 }

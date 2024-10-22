@@ -2,6 +2,9 @@ package com.codingapi.springboot.flow.bind;
 
 import com.alibaba.fastjson.JSONObject;
 
+/**
+ * 数据绑定接口
+ */
 public interface IBindData {
 
     /**

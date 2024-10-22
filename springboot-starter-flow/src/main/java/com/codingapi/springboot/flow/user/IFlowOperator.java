@@ -1,12 +1,12 @@
 package com.codingapi.springboot.flow.user;
 
-public interface IFlowOperator<ID> {
+public interface IFlowOperator {
 
     /**
      * 获取用户ID
      *
      * @return ID
      */
-    ID getUserId();
+    long getUserId();
 
 }
