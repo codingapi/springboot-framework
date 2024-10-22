@@ -1,5 +1,6 @@
-package com.codingapi.springboot.flow.build;
+package com.codingapi.springboot.flow.test;
 
+import com.codingapi.springboot.flow.build.FlowWorkBuilder;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.em.ApprovalType;
 import com.codingapi.springboot.flow.matcher.OperatorMatcher;
@@ -9,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FlowBuildTest {
+public class BuildTest {
 
     private final UserRepository userRepository = new UserRepository();
 
