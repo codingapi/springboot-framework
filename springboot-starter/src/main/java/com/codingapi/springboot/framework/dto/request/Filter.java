@@ -52,6 +52,14 @@ public class Filter {
         return relation == Relation.LIKE;
     }
 
+    public boolean isLeftLike() {
+        return relation == Relation.LEFT_LIKE;
+    }
+
+    public boolean isRightLike() {
+        return relation == Relation.RIGHT_LIKE;
+    }
+
     public boolean isBetween() {
         return relation == Relation.BETWEEN;
     }

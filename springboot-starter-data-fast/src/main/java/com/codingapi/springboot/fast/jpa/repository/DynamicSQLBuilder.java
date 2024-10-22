@@ -103,6 +103,16 @@ class DynamicSQLBuilder {
             params.add("%" + filter.getValue()[0] + "%");
             paramIndex++;
         }
+        if (filter.isLeftLike()) {
+            hql.append(filter.getKey()).append(" LIKE ?").append(paramIndex);
+            params.add("%" + filter.getValue()[0]);
+            paramIndex++;
+        }
+        if (filter.isRightLike()) {
+            hql.append(filter.getKey()).append(" LIKE ?").append(paramIndex);
+            params.add(filter.getValue()[0] + "%");
+            paramIndex++;
+        }
         if (filter.isIn()) {
             hql.append(filter.getKey()).append(" IN (").append("?").append(paramIndex).append(")");
             params.add(Arrays.asList(filter.getValue()));
