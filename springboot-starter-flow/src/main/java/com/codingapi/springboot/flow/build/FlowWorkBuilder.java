@@ -45,6 +45,7 @@ public class FlowWorkBuilder {
     }
 
     public FlowWork build() {
+        work.verify();
         return work;
     }
 
@@ -54,6 +55,10 @@ public class FlowWorkBuilder {
         public Nodes start(String name, String view, TitleGenerator titleGenerator, OperatorMatcher operatorMatcher) {
             work.addNode(new FlowNode(IDGenerator.generate(), name, FlowNode.CODE_START, view, NodeType.START, ApprovalType.NOT_SIGN, titleGenerator, operatorMatcher, 0, null));
             return this;
+        }
+
+        public Nodes node(String name, String code, String view, ApprovalType approvalType,  OperatorMatcher operatorMatcher) {
+            return node(name, code, view, approvalType, TitleGenerator.defaultTitleGenerator(), operatorMatcher);
         }
 
         public Nodes node(String name, String code, String view, ApprovalType approvalType, TitleGenerator titleGenerator, OperatorMatcher operatorMatcher) {
@@ -71,6 +76,7 @@ public class FlowWorkBuilder {
         }
 
         public FlowWork build() {
+            work.verify();
             return work;
         }
     }
@@ -96,6 +102,7 @@ public class FlowWorkBuilder {
         }
 
         public FlowWork build() {
+            work.verify();
             return work;
         }
 

@@ -10,6 +10,7 @@ import com.codingapi.springboot.flow.user.IFlowOperator;
 import com.codingapi.springboot.flow.utils.IDGenerator;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -88,6 +89,18 @@ public class FlowWork {
         this.relations = new ArrayList<>();
     }
 
+    public void verify() {
+        if (this.nodes == null || this.nodes.isEmpty()) {
+            throw new IllegalArgumentException("nodes is empty");
+        }
+        if (this.relations == null || this.relations.isEmpty()) {
+            throw new IllegalArgumentException("relations is empty");
+        }
+        if(!StringUtils.hasLength(title)){
+            throw new IllegalArgumentException("title is empty");
+        }
+    }
+
 
     /**
      * schema解析流程设计
@@ -96,6 +109,7 @@ public class FlowWork {
      */
     public void schema(String schema) {
         this.schema = schema;
+        this.updateTime = System.currentTimeMillis();
         //todo 解析schema
     }
 
@@ -110,6 +124,7 @@ public class FlowWork {
             throw new IllegalArgumentException("node code is exist");
         }
         nodes.add(node);
+        this.updateTime = System.currentTimeMillis();
     }
 
     /**
@@ -119,6 +134,7 @@ public class FlowWork {
      */
     public void addRelation(FlowRelation relation) {
         relations.add(relation);
+        this.updateTime = System.currentTimeMillis();
     }
 
 

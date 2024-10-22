@@ -2,7 +2,6 @@ package com.codingapi.springboot.flow.build;
 
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.em.ApprovalType;
-import com.codingapi.springboot.flow.generator.TitleGenerator;
 import com.codingapi.springboot.flow.matcher.OperatorMatcher;
 import com.codingapi.springboot.flow.repository.UserRepository;
 import com.codingapi.springboot.flow.user.User;
@@ -20,17 +19,13 @@ public class FlowBuildTest {
         User user = new User("张三");
         userRepository.save(user);
 
-        TitleGenerator titleGenerator = TitleGenerator.defaultTitleGenerator();
-
-        OperatorMatcher operatorMatcher = OperatorMatcher.anyOperatorMatcher();
-
         FlowWork flowWork = FlowWorkBuilder.builder(user)
                 .title("请假流程")
                 .nodes()
-                .node("开始节点", "start", "default", ApprovalType.NOT_SIGN, titleGenerator, operatorMatcher)
-                .node("部门领导审批", "dept", "default", ApprovalType.NOT_SIGN, titleGenerator, operatorMatcher)
-                .node("总经理审批", "manager", "default", ApprovalType.NOT_SIGN, titleGenerator, operatorMatcher)
-                .node("结束节点", "over", "default", ApprovalType.NOT_SIGN, titleGenerator, operatorMatcher)
+                .node("开始节点", "start", "default", ApprovalType.NOT_SIGN, OperatorMatcher.anyOperatorMatcher())
+                .node("部门领导审批", "dept", "default", ApprovalType.NOT_SIGN, OperatorMatcher.anyOperatorMatcher())
+                .node("总经理审批", "manager", "default", ApprovalType.NOT_SIGN, OperatorMatcher.anyOperatorMatcher())
+                .node("结束节点", "over", "default", ApprovalType.NOT_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .relations()
                 .relation("部门领导审批", "start", "dept", false)
                 .relation("总经理审批", "dept", "manager", false)
