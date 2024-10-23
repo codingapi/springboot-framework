@@ -58,7 +58,9 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository, FlowRecor
 
     @Override
     public void finishFlowRecordByProcessId(String processId) {
-        cache.stream().filter(record -> record.getProcessId().equals(processId)).forEach(FlowRecord::finish);
+        cache.stream()
+                .filter(record -> record.getProcessId().equals(processId))
+                .forEach(FlowRecord::finish);
     }
 
     @Override

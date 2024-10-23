@@ -179,7 +179,22 @@ public class FlowRecord {
         this.snapshotId = snapshot.getId();
         this.bindClass = snapshot.getClazzName();
         this.opinion = opinion;
+    }
 
+    /**
+     * 转交流程
+     */
+    public void transfer(IFlowOperator flowOperator,BindDataSnapshot snapshot, Opinion opinion) {
+        if (flowOperator.getUserId() != this.currentOperatorId) {
+            throw new IllegalArgumentException("current operator is not match");
+        }
+        this.read();
+        this.pass = true;
+        this.recodeType = RecodeType.TRANSFER;
+        this.updateTime = System.currentTimeMillis();
+        this.snapshotId = snapshot.getId();
+        this.bindClass = snapshot.getClazzName();
+        this.opinion = opinion;
     }
 
     /**
@@ -244,7 +259,7 @@ public class FlowRecord {
      * 审批通过
      */
     public boolean isPass() {
-        return this.opinion.isSuccess() && isDone();
+        return this.opinion!=null && this.opinion.isSuccess() && isDone();
     }
 
     public void matcherOperator(IFlowOperator currentOperator) {
@@ -259,5 +274,51 @@ public class FlowRecord {
     public void recall() {
         this.recodeType = RecodeType.TODO;
         this.updateTime = System.currentTimeMillis();
+    }
+
+
+    public FlowRecord copy() {
+        FlowRecord record = new FlowRecord();
+        record.setId(this.id);
+        record.setPreId(this.preId);
+        record.setWorkId(this.workId);
+        record.setProcessId(this.processId);
+        record.setNodeCode(this.nodeCode);
+        record.setTitle(this.title);
+        record.setCurrentOperatorId(this.currentOperatorId);
+        record.setRecodeType(this.recodeType);
+        record.setPass(this.pass);
+        record.setCreateTime(this.createTime);
+        record.setUpdateTime(this.updateTime);
+        record.setFinishTime(this.finishTime);
+        record.setTimeoutTime(this.timeoutTime);
+        record.setCreateOperatorId(this.createOperatorId);
+        record.setOpinion(this.opinion);
+        record.setFlowStatus(this.flowStatus);
+        record.setErrMessage(this.errMessage);
+        record.setBindClass(this.bindClass);
+        record.setSnapshotId(this.snapshotId);
+        record.setRead(this.read);
+        record.setInterfere(this.interfere);
+        record.setReadTime(this.readTime);
+        return record;
+    }
+
+    /**
+     * 转待办
+     * @param title     标题
+     * @param operator  操作者
+     */
+    public void toTodo(String title,IFlowOperator operator) {
+        this.id = 0;
+        this.recodeType = RecodeType.TODO;
+        this.flowStatus = FlowStatus.RUNNING;
+        this.updateTime = 0;
+        this.readTime = 0;
+        this.read = false;
+        this.title = title;
+        this.opinion = null;
+        this.pass = false;
+        this.currentOperatorId = operator.getUserId();
     }
 }

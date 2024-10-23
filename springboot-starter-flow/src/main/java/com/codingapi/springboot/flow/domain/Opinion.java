@@ -14,8 +14,8 @@ public class Opinion {
     public static final int TYPE_DEFAULT = 0;
     // 非会签时自动审批
     public static final int TYPE_UN_SIGN_AUTO = 1;
-    // 完成是自动审批
-    public static final int TYPE_FINISH_AUTO = 2;
+    // 转办审批
+    public static final int TYPE_TRANSFER = 2;
 
     /**
      * 审批意见
@@ -26,8 +26,7 @@ public class Opinion {
      */
     private final boolean success;
     /**
-     * 是否自动审批
-     * 当非会签时，若多人审批的情况下，其中一个人审批了其他会会自动审批
+     * 意见类型
      */
     private final int type;
 
@@ -35,7 +34,18 @@ public class Opinion {
         this.advice = advice;
         this.success = success;
         this.type = type;
+    }
 
+    public boolean isTransfer() {
+        return type == TYPE_TRANSFER;
+    }
+
+    public boolean isUnSignAuto() {
+        return type == TYPE_UN_SIGN_AUTO;
+    }
+
+    public boolean isDefault() {
+        return type == TYPE_DEFAULT;
     }
 
     public static Opinion pass(String advice) {
@@ -46,12 +56,12 @@ public class Opinion {
         return new Opinion(advice, false, TYPE_DEFAULT);
     }
 
-    public static Opinion unSignAutoSuccess() {
-        return new Opinion("非会签自动审批", true, TYPE_UN_SIGN_AUTO);
+    public static Opinion transfer(String advice) {
+        return new Opinion(advice, true, TYPE_TRANSFER);
     }
 
-    public static Opinion finishAutoSuccess() {
-        return new Opinion("流程结束自动审批", true, TYPE_FINISH_AUTO);
+    public static Opinion unSignAutoSuccess() {
+        return new Opinion("非会签自动审批", true, TYPE_UN_SIGN_AUTO);
     }
 
 }

@@ -1,7 +1,9 @@
 package com.codingapi.springboot.flow.event;
 
+import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import com.codingapi.springboot.framework.event.ISyncEvent;
+import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
@@ -9,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
  * 流程审批事件
  */
 @Slf4j
+@Getter
 @ToString
 public class FlowApprovalEvent implements ISyncEvent {
     // 创建流程
@@ -23,14 +26,29 @@ public class FlowApprovalEvent implements ISyncEvent {
     public static final int STATE_RECALL = 5;
     // 流程完成
     public static final int STATE_FINISH = 6;
+    // 创建待办
+    public static final int STATE_TODO = 7;
+    // 催办
+    public static final int STATE_URGE = 8;
+
 
     private final int state;
     private final IFlowOperator operator;
+    private final FlowRecord flowRecord;
 
-    public FlowApprovalEvent(int state,IFlowOperator operator) {
+    public FlowApprovalEvent(int state,FlowRecord flowRecord,IFlowOperator operator) {
         this.state = state;
         this.operator = operator;
+        this.flowRecord = flowRecord;
         log.info("FlowApprovalEvent:{}", this);
+    }
+
+    public boolean isUrge(){
+        return state == STATE_URGE;
+    }
+
+    public boolean isTodo(){
+        return state == STATE_TODO;
     }
 
     public boolean isCreate() {
