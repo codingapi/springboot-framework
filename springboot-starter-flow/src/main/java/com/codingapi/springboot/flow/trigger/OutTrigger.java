@@ -37,7 +37,7 @@ public class OutTrigger {
     /**
      * 触发
      * @param flowContent 流程内容
-     * @return 下一个节点 code
+     * @return true 进入下一节点，false 则返回上一节点
      */
     public boolean trigger(FlowContent flowContent){
         return (Boolean) runtime.invokeMethod("run", flowContent);

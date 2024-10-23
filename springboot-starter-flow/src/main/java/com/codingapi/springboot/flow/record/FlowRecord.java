@@ -1,7 +1,6 @@
 package com.codingapi.springboot.flow.record;
 
 import com.codingapi.springboot.flow.bind.BindDataSnapshot;
-import com.codingapi.springboot.flow.bind.IBindData;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.em.FlowStatus;
 import com.codingapi.springboot.flow.em.RecodeType;
@@ -93,43 +92,65 @@ public class FlowRecord {
      */
     private long snapshotId;
 
+    /**
+     * 是否已读
+     */
+    private boolean read;
+
+    /**
+     * 已读时间
+     */
+    private long readTime;
+
+    /**
+     * 已读
+     */
+    public void read() {
+        this.read = true;
+        this.readTime = System.currentTimeMillis();
+    }
 
     /**
      * 提交状态校验
      * 是否可以提交
      */
-    public void submitStateVerify(){
-        if( flowStatus == FlowStatus.FINISH){
+    public void submitStateVerify() {
+        if (flowStatus == FlowStatus.FINISH) {
             throw new IllegalArgumentException("flow is finish");
         }
-        if(recodeType == RecodeType.DONE){
+        if (recodeType == RecodeType.DONE) {
             throw new IllegalArgumentException("flow is done");
         }
     }
 
     /**
      * 提交流程
+     *
      * @param flowOperator 操作者
-     * @param snapshot 绑定数据
-     * @param opinion 意见
+     * @param snapshot     绑定数据
+     * @param opinion      意见
      */
-    public void done(IFlowOperator flowOperator, BindDataSnapshot snapshot,Opinion opinion){
-        if(flowOperator.getUserId() != this.currentOperatorId){
+    public void done(IFlowOperator flowOperator, BindDataSnapshot snapshot, Opinion opinion) {
+        if (flowOperator.getUserId() != this.currentOperatorId) {
             throw new IllegalArgumentException("current operator is not match");
         }
+        this.read();
         this.recodeType = RecodeType.DONE;
         this.updateTime = System.currentTimeMillis();
         this.snapshotId = snapshot.getId();
         this.bindClass = snapshot.getClazzName();
         this.opinion = opinion;
+
     }
 
     /**
      * 自动提交流程
+     *
      * @param flowOperator 操作者
-     * @param snapshot 绑定数据
+     * @param snapshot     绑定数据
      */
-    public void autoDone(IFlowOperator flowOperator, BindDataSnapshot snapshot){
+    public void autoDone(IFlowOperator flowOperator, BindDataSnapshot snapshot) {
+        this.read();
         this.currentOperatorId = flowOperator.getUserId();
         this.recodeType = RecodeType.DONE;
         this.updateTime = System.currentTimeMillis();
@@ -143,5 +164,12 @@ public class FlowRecord {
      */
     public boolean isDone() {
         return this.recodeType == RecodeType.DONE;
+    }
+
+    /**
+     * 审批通过
+     */
+    public boolean isPass() {
+        return this.opinion.isSuccess() && isDone();
     }
 }

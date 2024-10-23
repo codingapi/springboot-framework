@@ -13,6 +13,7 @@ import com.codingapi.springboot.flow.trigger.OutTrigger;
 import com.codingapi.springboot.flow.user.User;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,7 +52,7 @@ class ScriptTest {
         long now = System.currentTimeMillis();
         Leave leave = new Leave("我要请假");
 
-        FlowContent flowContent = new FlowContent(flowWork, flowWork.getNodeByCode("start"), user, user, leave, Opinion.success("同意"));
+        FlowContent flowContent = new FlowContent(flowWork, flowWork.getNodeByCode("start"), user, user, leave, Opinion.success("同意"),new ArrayList<>());
 
         List<Long> ids = matcher.matcher(flowContent);
         assertTrue(ids.contains(user.getUserId()));

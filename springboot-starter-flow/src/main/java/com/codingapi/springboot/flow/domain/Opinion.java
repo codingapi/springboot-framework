@@ -33,4 +33,6 @@ public class Opinion {
     public static Opinion autoSuccess() {
         return new Opinion("自动审批", true);
     }
+
+
 }
