@@ -40,6 +40,13 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository, FlowRecor
     }
 
     @Override
+    public List<FlowRecord> findFlowRecordByProcessId(String processId) {
+        return cache.stream().filter(record -> record.getProcessId().equals(processId))
+                .sorted((o1, o2) -> (int) (o1.getCreateTime() - o2.getCreateTime()))
+                .toList();
+    }
+
+    @Override
     public List<FlowRecord> findAll() {
         return cache;
     }

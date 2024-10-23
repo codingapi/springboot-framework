@@ -3,10 +3,11 @@ package com.codingapi.springboot.flow.service;
 import com.codingapi.springboot.flow.bind.BindDataSnapshot;
 import com.codingapi.springboot.flow.bind.IBindData;
 import com.codingapi.springboot.flow.domain.FlowNode;
-import com.codingapi.springboot.flow.record.FlowProcess;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.event.FlowApprovalEvent;
+import com.codingapi.springboot.flow.pojo.FlowDetail;
+import com.codingapi.springboot.flow.record.FlowProcess;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.*;
 import com.codingapi.springboot.flow.user.IFlowOperator;
@@ -42,6 +43,7 @@ public class FlowService {
         flowWork.enableValidate();
         flowWork.verify();
 
+        // 保存流程
         FlowProcess flowProcess = flowWork.generateProcess(operator);
         flowProcessRepository.save(flowProcess);
 
@@ -72,6 +74,64 @@ public class FlowService {
 
 
     /**
+     * 流程详情
+     *
+     * @param recordId        流程记录id
+     * @param currentOperator 当前操作者
+     */
+    public FlowDetail detail(long recordId, IFlowOperator currentOperator) {
+        // 检测流程记录
+        FlowRecord flowRecord = flowRecordRepository.getFlowRecordById(recordId);
+        if (flowRecord == null) {
+            throw new IllegalArgumentException("flow record not found");
+        }
+        flowRecord.submitStateVerify();
+        flowRecord.matcherOperator(currentOperator);
+
+        if (!flowRecord.isRead()) {
+            flowRecord.read();
+            flowRecordRepository.update(flowRecord);
+        }
+
+        // 检测流程
+        FlowWork flowWork = flowProcessRepository.getFlowWorkByProcessId(flowRecord.getProcessId());
+        if (flowWork == null) {
+            throw new IllegalArgumentException("flow work not found");
+        }
+        flowWork.enableValidate();
+
+        BindDataSnapshot snapshot = flowBindDataRepository.getBindDataSnapshotById(flowRecord.getSnapshotId());
+        List<FlowRecord> flowRecords = flowRecordRepository.findFlowRecordByProcessId(flowRecord.getProcessId());
+        return new FlowDetail(flowRecord, snapshot, flowWork, flowRecords);
+    }
+
+
+    /**
+     * 保存流程
+     *
+     * @param recordId        流程记录id
+     * @param currentOperator 当前操作者
+     * @param bindData        绑定数据
+     */
+    public void save(long recordId, IFlowOperator currentOperator, IBindData bindData) {
+        // 检测流程记录
+        FlowRecord flowRecord = flowRecordRepository.getFlowRecordById(recordId);
+        if (flowRecord == null) {
+            throw new IllegalArgumentException("flow record not found");
+        }
+        flowRecord.submitStateVerify();
+        flowRecord.matcherOperator(currentOperator);
+
+        // 保存绑定数据
+        BindDataSnapshot snapshot = new BindDataSnapshot(flowRecord.getSnapshotId(), bindData);
+        flowBindDataRepository.update(snapshot);
+
+        flowRecord.update();
+        flowRecordRepository.update(flowRecord);
+    }
+
+
+    /**
      * 提交流程
      *
      * @param recordId        流程记录id
@@ -86,6 +146,7 @@ public class FlowService {
             throw new IllegalArgumentException("flow record not found");
         }
         flowRecord.submitStateVerify();
+        flowRecord.matcherOperator(currentOperator);
 
         // 检测流程
         FlowWork flowWork = flowProcessRepository.getFlowWorkByProcessId(flowRecord.getProcessId());

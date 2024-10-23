@@ -29,14 +29,18 @@ public class BindDataSnapshot {
      */
     private String clazzName;
 
-
-    public BindDataSnapshot(IBindData bindData) {
+    public BindDataSnapshot(long id,IBindData bindData) {
         if (bindData == null) {
             throw new IllegalArgumentException("bind data is null");
         }
         this.snapshot = bindData.toJsonSnapshot();
         this.clazzName = bindData.getClass().getName();
         this.createTime = System.currentTimeMillis();
+        this.id = id;
+    }
+
+    public BindDataSnapshot(IBindData bindData) {
+        this(0,bindData);
     }
 
     public IBindData toBindData() {

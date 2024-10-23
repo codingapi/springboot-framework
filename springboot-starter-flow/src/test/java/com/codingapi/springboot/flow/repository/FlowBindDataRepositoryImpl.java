@@ -19,4 +19,20 @@ public class FlowBindDataRepositoryImpl implements FlowBindDataRepository {
         }
     }
 
+    @Override
+    public void update(BindDataSnapshot snapshot) {
+        BindDataSnapshot old = getBindDataSnapshotById(snapshot.getId());
+        if (old != null) {
+           old.setSnapshot(snapshot.getSnapshot());
+        }
+    }
+
+    @Override
+    public BindDataSnapshot getBindDataSnapshotById(long id) {
+        return cache.stream().filter(snapshot -> snapshot.getId() == id).findFirst().orElse(null);
+    }
+
+    public List<BindDataSnapshot> findAll(){
+        return cache;
+    }
 }

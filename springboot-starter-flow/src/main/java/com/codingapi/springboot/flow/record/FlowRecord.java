@@ -122,6 +122,15 @@ public class FlowRecord {
         this.readTime = System.currentTimeMillis();
     }
 
+
+
+    /**
+     * 更新时间
+     */
+    public void update(){
+        this.updateTime = System.currentTimeMillis();
+    }
+
     /**
      * 提交状态校验
      * 是否可以提交
@@ -220,5 +229,11 @@ public class FlowRecord {
      */
     public boolean isPass() {
         return this.opinion.isSuccess() && isDone();
+    }
+
+    public void matcherOperator(IFlowOperator currentOperator) {
+        if (currentOperator.getUserId() != this.currentOperatorId) {
+            throw new IllegalArgumentException("current operator is not match");
+        }
     }
 }

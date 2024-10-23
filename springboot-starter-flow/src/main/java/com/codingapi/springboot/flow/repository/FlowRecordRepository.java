@@ -8,18 +8,21 @@ public interface FlowRecordRepository {
 
     /**
      * 保存流程记录
+     *
      * @param records 流程记录
      */
     void save(List<FlowRecord> records);
 
     /**
      * 更新流程记录
+     *
      * @param flowRecord 流程记录
      */
     void update(FlowRecord flowRecord);
 
     /**
      * 根据ID查询流程记录
+     *
      * @param id 流程记录ID
      * @return FlowRecord
      */
@@ -27,6 +30,7 @@ public interface FlowRecordRepository {
 
     /**
      * 根据前置ID查询流程记录
+     *
      * @param preId 前置ID
      * @return List of FlowRecord
      */
@@ -34,7 +38,14 @@ public interface FlowRecordRepository {
 
 
     /**
+     * 根据流程id查询流程记录
+     * @param processId 流程id
+     */
+    List<FlowRecord> findFlowRecordByProcessId(String processId);
+
+    /**
      * 根据流程id 修改所有的记录状态为已完成
+     *
      * @param processId 流程id
      */
     void finishFlowRecordByProcessId(String processId);

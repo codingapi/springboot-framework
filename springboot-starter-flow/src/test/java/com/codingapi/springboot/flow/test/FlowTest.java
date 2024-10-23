@@ -1,11 +1,13 @@
 package com.codingapi.springboot.flow.test;
 
+import com.codingapi.springboot.flow.bind.BindDataSnapshot;
 import com.codingapi.springboot.flow.build.FlowWorkBuilder;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.em.ApprovalType;
 import com.codingapi.springboot.flow.flow.Leave;
 import com.codingapi.springboot.flow.matcher.OperatorMatcher;
+import com.codingapi.springboot.flow.pojo.FlowDetail;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.*;
 import com.codingapi.springboot.flow.service.FlowService;
@@ -22,7 +24,7 @@ public class FlowTest {
     private final UserRepository userRepository = new UserRepository();
     private final FlowWorkRepository flowWorkRepository = new FlowWorkRepositoryImpl();
     private final FlowRecordRepositoryImpl flowRecordRepository = new FlowRecordRepositoryImpl();
-    private final FlowBindDataRepository flowBindDataRepository = new FlowBindDataRepositoryImpl();
+    private final FlowBindDataRepositoryImpl flowBindDataRepository = new FlowBindDataRepositoryImpl();
     private final LeaveRepository leaveRepository = new LeaveRepository();
     private final FlowProcessRepository flowProcessRepository = new FlowProcessRepositoryImpl();
     private final FlowService flowService = new FlowService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, userRepository,flowProcessRepository);
@@ -71,6 +73,14 @@ public class FlowTest {
 
         // 提交流程
         FlowRecord userTodo = userTodos.get(0);
+        // 保存流程
+        leave.setTitle("我要出去看看~~");
+        flowService.save(userTodo.getId(), user, leave);
+
+        FlowDetail flowDetail = flowService.detail(userTodo.getId(), user);
+        assertEquals("我要出去看看~~", ((Leave)flowDetail.getBindData()).getTitle());
+
+
         flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
 
         // 查看部门经理的待办
@@ -103,6 +113,9 @@ public class FlowTest {
         assertEquals(4, records.size());
         // 查看所有流程是否都已经结束
         assertTrue(records.stream().allMatch(FlowRecord::isFinish));
+
+        List<BindDataSnapshot> snapshots = flowBindDataRepository.findAll();
+        assertEquals(5, snapshots.size());
 
     }
 
