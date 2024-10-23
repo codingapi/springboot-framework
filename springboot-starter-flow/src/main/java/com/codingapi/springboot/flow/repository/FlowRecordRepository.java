@@ -33,6 +33,10 @@ public interface FlowRecordRepository {
     List<FlowRecord> findFlowRecordByPreId(long preId);
 
 
-
+    /**
+     * 根据流程id 修改所有的记录状态为已完成
+     * @param processId 流程id
+     */
+    void finishFlowRecordByProcessId(String processId);
 
 }

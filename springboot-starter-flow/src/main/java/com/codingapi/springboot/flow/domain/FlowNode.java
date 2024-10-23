@@ -222,4 +222,11 @@ public class FlowNode {
     public boolean isUnSign() {
         return approvalType == ApprovalType.UN_SIGN;
     }
+
+    /**
+     * 是否结束节点
+     */
+    public boolean isOverNode() {
+        return CODE_OVER.equals(this.code);
+    }
 }

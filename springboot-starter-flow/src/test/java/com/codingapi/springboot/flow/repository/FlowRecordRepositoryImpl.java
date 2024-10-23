@@ -43,4 +43,14 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository, FlowRecor
     public List<FlowRecord> findAll() {
         return cache;
     }
+
+    @Override
+    public List<FlowRecord> findTodoByOperatorId(long operatorId) {
+        return cache.stream().filter(record -> record.isTodo() && record.getCurrentOperatorId() == operatorId).toList();
+    }
+
+    @Override
+    public void finishFlowRecordByProcessId(String processId) {
+        cache.stream().filter(record -> record.getProcessId().equals(processId)).forEach(FlowRecord::finish);
+    }
 }

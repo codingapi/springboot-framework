@@ -8,4 +8,11 @@ public interface FlowRecordQuery {
 
     List<FlowRecord> findAll();
 
+    /**
+     * 查看个人的待办数据
+     * @param operatorId 操作人
+     * @return 流程
+     */
+    List<FlowRecord> findTodoByOperatorId(long operatorId);
+
 }

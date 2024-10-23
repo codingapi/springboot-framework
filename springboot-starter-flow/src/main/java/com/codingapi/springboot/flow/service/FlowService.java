@@ -5,12 +5,14 @@ import com.codingapi.springboot.flow.bind.IBindData;
 import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.domain.Opinion;
+import com.codingapi.springboot.flow.event.FlowApprovalEvent;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.FlowBindDataRepository;
 import com.codingapi.springboot.flow.repository.FlowOperatorRepository;
 import com.codingapi.springboot.flow.repository.FlowRecordRepository;
 import com.codingapi.springboot.flow.repository.FlowWorkRepository;
 import com.codingapi.springboot.flow.user.IFlowOperator;
+import com.codingapi.springboot.framework.event.EventPusher;
 import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
@@ -46,7 +48,7 @@ public class FlowService {
         flowBindDataRepository.save(snapshot);
         String processId = flowWork.generateProcessId();
 
-        Opinion opinion = Opinion.success(advice);
+        Opinion opinion = Opinion.pass(advice);
 
         FlowRecordService flowRecordService = new FlowRecordService(flowOperatorRepository, processId, operator, operator, snapshot, opinion, flowWork, opinion.isSuccess(), new ArrayList<>());
         // 获取开始节点
@@ -58,14 +60,11 @@ public class FlowService {
 
         // 创建待办记录
         List<FlowRecord> records = flowRecordService.createRecord(preId, start);
-        flowRecordRepository.save(records);
-
-        // 提交流程
-        if (!records.isEmpty()) {
-            for (FlowRecord record : records) {
-                this.submitFlow(record.getId(), operator, bindData, opinion);
-            }
+        if (records.isEmpty()) {
+            throw new IllegalArgumentException("flow record not found");
         }
+        flowRecordRepository.save(records);
+        EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_CREATE));
     }
 
 
@@ -117,10 +116,6 @@ public class FlowService {
         // 根据审批意见判断流程是否进入下一节点
         boolean flowNextStep = opinion.isSuccess();
 
-        // 提交流程
-        flowRecord.done(currentOperator, snapshot, opinion);
-        flowRecordRepository.update(flowRecord);
-
         // 当前节点的办理记录
         List<FlowRecord> historyRecords = new ArrayList<>();
 
@@ -149,7 +144,7 @@ public class FlowService {
             // 非会签下，默认将所有人为提交的流程，都自动提交然后再执行下一节点
             for (FlowRecord record : currentFlowRecords) {
                 if (record.getId() != recordId) {
-                    record.autoDone(currentOperator, snapshot);
+                    record.unSignAutoDone(currentOperator, snapshot);
                     flowRecordRepository.update(flowRecord);
                     historyRecords.add(record);
                 }
@@ -157,16 +152,38 @@ public class FlowService {
         }
 
         String processId = flowRecord.getProcessId();
+        // 提交流程
+        flowRecord.submitRecord(currentOperator, snapshot, opinion, flowNextStep);
+        flowRecordRepository.update(flowRecord);
+
+        // 是否完成流程
+        boolean finish = false;
 
         // 拥有退出条件 或审批通过时，匹配下一节点
         if (flowWork.hasBackRelation() || flowNextStep) {
+
+            // 退回流程 并且  也设置了退回节点
+            if(!flowNextStep && flowWork.hasBackRelation()){
+                 // TODO currentOperator 应该是获取当时回退节点的操作者 ｜ 如果是指定人员则可以不需要更换人员，如果是任何时时则需要指定为当时审批人员。
+            }
+
             FlowRecordService flowRecordService = new FlowRecordService(flowOperatorRepository, processId, createOperator, currentOperator, snapshot, opinion, flowWork, flowNextStep, historyRecords);
             FlowNode nextNode = flowRecordService.matcherNextNode(flowNode);
             if (nextNode == null) {
                 throw new IllegalArgumentException("next node not found");
             }
+
             List<FlowRecord> records = flowRecordService.createRecord(flowRecord.getId(), nextNode);
+            // TODO 流程审批结束需要人为审批，而非自动审批
+            if (nextNode.isOverNode()) {
+                finish = true;
+                // 结束简单时自动审批
+                for (FlowRecord record : records) {
+                    record.finishAutoDone(currentOperator, snapshot);
+                }
+            }
             flowRecordRepository.save(records);
+
         } else {
             // 拒绝时，默认返回上一个节点
             FlowRecord preRecord = flowRecordRepository.getFlowRecordById(flowRecord.getPreId());
@@ -176,6 +193,9 @@ public class FlowService {
                 preRecord = flowRecordRepository.getFlowRecordById(preRecord.getPreId());
             }
 
+            // 获取上一个节点的审批者，继续将审批者设置为当前审批者
+            currentOperator = flowOperatorRepository.getFlowOperatorById(preRecord.getCurrentOperatorId());
+
             FlowRecordService flowRecordService = new FlowRecordService(flowOperatorRepository, processId, createOperator, currentOperator, snapshot, opinion, flowWork, flowNextStep, historyRecords);
             FlowNode nextNode = flowWork.getNodeByCode(preRecord.getNodeCode());
             if (nextNode == null) {
@@ -183,6 +203,17 @@ public class FlowService {
             }
             List<FlowRecord> records = flowRecordService.createRecord(preRecord.getId(), nextNode);
             flowRecordRepository.save(records);
+
+        }
+
+        int eventState = flowNextStep ? FlowApprovalEvent.STATE_PASS : FlowApprovalEvent.STATE_REJECT;
+        EventPusher.push(new FlowApprovalEvent(eventState));
+
+        // 流程结束
+        if(finish) {
+            // 修改所有流程为已完成
+            flowRecordRepository.finishFlowRecordByProcessId(processId);
+            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_FINISH));
         }
 
     }

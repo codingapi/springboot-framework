@@ -68,6 +68,11 @@ public class FlowRecord {
     private long updateTime;
 
     /**
+     * 完成时间
+     */
+    private long finishTime;
+
+    /**
      * 超时到期时间
      */
     private long timeoutTime;
@@ -136,12 +141,14 @@ public class FlowRecord {
      * @param flowOperator 操作者
      * @param snapshot     绑定数据
      * @param opinion      意见
+     * @param pass         是否通过
      */
-    public void done(IFlowOperator flowOperator, BindDataSnapshot snapshot, Opinion opinion) {
+    public void submitRecord(IFlowOperator flowOperator, BindDataSnapshot snapshot, Opinion opinion, boolean pass) {
         if (flowOperator.getUserId() != this.currentOperatorId) {
             throw new IllegalArgumentException("current operator is not match");
         }
         this.read();
+        this.pass = pass;
         this.recodeType = RecodeType.DONE;
         this.updateTime = System.currentTimeMillis();
         this.snapshotId = snapshot.getId();
@@ -151,26 +158,68 @@ public class FlowRecord {
     }
 
     /**
-     * 自动提交流程
+     * 自动提交流程 (非会签时自通审批)
      *
      * @param flowOperator 操作者
      * @param snapshot     绑定数据
      */
-    public void autoDone(IFlowOperator flowOperator, BindDataSnapshot snapshot) {
+    public void unSignAutoDone(IFlowOperator flowOperator, BindDataSnapshot snapshot) {
         this.read();
+        this.pass = true;
         this.currentOperatorId = flowOperator.getUserId();
         this.recodeType = RecodeType.DONE;
         this.updateTime = System.currentTimeMillis();
         this.snapshotId = snapshot.getId();
         this.bindClass = snapshot.getClazzName();
-        this.opinion = Opinion.autoSuccess();
+        this.opinion = Opinion.unSignAutoSuccess();
+    }
+
+
+    /**
+     * 自动提交流程 (完成时自动审批)
+     * @param flowOperator 操作者
+     * @param snapshot 绑定数据
+     */
+    public void finishAutoDone(IFlowOperator flowOperator,BindDataSnapshot snapshot) {
+        this.read();
+        this.pass = true;
+        this.currentOperatorId = flowOperator.getUserId();
+        this.recodeType = RecodeType.DONE;
+        this.updateTime = System.currentTimeMillis();
+        this.snapshotId = snapshot.getId();
+        this.bindClass = snapshot.getClazzName();
+        this.opinion = Opinion.finishAutoSuccess();
+    }
+
+
+    /**
+     * 完成流程
+     */
+    public void finish(){
+        this.flowStatus = FlowStatus.FINISH;
+        this.finishTime = System.currentTimeMillis();
+    }
+
+
+    /**
+     * 是否已审批
+     */
+    public boolean isDone() {
+        return this.recodeType == RecodeType.DONE;
     }
 
     /**
      * 是否完成
      */
-    public boolean isDone() {
-        return this.recodeType == RecodeType.DONE;
+    public boolean isFinish(){
+        return this.flowStatus == FlowStatus.FINISH;
+    }
+
+    /**
+     * 是否是待办
+     */
+    public boolean isTodo(){
+        return this.recodeType == RecodeType.TODO && this.flowStatus == FlowStatus.RUNNING;
     }
 
     /**
