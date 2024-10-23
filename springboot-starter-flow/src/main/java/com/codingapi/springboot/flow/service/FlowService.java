@@ -152,19 +152,29 @@ public class FlowService {
         }
 
         String processId = flowRecord.getProcessId();
+
+        // 流程结束的情况
+        if (flowNextStep && flowNode.isOverNode()) {
+                // 结束简单时自动审批
+                flowRecord.finish();
+                // 提交流程
+                flowRecord.submitRecord(currentOperator, snapshot, opinion, flowNextStep);
+                flowRecordRepository.update(flowRecord);
+
+                flowRecordRepository.finishFlowRecordByProcessId(processId);
+                EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_FINISH));
+                return;
+        }
         // 提交流程
         flowRecord.submitRecord(currentOperator, snapshot, opinion, flowNextStep);
         flowRecordRepository.update(flowRecord);
-
-        // 是否完成流程
-        boolean finish = false;
 
         // 拥有退出条件 或审批通过时，匹配下一节点
         if (flowWork.hasBackRelation() || flowNextStep) {
 
             // 退回流程 并且  也设置了退回节点
-            if(!flowNextStep && flowWork.hasBackRelation()){
-                 // TODO currentOperator 应该是获取当时回退节点的操作者 ｜ 如果是指定人员则可以不需要更换人员，如果是任何时时则需要指定为当时审批人员。
+            if (!flowNextStep && flowWork.hasBackRelation()) {
+                // TODO currentOperator 应该是获取当时回退节点的操作者 ｜ 如果是指定人员则可以不需要更换人员，如果是任何时时则需要指定为当时审批人员。
             }
 
             FlowRecordService flowRecordService = new FlowRecordService(flowOperatorRepository, processId, createOperator, currentOperator, snapshot, opinion, flowWork, flowNextStep, historyRecords);
@@ -174,14 +184,6 @@ public class FlowService {
             }
 
             List<FlowRecord> records = flowRecordService.createRecord(flowRecord.getId(), nextNode);
-            // TODO 流程审批结束需要人为审批，而非自动审批
-            if (nextNode.isOverNode()) {
-                finish = true;
-                // 结束简单时自动审批
-                for (FlowRecord record : records) {
-                    record.finishAutoDone(currentOperator, snapshot);
-                }
-            }
             flowRecordRepository.save(records);
 
         } else {
@@ -208,13 +210,6 @@ public class FlowService {
 
         int eventState = flowNextStep ? FlowApprovalEvent.STATE_PASS : FlowApprovalEvent.STATE_REJECT;
         EventPusher.push(new FlowApprovalEvent(eventState));
-
-        // 流程结束
-        if(finish) {
-            // 修改所有流程为已完成
-            flowRecordRepository.finishFlowRecordByProcessId(processId);
-            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_FINISH));
-        }
 
     }
 

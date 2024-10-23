@@ -51,6 +51,16 @@ public class OperatorMatcher {
     }
 
     /**
+     * 创建者操作者匹配器
+     *
+     * @param userIds 用户ids
+     * @return 操作者匹配器
+     */
+    public static OperatorMatcher creatorOperatorMatcher() {
+        return new OperatorMatcher("def run(content) {return [content.getCreateOperator().getUserId()];}");
+    }
+
+    /**
      * 匹配操作者
      *
      * @param flowContent 流程内容

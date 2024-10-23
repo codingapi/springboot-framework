@@ -175,21 +175,6 @@ public class FlowRecord {
     }
 
 
-    /**
-     * 自动提交流程 (完成时自动审批)
-     * @param flowOperator 操作者
-     * @param snapshot 绑定数据
-     */
-    public void finishAutoDone(IFlowOperator flowOperator,BindDataSnapshot snapshot) {
-        this.read();
-        this.pass = true;
-        this.currentOperatorId = flowOperator.getUserId();
-        this.recodeType = RecodeType.DONE;
-        this.updateTime = System.currentTimeMillis();
-        this.snapshotId = snapshot.getId();
-        this.bindClass = snapshot.getClazzName();
-        this.opinion = Opinion.finishAutoSuccess();
-    }
 
 
     /**

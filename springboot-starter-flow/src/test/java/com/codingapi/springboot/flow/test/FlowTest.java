@@ -27,6 +27,9 @@ public class FlowTest {
     private final FlowService flowService = new FlowService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, userRepository);
 
 
+    /**
+     *  全部通过测试
+     */
     @Test
     void passTest() {
         User user = new User("张飞");
@@ -44,7 +47,7 @@ public class FlowTest {
                 .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(dept.getUserId()))
                 .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
-                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
+                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.creatorOperatorMatcher())
                 .relations()
                 .relation("部门领导审批", "start", "dept")
                 .relation("总经理审批", "dept", "manager")
@@ -89,12 +92,23 @@ public class FlowTest {
         List<FlowRecord> records = flowRecordRepository.findAll();
         assertEquals(4, records.size());
 
+        userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId());
+        assertEquals(1, userTodos.size());
+
+        userTodo = userTodos.get(0);
+        flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
+
+        records = flowRecordRepository.findAll();
+        assertEquals(4, records.size());
         // 查看所有流程是否都已经结束
         assertTrue(records.stream().allMatch(FlowRecord::isFinish));
 
     }
 
 
+    /**
+     *  部门拒绝再提交测试
+     */
     @Test
     void rejectTest() {
         User user = new User("张飞");
@@ -112,7 +126,7 @@ public class FlowTest {
                 .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(dept.getUserId()))
                 .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
-                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
+                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.creatorOperatorMatcher())
                 .relations()
                 .relation("部门领导审批", "start", "dept")
                 .relation("总经理审批", "dept", "manager")
@@ -147,6 +161,25 @@ public class FlowTest {
 
         userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId());
         assertEquals(1, userTodos.size());
+
+        userTodo = userTodos.get(0);
+        flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
+
+        deptTodos = flowRecordRepository.findTodoByOperatorId(dept.getUserId());
+        assertEquals(1, deptTodos.size());
+
+        deptTodo = deptTodos.get(0);
+        flowService.submitFlow(deptTodo.getId(), dept, leave, Opinion.pass("同意"));
+
+        List<FlowRecord> bossTodos = flowRecordRepository.findTodoByOperatorId(boss.getUserId());
+        assertEquals(1, bossTodos.size());
+
+        FlowRecord bossTodo = bossTodos.get(0);
+        flowService.submitFlow(bossTodo.getId(), boss, leave, Opinion.pass("同意"));
+
+        List<FlowRecord> records = flowRecordRepository.findAll();
+        assertEquals(6, records.size());
+
 
     }
 }
