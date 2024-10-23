@@ -45,8 +45,7 @@ class ScriptTest {
                 .relation("总经理审批", "dept", "manager", false)
                 .relation("结束节点", "manager", "over", false)
                 .build();
-        String target = "dept";
-        OutTrigger outTrigger = new OutTrigger("def run(content){return '" + target + "';}");
+        OutTrigger outTrigger =OutTrigger.defaultOutTrigger();
         OperatorMatcher specifyOperatorMatcher = OperatorMatcher.specifyOperatorMatcher(1);
 
         long now = System.currentTimeMillis();
@@ -60,8 +59,8 @@ class ScriptTest {
         String title = titleGenerator.generate(flowContent);
         assertEquals("张三-请假流程-开始节点", title);
 
-        String next = outTrigger.trigger(flowContent);
-        assertEquals(target, next);
+        boolean next = outTrigger.trigger(flowContent);
+        assertTrue(next);
 
         List<Long> userIds = specifyOperatorMatcher.matcher(flowContent);
         assertTrue(userIds.contains(1L));

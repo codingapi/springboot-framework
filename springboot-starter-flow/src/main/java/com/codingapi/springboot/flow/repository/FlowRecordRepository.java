@@ -9,4 +9,9 @@ public interface FlowRecordRepository {
 
     void save(List<FlowRecord> records);
 
+
+    List<FlowRecord> findRecordByWorkIdAndOperatorId(long workId,long operatorId);
+
+    List<FlowRecord> findAll();
+
 }

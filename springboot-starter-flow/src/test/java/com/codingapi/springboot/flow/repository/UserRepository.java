@@ -12,7 +12,7 @@ public class UserRepository implements FlowOperatorRepository {
     public void save(User user) {
         if (user.getId() == 0) {
             cache.add(user);
-            user.setId(cache.size() + 1);
+            user.setId(cache.size());
         }
     }
 

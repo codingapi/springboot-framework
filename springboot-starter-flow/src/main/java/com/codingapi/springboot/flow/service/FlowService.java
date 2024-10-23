@@ -33,7 +33,8 @@ public class FlowService {
         if (flowWork == null) {
             throw new IllegalArgumentException("flow work not found");
         }
-        BindDataSnapshot snapshot = flowBindDataRepository.save(bindData);
+        BindDataSnapshot snapshot = new BindDataSnapshot(bindData);
+        flowBindDataRepository.save(snapshot);
         List<FlowRecord> records = flowWork.startFlow(operator, snapshot, Opinion.success(opinion));
         flowRecordRepository.save(records);
     }

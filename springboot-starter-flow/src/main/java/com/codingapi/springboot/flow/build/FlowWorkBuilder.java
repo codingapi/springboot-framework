@@ -86,7 +86,7 @@ public class FlowWorkBuilder {
         public Relations relation(String name, String source, String target, boolean defaultOut) {
             FlowNode from = work.getNodeByCode(source);
             FlowNode to = work.getNodeByCode(target);
-            OutTrigger outTrigger = new OutTrigger("def run(content){return '" + target + "';}");
+            OutTrigger outTrigger =OutTrigger.defaultOutTrigger();
             FlowRelation relation = new FlowRelation(IDGenerator.generate(), name, from, to, outTrigger, defaultOut);
             work.addRelation(relation);
             return this;

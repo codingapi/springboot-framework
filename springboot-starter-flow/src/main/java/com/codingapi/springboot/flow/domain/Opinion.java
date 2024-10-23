@@ -1,11 +1,13 @@
 package com.codingapi.springboot.flow.domain;
 
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * 审批意见
  */
 @Getter
+@ToString
 public class Opinion {
 
     private final String opinion;

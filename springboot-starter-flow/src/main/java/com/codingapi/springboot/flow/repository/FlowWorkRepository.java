@@ -6,4 +6,6 @@ public interface FlowWorkRepository {
 
     FlowWork getFlowWorkById(long id);
 
+    void save(FlowWork flowWork);
+
 }

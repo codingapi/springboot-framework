@@ -5,9 +5,11 @@ import com.codingapi.springboot.flow.em.FlowStatus;
 import com.codingapi.springboot.flow.em.RecodeType;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Setter
 @Getter
+@ToString
 public class FlowRecord {
 
     /**

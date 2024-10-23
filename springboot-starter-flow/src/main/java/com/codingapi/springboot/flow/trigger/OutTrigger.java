@@ -27,12 +27,20 @@ public class OutTrigger {
     }
 
     /**
+     * 默认出口触发器
+     */
+    public static OutTrigger defaultOutTrigger(){
+        return new OutTrigger("def run(content) {return true;}");
+    }
+
+
+    /**
      * 触发
      * @param flowContent 流程内容
      * @return 下一个节点 code
      */
-    public String trigger(FlowContent flowContent){
-        return (String) runtime.invokeMethod("run", flowContent);
+    public boolean trigger(FlowContent flowContent){
+        return (Boolean) runtime.invokeMethod("run", flowContent);
     }
 
 }

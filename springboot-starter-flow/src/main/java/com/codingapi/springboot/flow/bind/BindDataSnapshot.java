@@ -30,10 +30,19 @@ public class BindDataSnapshot {
     private String clazzName;
 
 
-    public IBindData toBindData(){
+    public BindDataSnapshot(IBindData bindData) {
+        if (bindData == null) {
+            throw new IllegalArgumentException("bind data is null");
+        }
+        this.snapshot = bindData.toJsonSnapshot();
+        this.clazzName = bindData.getClass().getName();
+        this.createTime = System.currentTimeMillis();
+    }
+
+    public IBindData toBindData() {
         try {
             return JSONObject.parseObject(snapshot, (Class<? extends IBindData>) Class.forName(clazzName));
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new IllegalArgumentException("bind data error");
         }
     }
