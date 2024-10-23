@@ -43,6 +43,14 @@ public interface FlowRecordRepository {
      */
     List<FlowRecord> findFlowRecordByProcessId(String processId);
 
+
+    /**
+     * 查询所有未完成的流程记录
+     * @param processId 流程id
+     * @return List of FlowRecord
+     */
+    List<FlowRecord> findTodoFlowRecordByProcessId(String processId);
+
     /**
      * 根据流程id 修改所有的记录状态为已完成
      *

@@ -89,6 +89,78 @@ public class FlowService {
         return detail(recordId, null);
     }
 
+    /**
+     * 延期待办
+     * @param recordId          流程记录id
+     * @param currentOperator   当前操作者
+     * @param time              延期时间
+     */
+    public void postponed(long recordId, IFlowOperator currentOperator, long time) {
+        // 检测流程记录
+        FlowRecord flowRecord = flowRecordRepository.getFlowRecordById(recordId);
+        if (flowRecord == null) {
+            throw new IllegalArgumentException("flow record not found");
+        }
+        flowRecord.submitStateVerify();
+        flowRecord.matcherOperator(currentOperator);
+
+        // 检测流程
+        FlowWork flowWork = flowProcessRepository.getFlowWorkByProcessId(flowRecord.getProcessId());
+        if (flowWork == null) {
+            throw new IllegalArgumentException("flow work not found");
+        }
+        flowWork.enableValidate();
+
+        if (flowRecord.isFinish()) {
+            throw new IllegalArgumentException("flow record is finish");
+        }
+
+        if (flowRecord.isDone()) {
+            throw new IllegalArgumentException("flow record is done");
+        }
+
+        flowRecord.postponedTime(flowWork.getPostponedMax(), time);
+        flowRecordRepository.update(flowRecord);
+    }
+
+    /**
+     * 催办流程
+     *
+     * @param recordId        流程记录id
+     * @param currentOperator 当前操作者
+     */
+    public void urge(long recordId, IFlowOperator currentOperator) {
+        // 检测流程记录
+        FlowRecord flowRecord = flowRecordRepository.getFlowRecordById(recordId);
+        if (flowRecord == null) {
+            throw new IllegalArgumentException("flow record not found");
+        }
+        flowRecord.matcherOperator(currentOperator);
+
+        // 检测流程
+        FlowWork flowWork = flowProcessRepository.getFlowWorkByProcessId(flowRecord.getProcessId());
+        if (flowWork == null) {
+            throw new IllegalArgumentException("flow work not found");
+        }
+        flowWork.enableValidate();
+
+        if (flowRecord.isTodo()) {
+            throw new IllegalArgumentException("flow record is todo");
+        }
+
+        if (flowRecord.isFinish()) {
+            throw new IllegalArgumentException("flow record is finish");
+        }
+
+        List<FlowRecord> todoRecords = flowRecordRepository.findTodoFlowRecordByProcessId(flowRecord.getProcessId());
+
+        // 推送催办消息
+        for (FlowRecord record : todoRecords) {
+            IFlowOperator pushOperator = flowOperatorRepository.getFlowOperatorById(record.getCurrentOperatorId());
+            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_URGE, record, pushOperator));
+        }
+
+    }
 
     /**
      * 流程详情

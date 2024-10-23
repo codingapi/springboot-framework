@@ -78,6 +78,11 @@ public class FlowRecord {
     private long timeoutTime;
 
     /**
+     * 延期次数
+     */
+    private int postponedCount;
+
+    /**
      * 发起者id
      */
     private long createOperatorId;
@@ -120,6 +125,21 @@ public class FlowRecord {
     private long readTime;
 
     /**
+     * 延期时间
+     * @param postponedMax 最大延期次数
+     * @param time 延期时间(毫秒)
+     */
+    public void postponedTime(int postponedMax,long time) {
+        if(this.postponedCount>=postponedMax){
+            throw new IllegalArgumentException("postponed count is max");
+        }
+        this.read();
+        this.timeoutTime += time;
+        this.postponedCount++;
+        this.updateTime = System.currentTimeMillis();
+    }
+
+    /**
      * 已读
      */
     public void read() {
@@ -138,7 +158,7 @@ public class FlowRecord {
     /**
      * 更新时间
      */
-    public void update(){
+    public void update() {
         this.updateTime = System.currentTimeMillis();
     }
 
@@ -164,11 +184,11 @@ public class FlowRecord {
      * @param pass         是否通过
      */
     public void submitRecord(IFlowOperator flowOperator, BindDataSnapshot snapshot, Opinion opinion, boolean pass) {
-        if(!flowOperator.isFlowManager()) {
+        if (!flowOperator.isFlowManager()) {
             if (flowOperator.getUserId() != this.currentOperatorId) {
                 throw new IllegalArgumentException("current operator is not match");
             }
-        }else {
+        } else {
             this.currentOperatorId = flowOperator.getUserId();
             this.interfere = true;
         }
@@ -184,7 +204,7 @@ public class FlowRecord {
     /**
      * 转交流程
      */
-    public void transfer(IFlowOperator flowOperator,BindDataSnapshot snapshot, Opinion opinion) {
+    public void transfer(IFlowOperator flowOperator, BindDataSnapshot snapshot, Opinion opinion) {
         if (flowOperator.getUserId() != this.currentOperatorId) {
             throw new IllegalArgumentException("current operator is not match");
         }
@@ -215,12 +235,10 @@ public class FlowRecord {
     }
 
 
-
-
     /**
      * 完成流程
      */
-    public void finish(){
+    public void finish() {
         this.flowStatus = FlowStatus.FINISH;
         this.finishTime = System.currentTimeMillis();
     }
@@ -236,22 +254,23 @@ public class FlowRecord {
     /**
      * 是否完成
      */
-    public boolean isFinish(){
+    public boolean isFinish() {
         return this.flowStatus == FlowStatus.FINISH;
     }
 
     /**
      * 是否是待办
      */
-    public boolean isTodo(){
+    public boolean isTodo() {
         return this.recodeType == RecodeType.TODO && this.flowStatus == FlowStatus.RUNNING;
     }
 
     /**
      * 是否是转交
+     *
      * @return 是否是转交
      */
-    public boolean isTransfer(){
+    public boolean isTransfer() {
         return this.recodeType == RecodeType.TRANSFER;
     }
 
@@ -259,7 +278,7 @@ public class FlowRecord {
      * 审批通过
      */
     public boolean isPass() {
-        return this.opinion!=null && this.opinion.isSuccess() && isDone();
+        return this.opinion != null && this.opinion.isSuccess() && isDone();
     }
 
     public void matcherOperator(IFlowOperator currentOperator) {
@@ -280,6 +299,7 @@ public class FlowRecord {
     public FlowRecord copy() {
         FlowRecord record = new FlowRecord();
         record.setId(this.id);
+        record.setPostponedCount(this.postponedCount);
         record.setPreId(this.preId);
         record.setWorkId(this.workId);
         record.setProcessId(this.processId);
@@ -306,13 +326,15 @@ public class FlowRecord {
 
     /**
      * 转待办
-     * @param title     标题
-     * @param operator  操作者
+     *
+     * @param title    标题
+     * @param operator 操作者
      */
-    public void toTodo(String title,IFlowOperator operator) {
+    public void toTodo(String title, IFlowOperator operator) {
         this.id = 0;
         this.recodeType = RecodeType.TODO;
         this.flowStatus = FlowStatus.RUNNING;
+        this.postponedCount = 0;
         this.updateTime = 0;
         this.readTime = 0;
         this.read = false;

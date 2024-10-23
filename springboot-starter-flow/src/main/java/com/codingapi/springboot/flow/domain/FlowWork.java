@@ -48,6 +48,11 @@ public class FlowWork {
     private boolean enable;
 
     /**
+     * 最大延期次数
+     */
+    private int postponedMax;
+
+    /**
      * 流程的节点(发起节点)
      */
     private List<FlowNode> nodes;
@@ -73,6 +78,7 @@ public class FlowWork {
         this.createTime = System.currentTimeMillis();
         this.updateTime = System.currentTimeMillis();
         this.enable = true;
+        this.postponedMax = 1;
         this.nodes = new ArrayList<>();
         this.relations = new ArrayList<>();
     }

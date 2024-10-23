@@ -150,6 +150,7 @@ public class FlowNode {
         record.setCreateTime(System.currentTimeMillis());
         record.setWorkId(workId);
         record.setFlowStatus(FlowStatus.RUNNING);
+        record.setPostponedCount(0);
         record.setCreateOperatorId(createOperator.getUserId());
         record.setBindClass(snapshot.getClazzName());
         record.setOpinion(opinion);
