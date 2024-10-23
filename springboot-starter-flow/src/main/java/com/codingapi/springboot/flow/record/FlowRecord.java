@@ -1,8 +1,11 @@
 package com.codingapi.springboot.flow.record;
 
+import com.codingapi.springboot.flow.bind.BindDataSnapshot;
+import com.codingapi.springboot.flow.bind.IBindData;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.em.FlowStatus;
 import com.codingapi.springboot.flow.em.RecodeType;
+import com.codingapi.springboot.flow.user.IFlowOperator;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -34,7 +37,7 @@ public class FlowRecord {
     /**
      * 节点
      */
-    private String nodeId;
+    private String nodeCode;
 
     /**
      * 流程标题
@@ -52,6 +55,11 @@ public class FlowRecord {
      * 创建时间
      */
     private long createTime;
+
+    /**
+     * 更新时间
+     */
+    private long updateTime;
 
     /**
      * 超时到期时间
@@ -84,4 +92,56 @@ public class FlowRecord {
      * 绑定数据的快照
      */
     private long snapshotId;
+
+
+    /**
+     * 提交状态校验
+     * 是否可以提交
+     */
+    public void submitStateVerify(){
+        if( flowStatus == FlowStatus.FINISH){
+            throw new IllegalArgumentException("flow is finish");
+        }
+        if(recodeType == RecodeType.DONE){
+            throw new IllegalArgumentException("flow is done");
+        }
+    }
+
+    /**
+     * 提交流程
+     * @param flowOperator 操作者
+     * @param snapshot 绑定数据
+     * @param opinion 意见
+     */
+    public void done(IFlowOperator flowOperator, BindDataSnapshot snapshot,Opinion opinion){
+        if(flowOperator.getUserId() != this.currentOperatorId){
+            throw new IllegalArgumentException("current operator is not match");
+        }
+        this.recodeType = RecodeType.DONE;
+        this.updateTime = System.currentTimeMillis();
+        this.snapshotId = snapshot.getId();
+        this.bindClass = snapshot.getClazzName();
+        this.opinion = opinion;
+    }
+
+    /**
+     * 自动提交流程
+     * @param flowOperator 操作者
+     * @param snapshot 绑定数据
+     */
+    public void autoDone(IFlowOperator flowOperator, BindDataSnapshot snapshot){
+        this.currentOperatorId = flowOperator.getUserId();
+        this.recodeType = RecodeType.DONE;
+        this.updateTime = System.currentTimeMillis();
+        this.snapshotId = snapshot.getId();
+        this.bindClass = snapshot.getClazzName();
+        this.opinion = Opinion.autoSuccess();
+    }
+
+    /**
+     * 是否完成
+     */
+    public boolean isDone() {
+        return this.recodeType == RecodeType.DONE;
+    }
 }

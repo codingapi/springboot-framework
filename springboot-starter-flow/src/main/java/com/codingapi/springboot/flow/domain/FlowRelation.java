@@ -1,5 +1,6 @@
 package com.codingapi.springboot.flow.domain;
 
+import com.codingapi.springboot.flow.content.FlowContent;
 import com.codingapi.springboot.flow.trigger.OutTrigger;
 import lombok.Getter;
 import org.springframework.util.StringUtils;
@@ -52,6 +53,17 @@ public class FlowRelation {
      */
     private long updateTime;
 
+
+    /**
+     * 匹配节点
+     * @param nodeCode 节点编码
+     * @return 是否匹配
+     */
+    public boolean matchNode(String nodeCode){
+        return source.getCode().equals(nodeCode);
+    }
+
+
     public FlowRelation(String id, String name, FlowNode source, FlowNode target, OutTrigger outTrigger, boolean defaultOut) {
         this.id = id;
         this.name = name;
@@ -64,7 +76,22 @@ public class FlowRelation {
         this.verify();
     }
 
+    /**
+     * 触发条件
+     * @param flowContent 流程内容
+     * @return 下一个节点
+     */
+    public FlowNode trigger(FlowContent flowContent){
+        if(outTrigger.trigger(flowContent)){
+            return target;
+        }
+        return null;
+    }
 
+
+    /**
+     * 验证
+     */
     private void verify() {
 
         if (!StringUtils.hasLength(id)) {

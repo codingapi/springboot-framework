@@ -1,5 +1,6 @@
 package com.codingapi.springboot.flow.repository;
 
+import com.codingapi.springboot.flow.user.IFlowOperator;
 import com.codingapi.springboot.flow.user.User;
 
 import java.util.ArrayList;
@@ -23,6 +24,11 @@ public class UserRepository implements FlowOperatorRepository {
             }
         }
         return null;
+    }
+
+    @Override
+    public IFlowOperator getFlowOperatorById(long createOperatorId) {
+        return getById(createOperatorId);
     }
 
     @Override

@@ -6,11 +6,12 @@ import com.codingapi.springboot.flow.em.ApprovalType;
 import com.codingapi.springboot.flow.em.FlowStatus;
 import com.codingapi.springboot.flow.em.NodeType;
 import com.codingapi.springboot.flow.em.RecodeType;
-import com.codingapi.springboot.flow.error.ErrorResult;
 import com.codingapi.springboot.flow.error.ErrTrigger;
+import com.codingapi.springboot.flow.error.ErrorResult;
 import com.codingapi.springboot.flow.generator.TitleGenerator;
 import com.codingapi.springboot.flow.matcher.OperatorMatcher;
 import com.codingapi.springboot.flow.record.FlowRecord;
+import com.codingapi.springboot.flow.repository.FlowOperatorRepository;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import lombok.Getter;
 import lombok.Setter;
@@ -110,14 +111,13 @@ public class FlowNode {
 
 
     /**
-     * 匹配操作者
+     * 加载节点的操作者
      *
      * @param flowContent 操作内容
      * @return 是否匹配
      */
-    public boolean matcher(FlowContent flowContent) {
-        List<Long> ids = this.operatorMatcher.matcher(flowContent);
-        return ids.contains(flowContent.getCurrentOperator().getUserId());
+    public List<? extends IFlowOperator> loadFlowNodeOperator(FlowContent flowContent, FlowOperatorRepository flowOperatorRepository) {
+        return flowOperatorRepository.findByIds(this.operatorMatcher.matcher(flowContent));
     }
 
 
@@ -144,7 +144,7 @@ public class FlowNode {
                                    Opinion opinion) {
         FlowRecord record = new FlowRecord();
         record.setProcessId(processId);
-        record.setNodeId(this.id);
+        record.setNodeCode(this.code);
         record.setCreateTime(System.currentTimeMillis());
         record.setWorkId(workId);
         record.setFlowStatus(FlowStatus.RUNNING);
@@ -164,10 +164,11 @@ public class FlowNode {
 
     /**
      * 获取超时时间
+     *
      * @return 超时时间
      */
     private long getTimeoutTime() {
-        if(this.timeout>0) {
+        if (this.timeout > 0) {
             return System.currentTimeMillis() + this.timeout;
         }
         return 0;
@@ -202,5 +203,20 @@ public class FlowNode {
      */
     public String generateTitle(FlowContent flowContent) {
         return titleGenerator.generate(flowContent);
+    }
+
+
+    /**
+     * 是否会签节点
+     */
+    public boolean isSign() {
+        return approvalType == ApprovalType.SIGN;
+    }
+
+    /**
+     * 是否非会签节点
+     */
+    public boolean isUnSign() {
+        return approvalType == ApprovalType.UN_SIGN;
     }
 }

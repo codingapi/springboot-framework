@@ -53,7 +53,7 @@ public class FlowWorkBuilder {
     public class Nodes {
 
         public Nodes start(String name, String view, TitleGenerator titleGenerator, OperatorMatcher operatorMatcher) {
-            work.addNode(new FlowNode(IDGenerator.generate(), name, FlowNode.CODE_START, view, NodeType.START, ApprovalType.NOT_SIGN, titleGenerator, operatorMatcher, 0, null));
+            work.addNode(new FlowNode(IDGenerator.generate(), name, FlowNode.CODE_START, view, NodeType.START, ApprovalType.UN_SIGN, titleGenerator, operatorMatcher, 0, null));
             return this;
         }
 
@@ -67,7 +67,7 @@ public class FlowWorkBuilder {
         }
 
         public Nodes over(String name, String view, TitleGenerator titleGenerator, OperatorMatcher operatorMatcher) {
-            work.addNode(new FlowNode(IDGenerator.generate(), name, FlowNode.CODE_OVER, view, NodeType.OVER, ApprovalType.NOT_SIGN, titleGenerator, operatorMatcher, 0, null));
+            work.addNode(new FlowNode(IDGenerator.generate(), name, FlowNode.CODE_OVER, view, NodeType.OVER, ApprovalType.UN_SIGN, titleGenerator, operatorMatcher, 0, null));
             return this;
         }
 

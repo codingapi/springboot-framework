@@ -20,11 +20,22 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository {
     }
 
     @Override
-    public List<FlowRecord> findRecordByWorkIdAndOperatorId(long workId, long operatorId) {
-        return cache.stream().filter(record ->
-                record.getWorkId() == workId
-                        && record.getCurrentOperatorId() == operatorId
-        ).toList();
+    public FlowRecord getFlowRecordById(long id) {
+        return cache.stream().filter(record -> record.getId() == id).findFirst().orElse(null);
+    }
+
+
+    @Override
+    public void update(FlowRecord flowRecord) {
+        if (flowRecord.getId() == 0) {
+            cache.add(flowRecord);
+            flowRecord.setId(cache.size());
+        }
+    }
+
+    @Override
+    public List<FlowRecord> findFlowRecordByPreId(long preId) {
+        return cache.stream().filter(record -> record.getPreId() == preId).toList();
     }
 
     @Override

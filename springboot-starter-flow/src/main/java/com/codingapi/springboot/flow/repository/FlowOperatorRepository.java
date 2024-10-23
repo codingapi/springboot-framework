@@ -17,4 +17,13 @@ public interface FlowOperatorRepository {
      */
     List<? extends IFlowOperator> findByIds(List<Long> ids);
 
+
+    /**
+     * 根据ID查询流程用户
+     *
+     * @param createOperatorId ID
+     * @return IFlowOperator
+     */
+    IFlowOperator getFlowOperatorById(long createOperatorId);
+
 }

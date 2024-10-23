@@ -9,5 +9,5 @@ public enum ApprovalType {
     /**
      * 非会签
      */
-    NOT_SIGN;
+    UN_SIGN;
 }
