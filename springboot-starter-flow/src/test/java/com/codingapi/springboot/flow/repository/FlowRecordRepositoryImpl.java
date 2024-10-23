@@ -60,4 +60,9 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository, FlowRecor
     public void finishFlowRecordByProcessId(String processId) {
         cache.stream().filter(record -> record.getProcessId().equals(processId)).forEach(FlowRecord::finish);
     }
+
+    @Override
+    public void delete(List<FlowRecord> childrenRecords) {
+        cache.removeAll(childrenRecords);
+    }
 }

@@ -163,11 +163,9 @@ public class FlowService {
 
         // 下一流程的流程记录
         List<FlowRecord> childrenRecords = flowRecordRepository.findFlowRecordByPreId(recordId);
-        if (flowNode.isUnSign()) {
-            // 如果是非会签，则不能存在后续的子流程
-            if (!childrenRecords.isEmpty()) {
-                throw new IllegalArgumentException("flow node is done");
-            }
+        // 不能存在后续的子流程
+        if (!childrenRecords.isEmpty()) {
+            throw new IllegalArgumentException("flow node is done");
         }
 
         // 获取创建者
@@ -282,6 +280,57 @@ public class FlowService {
         int eventState = flowNextStep ? FlowApprovalEvent.STATE_PASS : FlowApprovalEvent.STATE_REJECT;
         EventPusher.push(new FlowApprovalEvent(eventState));
 
+    }
+
+
+    /**
+     * 撤回流程
+     *
+     * @param recordId        流程记录id
+     * @param currentOperator 当前操作者
+     */
+    public void recall(long recordId, IFlowOperator currentOperator) {
+        // 检测流程记录
+        FlowRecord flowRecord = flowRecordRepository.getFlowRecordById(recordId);
+        if (flowRecord == null) {
+            throw new IllegalArgumentException("flow record not found");
+        }
+        flowRecord.matcherOperator(currentOperator);
+
+        // 检测流程
+        FlowWork flowWork = flowProcessRepository.getFlowWorkByProcessId(flowRecord.getProcessId());
+        if (flowWork == null) {
+            throw new IllegalArgumentException("flow work not found");
+        }
+        flowWork.enableValidate();
+
+        // 检测流程节点
+        FlowNode flowNode = flowWork.getNodeByCode(flowRecord.getNodeCode());
+        if (flowNode == null) {
+            throw new IllegalArgumentException("flow node not found");
+        }
+
+        if (flowRecord.isTodo()) {
+            throw new IllegalArgumentException("flow record is todo");
+        }
+
+        // 下一流程的流程记录
+        List<FlowRecord> childrenRecords = flowRecordRepository.findFlowRecordByPreId(recordId);
+        // 下一流程均为办理且未读
+
+        if (childrenRecords.isEmpty()) {
+            throw new IllegalArgumentException("flow record not submit");
+        }
+
+        boolean allUnDone = childrenRecords.stream().allMatch(item -> item.isUnRead() && item.isTodo());
+        if (!allUnDone) {
+            throw new IllegalArgumentException("flow record not recall");
+        }
+        flowRecord.recall();
+        flowRecordRepository.update(flowRecord);
+
+        flowRecordRepository.delete(childrenRecords);
+        EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_RECALL));
     }
 
 }

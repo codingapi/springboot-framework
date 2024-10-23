@@ -19,7 +19,7 @@ public class FlowApprovalEvent implements ISyncEvent {
     // 流程转办
     public static final int STATE_TRANSFER = 4;
     // 流程撤销
-    public static final int STATE_REVOKE = 5;
+    public static final int STATE_RECALL = 5;
     // 流程完成
     public static final int STATE_FINISH = 6;
 
@@ -46,8 +46,8 @@ public class FlowApprovalEvent implements ISyncEvent {
         return state == STATE_TRANSFER;
     }
 
-    public boolean isRevoke() {
-        return state == STATE_REVOKE;
+    public boolean isRecall() {
+        return state == STATE_RECALL;
     }
 
     public boolean isFinish() {
