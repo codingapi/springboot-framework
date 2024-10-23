@@ -19,13 +19,41 @@ public class OperatorMatcher {
     @Getter
     private final String script;
 
+    private final int state;
+
     private final Script runtime;
 
+    // 指定用户
+    public static final int STATE_SPECIFY = 1;
+    // 创建者
+    public static final int STATE_CREATOR = 2;
+    // 任意人
+    public static final int STATE_ANY = 3;
+
+
+    public boolean isAny(){
+        return state == STATE_ANY;
+    }
+
+    public boolean isCreator(){
+        return state == STATE_CREATOR;
+    }
+
+    public boolean isSpecify(){
+        return state == STATE_SPECIFY;
+    }
+
+
     public OperatorMatcher(String script) {
+        this(script,STATE_SPECIFY);
+    }
+
+    public OperatorMatcher(String script,int state) {
         if (!StringUtils.hasLength(script)) {
             throw new IllegalArgumentException("script is empty");
         }
         this.script = script;
+        this.state = state;
         GroovyShell groovyShell = new GroovyShell();
         this.runtime = groovyShell.parse(script);
     }
@@ -36,7 +64,7 @@ public class OperatorMatcher {
      * @return 操作者匹配器
      */
     public static OperatorMatcher anyOperatorMatcher() {
-        return new OperatorMatcher("def run(content) {return [content.getCurrentOperator().getUserId()];}");
+        return new OperatorMatcher("def run(content) {return [content.getCurrentOperator().getUserId()];}",STATE_ANY);
     }
 
     /**
@@ -47,7 +75,7 @@ public class OperatorMatcher {
      */
     public static OperatorMatcher specifyOperatorMatcher(long... userIds) {
         String userIdsStr = Arrays.stream(userIds).mapToObj(String::valueOf).collect(Collectors.joining(","));
-        return new OperatorMatcher("def run(content) {return [" + userIdsStr + "];}");
+        return new OperatorMatcher("def run(content) {return [" + userIdsStr + "];}",STATE_SPECIFY);
     }
 
     /**
@@ -57,7 +85,7 @@ public class OperatorMatcher {
      * @return 操作者匹配器
      */
     public static OperatorMatcher creatorOperatorMatcher() {
-        return new OperatorMatcher("def run(content) {return [content.getCreateOperator().getUserId()];}");
+        return new OperatorMatcher("def run(content) {return [content.getCreateOperator().getUserId()];}",STATE_CREATOR);
     }
 
     /**

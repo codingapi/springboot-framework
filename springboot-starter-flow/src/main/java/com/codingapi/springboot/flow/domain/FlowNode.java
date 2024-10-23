@@ -178,6 +178,13 @@ public class FlowNode {
     }
 
     /**
+     * 是否有任意操作者匹配
+     */
+    public boolean isAnyOperatorMatcher(){
+        return operatorMatcher.isAny();
+    }
+
+    /**
      * 异常匹配
      *
      * @param flowContent 操作内容

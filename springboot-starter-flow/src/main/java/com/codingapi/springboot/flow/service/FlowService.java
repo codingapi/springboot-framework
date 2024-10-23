@@ -155,15 +155,15 @@ public class FlowService {
 
         // 流程结束的情况
         if (flowNextStep && flowNode.isOverNode()) {
-                // 结束简单时自动审批
-                flowRecord.finish();
-                // 提交流程
-                flowRecord.submitRecord(currentOperator, snapshot, opinion, flowNextStep);
-                flowRecordRepository.update(flowRecord);
+            // 结束简单时自动审批
+            flowRecord.finish();
+            // 提交流程
+            flowRecord.submitRecord(currentOperator, snapshot, opinion, flowNextStep);
+            flowRecordRepository.update(flowRecord);
 
-                flowRecordRepository.finishFlowRecordByProcessId(processId);
-                EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_FINISH));
-                return;
+            flowRecordRepository.finishFlowRecordByProcessId(processId);
+            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_FINISH));
+            return;
         }
         // 提交流程
         flowRecord.submitRecord(currentOperator, snapshot, opinion, flowNextStep);
@@ -174,7 +174,14 @@ public class FlowService {
 
             // 退回流程 并且  也设置了退回节点
             if (!flowNextStep && flowWork.hasBackRelation()) {
-                // TODO currentOperator 应该是获取当时回退节点的操作者 ｜ 如果是指定人员则可以不需要更换人员，如果是任何时时则需要指定为当时审批人员。
+                if (flowNode.isAnyOperatorMatcher()) {
+                    // 如果是任意人员操作时则需要指定为当时审批人员为当前审批人员
+                    FlowRecord preFlowRecord = flowRecordRepository.getFlowRecordById(flowRecord.getPreId());
+                    while (!preFlowRecord.isTransfer() && preFlowRecord.getNodeCode().equals(flowNode.getCode())) {
+                        preFlowRecord = flowRecordRepository.getFlowRecordById(flowRecord.getPreId());
+                    }
+                    currentOperator = flowOperatorRepository.getFlowOperatorById(preFlowRecord.getCurrentOperatorId());
+                }
             }
 
             FlowRecordService flowRecordService = new FlowRecordService(flowOperatorRepository, processId, createOperator, currentOperator, snapshot, opinion, flowWork, flowNextStep, historyRecords);
