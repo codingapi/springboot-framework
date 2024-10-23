@@ -144,6 +144,14 @@ public class FlowNode {
                                    BindDataSnapshot snapshot,
                                    Opinion opinion,
                                    boolean pass) {
+
+        // 当前操作者存在委托人时，才需要寻找委托人
+        IFlowOperator flowOperator = currentOperator;
+        while (flowOperator.entrustOperator() != null) {
+            //寻找委托人
+            flowOperator = flowOperator.entrustOperator();
+        }
+
         FlowRecord record = new FlowRecord();
         record.setProcessId(processId);
         record.setNodeCode(this.code);
@@ -154,7 +162,7 @@ public class FlowNode {
         record.setCreateOperatorId(createOperator.getUserId());
         record.setBindClass(snapshot.getClazzName());
         record.setOpinion(opinion);
-        record.setCurrentOperatorId(currentOperator.getUserId());
+        record.setCurrentOperatorId(flowOperator.getUserId());
         record.setPreId(preId);
         record.setTitle(title);
         record.setPass(pass);
@@ -181,7 +189,7 @@ public class FlowNode {
     /**
      * 是否有任意操作者匹配
      */
-    public boolean isAnyOperatorMatcher(){
+    public boolean isAnyOperatorMatcher() {
         return operatorMatcher.isAny();
     }
 

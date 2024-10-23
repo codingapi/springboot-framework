@@ -13,15 +13,26 @@ public class User implements IFlowOperator{
 
     private boolean isFlowManager;
 
+    private User entrustOperator;
+
     public User(String name,boolean isFlowManager) {
         this.name = name;
         this.isFlowManager = isFlowManager;
+    }
+
+    public User(String name,User entrustOperator) {
+        this.name = name;
+        this.entrustOperator = entrustOperator;
     }
 
     public User(String name) {
         this(name,false);
     }
 
+    @Override
+    public IFlowOperator entrustOperator() {
+        return entrustOperator;
+    }
 
     @Override
     public long getUserId() {

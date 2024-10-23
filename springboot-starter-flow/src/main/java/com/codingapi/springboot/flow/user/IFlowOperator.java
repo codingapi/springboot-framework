@@ -19,9 +19,15 @@ public interface IFlowOperator {
 
     /**
      * 是否流程管理员
-     *
      * 流程管理员可以强制干预流程
      */
     boolean isFlowManager();
+
+
+    /**
+     * 委托操作者
+     * 当委托操作者不为空时，当前操作者将由委托操作者执行
+     */
+    IFlowOperator entrustOperator();
 
 }
