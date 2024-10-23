@@ -132,6 +132,7 @@ public class FlowNode {
      * @param currentOperator 当前操作者
      * @param snapshot        快照数据
      * @param opinion         审批意见
+     * @param pass            流程方式
      * @return 流程记录
      */
     public FlowRecord createRecord(long workId,
@@ -141,7 +142,8 @@ public class FlowNode {
                                    IFlowOperator createOperator,
                                    IFlowOperator currentOperator,
                                    BindDataSnapshot snapshot,
-                                   Opinion opinion) {
+                                   Opinion opinion,
+                                   boolean pass) {
         FlowRecord record = new FlowRecord();
         record.setProcessId(processId);
         record.setNodeCode(this.code);
@@ -154,6 +156,7 @@ public class FlowNode {
         record.setCurrentOperatorId(currentOperator.getUserId());
         record.setPreId(preId);
         record.setTitle(title);
+        record.setPass(pass);
         record.setTimeoutTime(this.getTimeoutTime());
         record.setRecodeType(RecodeType.TODO);
         record.setErrMessage(null);

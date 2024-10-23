@@ -10,8 +10,4 @@ public interface FlowBindDataRepository {
      */
     void save(BindDataSnapshot snapshot);
 
-
-
-    BindDataSnapshot getBindDataSnapshotById(long id);
-
 }

@@ -50,6 +50,13 @@ public class FlowRecord {
      * 节点状态 | 待办、已办
      */
     private RecodeType recodeType;
+
+    /**
+     * 流转产生方式
+     * 流程是退回产生的还是通过产生的
+     */
+    private boolean pass;
+
     /**
      * 创建时间
      */
@@ -164,6 +171,14 @@ public class FlowRecord {
      */
     public boolean isDone() {
         return this.recodeType == RecodeType.DONE;
+    }
+
+    /**
+     * 是否是转交
+     * @return 是否是转交
+     */
+    public boolean isTransfer(){
+        return this.recodeType == RecodeType.TRANSFER;
     }
 
     /**

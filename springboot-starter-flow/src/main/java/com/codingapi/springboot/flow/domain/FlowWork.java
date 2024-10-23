@@ -166,6 +166,13 @@ public class FlowWork {
     }
 
     /**
+     * 是否存在退回关系
+     */
+    public boolean hasBackRelation() {
+        return relations.stream().anyMatch(FlowRelation::isBack);
+    }
+
+    /**
      * 验证流程状态
      */
     public void verifyState() {

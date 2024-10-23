@@ -16,7 +16,10 @@ import com.codingapi.springboot.flow.user.IFlowOperator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FlowRecordService {
+/**
+ * 流程记录服务（流程内部服务）
+ */
+class FlowRecordService {
 
     private final FlowOperatorRepository flowOperatorRepository;
     private final String processId;
@@ -25,9 +28,21 @@ public class FlowRecordService {
     private final BindDataSnapshot snapshot;
     private final Opinion opinion;
     private final FlowWork flowWork;
+    private final boolean pass;
     private final List<FlowRecord> historyRecords;
 
 
+    /**
+     * @param flowOperatorRepository 操作者仓库
+     * @param processId              流程id
+     * @param createOperator         流程发起者
+     * @param currentOperator        当前操作者
+     * @param snapshot               绑定数据快照
+     * @param opinion                审批意见
+     * @param flowWork               流程设计
+     * @param pass                   流转方式 true是同意审批 false是退回
+     * @param historyRecords         当前节点下的审批记录
+     */
     public FlowRecordService(FlowOperatorRepository flowOperatorRepository,
                              String processId,
                              IFlowOperator createOperator,
@@ -35,6 +50,7 @@ public class FlowRecordService {
                              BindDataSnapshot snapshot,
                              Opinion opinion,
                              FlowWork flowWork,
+                             boolean pass,
                              List<FlowRecord> historyRecords) {
         this.flowOperatorRepository = flowOperatorRepository;
         this.processId = processId;
@@ -43,6 +59,7 @@ public class FlowRecordService {
         this.snapshot = snapshot;
         this.opinion = opinion;
         this.flowWork = flowWork;
+        this.pass = pass;
         this.historyRecords = historyRecords;
     }
 
@@ -68,7 +85,7 @@ public class FlowRecordService {
             String recordTitle = currentNode.generateTitle(flowContent);
             List<FlowRecord> recordList = new ArrayList<>();
             for (IFlowOperator operator : operators) {
-                FlowRecord record = currentNode.createRecord(workId, processId, preId, recordTitle, createOperator, operator, snapshot, opinion);
+                FlowRecord record = currentNode.createRecord(workId, processId, preId, recordTitle, createOperator, operator, snapshot, opinion, pass);
                 recordList.add(record);
             }
             return recordList;
@@ -82,8 +99,11 @@ public class FlowRecordService {
      * @param currentNode 当前节点
      * @return 下一个节点
      */
-    public FlowNode getNextNode(FlowNode currentNode) {
-        List<FlowRelation> relations = flowWork.getRelations().stream().filter(relation -> relation.matchNode(currentNode.getCode())).toList();
+    public FlowNode matcherNextNode(FlowNode currentNode) {
+        List<FlowRelation> relations = flowWork.getRelations().stream()
+                .filter(relation -> relation.isBack() == !pass && relation.sourceMatcher(currentNode.getCode()))
+                .sorted((o1, o2) -> (o2.getOrder() - o1.getOrder()))
+                .toList();
         if (relations.isEmpty()) {
             throw new IllegalArgumentException("relation not found");
         }
@@ -93,9 +113,6 @@ public class FlowRecordService {
             FlowNode node = flowRelation.trigger(flowContent);
             if (node != null) {
                 flowNodes.add(node);
-                if (flowRelation.isDefaultOut()) {
-                    return node;
-                }
             }
         }
         if (flowNodes.isEmpty()) {
@@ -146,8 +163,9 @@ public class FlowRecordService {
 
     /**
      * 触发下一个节点
-     * @param preId 上一条流程记录id
-     * @param currentNode 当前节点
+     *
+     * @param preId           上一条流程记录id
+     * @param currentNode     当前节点
      * @param currentOperator 当前操作者
      * @return 流程记录
      */
@@ -158,7 +176,7 @@ public class FlowRecordService {
         if (!matcherOperators.isEmpty()) {
             for (IFlowOperator matcherOperator : matcherOperators) {
                 String recordTitle = currentNode.generateTitle(content);
-                FlowRecord record = currentNode.createRecord(flowWork.getId(), processId, preId, recordTitle, createOperator, matcherOperator, snapshot, opinion);
+                FlowRecord record = currentNode.createRecord(flowWork.getId(), processId, preId, recordTitle, createOperator, matcherOperator, snapshot, opinion, pass);
                 records.add(record);
             }
         }

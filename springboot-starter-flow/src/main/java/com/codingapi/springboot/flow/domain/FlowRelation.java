@@ -31,11 +31,15 @@ public class FlowRelation {
      */
     private FlowNode target;
 
+    /**
+     * 排序
+     */
+    private int order;
 
     /**
-     * 是否默认出口
+     * 是否退回
      */
-    private boolean defaultOut;
+    private boolean back;
 
     /**
      * 出口触发器
@@ -59,20 +63,29 @@ public class FlowRelation {
      * @param nodeCode 节点编码
      * @return 是否匹配
      */
-    public boolean matchNode(String nodeCode){
+    public boolean sourceMatcher(String nodeCode){
         return source.getCode().equals(nodeCode);
     }
 
 
-    public FlowRelation(String id, String name, FlowNode source, FlowNode target, OutTrigger outTrigger, boolean defaultOut) {
+    /**
+     * 重新排序
+     * @param order 排序
+     */
+    public void resort(int order){
+        this.order = order;
+    }
+
+
+    public FlowRelation(String id, String name, FlowNode source, FlowNode target, OutTrigger outTrigger,boolean back) {
         this.id = id;
         this.name = name;
         this.source = source;
         this.target = target;
-        this.defaultOut = defaultOut;
         this.outTrigger = outTrigger;
         this.createTime = System.currentTimeMillis();
         this.updateTime = System.currentTimeMillis();
+        this.back = back;
         this.verify();
     }
 

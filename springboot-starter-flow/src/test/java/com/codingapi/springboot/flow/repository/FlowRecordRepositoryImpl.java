@@ -1,11 +1,12 @@
 package com.codingapi.springboot.flow.repository;
 
+import com.codingapi.springboot.flow.query.FlowRecordQuery;
 import com.codingapi.springboot.flow.record.FlowRecord;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FlowRecordRepositoryImpl implements FlowRecordRepository {
+public class FlowRecordRepositoryImpl implements FlowRecordRepository, FlowRecordQuery {
 
     private final List<FlowRecord> cache = new ArrayList<>();
 

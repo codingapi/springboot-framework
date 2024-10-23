@@ -21,9 +21,9 @@ public interface FlowOperatorRepository {
     /**
      * 根据ID查询流程用户
      *
-     * @param createOperatorId ID
+     * @param id ID
      * @return IFlowOperator
      */
-    IFlowOperator getFlowOperatorById(long createOperatorId);
+    IFlowOperator getFlowOperatorById(long id);
 
 }

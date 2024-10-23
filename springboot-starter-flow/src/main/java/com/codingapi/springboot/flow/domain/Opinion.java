@@ -10,24 +10,34 @@ import lombok.ToString;
 @ToString
 public class Opinion {
 
-    private final String opinion;
+    /**
+     * 审批意见
+     */
+    private final String advice;
+    /**
+     * 审批结果
+     */
     private final boolean success;
+    /**
+     * 是否自动审批
+     * 当非会签时，若多人审批的情况下，其中一个人审批了其他会会自动审批
+     */
     private final boolean auto;
 
-    public Opinion(String opinion, boolean success, boolean auto) {
-        this.opinion = opinion;
+    public Opinion(String advice, boolean success, boolean auto) {
+        this.advice = advice;
         this.success = success;
         this.auto = auto;
 
     }
 
-    public Opinion(String opinion, boolean success) {
-        this(opinion, success, false);
+    public Opinion(String advice, boolean success) {
+        this(advice, success, false);
     }
 
 
-    public static Opinion success(String opinion) {
-        return new Opinion(opinion, true);
+    public static Opinion success(String advice) {
+        return new Opinion(advice, true);
     }
 
     public static Opinion autoSuccess() {

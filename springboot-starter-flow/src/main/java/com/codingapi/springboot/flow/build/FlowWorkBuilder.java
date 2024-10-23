@@ -57,7 +57,7 @@ public class FlowWorkBuilder {
             return this;
         }
 
-        public Nodes node(String name, String code, String view, ApprovalType approvalType,  OperatorMatcher operatorMatcher) {
+        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher) {
             return node(name, code, view, approvalType, TitleGenerator.defaultTitleGenerator(), operatorMatcher);
         }
 
@@ -83,20 +83,20 @@ public class FlowWorkBuilder {
 
     public class Relations {
 
-        public Relations relation(String name, String source, String target, boolean defaultOut) {
+        public Relations relation(String name, String source, String target) {
             FlowNode from = work.getNodeByCode(source);
             FlowNode to = work.getNodeByCode(target);
-            OutTrigger outTrigger =OutTrigger.defaultOutTrigger();
-            FlowRelation relation = new FlowRelation(IDGenerator.generate(), name, from, to, outTrigger, defaultOut);
+            OutTrigger outTrigger = OutTrigger.defaultOutTrigger();
+            FlowRelation relation = new FlowRelation(IDGenerator.generate(), name, from, to, outTrigger, false);
             work.addRelation(relation);
             return this;
         }
 
 
-        public Relations relation(String name, String source, String target, OutTrigger outTrigger, boolean defaultOut) {
+        public Relations relation(String name, String source, String target, OutTrigger outTrigger, boolean back) {
             FlowNode from = work.getNodeByCode(source);
             FlowNode to = work.getNodeByCode(target);
-            FlowRelation relation = new FlowRelation(IDGenerator.generate(), name, from, to, outTrigger, defaultOut);
+            FlowRelation relation = new FlowRelation(IDGenerator.generate(), name, from, to, outTrigger,  back);
             work.addRelation(relation);
             return this;
         }

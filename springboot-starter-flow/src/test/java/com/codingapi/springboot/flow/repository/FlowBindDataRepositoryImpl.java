@@ -19,8 +19,4 @@ public class FlowBindDataRepositoryImpl implements FlowBindDataRepository {
         }
     }
 
-    @Override
-    public BindDataSnapshot getBindDataSnapshotById(long id) {
-        return cache.stream().filter(snapshot -> snapshot.getId() == id).findFirst().orElse(null);
-    }
 }

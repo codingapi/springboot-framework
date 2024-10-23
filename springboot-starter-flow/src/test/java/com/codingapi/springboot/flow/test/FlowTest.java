@@ -19,7 +19,7 @@ public class FlowTest {
 
     private final UserRepository userRepository = new UserRepository();
     private final FlowWorkRepository flowWorkRepository = new FlowWorkRepositoryImpl();
-    private final FlowRecordRepository flowRecordRepository = new FlowRecordRepositoryImpl();
+    private final FlowRecordRepositoryImpl flowRecordRepository = new FlowRecordRepositoryImpl();
     private final FlowBindDataRepository flowBindDataRepository = new FlowBindDataRepositoryImpl();
     private final LeaveRepository leaveRepository = new LeaveRepository();
     private final FlowService flowService = new FlowService(flowWorkRepository, flowRecordRepository, flowBindDataRepository,userRepository);
@@ -44,9 +44,9 @@ public class FlowTest {
                 .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
                 .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .relations()
-                .relation("部门领导审批", "start", "dept", false)
-                .relation("总经理审批", "dept", "manager", false)
-                .relation("结束节点", "manager", "over", false)
+                .relation("部门领导审批", "start", "dept")
+                .relation("总经理审批", "dept", "manager")
+                .relation("结束节点", "manager", "over")
                 .build();
 
         flowWorkRepository.save(flowWork);
