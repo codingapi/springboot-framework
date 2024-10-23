@@ -38,7 +38,9 @@ public class FlowService {
         if (flowWork == null) {
             throw new IllegalArgumentException("flow work not found");
         }
-        flowWork.verifyState();
+        flowWork.enableValidate();
+        flowWork.lockValidate();
+
         // 保存绑定数据
         BindDataSnapshot snapshot = new BindDataSnapshot(bindData);
         flowBindDataRepository.save(snapshot);
@@ -88,7 +90,7 @@ public class FlowService {
         if (flowWork == null) {
             throw new IllegalArgumentException("flow work not found");
         }
-        flowWork.verifyState();
+        flowWork.enableValidate();
 
         // 检测流程节点
         FlowNode flowNode = flowWork.getNodeByCode(flowRecord.getNodeCode());

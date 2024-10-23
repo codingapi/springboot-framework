@@ -172,13 +172,21 @@ public class FlowWork {
         return relations.stream().anyMatch(FlowRelation::isBack);
     }
 
+
+
     /**
-     * 验证流程状态
+     * 启用检测
      */
-    public void verifyState() {
+    public void enableValidate() {
         if (!this.isEnable()) {
             throw new IllegalArgumentException("flow work is disable");
         }
+    }
+
+    /**
+     * 锁定检测
+     */
+    public void lockValidate() {
         if (this.isLock()) {
             throw new IllegalArgumentException("flow work is lock");
         }
