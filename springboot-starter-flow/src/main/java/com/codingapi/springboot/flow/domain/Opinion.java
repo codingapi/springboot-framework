@@ -17,7 +17,6 @@ public class Opinion {
     // 完成是自动审批
     public static final int TYPE_FINISH_AUTO = 2;
 
-
     /**
      * 审批意见
      */

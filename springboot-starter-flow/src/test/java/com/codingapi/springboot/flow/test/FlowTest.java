@@ -80,6 +80,7 @@ public class FlowTest {
         // 查看流程详情
         FlowDetail flowDetail = flowService.detail(userTodo.getId(), user);
         assertEquals("我要出去看看~~", ((Leave)flowDetail.getBindData()).getTitle());
+        assertTrue(flowDetail.getFlowRecord().isRead());
 
 
         flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
@@ -118,6 +119,92 @@ public class FlowTest {
         List<BindDataSnapshot> snapshots = flowBindDataRepository.findAll();
         assertEquals(5, snapshots.size());
 
+    }
+
+    /**
+     *  干预流程
+     */
+    @Test
+    void interfereTest(){
+        User admin = new User("lorne",true);
+        userRepository.save(admin);
+
+        User user = new User("张飞");
+        userRepository.save(user);
+
+        User dept = new User("刘备");
+        userRepository.save(dept);
+
+        User boss = new User("诸葛亮");
+        userRepository.save(boss);
+
+        FlowWork flowWork = FlowWorkBuilder.builder(user)
+                .title("请假流程")
+                .nodes()
+                .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
+                .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(dept.getUserId()))
+                .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
+                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.creatorOperatorMatcher())
+                .relations()
+                .relation("部门领导审批", "start", "dept")
+                .relation("总经理审批", "dept", "manager")
+                .relation("结束节点", "manager", "over")
+                .build();
+
+        flowWorkRepository.save(flowWork);
+
+        long workId = flowWork.getId();
+
+        Leave leave = new Leave("我要出去看看");
+        leaveRepository.save(leave);
+
+        // 创建流程
+        flowService.startFlow(workId, user, leave, "发起流程");
+
+        // 查看我的待办
+        List<FlowRecord> userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId());
+        assertEquals(1, userTodos.size());
+
+        // 提交流程
+        FlowRecord userTodo = userTodos.get(0);
+        flowService.interfere(userTodo.getId(), admin, leave, Opinion.pass("同意"));
+        assertTrue(userTodo.isInterfere());
+
+        // 查看部门经理的待办
+        List<FlowRecord> deptTodos = flowRecordRepository.findTodoByOperatorId(dept.getUserId());
+        assertEquals(1, deptTodos.size());
+
+        // 提交部门经理的审批
+        FlowRecord deptTodo = deptTodos.get(0);
+        flowService.interfere(deptTodo.getId(), admin, leave, Opinion.pass("同意"));
+        assertTrue(deptTodo.isInterfere());
+
+        // 查看总经理的待办
+        List<FlowRecord> bossTodos = flowRecordRepository.findTodoByOperatorId(boss.getUserId());
+        assertEquals(1, bossTodos.size());
+
+        // 提交总经理的审批
+        FlowRecord bossTodo = bossTodos.get(0);
+        flowService.interfere(bossTodo.getId(), admin, leave, Opinion.pass("同意"));
+        assertTrue(bossTodo.isInterfere());
+
+        // 查看所有流程
+        List<FlowRecord> records = flowRecordRepository.findAll();
+        assertEquals(4, records.size());
+
+        userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId());
+        assertEquals(1, userTodos.size());
+
+        userTodo = userTodos.get(0);
+        flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
+
+        records = flowRecordRepository.findAll();
+        assertEquals(4, records.size());
+        // 查看所有流程是否都已经结束
+        assertTrue(records.stream().allMatch(FlowRecord::isFinish));
+
+        List<BindDataSnapshot> snapshots = flowBindDataRepository.findAll();
+        assertEquals(5, snapshots.size());
     }
 
 
@@ -164,6 +251,13 @@ public class FlowTest {
 
         // 提交流程
         FlowRecord userTodo = userTodos.get(0);
+
+        // 查看流程详情
+        FlowDetail flowDetail = flowService.detail(userTodo.getId());
+        assertEquals("我要出去看看", ((Leave)flowDetail.getBindData()).getTitle());
+        assertTrue(flowDetail.getFlowRecord().isUnRead());
+
+
         flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
 
         // 查看部门经理的待办

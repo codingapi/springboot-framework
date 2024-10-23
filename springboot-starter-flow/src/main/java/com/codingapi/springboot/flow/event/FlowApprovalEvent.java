@@ -1,5 +1,6 @@
 package com.codingapi.springboot.flow.event;
 
+import com.codingapi.springboot.flow.user.IFlowOperator;
 import com.codingapi.springboot.framework.event.ISyncEvent;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +25,11 @@ public class FlowApprovalEvent implements ISyncEvent {
     public static final int STATE_FINISH = 6;
 
     private final int state;
+    private final IFlowOperator operator;
 
-    public FlowApprovalEvent(int state) {
+    public FlowApprovalEvent(int state,IFlowOperator operator) {
         this.state = state;
+        this.operator = operator;
         log.info("FlowApprovalEvent:{}", this);
     }
 

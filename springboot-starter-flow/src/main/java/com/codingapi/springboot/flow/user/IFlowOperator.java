@@ -16,4 +16,12 @@ public interface IFlowOperator {
      */
     String getName();
 
+
+    /**
+     * 是否流程管理员
+     *
+     * 流程管理员可以强制干预流程
+     */
+    boolean isFlowManager();
+
 }

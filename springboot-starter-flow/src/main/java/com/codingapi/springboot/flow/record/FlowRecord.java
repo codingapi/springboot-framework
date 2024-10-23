@@ -110,6 +110,11 @@ public class FlowRecord {
     private boolean read;
 
     /**
+     * 是否干预
+     */
+    private boolean interfere;
+
+    /**
      * 已读时间
      */
     private long readTime;
@@ -159,8 +164,13 @@ public class FlowRecord {
      * @param pass         是否通过
      */
     public void submitRecord(IFlowOperator flowOperator, BindDataSnapshot snapshot, Opinion opinion, boolean pass) {
-        if (flowOperator.getUserId() != this.currentOperatorId) {
-            throw new IllegalArgumentException("current operator is not match");
+        if(!flowOperator.isFlowManager()) {
+            if (flowOperator.getUserId() != this.currentOperatorId) {
+                throw new IllegalArgumentException("current operator is not match");
+            }
+        }else {
+            this.currentOperatorId = flowOperator.getUserId();
+            this.interfere = true;
         }
         this.read();
         this.pass = pass;
