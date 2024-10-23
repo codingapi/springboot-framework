@@ -3,14 +3,12 @@ package com.codingapi.springboot.flow.service;
 import com.codingapi.springboot.flow.bind.BindDataSnapshot;
 import com.codingapi.springboot.flow.bind.IBindData;
 import com.codingapi.springboot.flow.domain.FlowNode;
+import com.codingapi.springboot.flow.record.FlowProcess;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.event.FlowApprovalEvent;
 import com.codingapi.springboot.flow.record.FlowRecord;
-import com.codingapi.springboot.flow.repository.FlowBindDataRepository;
-import com.codingapi.springboot.flow.repository.FlowOperatorRepository;
-import com.codingapi.springboot.flow.repository.FlowRecordRepository;
-import com.codingapi.springboot.flow.repository.FlowWorkRepository;
+import com.codingapi.springboot.flow.repository.*;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import com.codingapi.springboot.framework.event.EventPusher;
 import lombok.AllArgsConstructor;
@@ -25,6 +23,7 @@ public class FlowService {
     private final FlowRecordRepository flowRecordRepository;
     private final FlowBindDataRepository flowBindDataRepository;
     private final FlowOperatorRepository flowOperatorRepository;
+    private final FlowProcessRepository flowProcessRepository;
 
     /**
      * 发起流程
@@ -41,12 +40,16 @@ public class FlowService {
             throw new IllegalArgumentException("flow work not found");
         }
         flowWork.enableValidate();
-        flowWork.lockValidate();
+        flowWork.verify();
+
+        FlowProcess flowProcess = flowWork.generateProcess(operator);
+        flowProcessRepository.save(flowProcess);
 
         // 保存绑定数据
         BindDataSnapshot snapshot = new BindDataSnapshot(bindData);
         flowBindDataRepository.save(snapshot);
-        String processId = flowWork.generateProcessId();
+
+        String processId = flowProcess.getId();
 
         Opinion opinion = Opinion.pass(advice);
 
@@ -85,7 +88,7 @@ public class FlowService {
         flowRecord.submitStateVerify();
 
         // 检测流程
-        FlowWork flowWork = flowWorkRepository.getFlowWorkById(flowRecord.getWorkId());
+        FlowWork flowWork = flowProcessRepository.getFlowWorkByProcessId(flowRecord.getProcessId());
         if (flowWork == null) {
             throw new IllegalArgumentException("flow work not found");
         }

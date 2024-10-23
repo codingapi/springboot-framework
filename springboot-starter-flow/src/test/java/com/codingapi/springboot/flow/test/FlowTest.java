@@ -24,7 +24,8 @@ public class FlowTest {
     private final FlowRecordRepositoryImpl flowRecordRepository = new FlowRecordRepositoryImpl();
     private final FlowBindDataRepository flowBindDataRepository = new FlowBindDataRepositoryImpl();
     private final LeaveRepository leaveRepository = new LeaveRepository();
-    private final FlowService flowService = new FlowService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, userRepository);
+    private final FlowProcessRepository flowProcessRepository = new FlowProcessRepositoryImpl();
+    private final FlowService flowService = new FlowService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, userRepository,flowProcessRepository);
 
 
     /**

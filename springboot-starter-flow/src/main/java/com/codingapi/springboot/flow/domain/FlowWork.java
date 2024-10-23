@@ -1,7 +1,7 @@
 package com.codingapi.springboot.flow.domain;
 
+import com.codingapi.springboot.flow.record.FlowProcess;
 import com.codingapi.springboot.flow.user.IFlowOperator;
-import com.codingapi.springboot.flow.utils.IDGenerator;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.util.StringUtils;
@@ -46,11 +46,7 @@ public class FlowWork {
      * 是否启用
      */
     private boolean enable;
-    /**
-     * 是否锁定
-     * 锁定流程将无法发起新的流程，当前存在的流程不受影响
-     */
-    private boolean lock;
+
     /**
      * 流程的节点(发起节点)
      */
@@ -77,7 +73,6 @@ public class FlowWork {
         this.createTime = System.currentTimeMillis();
         this.updateTime = System.currentTimeMillis();
         this.enable = true;
-        this.lock = false;
         this.nodes = new ArrayList<>();
         this.relations = new ArrayList<>();
     }
@@ -157,12 +152,11 @@ public class FlowWork {
     }
 
     /**
-     * 生成流程id
-     *
-     * @return 流程id
+     * 生成流程
+     * @return 流程process
      */
-    public String generateProcessId() {
-        return IDGenerator.generate();
+    public FlowProcess generateProcess(IFlowOperator operator) {
+        return new FlowProcess(this,operator);
     }
 
     /**
@@ -183,14 +177,6 @@ public class FlowWork {
         }
     }
 
-    /**
-     * 锁定检测
-     */
-    public void lockValidate() {
-        if (this.isLock()) {
-            throw new IllegalArgumentException("flow work is lock");
-        }
-    }
 
 
 }
