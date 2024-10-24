@@ -5,5 +5,7 @@ import com.codingapi.springboot.fast.jpa.repository.FastRepository;
 
 public interface UserEntityRepository extends FastRepository<UserEntity,Long> {
 
-        UserEntity getByUsername(String username);
+        UserEntity getUserEntityByUsername(String username);
+
+        UserEntity getUserEntityById(long id);
 }

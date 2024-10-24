@@ -16,7 +16,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User getUserByUsername(String username) {
-        return UserConvertor.convert(userEntityRepository.getByUsername(username));
+        return UserConvertor.convert(userEntityRepository.getUserEntityByUsername(username));
     }
 
     @Override
@@ -24,5 +24,10 @@ public class UserRepositoryImpl implements UserRepository {
         UserEntity entity = UserConvertor.convert(user);
         entity = userEntityRepository.save(entity);
         user.setId(entity.getId());
+    }
+
+    @Override
+    public User getUserById(long id) {
+        return UserConvertor.convert(userEntityRepository.getUserEntityById(id));
     }
 }

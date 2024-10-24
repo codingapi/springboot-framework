@@ -46,7 +46,7 @@ public class FlowWorkBuilder {
     }
 
     public FlowWork build() {
-        work.verify();
+        work.enable();
         return work;
     }
 
@@ -73,7 +73,7 @@ public class FlowWorkBuilder {
         }
 
         public FlowWork build() {
-            work.verify();
+            work.enable();
             return work;
         }
     }
@@ -99,7 +99,7 @@ public class FlowWorkBuilder {
         }
 
         public FlowWork build() {
-            work.verify();
+            work.enable();
             return work;
         }
 

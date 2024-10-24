@@ -9,14 +9,14 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>example-application</artifactId>
+    <artifactId>example-infra-flow</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jsonwebtoken.jjwt.version>0.12.5</jsonwebtoken.jjwt.version>
     </properties>
+
 
     <dependencies>
         <dependency>
@@ -27,45 +27,25 @@
 
         <dependency>
             <groupId>com.codingapi.springboot</groupId>
-            <artifactId>example-infra-jpa</artifactId>
-            <version>${project.version}</version>
+            <artifactId>springboot-starter-flow</artifactId>
         </dependency>
+
 
         <dependency>
             <groupId>com.codingapi.springboot</groupId>
-            <artifactId>example-infra-flow</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.codingapi.springboot</groupId>
-            <artifactId>springboot-starter-security</artifactId>
+            <artifactId>springboot-starter-data-fast</artifactId>
             <version>${codingapi.framework.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-api</artifactId>
-            <version>${jsonwebtoken.jjwt.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-impl</artifactId>
-            <version>${jsonwebtoken.jjwt.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-jackson</artifactId>
-            <version>${jsonwebtoken.jjwt.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
         </dependency>
 
     </dependencies>
-
 </project>

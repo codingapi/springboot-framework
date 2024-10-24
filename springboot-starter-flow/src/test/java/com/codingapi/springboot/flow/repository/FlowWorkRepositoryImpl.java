@@ -21,4 +21,9 @@ public class FlowWorkRepositoryImpl implements FlowWorkRepository{
             flowWork.setId(cache.size());
         }
     }
+
+    @Override
+    public void delete(long id) {
+        cache.removeIf(flowWork -> flowWork.getId() == id);
+    }
 }

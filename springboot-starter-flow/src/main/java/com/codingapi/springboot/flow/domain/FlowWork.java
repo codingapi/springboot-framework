@@ -2,6 +2,7 @@ package com.codingapi.springboot.flow.domain;
 
 import com.codingapi.springboot.flow.record.FlowProcess;
 import com.codingapi.springboot.flow.user.IFlowOperator;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.util.StringUtils;
@@ -13,6 +14,7 @@ import java.util.List;
  * 流程设计
  */
 @Getter
+@AllArgsConstructor
 public class FlowWork {
 
     /**
@@ -77,8 +79,17 @@ public class FlowWork {
         this.createUser = createUser;
         this.createTime = System.currentTimeMillis();
         this.updateTime = System.currentTimeMillis();
-        this.enable = true;
         this.postponedMax = 1;
+        this.nodes = new ArrayList<>();
+        this.relations = new ArrayList<>();
+    }
+
+    public FlowWork(String title, String description, IFlowOperator createUser) {
+        this.title = title;
+        this.description = description;
+        this.createUser = createUser;
+        this.createTime = System.currentTimeMillis();
+        this.updateTime = System.currentTimeMillis();
         this.nodes = new ArrayList<>();
         this.relations = new ArrayList<>();
     }
@@ -184,5 +195,18 @@ public class FlowWork {
     }
 
 
+    /**
+     * 启用
+     */
+    public void enable() {
+        this.verify();
+        this.enable = true;
+    }
 
+    /**
+     * 禁用
+     */
+    public void disbale() {
+        this.enable = false;
+    }
 }

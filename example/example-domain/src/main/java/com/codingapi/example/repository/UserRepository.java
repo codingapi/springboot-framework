@@ -6,5 +6,7 @@ public interface UserRepository {
 
     User getUserByUsername(String username);
 
+    User getUserById(long id);
+
     void save(User user);
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import Flow, {FlowActionType} from "@/components/Flow";
 import {ActionType, ModalForm, PageContainer, ProForm, ProFormText, ProTable} from "@ant-design/pro-components";
-import {list, save, schema} from "@/api/flow";
+import {changeState, list, remove, save, schema} from "@/api/flow";
 import {Button, Drawer, message, Popconfirm, Space} from "antd";
 
 const FlowPage = () => {
@@ -12,25 +12,41 @@ const FlowPage = () => {
     const [form] = ProForm.useForm();
     const actionRef = React.useRef<ActionType>();
 
-    const [current,setCurrent] = React.useState<any>(null);
+    const [current, setCurrent] = React.useState<any>(null);
 
-
-    const handlerSave = async (values:any)=>{
-        const res = await save(values);
-        setEditorVisible(false);
-        if(res.success){
+    const handlerDelete = async (id: any) => {
+        const res = await remove(id);
+        if (res.success) {
             message.success("保存成功");
         }
         actionRef.current?.reload();
     }
 
-    const handlerSchema = async (json:any)=>{
+    const handlerChangeState = async (id: any) => {
+        const res = await changeState(id);
+        if (res.success) {
+            message.success("修改成功");
+        }
+        actionRef.current?.reload();
+    }
+
+
+    const handlerSave = async (values: any) => {
+        const res = await save(values);
+        setEditorVisible(false);
+        if (res.success) {
+            message.success("保存成功");
+        }
+        actionRef.current?.reload();
+    }
+
+    const handlerSchema = async (json: any) => {
         const res = await schema({
-            id:current.id,
-            schema:json
+            id: current.id,
+            schema: json
         });
         setVisible(false);
-        if(res.success){
+        if (res.success) {
             message.success("保存成功");
         }
         actionRef.current?.reload();
@@ -53,15 +69,44 @@ const FlowPage = () => {
             search: false,
         },
         {
+            title: '创建时间',
+            dataIndex: 'createTime',
+            valueType: 'dateTime',
+            search: false,
+        },
+        {
+            title: '修改时间',
+            dataIndex: 'updateTime',
+            valueType: 'dateTime',
+            search: false,
+        },
+        {
             title: '节点数量',
             dataIndex: 'nodes',
             valueType: 'text',
             search: false,
             render: (text: any, record: any) => {
-                if(record.nodes) {
+                if (record.nodes) {
                     return record.nodes.length;
                 }
                 return 0;
+            }
+        },
+        {
+            title: '状态',
+            dataIndex: 'enable',
+            search: false,
+            render: (text: any, record: any) => {
+                return (
+                    <Popconfirm
+                        title={`确认要${record.enable ? '禁用' : '启用'}吗？`}
+                        onConfirm={async () => {
+                            await handlerChangeState(record.id);
+                        }}
+                    >
+                        <a>{record.enable ? '禁用' : '禁用'}</a>
+                    </Popconfirm>
+                )
             }
         },
         {
@@ -89,8 +134,8 @@ const FlowPage = () => {
                 <Popconfirm
                     key="delete"
                     title={"确认删除?"}
-                    onConfirm={() => {
-                        console.log(record);
+                    onConfirm={async () => {
+                        await handlerDelete(record.id);
                     }}
                 >
                     <a
@@ -203,7 +248,7 @@ const FlowPage = () => {
                 }
             >
                 <Flow
-                    data={current?.schema?JSON.parse(current?.schema):null}
+                    data={current?.schema ? JSON.parse(current?.schema) : null}
                     actionRef={flowActionType}
                 />
             </Drawer>

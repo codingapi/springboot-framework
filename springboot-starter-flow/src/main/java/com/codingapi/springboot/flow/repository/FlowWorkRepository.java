@@ -8,4 +8,6 @@ public interface FlowWorkRepository {
 
     void save(FlowWork flowWork);
 
+    void delete(long id);
+
 }
