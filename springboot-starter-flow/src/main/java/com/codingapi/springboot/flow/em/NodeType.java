@@ -14,4 +14,15 @@ public enum NodeType {
      * 结束
      */
     OVER;
+
+
+
+    public static NodeType parser(String type){
+        for(NodeType nodeType:values()){
+            if(nodeType.name().equalsIgnoreCase(type)){
+                return nodeType;
+            }
+        }
+        return APPROVAL;
+    }
 }

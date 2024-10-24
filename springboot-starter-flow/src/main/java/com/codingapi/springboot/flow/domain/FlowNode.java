@@ -68,6 +68,11 @@ public class FlowNode {
     private OperatorMatcher operatorMatcher;
 
     /**
+     * 是否可编辑
+     */
+    private boolean editable;
+
+    /**
      * 创建时间
      */
     private long createTime;
@@ -88,13 +93,17 @@ public class FlowNode {
     private ErrTrigger errTrigger;
 
 
-    public FlowNode(String id, String name,
-                    String code, String view,
-                    NodeType type, ApprovalType approvalType,
+    public FlowNode(String id,
+                    String name,
+                    String code,
+                    String view,
+                    NodeType type,
+                    ApprovalType approvalType,
                     TitleGenerator titleGenerator,
                     OperatorMatcher operatorMatcher,
                     long timeout,
-                    ErrTrigger errTrigger) {
+                    ErrTrigger errTrigger,
+                    boolean editable) {
         this.id = id;
         this.code = code;
         this.name = name;
@@ -107,6 +116,7 @@ public class FlowNode {
         this.updateTime = System.currentTimeMillis();
         this.errTrigger = errTrigger;
         this.timeout = timeout;
+        this.editable = editable;
     }
 
 

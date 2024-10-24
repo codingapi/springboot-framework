@@ -175,7 +175,6 @@ public class FlowService {
         if (flowRecord == null) {
             throw new IllegalArgumentException("flow record not found");
         }
-        flowRecord.submitStateVerify();
         if (currentOperator != null) {
             flowRecord.matcherOperator(currentOperator);
 
@@ -306,6 +305,24 @@ public class FlowService {
         flowRecord.submitStateVerify();
         flowRecord.matcherOperator(currentOperator);
 
+        // 检测流程
+        FlowWork flowWork = flowProcessRepository.getFlowWorkByProcessId(flowRecord.getProcessId());
+        if (flowWork == null) {
+            throw new IllegalArgumentException("flow work not found");
+        }
+        flowWork.enableValidate();
+
+        // 检测流程节点
+        FlowNode flowNode = flowWork.getNodeByCode(flowRecord.getNodeCode());
+        if (flowNode == null) {
+            throw new IllegalArgumentException("flow node not found");
+        }
+
+        // 流程节点不可编辑时，不能保存
+        if(!flowNode.isEditable()){
+            throw new IllegalArgumentException("flow node is not editable");
+        }
+
         // 保存绑定数据
         BindDataSnapshot snapshot = new BindDataSnapshot(flowRecord.getSnapshotId(), bindData);
         flowBindDataRepository.update(snapshot);
@@ -358,9 +375,14 @@ public class FlowService {
         // 获取创建者
         IFlowOperator createOperator = flowOperatorRepository.getFlowOperatorById(flowRecord.getCreateOperatorId());
 
+        BindDataSnapshot snapshot =null;
         // 保存绑定数据
-        BindDataSnapshot snapshot = new BindDataSnapshot(bindData);
-        flowBindDataRepository.save(snapshot);
+        if(flowNode.isEditable()) {
+            snapshot = new BindDataSnapshot(bindData);
+            flowBindDataRepository.save(snapshot);
+        }else {
+            snapshot = flowBindDataRepository.getBindDataSnapshotById(flowRecord.getSnapshotId());
+        }
 
         // 根据审批意见判断流程是否进入下一节点
         boolean flowNextStep = opinion.isSuccess();

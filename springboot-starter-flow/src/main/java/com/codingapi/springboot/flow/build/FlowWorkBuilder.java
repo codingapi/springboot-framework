@@ -52,24 +52,17 @@ public class FlowWorkBuilder {
 
     public class Nodes {
 
-        public Nodes start(String name, String view, TitleGenerator titleGenerator, OperatorMatcher operatorMatcher) {
-            work.addNode(new FlowNode(IDGenerator.generate(), name, FlowNode.CODE_START, view, NodeType.START, ApprovalType.UN_SIGN, titleGenerator, operatorMatcher, 0, null));
+
+        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, boolean editable) {
+            FlowNode node = new FlowNode(IDGenerator.generate(), name, code, view, NodeType.parser(code), approvalType, TitleGenerator.defaultTitleGenerator(), operatorMatcher, 0, null, editable);
+            work.addNode(node);
             return this;
         }
 
         public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher) {
-            return node(name, code, view, approvalType, TitleGenerator.defaultTitleGenerator(), operatorMatcher);
+            return node(name, code, view, approvalType, operatorMatcher, true);
         }
 
-        public Nodes node(String name, String code, String view, ApprovalType approvalType, TitleGenerator titleGenerator, OperatorMatcher operatorMatcher) {
-            work.addNode(new FlowNode(IDGenerator.generate(), name, code, view, NodeType.APPROVAL, approvalType, titleGenerator, operatorMatcher, 0, null));
-            return this;
-        }
-
-        public Nodes over(String name, String view, TitleGenerator titleGenerator, OperatorMatcher operatorMatcher) {
-            work.addNode(new FlowNode(IDGenerator.generate(), name, FlowNode.CODE_OVER, view, NodeType.OVER, ApprovalType.UN_SIGN, titleGenerator, operatorMatcher, 0, null));
-            return this;
-        }
 
         public Relations relations() {
             return new Relations();
@@ -96,7 +89,7 @@ public class FlowWorkBuilder {
         public Relations relation(String name, String source, String target, OutTrigger outTrigger, boolean back) {
             FlowNode from = work.getNodeByCode(source);
             FlowNode to = work.getNodeByCode(target);
-            FlowRelation relation = new FlowRelation(IDGenerator.generate(), name, from, to, outTrigger,  back);
+            FlowRelation relation = new FlowRelation(IDGenerator.generate(), name, from, to, outTrigger, back);
             work.addRelation(relation);
             return this;
         }

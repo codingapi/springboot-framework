@@ -142,7 +142,7 @@ class FlowRecordService {
                 List<FlowRecord> recordList = new ArrayList<>();
                 List<IFlowOperator> operators = ((OperatorResult) errorResult).getOperators();
                 for (IFlowOperator operator : operators) {
-                    List<FlowRecord> records = triggerNextNode(preId, currentNode, operator);
+                    List<FlowRecord> records = triggerNextFlow(preId, currentNode, operator);
                     if (!records.isEmpty()) {
                         recordList.addAll(records);
                     }
@@ -153,7 +153,7 @@ class FlowRecordService {
             if (errorResult.isNode()) {
                 String nodeCode = ((NodeResult) errorResult).getNode();
                 FlowNode node = flowWork.getNodeByCode(nodeCode);
-                return triggerNextNode(preId, node, currentOperator);
+                return triggerNextFlow(preId, node, currentOperator);
             }
             throw new IllegalArgumentException("errMatcher not match.");
         }
@@ -169,7 +169,7 @@ class FlowRecordService {
      * @param currentOperator 当前操作者
      * @return 流程记录
      */
-    private List<FlowRecord> triggerNextNode(long preId, FlowNode currentNode, IFlowOperator currentOperator) {
+    private List<FlowRecord> triggerNextFlow(long preId, FlowNode currentNode, IFlowOperator currentOperator) {
         List<FlowRecord> records = new ArrayList<>();
         FlowContent content = new FlowContent(flowWork, currentNode, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
         List<? extends IFlowOperator> matcherOperators = currentNode.loadFlowNodeOperator(content, flowOperatorRepository);
@@ -183,6 +183,10 @@ class FlowRecordService {
         return records;
     }
 
+    /**
+     * 切换当前操作者
+     * @param flowOperator 操作者
+     */
     public void changeCurrentOperator(IFlowOperator flowOperator) {
         this.currentOperator = flowOperator;
     }

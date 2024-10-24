@@ -30,17 +30,17 @@ class ScriptTest {
 
         OperatorMatcher matcher = OperatorMatcher.anyOperatorMatcher();
 
-        TitleGenerator titleGenerator = TitleGenerator.defaultTitleGenerator();
-
         OperatorMatcher operatorMatcher = OperatorMatcher.anyOperatorMatcher();
+
+        TitleGenerator titleGenerator = TitleGenerator.defaultTitleGenerator();
 
         FlowWork flowWork = FlowWorkBuilder.builder(user)
                 .title("请假流程")
                 .nodes()
-                .node("开始节点", "start", "default", ApprovalType.UN_SIGN, titleGenerator, operatorMatcher)
-                .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, titleGenerator, operatorMatcher)
-                .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, titleGenerator, operatorMatcher)
-                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, titleGenerator, operatorMatcher)
+                .node("开始节点", "start", "default", ApprovalType.UN_SIGN, operatorMatcher)
+                .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, operatorMatcher)
+                .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, operatorMatcher)
+                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, operatorMatcher)
                 .relations()
                 .relation("部门领导审批", "start", "dept")
                 .relation("总经理审批", "dept", "manager")
