@@ -1,3 +1,5 @@
+import GroovyScript from "@/components/Flow/utils/script";
+
 const FlowUtils = {
 
     getEdges(nodeId: String) {
@@ -16,16 +18,18 @@ const FlowUtils = {
 
         let update = false;
 
+        let order = 0;
         if (data && data.edges) {
             const edges = data.edges;
             for (const index in edges) {
                 const edge = edges[index];
                 if (edge.sourceNodeId === nodeId) {
+                    order ++;
                     if (!edge.properties.outTrigger) {
                         edge.properties = {
                             ...edge.properties,
-                            outTrigger: "def run(content) {return true;}",
-                            order: parseInt(index)+1,
+                            outTrigger: GroovyScript.defaultOutTrigger,
+                            order: order,
                             back: false
                         }
                         update = true;

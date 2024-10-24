@@ -3,8 +3,6 @@ package com.codingapi.springboot.flow.content;
 import lombok.Getter;
 import org.springframework.context.ApplicationContext;
 
-import java.util.List;
-
 /**
  * 流程持有者
  */
@@ -22,17 +20,11 @@ public class FlowHolder {
         this.spring = spring;
     }
 
-    public <T> T getBean(Class<T> clazz) {
+    public Object getBean(String beanName) {
         if (spring != null) {
-            return spring.getBean(clazz);
+            return spring.getBean(beanName);
         }
         return null;
     }
 
-    public <T> List<T> getBeans(Class<T> clazz) {
-        if (spring != null) {
-            return List.of(spring.getBeanNamesForType(clazz)).stream().map(name -> (T) spring.getBean(name)).toList();
-        }
-        return null;
-    }
 }

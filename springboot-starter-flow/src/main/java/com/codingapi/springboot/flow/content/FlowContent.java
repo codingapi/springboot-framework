@@ -37,12 +37,8 @@ public class FlowContent {
     }
 
 
-    public <T> T getBean(Class<T> clazz) {
-        return holder.getBean(clazz);
-    }
-
-    public <T> List<T> getBeans(Class<T> clazz) {
-        return holder.getBeans(clazz);
+    public Object getBean(String beanName) {
+        return holder.getBean(beanName);
     }
 
     /**

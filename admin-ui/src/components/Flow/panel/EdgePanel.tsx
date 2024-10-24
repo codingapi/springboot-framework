@@ -1,9 +1,9 @@
 import React from "react";
-import {ActionType, ModalForm, ProForm, ProFormText, ProTable} from "@ant-design/pro-components";
+import {ActionType, ProForm, ProTable} from "@ant-design/pro-components";
 import {Input, InputNumber, Popconfirm, Space} from "antd";
 import {CheckOutlined, EditOutlined, SettingOutlined} from "@ant-design/icons";
 import FlowUtils from "@/components/Flow/utils";
-import ProFormCode from "@/components/Form/ProFormCode";
+import ScriptModal from "@/components/Flow/panel/ScriptModal";
 
 interface EdgePanelProps {
     id?: string;
@@ -94,8 +94,8 @@ const EdgePanel: React.FC<EdgePanelProps> = (props) => {
                     <Space>
                         <SettingOutlined
                             onClick={() => {
-                                form.setFieldValue("outTrigger", record.outTrigger);
-                                form.setFieldValue("id", record.id);
+                                form.setFieldValue("script", record.outTrigger);
+                                form.setFieldValue("type", record.id);
                                 setVisible(true);
                             }}/>
                         {record.outTrigger ? (<CheckOutlined/>) : null}
@@ -113,7 +113,7 @@ const EdgePanel: React.FC<EdgePanelProps> = (props) => {
 
                     <Space>
                         <Popconfirm
-                            title={`确认修改为${text?'否':'是'}吗？`}
+                            title={`确认修改为${text ? '否' : '是'}吗？`}
                             onConfirm={() => {
                                 handlerChangeBack(record.id, !text);
                             }}
@@ -179,49 +179,13 @@ const EdgePanel: React.FC<EdgePanelProps> = (props) => {
                 }}
             />
 
-            <ModalForm
-                open={visible}
+            <ScriptModal
+                onFinish={(values) => {
+                    handlerChangeOutTrigger(values.type, values.outTrigger);
+                }}
                 form={form}
-                width={"60%"}
-                title={"出口设置"}
-                onFinish={async (values) => {
-                    handlerChangeOutTrigger(values.id, values.outTrigger);
-                    setVisible(false);
-                }}
-                modalProps={{
-                    onClose: () => {
-                        setVisible(false);
-                    },
-                    onCancel: () => {
-                        setVisible(false);
-                    },
-                    destroyOnClose: true,
-                    footer: false,
-                    onOk: () => {
-                        form.submit();
-                    }
-                }}
-            >
-                <ProFormText
-                    name={"id"}
-                    hidden={true}
-                />
-                <ProFormCode
-                    name={"outTrigger"}
-                    codeEditorProps={{
-                        style: {
-                            height: 500
-                        }
-                    }}
-                    rules={[
-                        {
-                            required: true,
-                            message: "请输入出口设置"
-                        }
-                    ]}
-                />
-
-            </ModalForm>
+                setVisible={setVisible}
+                visible={visible}/>
         </>
     )
 }

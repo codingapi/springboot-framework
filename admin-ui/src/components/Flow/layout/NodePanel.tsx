@@ -3,6 +3,7 @@ import "./NodePanel.scss";
 import {StartView} from "@/components/Flow/nodes/Start";
 import {NodeView} from "@/components/Flow/nodes/Node";
 import {OverView} from "@/components/Flow/nodes/Over";
+import GroovyScript from "@/components/Flow/utils/script";
 
 interface NodePanelProps {
     className: string,
@@ -22,14 +23,14 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                             {
                                 name: '开始节点',
                                 code: 'start',
-                                type:'START',
-                                view:'default',
-                                operatorMatcher: 'def run(content) {return [content.getCurrentOperator().getUserId()];}',
-                                editable:true,
-                                titleGenerator:'def run(content){ return content.getCreateOperator().getName() + \'-\' + content.getFlowWork().getTitle() + \'-\' + content.getFlowNode().getName();}',
-                                errTrigger:'',
-                                approvalType:'UN_SIGN',
-                                timeout:0
+                                type: 'START',
+                                view: 'default',
+                                operatorMatcher: GroovyScript.anyOperatorMatcher,
+                                editable: true,
+                                titleGenerator: GroovyScript.defaultTitleGenerator,
+                                errTrigger: '',
+                                approvalType: 'UN_SIGN',
+                                timeout: 0
                             }
                         );
                     }}
@@ -44,19 +45,19 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                             {
                                 name: '流程节点',
                                 code: 'flow',
-                                type:'APPROVAL',
-                                view:'default',
-                                operatorMatcher: 'def run(content) {return [content.getCurrentOperator().getUserId()];}',
-                                editable:true,
-                                titleGenerator:'def run(content){ return content.getCreateOperator().getName() + \'-\' + content.getFlowWork().getTitle() + \'-\' + content.getFlowNode().getName();}',
-                                errTrigger:'',
-                                approvalType:'SIGN',
-                                timeout:0
+                                type: 'APPROVAL',
+                                view: 'default',
+                                operatorMatcher: GroovyScript.anyOperatorMatcher,
+                                editable: true,
+                                titleGenerator: GroovyScript.defaultTitleGenerator,
+                                errTrigger: '',
+                                approvalType: 'SIGN',
+                                timeout: 0
                             }
                         );
                     }}
                 >
-                    <NodeView name={"流程节点"} />
+                    <NodeView name={"流程节点"}/>
                 </div>
 
                 <div
@@ -65,20 +66,20 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                         props.onDrag('over-node',
                             {
                                 name: '结束节点',
-                                code: 'flow',
-                                type:'OVER',
-                                view:'default',
-                                operatorMatcher: 'def run(content) {return [content.getCurrentOperator().getUserId()];}',
-                                editable:true,
-                                titleGenerator:'def run(content){ return content.getCreateOperator().getName() + \'-\' + content.getFlowWork().getTitle() + \'-\' + content.getFlowNode().getName();}',
-                                errTrigger:'',
-                                approvalType:'UN_SIGN',
-                                timeout:0
+                                code: 'over',
+                                type: 'OVER',
+                                view: 'default',
+                                operatorMatcher: GroovyScript.creatorOperatorMatcher,
+                                editable: true,
+                                titleGenerator: GroovyScript.defaultTitleGenerator,
+                                errTrigger: '',
+                                approvalType: 'UN_SIGN',
+                                timeout: 0
                             }
                         );
                     }}
                 >
-                    <OverView name={"结束节点"} />
+                    <OverView name={"结束节点"}/>
                 </div>
             </div>
         </div>
