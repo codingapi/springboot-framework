@@ -1,21 +1,121 @@
 const FlowUtils = {
 
-    getEdges(nodeId:String){
+    getEdges(nodeId: String) {
         //@ts-ignore
         const data = window.lfRef?.current.getGraphData();
         const list = []
-        if(data && data.edges){
-            const edges = data.edges;
-            for(const edge of edges){
-                if(edge.sourceNodeId === nodeId){
-                    list.push(edge);
+        const nodes = data.nodes;
+
+        const getNodeProperties = (nodeId: String) => {
+            for (const node of nodes) {
+                if (node.id === nodeId) {
+                    return node.properties;
                 }
             }
         }
+
+        let update = false;
+
+        if (data && data.edges) {
+            const edges = data.edges;
+            for (const index in edges) {
+                const edge = edges[index];
+                if (edge.sourceNodeId === nodeId) {
+                    if (!edge.properties.outTrigger) {
+                        edge.properties = {
+                            ...edge.properties,
+                            outTrigger: "def run(content) {return true;}",
+                            order: parseInt(index)+1,
+                            back: false
+                        }
+                        update = true;
+                    }
+
+                    list.push({
+                        id: edge.id,
+                        name: edge.properties.name,
+                        source: getNodeProperties(edge.sourceNodeId),
+                        target: getNodeProperties(edge.targetNodeId),
+                        outTrigger: edge.properties.outTrigger,
+                        back: edge.properties.back,
+                        order: edge.properties.order,
+                        edge
+                    });
+                }
+            }
+        }
+
+        if(update){
+            this.render(data);
+        }
+
         return list;
     },
 
-    render(data:any){
+
+    changeEdgeName(edgeId:string,name:string){
+        //@ts-ignore
+        const data = window.lfRef?.current.getGraphData();
+        if (data && data.edges) {
+            const edges = data.edges;
+            for (const index in edges) {
+                const edge = edges[index];
+                if (edge.id === edgeId) {
+                    edge.properties.name = name;
+                    this.render(data);
+                }
+            }
+        }
+    },
+
+
+    changeEdgeOrder(edgeId:string,order:number){
+        //@ts-ignore
+        const data = window.lfRef?.current.getGraphData();
+        if (data && data.edges) {
+            const edges = data.edges;
+            for (const index in edges) {
+                const edge = edges[index];
+                if (edge.id === edgeId) {
+                    edge.properties.order = order;
+                    this.render(data);
+                }
+            }
+        }
+    },
+
+    changeEdgeBack(edgeId:string,back:boolean){
+        //@ts-ignore
+        const data = window.lfRef?.current.getGraphData();
+        if (data && data.edges) {
+            const edges = data.edges;
+            for (const index in edges) {
+                const edge = edges[index];
+                if (edge.id === edgeId) {
+                    edge.properties.back = back;
+                    this.render(data);
+                }
+            }
+        }
+    },
+
+
+    changeEdgeOutTrigger(edgeId:string,outTrigger:string){
+        //@ts-ignore
+        const data = window.lfRef?.current.getGraphData();
+        if (data && data.edges) {
+            const edges = data.edges;
+            for (const index in edges) {
+                const edge = edges[index];
+                if (edge.id === edgeId) {
+                    edge.properties.outTrigger = outTrigger;
+                    this.render(data);
+                }
+            }
+        }
+    },
+
+    render(data: any) {
         //@ts-ignore
         window.lfRef?.current.render(data);
     }
