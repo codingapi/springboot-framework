@@ -8,8 +8,14 @@ import OverSettingPanel from "@/components/Flow/panel/over";
 type OverProperties = {
     name: string;
     code: string;
-    type: string;
+    type:string;
     view: string;
+    operatorMatcher:string;
+    editable:boolean;
+    titleGenerator:string;
+    errTrigger:string;
+    approvalType:string;
+    timeout:number;
 }
 
 interface OverProps {

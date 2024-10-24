@@ -22,11 +22,14 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                             {
                                 name: '开始节点',
                                 code: 'start',
-                                type:'NO_SIGN',
+                                type:'START',
                                 view:'default',
-
-                                outOperatorMatcher: '',
-                                outTrigger: '',
+                                operatorMatcher: 'def run(content) {return [content.getCurrentOperator().getUserId()];}',
+                                editable:true,
+                                titleGenerator:'def run(content){ return content.getCreateOperator().getName() + \'-\' + content.getFlowWork().getTitle() + \'-\' + content.getFlowNode().getName();}',
+                                errTrigger:'',
+                                approvalType:'UN_SIGN',
+                                timeout:0
                             }
                         );
                     }}
@@ -41,13 +44,14 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                             {
                                 name: '流程节点',
                                 code: 'flow',
-                                type:'NO_SIGN',
+                                type:'APPROVAL',
                                 view:'default',
-
-                                outOperatorMatcher: '',
-                                outTrigger: '',
+                                operatorMatcher: 'def run(content) {return [content.getCurrentOperator().getUserId()];}',
+                                editable:true,
+                                titleGenerator:'def run(content){ return content.getCreateOperator().getName() + \'-\' + content.getFlowWork().getTitle() + \'-\' + content.getFlowNode().getName();}',
                                 errTrigger:'',
-                                errOperatorMatcher:''
+                                approvalType:'SIGN',
+                                timeout:0
                             }
                         );
                     }}
@@ -61,9 +65,15 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                         props.onDrag('over-node',
                             {
                                 name: '结束节点',
-                                code: 'over',
-                                type:'NO_SIGN',
+                                code: 'flow',
+                                type:'OVER',
                                 view:'default',
+                                operatorMatcher: 'def run(content) {return [content.getCurrentOperator().getUserId()];}',
+                                editable:true,
+                                titleGenerator:'def run(content){ return content.getCreateOperator().getName() + \'-\' + content.getFlowWork().getTitle() + \'-\' + content.getFlowNode().getName();}',
+                                errTrigger:'',
+                                approvalType:'UN_SIGN',
+                                timeout:0
                             }
                         );
                     }}

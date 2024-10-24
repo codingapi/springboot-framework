@@ -43,4 +43,10 @@ public class FlowWorkRouter {
         }
         flowWorkRepository.save(flowWork);
     }
+
+    public void schema(FlowWorkCmd.SchemaRequest request) {
+        FlowWork flowWork = flowWorkRepository.getFlowWorkById(request.getId());
+        flowWork.schema(request.getSchema());
+        flowWorkRepository.save(flowWork);
+    }
 }

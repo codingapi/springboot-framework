@@ -28,6 +28,7 @@ public class FlowWorkCmdController {
     @PostMapping("/schema")
     public Response schema(@RequestBody FlowWorkCmd.SchemaRequest request){
         log.info("schema:{}",request);
+        flowWorkRouter.schema(request);
         return Response.buildSuccess();
     }
 

@@ -1,5 +1,5 @@
 import React from "react";
-import {DrawerForm, ProForm, ProFormText} from "@ant-design/pro-components";
+import {DrawerForm, ProForm, ProFormDigit, ProFormSwitch, ProFormText} from "@ant-design/pro-components";
 import {Button, Divider, Space} from "antd";
 import ProFormCode from "@/components/Form/ProFormCode";
 
@@ -78,6 +78,7 @@ const StartSettingPanel: React.FC<SettingPanelProps> = (props) => {
             <ProFormText
                 name={"view"}
                 label={"试图名称"}
+                tooltip={"界面渲染试图的名称"}
                 rules={[
                     {
                         required: true,
@@ -91,13 +92,40 @@ const StartSettingPanel: React.FC<SettingPanelProps> = (props) => {
             </Divider>
 
             <ProFormCode
-                name={"outOperatorMatcher"}
-                label={"操作人员"}
+                tooltip={"操作人匹配脚本"}
+                name={"operatorMatcher"}
+                label={"操作人"}
+            />
+
+            <ProFormDigit
+                tooltip={"超时提醒时间，单位毫米。为0时则为无超时设置"}
+                fieldProps={{
+                    step:1
+                }}
+                name={"timeout"}
+                label={"超时时间"}
+            />
+
+            <ProFormSwitch
+                tooltip={"关闭编辑以后在当前节点下的流程表单无法修改数据"}
+                name={"editable"}
+                label={"是否编辑"}
             />
 
             <ProFormCode
-                name={"outTrigger"}
-                label={"出口设置"}
+                tooltip={"待办记录中的标题生成器脚本"}
+                name={"titleGenerator"}
+                label={"自定义标题"}
+            />
+
+            <Divider>
+                异常配置
+            </Divider>
+
+            <ProFormCode
+                tooltip={"当节点无人员匹配时的异常补偿脚本，可以指定人员或节点处理"}
+                name={"errTrigger"}
+                label={"异常配置"}
             />
 
         </DrawerForm>

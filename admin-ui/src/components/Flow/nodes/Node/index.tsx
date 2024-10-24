@@ -8,13 +8,14 @@ import NodeSettingPanel from "@/components/Flow/panel/node";
 type NodeProperties = {
     name: string;
     code: string;
+    type:string;
     view: string;
-    type: string;
-
-    outOperatorMatcher: string;
-    outTrigger: string;
-    errTrigger: string;
-    errOperatorMatcher: string;
+    operatorMatcher:string;
+    editable:boolean;
+    titleGenerator:string;
+    errTrigger:string;
+    approvalType:string;
+    timeout:number;
 }
 
 interface NodeProps {
