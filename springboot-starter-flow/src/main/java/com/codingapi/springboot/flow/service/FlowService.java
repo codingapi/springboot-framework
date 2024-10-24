@@ -368,16 +368,20 @@ public class FlowService {
         // 与当前流程同级的流程记录
         List<FlowRecord> historyRecords = flowRecordRepository.findFlowRecordByPreId(flowRecord.getPreId());
 
+        // 提交流程
+        flowRecord.submitRecord(currentOperator, snapshot, opinion, flowNextStep);
+        flowRecordRepository.update(flowRecord);
+
         // 会签处理流程
         if (flowNode.isSign()) {
             // 会签下所有人尚未提交时，不执行下一节点
-            boolean allDone = historyRecords.stream().filter(FlowRecord::isTransfer).allMatch(FlowRecord::isDone);
+            boolean allDone = historyRecords.stream().filter(item->!item.isTransfer()).allMatch(FlowRecord::isDone);
             if (!allDone) {
                 // 流程尚未审批结束直接退出
                 return;
             }
             // 会签下所有人都同意，再执行下一节点
-            boolean allPass = historyRecords.stream().filter(FlowRecord::isTransfer).allMatch(FlowRecord::isPass);
+            boolean allPass = historyRecords.stream().filter(item->!item.isTransfer()).allMatch(FlowRecord::isPass);
             if (!allPass) {
                 flowNextStep = false;
             }
@@ -408,31 +412,29 @@ public class FlowService {
             EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_FINISH, flowRecord, currentOperator));
             return;
         }
-        // 提交流程
-        flowRecord.submitRecord(currentOperator, snapshot, opinion, flowNextStep);
-        flowRecordRepository.update(flowRecord);
 
         // 拥有退出条件 或审批通过时，匹配下一节点
         if (flowWork.hasBackRelation() || flowNextStep) {
 
-            IFlowOperator flowOperator = currentOperator;
-            // 退回流程 并且  也设置了退回节点
-            if (!flowNextStep && flowWork.hasBackRelation()) {
-                if (flowNode.isAnyOperatorMatcher()) {
-                    // 如果是任意人员操作时则需要指定为当时审批人员为当前审批人员
-                    FlowRecord preFlowRecord = flowRecordRepository.getFlowRecordById(flowRecord.getPreId());
-                    while (!preFlowRecord.isTransfer() && preFlowRecord.getNodeCode().equals(flowNode.getCode())) {
-                        preFlowRecord = flowRecordRepository.getFlowRecordById(flowRecord.getPreId());
-                    }
-                    flowOperator = flowOperatorRepository.getFlowOperatorById(preFlowRecord.getCurrentOperatorId());
-                }
-            }
-
-            FlowRecordService flowRecordService = new FlowRecordService(flowOperatorRepository, processId, createOperator, flowOperator, snapshot, opinion, flowWork, flowNextStep, historyRecords);
+            FlowRecordService flowRecordService = new FlowRecordService(flowOperatorRepository, processId, createOperator, currentOperator, snapshot, opinion, flowWork, flowNextStep, historyRecords);
             FlowNode nextNode = flowRecordService.matcherNextNode(flowNode);
             if (nextNode == null) {
                 throw new IllegalArgumentException("next node not found");
             }
+
+            IFlowOperator flowOperator = currentOperator;
+            // 退回流程 并且  也设置了退回节点
+            if (!flowNextStep && flowWork.hasBackRelation()) {
+                if (nextNode.isAnyOperatorMatcher()) {
+                    // 如果是任意人员操作时则需要指定为当时审批人员为当前审批人员
+                    FlowRecord preFlowRecord = flowRecordRepository.getFlowRecordById(flowRecord.getPreId());
+                    while (preFlowRecord.isTransfer() || !preFlowRecord.getNodeCode().equals(nextNode.getCode())) {
+                        preFlowRecord = flowRecordRepository.getFlowRecordById(preFlowRecord.getPreId());
+                    }
+                    flowOperator = flowOperatorRepository.getFlowOperatorById(preFlowRecord.getCurrentOperatorId());
+                }
+            }
+            flowRecordService.changeCurrentOperator(flowOperator);
 
             List<FlowRecord> records = flowRecordService.createRecord(flowRecord.getId(), nextNode);
             flowRecordRepository.save(records);

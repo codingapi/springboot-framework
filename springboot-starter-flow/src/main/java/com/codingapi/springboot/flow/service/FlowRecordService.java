@@ -24,7 +24,7 @@ class FlowRecordService {
     private final FlowOperatorRepository flowOperatorRepository;
     private final String processId;
     private final IFlowOperator createOperator;
-    private final IFlowOperator currentOperator;
+    private IFlowOperator currentOperator;
     private final BindDataSnapshot snapshot;
     private final Opinion opinion;
     private final FlowWork flowWork;
@@ -183,4 +183,7 @@ class FlowRecordService {
         return records;
     }
 
+    public void changeCurrentOperator(IFlowOperator flowOperator) {
+        this.currentOperator = flowOperator;
+    }
 }
