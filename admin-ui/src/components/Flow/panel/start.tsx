@@ -2,6 +2,7 @@ import React from "react";
 import {DrawerForm, ProForm, ProFormDigit, ProFormSwitch, ProFormText} from "@ant-design/pro-components";
 import {Button, Divider, Space} from "antd";
 import ProFormCode from "@/components/Form/ProFormCode";
+import FlowUtils from "@/components/Flow/utils";
 
 interface SettingPanelProps {
     visible: boolean;
@@ -36,7 +37,9 @@ const StartSettingPanel: React.FC<SettingPanelProps> = (props) => {
                         <Button
                             type={"primary"}
                             onClick={() => {
-                                form.submit();
+                                  const edges = FlowUtils.getEdges(props.properties.id);
+                                  console.log(edges);
+                                // form.submit();
                             }}
                         >确认</Button>
                         <Button

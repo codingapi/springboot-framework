@@ -14,12 +14,12 @@ import {message} from "antd";
 import {copy} from "@/components/Flow/panel/shortcuts";
 
 export interface FlowActionType {
-    getData:()=>any;
+    getData: () => any;
 }
 
 interface FlowProps {
     data?: LogicFlow.GraphConfigData;
-    actionRef?:React.Ref<any>
+    actionRef?: React.Ref<any>
 }
 
 const Flow: React.FC<FlowProps> = (props) => {
@@ -27,12 +27,12 @@ const Flow: React.FC<FlowProps> = (props) => {
     const lfRef = useRef<LogicFlow>(null);
     const [mapVisible, setMapVisible] = React.useState(false);
 
-    if(props.actionRef){
+    if (props.actionRef) {
         React.useImperativeHandle(props.actionRef, () => ({
             getData: () => {
                 return lfRef.current?.getGraphData();
             }
-        }),[props]);
+        }), [props]);
     }
 
     const data = props?.data || {};
@@ -42,6 +42,7 @@ const Flow: React.FC<FlowProps> = (props) => {
             stopScrollGraph: true,
             stopMoveGraph: true,
             stopZoomGraph: true,
+            edgeTextEdit: false,
         };
 
         //@ts-ignore
@@ -54,7 +55,7 @@ const Flow: React.FC<FlowProps> = (props) => {
             },
             plugins: [Menu, DndPanel, MiniMap, Snapshot],
             grid: false,
-            keyboard:{
+            keyboard: {
                 enabled: true,
                 shortcuts: [
                     {
@@ -71,7 +72,7 @@ const Flow: React.FC<FlowProps> = (props) => {
 
         lfRef.current.setTheme({
             bezier: {
-                stroke: '#afafaf',
+                stroke: '#8f94e3',
                 strokeWidth: 1,
             },
         });
@@ -86,6 +87,10 @@ const Flow: React.FC<FlowProps> = (props) => {
         });
 
     }, []);
+
+
+    //@ts-ignore
+    window.lfRef = lfRef;
 
 
     const nodeVerify = async (type: string) => {
@@ -116,9 +121,14 @@ const Flow: React.FC<FlowProps> = (props) => {
                 className={"flow-panel"}
                 onDrag={async (type, properties) => {
                     if (await nodeVerify(type)) {
+                        const UUID = crypto.randomUUID();
                         lfRef.current?.dnd.startDrag({
+                            id: UUID,
                             type: type,
-                            properties: properties
+                            properties: {
+                                ...properties,
+                                id: UUID
+                            }
                         });
                     }
                 }}

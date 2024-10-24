@@ -4,8 +4,10 @@ import ReactDOM from "react-dom/client";
 import "./index.scss";
 import {PlayCircleFilled, SettingFilled} from "@ant-design/icons";
 import StartSettingPanel from "@/components/Flow/panel/start";
+import FlowUtils from "@/components/Flow/utils";
 
 type StartProperties ={
+    id:string;
     name: string;
     code: string;
     type:string;

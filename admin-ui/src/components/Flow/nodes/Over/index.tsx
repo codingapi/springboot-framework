@@ -4,8 +4,10 @@ import ReactDOM from "react-dom/client";
 import "./index.scss";
 import {CheckCircleFilled, SettingFilled} from "@ant-design/icons";
 import OverSettingPanel from "@/components/Flow/panel/over";
+import FlowUtils from "@/components/Flow/utils";
 
 type OverProperties = {
+    id:string;
     name: string;
     code: string;
     type:string;

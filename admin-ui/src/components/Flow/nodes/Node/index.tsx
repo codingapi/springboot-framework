@@ -4,8 +4,10 @@ import ReactDOM from "react-dom/client";
 import "./index.scss";
 import {PlusCircleFilled, SettingFilled} from "@ant-design/icons";
 import NodeSettingPanel from "@/components/Flow/panel/node";
+import FlowUtils from "@/components/Flow/utils";
 
 type NodeProperties = {
+    id:string;
     name: string;
     code: string;
     type:string;
