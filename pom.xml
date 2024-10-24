@@ -254,6 +254,7 @@
                 <module>springboot-starter-security</module>
                 <module>springboot-starter-data-fast</module>
                 <module>springboot-starter-flow</module>
+                <module>example</module>
             </modules>
         </profile>
 
