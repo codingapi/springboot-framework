@@ -2,7 +2,6 @@ package com.codingapi.springboot.flow.test;
 
 import com.codingapi.springboot.flow.bind.BindDataSnapshot;
 import com.codingapi.springboot.flow.build.FlowWorkBuilder;
-import com.codingapi.springboot.flow.content.FlowContent;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.em.ApprovalType;
@@ -14,6 +13,7 @@ import com.codingapi.springboot.flow.service.FlowService;
 import com.codingapi.springboot.flow.trigger.OutTrigger;
 import com.codingapi.springboot.flow.user.User;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
@@ -37,6 +37,7 @@ public class MultiRelationFlowTest {
      */
     @Test
     void relationTest1(){
+        PageRequest pageRequest = PageRequest.of(0, 1000);
 
         User user = new User("张飞");
         userRepository.save(user);
@@ -73,7 +74,7 @@ public class MultiRelationFlowTest {
         flowService.startFlow(workId, user, leave, "发起流程");
 
         // 查看我的待办
-        List<FlowRecord> userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId());
+        List<FlowRecord> userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
         assertEquals(1, userTodos.size());
 
         // 提交流程
@@ -81,7 +82,7 @@ public class MultiRelationFlowTest {
         flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
 
         // 查看部门经理的待办
-        List<FlowRecord> deptTodos = flowRecordRepository.findTodoByOperatorId(dept.getUserId());
+        List<FlowRecord> deptTodos = flowRecordRepository.findTodoByOperatorId(dept.getUserId(), pageRequest).getContent();
         assertEquals(1, deptTodos.size());
 
         // 提交部门经理的审批
@@ -89,18 +90,18 @@ public class MultiRelationFlowTest {
         flowService.submitFlow(deptTodo.getId(), dept, leave, Opinion.pass("同意"));
 
         // 查看所有流程
-        List<FlowRecord> records = flowRecordRepository.findAll();
+        List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
         assertEquals(3, records.size());
 
         // 最终用户确认
-        userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId());
+        userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
         assertEquals(1, userTodos.size());
 
         // 提交流程
         userTodo = userTodos.get(0);
         flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
 
-        records = flowRecordRepository.findAll();
+        records = flowRecordRepository.findAll(pageRequest).getContent();
         assertEquals(3, records.size());
         // 查看所有流程是否都已经结束
         assertTrue(records.stream().allMatch(FlowRecord::isFinish));
@@ -118,6 +119,8 @@ public class MultiRelationFlowTest {
      */
     @Test
     void relationTest2(){
+
+        PageRequest pageRequest = PageRequest.of(0, 1000);
 
         User user = new User("张飞");
         userRepository.save(user);
@@ -154,7 +157,7 @@ public class MultiRelationFlowTest {
         flowService.startFlow(workId, user, leave, "发起流程");
 
         // 查看我的待办
-        List<FlowRecord> userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId());
+        List<FlowRecord> userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
         assertEquals(1, userTodos.size());
 
         // 提交流程
@@ -162,7 +165,7 @@ public class MultiRelationFlowTest {
         flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
 
         // 查看部门经理的待办
-        List<FlowRecord> deptTodos = flowRecordRepository.findTodoByOperatorId(dept.getUserId());
+        List<FlowRecord> deptTodos = flowRecordRepository.findTodoByOperatorId(dept.getUserId(), pageRequest).getContent();
         assertEquals(1, deptTodos.size());
 
         // 提交部门经理的审批
@@ -171,7 +174,7 @@ public class MultiRelationFlowTest {
 
 
         // 查看老板的待办
-        List<FlowRecord> bossTodos = flowRecordRepository.findTodoByOperatorId(boss.getUserId());
+        List<FlowRecord> bossTodos = flowRecordRepository.findTodoByOperatorId(boss.getUserId(), pageRequest).getContent();
         assertEquals(1, bossTodos.size());
 
         // 提交老板的审批
@@ -179,18 +182,18 @@ public class MultiRelationFlowTest {
         flowService.submitFlow(bossTodo.getId(), boss, leave, Opinion.pass("同意"));
 
         // 查看所有流程
-        List<FlowRecord> records = flowRecordRepository.findAll();
+        List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
         assertEquals(4, records.size());
 
         // 最终用户确认
-        userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId());
+        userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
         assertEquals(1, userTodos.size());
 
         // 提交流程
         userTodo = userTodos.get(0);
         flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
 
-        records = flowRecordRepository.findAll();
+        records = flowRecordRepository.findAll(pageRequest).getContent();
         assertEquals(4, records.size());
 
         // 查看所有流程是否都已经结束
@@ -207,6 +210,8 @@ public class MultiRelationFlowTest {
      */
     @Test
     void relationTest3(){
+
+        PageRequest pageRequest = PageRequest.of(0, 1000);
 
         User user = new User("张飞");
         userRepository.save(user);
@@ -244,7 +249,7 @@ public class MultiRelationFlowTest {
         flowService.startFlow(workId, user, leave, "发起流程");
 
         // 查看我的待办
-        List<FlowRecord> userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId());
+        List<FlowRecord> userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
         assertEquals(1, userTodos.size());
 
         // 提交流程
@@ -252,7 +257,7 @@ public class MultiRelationFlowTest {
         flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
 
         // 查看部门经理的待办
-        List<FlowRecord> deptTodos = flowRecordRepository.findTodoByOperatorId(dept.getUserId());
+        List<FlowRecord> deptTodos = flowRecordRepository.findTodoByOperatorId(dept.getUserId(), pageRequest).getContent();
         assertEquals(1, deptTodos.size());
 
         // 提交部门经理的审批
@@ -261,7 +266,7 @@ public class MultiRelationFlowTest {
 
 
         // 查看老板的待办
-        List<FlowRecord> bossTodos = flowRecordRepository.findTodoByOperatorId(boss.getUserId());
+        List<FlowRecord> bossTodos = flowRecordRepository.findTodoByOperatorId(boss.getUserId(), pageRequest).getContent();
         assertEquals(1, bossTodos.size());
 
         // 提交老板的审批
@@ -269,11 +274,11 @@ public class MultiRelationFlowTest {
         flowService.submitFlow(bossTodo.getId(), boss, leave, Opinion.reject("不同意，最多让你请假3天"));
 
         // 查看所有流程
-        List<FlowRecord> records = flowRecordRepository.findAll();
+        List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
         assertEquals(4, records.size());
 
         // 用户修改确认
-        userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId());
+        userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
         assertEquals(1, userTodos.size());
 
         // 用户调整为3天
@@ -282,10 +287,10 @@ public class MultiRelationFlowTest {
         userTodo = userTodos.get(0);
         flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
 
-        records = flowRecordRepository.findAll();
+        records = flowRecordRepository.findAll(pageRequest).getContent();
         assertEquals(5, records.size());
 
-        deptTodos = flowRecordRepository.findTodoByOperatorId(dept.getUserId());
+        deptTodos = flowRecordRepository.findTodoByOperatorId(dept.getUserId(), pageRequest).getContent();
         assertEquals(1, deptTodos.size());
 
         // 提交部门经理的审批
@@ -293,7 +298,7 @@ public class MultiRelationFlowTest {
         flowService.submitFlow(deptTodo.getId(), dept, leave, Opinion.pass("同意"));
 
         // 用户修改确认
-        userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId());
+        userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
         assertEquals(1, userTodos.size());
 
         // 提交流程

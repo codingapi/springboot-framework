@@ -14,6 +14,7 @@ import com.codingapi.springboot.flow.repository.*;
 import com.codingapi.springboot.flow.service.FlowService;
 import com.codingapi.springboot.flow.user.User;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class ErrorTest {
      */
     @Test
     void errorMatcherOperatorTest(){
+        PageRequest pageRequest = PageRequest.of(0, 1000);
         User user = new User("张飞");
         userRepository.save(user);
 
@@ -71,7 +73,7 @@ public class ErrorTest {
         flowService.startFlow(workId, user, leave, "发起流程");
 
         // 查看我的待办
-        List<FlowRecord> userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId());
+        List<FlowRecord> userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
         assertEquals(1, userTodos.size());
 
         // 提交流程
@@ -89,7 +91,7 @@ public class ErrorTest {
         flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
 
         // 查看部门经理的待办
-        List<FlowRecord> deptTodos = flowRecordRepository.findTodoByOperatorId(dept.getUserId());
+        List<FlowRecord> deptTodos = flowRecordRepository.findTodoByOperatorId(dept.getUserId(), pageRequest).getContent();
         assertEquals(1, deptTodos.size());
 
         // 提交部门经理的审批
@@ -97,7 +99,7 @@ public class ErrorTest {
         flowService.submitFlow(deptTodo.getId(), dept, leave, Opinion.pass("同意"));
 
         // 查看总经理的待办
-        List<FlowRecord> bossTodos = flowRecordRepository.findTodoByOperatorId(boss.getUserId());
+        List<FlowRecord> bossTodos = flowRecordRepository.findTodoByOperatorId(boss.getUserId(), pageRequest).getContent();
         assertEquals(1, bossTodos.size());
 
         // 提交总经理的审批
@@ -105,16 +107,16 @@ public class ErrorTest {
         flowService.submitFlow(bossTodo.getId(), boss, leave, Opinion.pass("同意"));
 
         // 查看所有流程
-        List<FlowRecord> records = flowRecordRepository.findAll();
+        List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
         assertEquals(4, records.size());
 
-        userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId());
+        userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
         assertEquals(1, userTodos.size());
 
         userTodo = userTodos.get(0);
         flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
 
-        records = flowRecordRepository.findAll();
+        records = flowRecordRepository.findAll(pageRequest).getContent();
         assertEquals(4, records.size());
         // 查看所有流程是否都已经结束
         assertTrue(records.stream().allMatch(FlowRecord::isFinish));
@@ -131,6 +133,8 @@ public class ErrorTest {
      */
     @Test
     void errorMatcherNodeTest(){
+
+        PageRequest pageRequest = PageRequest.of(0,1000);
         User user = new User("张飞");
         userRepository.save(user);
 
@@ -165,7 +169,7 @@ public class ErrorTest {
         flowService.startFlow(workId, user, leave, "发起流程");
 
         // 查看我的待办
-        List<FlowRecord> userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId());
+        List<FlowRecord> userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
         assertEquals(1, userTodos.size());
 
         // 提交流程
@@ -183,11 +187,11 @@ public class ErrorTest {
         flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
 
         // 查看部门经理的待办
-        List<FlowRecord> deptTodos = flowRecordRepository.findTodoByOperatorId(dept.getUserId());
+        List<FlowRecord> deptTodos = flowRecordRepository.findTodoByOperatorId(dept.getUserId(), pageRequest).getContent();
         assertEquals(0, deptTodos.size());
 
         // 查看总经理的待办
-        List<FlowRecord> bossTodos = flowRecordRepository.findTodoByOperatorId(boss.getUserId());
+        List<FlowRecord> bossTodos = flowRecordRepository.findTodoByOperatorId(boss.getUserId(), pageRequest).getContent();
         assertEquals(1, bossTodos.size());
 
         // 提交总经理的审批
@@ -195,16 +199,16 @@ public class ErrorTest {
         flowService.submitFlow(bossTodo.getId(), boss, leave, Opinion.pass("同意"));
 
         // 查看所有流程
-        List<FlowRecord> records = flowRecordRepository.findAll();
+        List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
         assertEquals(3, records.size());
 
-        userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId());
+        userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
         assertEquals(1, userTodos.size());
 
         userTodo = userTodos.get(0);
         flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
 
-        records = flowRecordRepository.findAll();
+        records = flowRecordRepository.findAll(pageRequest).getContent();
         assertEquals(3, records.size());
         // 查看所有流程是否都已经结束
         assertTrue(records.stream().allMatch(FlowRecord::isFinish));

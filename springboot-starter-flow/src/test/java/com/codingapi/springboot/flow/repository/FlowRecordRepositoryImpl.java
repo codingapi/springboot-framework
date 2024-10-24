@@ -2,6 +2,9 @@ package com.codingapi.springboot.flow.repository;
 
 import com.codingapi.springboot.flow.query.FlowRecordQuery;
 import com.codingapi.springboot.flow.record.FlowRecord;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,14 +54,39 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository, FlowRecor
         return cache.stream().filter(record -> record.isTodo() && record.getProcessId().equals(processId)).toList();
     }
 
-    @Override
-    public List<FlowRecord> findAll() {
-        return cache;
+    public Page<FlowRecord> findAll(PageRequest pageRequest) {
+        return new PageImpl<>(cache);
     }
 
     @Override
-    public List<FlowRecord> findTodoByOperatorId(long operatorId) {
-        return cache.stream().filter(record -> record.isTodo() && record.getCurrentOperatorId() == operatorId).toList();
+    public Page<FlowRecord> findDoneByOperatorId(long operatorId,PageRequest pageRequest) {
+        List<FlowRecord> flowRecords = cache.stream().filter(record -> record.isDone() && record.getCurrentOperatorId() == operatorId).toList();
+        return new PageImpl<>(flowRecords);
+    }
+
+    @Override
+    public Page<FlowRecord> findInitiatedByOperatorId(long operatorId,PageRequest pageRequest) {
+        List<FlowRecord> flowRecords = cache.stream().filter(record -> record.isInitiated() && record.getCreateOperatorId() == operatorId).toList();
+        return new PageImpl<>(flowRecords);
+    }
+
+    @Override
+    public Page<FlowRecord> findTodoByOperatorId(long operatorId,PageRequest pageRequest) {
+        List<FlowRecord> flowRecords = cache.stream().filter(record -> record.isTodo() && record.getCurrentOperatorId() == operatorId).toList();
+        return new PageImpl<>(flowRecords);
+    }
+
+    @Override
+    public Page<FlowRecord> findTimeoutTodoByOperatorId(long operatorId,PageRequest pageRequest) {
+        List<FlowRecord> flowRecords = cache.stream().filter(record -> record.isTimeout() && record.isTodo() && record.getCurrentOperatorId() == operatorId).toList();
+        return new PageImpl<>(flowRecords);
+    }
+
+
+    @Override
+    public Page<FlowRecord> findPostponedTodoByOperatorId(long operatorId,PageRequest pageRequest) {
+        List<FlowRecord> flowRecords = cache.stream().filter(record -> record.isPostponed() && record.isTodo() && record.getCurrentOperatorId() == operatorId).toList();
+        return new PageImpl<>(flowRecords);
     }
 
     @Override

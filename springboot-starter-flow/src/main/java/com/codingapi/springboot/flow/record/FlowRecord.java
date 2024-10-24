@@ -1,6 +1,7 @@
 package com.codingapi.springboot.flow.record;
 
 import com.codingapi.springboot.flow.bind.BindDataSnapshot;
+import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.em.FlowStatus;
 import com.codingapi.springboot.flow.em.RecodeType;
@@ -126,17 +127,28 @@ public class FlowRecord {
 
     /**
      * 延期时间
+     *
      * @param postponedMax 最大延期次数
-     * @param time 延期时间(毫秒)
+     * @param time         延期时间(毫秒)
      */
-    public void postponedTime(int postponedMax,long time) {
-        if(this.postponedCount>=postponedMax){
+    public void postponedTime(int postponedMax, long time) {
+        if (this.postponedCount >= postponedMax) {
             throw new IllegalArgumentException("postponed count is max");
         }
         this.read();
+        if (this.timeoutTime == 0) {
+            this.timeoutTime = System.currentTimeMillis();
+        }
         this.timeoutTime += time;
         this.postponedCount++;
         this.updateTime = System.currentTimeMillis();
+    }
+
+    /**
+     * 是否是发起节点
+     */
+    public boolean isInitiated() {
+        return preId == 0 && this.nodeCode.equals(FlowNode.CODE_START);
     }
 
     /**
@@ -342,5 +354,22 @@ public class FlowRecord {
         this.opinion = null;
         this.pass = false;
         this.currentOperatorId = operator.getUserId();
+    }
+
+    /**
+     * 是否超时
+     */
+    public boolean isTimeout() {
+        if (this.timeoutTime == 0) {
+            return false;
+        }
+        return System.currentTimeMillis() > this.timeoutTime;
+    }
+
+    /**
+     * 是否延期
+     */
+    public boolean isPostponed() {
+        return this.postponedCount > 0;
     }
 }
