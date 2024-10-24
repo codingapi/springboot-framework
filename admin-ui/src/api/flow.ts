@@ -25,6 +25,14 @@ export async function changeState(id: any) {
     return post('/api/cmd/flowWork/changeState', {id});
 }
 
+export async function schema(body: any) {
+    return post('/api/cmd/flowWork/schema', body);
+}
+
+
+//
+
+
 
 export async function create(body: any) {
     return post('/api/cmd/flowWork/save', body);
@@ -44,9 +52,7 @@ export async function creator() {
 }
 
 
-export async function schema(body: any) {
-    return post('/api/flow/schema', body);
-}
+
 
 export async function submit(body: any) {
     return post('/api/approval/submit', body);
