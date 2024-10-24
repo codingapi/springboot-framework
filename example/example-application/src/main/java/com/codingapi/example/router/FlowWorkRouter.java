@@ -1,6 +1,8 @@
 package com.codingapi.example.router;
 
 import com.codingapi.example.domain.User;
+import com.codingapi.example.entity.FlowWorkEntity;
+import com.codingapi.example.jpa.FlowWorkEntityRepository;
 import com.codingapi.example.pojo.cmd.FlowWorkCmd;
 import com.codingapi.example.repository.UserRepository;
 import com.codingapi.springboot.flow.domain.FlowWork;
@@ -13,8 +15,8 @@ import org.springframework.stereotype.Service;
 public class FlowWorkRouter {
 
     private final FlowWorkRepository flowWorkRepository;
+    private final FlowWorkEntityRepository flowWorkEntityRepository;
     private final UserRepository userRepository;
-
 
     public void delete(long id){
         flowWorkRepository.delete(id);
@@ -27,21 +29,22 @@ public class FlowWorkRouter {
             FlowWork flowWork = new FlowWork(request.getTitle(), request.getDescription(), user);
             flowWorkRepository.save(flowWork);
         } else {
-            FlowWork flowWork = flowWorkRepository.getFlowWorkById(id);
+            FlowWorkEntity flowWork = flowWorkEntityRepository.getFlowWorkEntityById(id);
             flowWork.setTitle(request.getTitle());
             flowWork.setDescription(request.getDescription());
-            flowWorkRepository.save(flowWork);
+            flowWork.setPostponedMax(request.getPostponedMax());
+            flowWorkEntityRepository.save(flowWork);
         }
     }
 
     public void changeState(long id) {
-        FlowWork flowWork = flowWorkRepository.getFlowWorkById(id);
+        FlowWorkEntity flowWork = flowWorkEntityRepository.getFlowWorkEntityById(id);
         if(flowWork.isEnable()){
-            flowWork.disbale();
+            flowWork.setEnable(false);
         }else{
-            flowWork.enable();
+            flowWork.setEnable(true);
         }
-        flowWorkRepository.save(flowWork);
+        flowWorkEntityRepository.save(flowWork);
     }
 
     public void schema(FlowWorkCmd.SchemaRequest request) {

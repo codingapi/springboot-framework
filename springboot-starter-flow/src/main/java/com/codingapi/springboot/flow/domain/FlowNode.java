@@ -13,6 +13,7 @@ import com.codingapi.springboot.flow.matcher.OperatorMatcher;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.FlowOperatorRepository;
 import com.codingapi.springboot.flow.user.IFlowOperator;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +23,7 @@ import java.util.List;
  * 流程节点
  */
 @Getter
+@AllArgsConstructor
 public class FlowNode {
 
     public static final String CODE_START = "start";

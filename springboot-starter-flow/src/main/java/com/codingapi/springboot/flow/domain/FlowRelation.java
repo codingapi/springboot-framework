@@ -2,6 +2,7 @@ package com.codingapi.springboot.flow.domain;
 
 import com.codingapi.springboot.flow.content.FlowContent;
 import com.codingapi.springboot.flow.trigger.OutTrigger;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.util.StringUtils;
 
@@ -9,6 +10,7 @@ import org.springframework.util.StringUtils;
  * 流程关系
  */
 @Getter
+@AllArgsConstructor
 public class FlowRelation {
 
     /**
@@ -77,15 +79,16 @@ public class FlowRelation {
     }
 
 
-    public FlowRelation(String id, String name, FlowNode source, FlowNode target, OutTrigger outTrigger,boolean back) {
+    public FlowRelation(String id, String name, FlowNode source, FlowNode target, OutTrigger outTrigger,int order,boolean back) {
         this.id = id;
         this.name = name;
         this.source = source;
         this.target = target;
         this.outTrigger = outTrigger;
+        this.order = order;
+        this.back = back;
         this.createTime = System.currentTimeMillis();
         this.updateTime = System.currentTimeMillis();
-        this.back = back;
         this.verify();
     }
 
@@ -109,10 +112,6 @@ public class FlowRelation {
 
         if (!StringUtils.hasLength(id)) {
             throw new RuntimeException("id is null");
-        }
-
-        if (!StringUtils.hasLength(name)) {
-            throw new RuntimeException("name is null");
         }
 
         if (source == null || target == null) {

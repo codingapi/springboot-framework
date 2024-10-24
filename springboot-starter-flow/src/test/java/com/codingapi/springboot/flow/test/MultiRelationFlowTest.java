@@ -58,8 +58,8 @@ public class MultiRelationFlowTest {
                 .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.creatorOperatorMatcher())
                 .relations()
                 .relation("部门领导审批", "start", "dept")
-                .relation("总经理审批", "dept", "over",new OutTrigger("def run(content){content.getBindData().getDays()<=5}"),false)
-                .relation("总经理审批", "dept", "manager",new OutTrigger("def run(content){content.getBindData().getDays()>5}"),false)
+                .relation("总经理审批", "dept", "over",new OutTrigger("def run(content){content.getBindData().getDays()<=5}"),1,false)
+                .relation("总经理审批", "dept", "manager",new OutTrigger("def run(content){content.getBindData().getDays()>5}"),2,false)
                 .relation("结束节点", "manager", "over")
                 .build();
 
@@ -141,8 +141,8 @@ public class MultiRelationFlowTest {
                 .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.creatorOperatorMatcher())
                 .relations()
                 .relation("部门领导审批", "start", "dept")
-                .relation("总经理审批", "dept", "over",new OutTrigger("def run(content){content.getBindData().getDays()<=5}"),false)
-                .relation("总经理审批", "dept", "manager",new OutTrigger("def run(content){content.getBindData().getDays()>5}"),false)
+                .relation("总经理审批", "dept", "over",new OutTrigger("def run(content){content.getBindData().getDays()<=5}"),1,false)
+                .relation("总经理审批", "dept", "manager",new OutTrigger("def run(content){content.getBindData().getDays()>5}"),2,false)
                 .relation("结束节点", "manager", "over")
                 .build();
 
@@ -232,9 +232,9 @@ public class MultiRelationFlowTest {
                 .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.creatorOperatorMatcher())
                 .relations()
                 .relation("部门领导审批", "start", "dept")
-                .relation("总经理审批", "dept", "over",new OutTrigger("def run(content){content.getBindData().getDays()<=5}"),false)
-                .relation("总经理审批", "dept", "manager",new OutTrigger("def run(content){content.getBindData().getDays()>5}"),false)
-                .relation("结束节点", "manager", "start",new OutTrigger("def run(content){return true}"),true)
+                .relation("总经理审批", "dept", "over",new OutTrigger("def run(content){content.getBindData().getDays()<=5}"),1,false)
+                .relation("总经理审批", "dept", "manager",new OutTrigger("def run(content){content.getBindData().getDays()>5}"),2,false)
+                .relation("结束节点", "manager", "start",new OutTrigger("def run(content){return true}"),1,true)
                 .relation("结束节点", "manager", "over")
                 .build();
 

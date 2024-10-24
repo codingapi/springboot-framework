@@ -1,5 +1,6 @@
 package com.codingapi.springboot.flow.domain;
 
+import com.codingapi.springboot.flow.build.SchemaReader;
 import com.codingapi.springboot.flow.record.FlowProcess;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import lombok.AllArgsConstructor;
@@ -47,11 +48,13 @@ public class FlowWork {
     /**
      * 是否启用
      */
+    @Setter
     private boolean enable;
 
     /**
      * 最大延期次数
      */
+    @Setter
     private int postponedMax;
 
     /**
@@ -114,8 +117,11 @@ public class FlowWork {
      */
     public void schema(String schema) {
         this.schema = schema;
+        SchemaReader schemaReader = new SchemaReader(schema);
+        this.relations = schemaReader.getFlowRelations();
+        this.nodes = schemaReader.getFlowNodes();
+        this.verify();
         this.updateTime = System.currentTimeMillis();
-        //todo 解析schema
     }
 
     /**

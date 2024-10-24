@@ -1,6 +1,14 @@
 import React from "react";
 import Flow, {FlowActionType} from "@/components/Flow";
-import {ActionType, ModalForm, PageContainer, ProForm, ProFormText, ProTable} from "@ant-design/pro-components";
+import {
+    ActionType,
+    ModalForm,
+    PageContainer,
+    ProForm,
+    ProFormDigit,
+    ProFormText,
+    ProTable
+} from "@ant-design/pro-components";
 import {changeState, list, remove, save, schema} from "@/api/flow";
 import {Button, Drawer, message, Popconfirm, Space} from "antd";
 
@@ -81,18 +89,6 @@ const FlowPage = () => {
             search: false,
         },
         {
-            title: '节点数量',
-            dataIndex: 'nodes',
-            valueType: 'text',
-            search: false,
-            render: (text: any, record: any) => {
-                if (record.nodes) {
-                    return record.nodes.length;
-                }
-                return 0;
-            }
-        },
-        {
             title: '状态',
             dataIndex: 'enable',
             search: false,
@@ -104,7 +100,7 @@ const FlowPage = () => {
                             await handlerChangeState(record.id);
                         }}
                     >
-                        <a>{record.enable ? '禁用' : '禁用'}</a>
+                        <a>{record.enable ? '启用' : '禁用'}</a>
                     </Popconfirm>
                 )
             }
@@ -205,6 +201,21 @@ const FlowPage = () => {
                 <ProFormText
                     name={"description"}
                     label={"描述"}
+                />
+
+                <ProFormDigit
+                    name={"postponedMax"}
+                    tooltip={"允许流程最大的延期次数"}
+                    label={"最大延期次数"}
+                    fieldProps={{
+                        step:1
+                    }}
+                    rules={[
+                        {
+                            required:true,
+                            message:'最大延期次数不能为空'
+                        }
+                    ]}
                 />
 
             </ModalForm>

@@ -14,6 +14,7 @@ public class FlowWorkCmd {
         private long id;
         private String title;
         private String description;
+        private int postponedMax;
 
 
         public String getUsername(){

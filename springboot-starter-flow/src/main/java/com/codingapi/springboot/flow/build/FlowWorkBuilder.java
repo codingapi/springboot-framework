@@ -30,9 +30,23 @@ public class FlowWorkBuilder {
         return this;
     }
 
+    public FlowWorkBuilder enable(boolean enable) {
+        this.work.setEnable(enable);
+        return this;
+    }
+
+    public FlowWorkBuilder postponedMax(int postponedMax) {
+        this.work.setPostponedMax(postponedMax);
+        return this;
+    }
 
     public FlowWorkBuilder title(String title) {
         this.work.setTitle(title);
+        return this;
+    }
+
+    public FlowWorkBuilder schema(String schema) {
+        this.work.schema(schema);
         return this;
     }
 
@@ -53,18 +67,25 @@ public class FlowWorkBuilder {
 
     public class Nodes {
 
-        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, long timeout, ErrTrigger errTrigger, boolean editable) {
-            FlowNode node = new FlowNode(IDGenerator.generate(), name, code, view, NodeType.parser(code), approvalType, TitleGenerator.defaultTitleGenerator(), operatorMatcher, timeout, errTrigger, editable);
+        public Nodes node(String id,String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, long timeout, TitleGenerator titleGenerator, ErrTrigger errTrigger, boolean editable) {
+            FlowNode node = new FlowNode(id, name, code, view, NodeType.parser(code), approvalType, titleGenerator, operatorMatcher, timeout, errTrigger, editable);
             work.addNode(node);
             return this;
         }
 
+        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher,long timeout, boolean editable) {
+            return node(IDGenerator.generate(),name, code, view, approvalType, operatorMatcher, timeout, TitleGenerator.defaultTitleGenerator(), null, editable);
+        }
         public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, boolean editable) {
-            return node(name, code, view, approvalType, operatorMatcher, 0, null, editable);
+            return node(IDGenerator.generate(),name, code, view, approvalType, operatorMatcher, 0, TitleGenerator.defaultTitleGenerator(), null, editable);
         }
 
         public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher) {
             return node(name, code, view, approvalType, operatorMatcher, true);
+        }
+
+        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher,  ErrTrigger errTrigger, boolean editable) {
+            return node(IDGenerator.generate(),name, code, view, approvalType, operatorMatcher, 0, TitleGenerator.defaultTitleGenerator(), errTrigger, editable);
         }
 
 
@@ -76,24 +97,20 @@ public class FlowWorkBuilder {
             work.enable();
             return work;
         }
+
+
     }
 
     public class Relations {
 
         public Relations relation(String name, String source, String target) {
-            FlowNode from = work.getNodeByCode(source);
-            FlowNode to = work.getNodeByCode(target);
-            OutTrigger outTrigger = OutTrigger.defaultOutTrigger();
-            FlowRelation relation = new FlowRelation(IDGenerator.generate(), name, from, to, outTrigger, false);
-            work.addRelation(relation);
-            return this;
+            return relation(name,source,target,OutTrigger.defaultOutTrigger(),1,false);
         }
 
-
-        public Relations relation(String name, String source, String target, OutTrigger outTrigger, boolean back) {
+        public Relations relation(String name, String source, String target, OutTrigger outTrigger,int order, boolean back) {
             FlowNode from = work.getNodeByCode(source);
             FlowNode to = work.getNodeByCode(target);
-            FlowRelation relation = new FlowRelation(IDGenerator.generate(), name, from, to, outTrigger, back);
+            FlowRelation relation = new FlowRelation(IDGenerator.generate(), name, from, to, outTrigger,order, back);
             work.addRelation(relation);
             return this;
         }

@@ -52,8 +52,7 @@ public class ErrorTest {
                 .title("请假流程")
                 .nodes()
                 .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
-                .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, new OperatorMatcher("def run(content){return []}"),
-                        0, new ErrTrigger("def run(content){return content.createOperatorErrTrigger("+dept.getId()+")}"), true)
+                .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, new OperatorMatcher("def run(content){return []}"), new ErrTrigger("def run(content){return content.createOperatorErrTrigger("+dept.getId()+")}"), true)
                 .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
                 .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.creatorOperatorMatcher())
                 .relations()
@@ -148,8 +147,7 @@ public class ErrorTest {
                 .title("请假流程")
                 .nodes()
                 .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
-                .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, new OperatorMatcher("def run(content){return []}"),
-                        0, new ErrTrigger("def run(content){return content.createNodeErrTrigger('manager')}"), true)
+                .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, new OperatorMatcher("def run(content){return []}"), new ErrTrigger("def run(content){return content.createNodeErrTrigger('manager')}"), true)
                 .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
                 .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.creatorOperatorMatcher())
                 .relations()
