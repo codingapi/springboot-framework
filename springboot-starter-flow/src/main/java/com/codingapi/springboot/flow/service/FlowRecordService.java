@@ -140,12 +140,13 @@ class FlowRecordService {
             // 匹配操作者
             if (errorResult.isOperator()) {
                 List<FlowRecord> recordList = new ArrayList<>();
-                List<IFlowOperator> operators = ((OperatorResult) errorResult).getOperators();
+                List<Long> operatorIds = ((OperatorResult) errorResult).getOperatorIds();
+                List<? extends IFlowOperator> operators = flowOperatorRepository.findByIds(operatorIds);
                 for (IFlowOperator operator : operators) {
-                    List<FlowRecord> records = triggerNextFlow(preId, currentNode, operator);
-                    if (!records.isEmpty()) {
-                        recordList.addAll(records);
-                    }
+                    FlowContent content = new FlowContent(flowWork, currentNode, createOperator, operator, snapshot.toBindData(), opinion, historyRecords);
+                    String recordTitle = currentNode.generateTitle(content);
+                    FlowRecord record = currentNode.createRecord(flowWork.getId(), processId, preId, recordTitle, createOperator, operator, snapshot, opinion, pass);
+                    recordList.add(record);
                 }
                 return recordList;
             }
@@ -153,7 +154,17 @@ class FlowRecordService {
             if (errorResult.isNode()) {
                 String nodeCode = ((NodeResult) errorResult).getNode();
                 FlowNode node = flowWork.getNodeByCode(nodeCode);
-                return triggerNextFlow(preId, node, currentOperator);
+                List<FlowRecord> recordList = new ArrayList<>();
+                FlowContent content = new FlowContent(flowWork, node, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
+                List<? extends IFlowOperator> matcherOperators = node.loadFlowNodeOperator(content, flowOperatorRepository);
+                if (!matcherOperators.isEmpty()) {
+                    for (IFlowOperator matcherOperator : matcherOperators) {
+                        String recordTitle = node.generateTitle(content);
+                        FlowRecord record = node.createRecord(flowWork.getId(), processId, preId, recordTitle, createOperator, matcherOperator, snapshot, opinion, pass);
+                        recordList.add(record);
+                    }
+                }
+                return recordList;
             }
             throw new IllegalArgumentException("errMatcher not match.");
         }
@@ -161,30 +172,10 @@ class FlowRecordService {
     }
 
 
-    /**
-     * 触发下一个节点
-     *
-     * @param preId           上一条流程记录id
-     * @param currentNode     当前节点
-     * @param currentOperator 当前操作者
-     * @return 流程记录
-     */
-    private List<FlowRecord> triggerNextFlow(long preId, FlowNode currentNode, IFlowOperator currentOperator) {
-        List<FlowRecord> records = new ArrayList<>();
-        FlowContent content = new FlowContent(flowWork, currentNode, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
-        List<? extends IFlowOperator> matcherOperators = currentNode.loadFlowNodeOperator(content, flowOperatorRepository);
-        if (!matcherOperators.isEmpty()) {
-            for (IFlowOperator matcherOperator : matcherOperators) {
-                String recordTitle = currentNode.generateTitle(content);
-                FlowRecord record = currentNode.createRecord(flowWork.getId(), processId, preId, recordTitle, createOperator, matcherOperator, snapshot, opinion, pass);
-                records.add(record);
-            }
-        }
-        return records;
-    }
 
     /**
      * 切换当前操作者
+     *
      * @param flowOperator 操作者
      */
     public void changeCurrentOperator(IFlowOperator flowOperator) {

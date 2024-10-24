@@ -5,6 +5,7 @@ import com.codingapi.springboot.flow.domain.FlowRelation;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.em.ApprovalType;
 import com.codingapi.springboot.flow.em.NodeType;
+import com.codingapi.springboot.flow.error.ErrTrigger;
 import com.codingapi.springboot.flow.generator.TitleGenerator;
 import com.codingapi.springboot.flow.matcher.OperatorMatcher;
 import com.codingapi.springboot.flow.trigger.OutTrigger;
@@ -52,11 +53,14 @@ public class FlowWorkBuilder {
 
     public class Nodes {
 
-
-        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, boolean editable) {
-            FlowNode node = new FlowNode(IDGenerator.generate(), name, code, view, NodeType.parser(code), approvalType, TitleGenerator.defaultTitleGenerator(), operatorMatcher, 0, null, editable);
+        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, long timeout, ErrTrigger errTrigger, boolean editable) {
+            FlowNode node = new FlowNode(IDGenerator.generate(), name, code, view, NodeType.parser(code), approvalType, TitleGenerator.defaultTitleGenerator(), operatorMatcher, timeout, errTrigger, editable);
             work.addNode(node);
             return this;
+        }
+
+        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, boolean editable) {
+            return node(name, code, view, approvalType, operatorMatcher, 0, null, editable);
         }
 
         public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher) {
