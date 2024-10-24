@@ -31,6 +31,10 @@ public class ErrorTest {
     private final FlowService flowService = new FlowService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, userRepository,flowProcessRepository);
 
 
+    /**
+     * 异常节点触发器
+     * 异常时配置其他人来审批
+     */
     @Test
     void errorMatcherOperatorTest(){
         User user = new User("张飞");
@@ -121,6 +125,10 @@ public class ErrorTest {
 
 
 
+    /**
+     * 异常节点触发器
+     * 异常时配置其节点来审批
+     */
     @Test
     void errorMatcherNodeTest(){
         User user = new User("张飞");

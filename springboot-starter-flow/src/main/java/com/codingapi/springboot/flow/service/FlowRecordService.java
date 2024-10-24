@@ -154,6 +154,9 @@ class FlowRecordService {
             if (errorResult.isNode()) {
                 String nodeCode = ((NodeResult) errorResult).getNode();
                 FlowNode node = flowWork.getNodeByCode(nodeCode);
+                if(node==null){
+                    throw new IllegalArgumentException("node not found.");
+                }
                 List<FlowRecord> recordList = new ArrayList<>();
                 FlowContent content = new FlowContent(flowWork, node, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
                 List<? extends IFlowOperator> matcherOperators = node.loadFlowNodeOperator(content, flowOperatorRepository);
