@@ -190,6 +190,7 @@ public class FlowNode {
      * @param snapshot        快照数据
      * @param opinion         审批意见
      * @param pass            流程方式
+     * @param flowContent     流程内容 (不做业务处理)
      * @return 流程记录
      */
     public FlowRecord createRecord(long workId,
@@ -200,7 +201,8 @@ public class FlowNode {
                                    IFlowOperator currentOperator,
                                    BindDataSnapshot snapshot,
                                    Opinion opinion,
-                                   boolean pass) {
+                                   boolean pass,
+                                   FlowContent flowContent) {
 
         // 当前操作者存在委托人时，才需要寻找委托人
         IFlowOperator flowOperator = currentOperator;
@@ -210,6 +212,7 @@ public class FlowNode {
         }
 
         FlowRecord record = new FlowRecord();
+        record.setFlowContent(flowContent);
         record.setProcessId(processId);
         record.setNodeCode(this.code);
         record.setCreateTime(System.currentTimeMillis());

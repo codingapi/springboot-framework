@@ -46,6 +46,12 @@ public class FlowRecordEntity {
      * 当前操作者
      */
     private Long currentOperatorId;
+
+    /**
+     * 当前操作者的名称
+     */
+    private String currentOperatorName;
+
     /**
      * 节点状态 | 待办、已办
      */
@@ -86,6 +92,11 @@ public class FlowRecordEntity {
      * 发起者id
      */
     private Long createOperatorId;
+
+    /**
+     * 发起者名称
+     */
+    private String createOperatorName;
     /**
      * 审批意见
      */

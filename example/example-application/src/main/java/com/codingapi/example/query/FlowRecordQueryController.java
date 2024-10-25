@@ -1,8 +1,8 @@
 package com.codingapi.example.query;
 
+import com.codingapi.example.entity.FlowRecordEntity;
+import com.codingapi.example.jpa.FlowRecordEntityRepository;
 import com.codingapi.springboot.flow.pojo.FlowDetail;
-import com.codingapi.springboot.flow.query.FlowRecordQuery;
-import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.service.FlowService;
 import com.codingapi.springboot.framework.dto.request.SearchRequest;
 import com.codingapi.springboot.framework.dto.response.MultiResponse;
@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class FlowRecordQueryController {
 
-    private final FlowRecordQuery flowRecordQuery;
+    private final FlowRecordEntityRepository flowRecordQuery;
     private final FlowService flowService;
 
     @GetMapping("/list")
-    public MultiResponse<FlowRecord> list(SearchRequest searchRequest) {
+    public MultiResponse<FlowRecordEntity> list(SearchRequest searchRequest) {
         PageRequest pageRequest = PageRequest.of(searchRequest.getCurrent(), searchRequest.getPageSize());
         return MultiResponse.of(flowRecordQuery.findAll(pageRequest));
     }
@@ -36,7 +36,7 @@ public class FlowRecordQueryController {
 
 
     @GetMapping("/findTodoByOperatorId")
-    public MultiResponse<FlowRecord> findTodoByOperatorId(SearchRequest searchRequest) {
+    public MultiResponse<FlowRecordEntity> findTodoByOperatorId(SearchRequest searchRequest) {
         long operatorId = Long.parseLong(searchRequest.getParameter("operatorId"));
         PageRequest pageRequest = PageRequest.of(searchRequest.getCurrent(), searchRequest.getPageSize());
         return MultiResponse.of(flowRecordQuery.findTodoByOperatorId(operatorId, pageRequest));
@@ -44,7 +44,7 @@ public class FlowRecordQueryController {
 
 
     @GetMapping("/findDoneByOperatorId")
-    public MultiResponse<FlowRecord> findDoneByOperatorId(SearchRequest searchRequest) {
+    public MultiResponse<FlowRecordEntity> findDoneByOperatorId(SearchRequest searchRequest) {
         long operatorId = Long.parseLong(searchRequest.getParameter("operatorId"));
         PageRequest pageRequest = PageRequest.of(searchRequest.getCurrent(), searchRequest.getPageSize());
         return MultiResponse.of(flowRecordQuery.findDoneByOperatorId(operatorId, pageRequest));
@@ -52,7 +52,7 @@ public class FlowRecordQueryController {
 
 
     @GetMapping("/findInitiatedByOperatorId")
-    public MultiResponse<FlowRecord> findInitiatedByOperatorId(SearchRequest searchRequest) {
+    public MultiResponse<FlowRecordEntity> findInitiatedByOperatorId(SearchRequest searchRequest) {
         long operatorId = Long.parseLong(searchRequest.getParameter("operatorId"));
         PageRequest pageRequest = PageRequest.of(searchRequest.getCurrent(), searchRequest.getPageSize());
         return MultiResponse.of(flowRecordQuery.findInitiatedByOperatorId(operatorId, pageRequest));
@@ -60,15 +60,15 @@ public class FlowRecordQueryController {
 
 
     @GetMapping("/findTimeoutTodoByOperatorId")
-    public MultiResponse<FlowRecord> findTimeoutTodoByOperatorId(SearchRequest searchRequest) {
+    public MultiResponse<FlowRecordEntity> findTimeoutTodoByOperatorId(SearchRequest searchRequest) {
         long operatorId = Long.parseLong(searchRequest.getParameter("operatorId"));
         PageRequest pageRequest = PageRequest.of(searchRequest.getCurrent(), searchRequest.getPageSize());
-        return MultiResponse.of(flowRecordQuery.findTimeoutTodoByOperatorId(operatorId, pageRequest));
+        return MultiResponse.of(flowRecordQuery.findTimeoutTodoByOperatorId(operatorId, System.currentTimeMillis(), pageRequest));
     }
 
 
     @GetMapping("/findPostponedTodoByOperatorId")
-    public MultiResponse<FlowRecord> findPostponedTodoByOperatorId(SearchRequest searchRequest) {
+    public MultiResponse<FlowRecordEntity> findPostponedTodoByOperatorId(SearchRequest searchRequest) {
         long operatorId = Long.parseLong(searchRequest.getParameter("operatorId"));
         PageRequest pageRequest = PageRequest.of(searchRequest.getCurrent(), searchRequest.getPageSize());
         return MultiResponse.of(flowRecordQuery.findPostponedTodoByOperatorId(operatorId, pageRequest));

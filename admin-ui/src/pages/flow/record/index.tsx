@@ -43,6 +43,14 @@ const FlowRecordPage = ()=>{
             }
         },
         {
+            title: '流程发起人',
+            dataIndex: 'createOperatorName',
+        },
+        {
+            title: '流程审批人',
+            dataIndex: 'currentOperatorName',
+        },
+        {
             title: '状态',
             dataIndex: 'recodeType',
             render: (text: any) => {

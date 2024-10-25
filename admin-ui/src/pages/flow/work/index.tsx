@@ -6,7 +6,7 @@ import {
     PageContainer,
     ProForm,
     ProFormDigit,
-    ProFormText,
+    ProFormText, ProFormTextArea,
     ProTable
 } from "@ant-design/pro-components";
 import {changeState, list, remove, save, schema} from "@/api/flow";
@@ -198,7 +198,7 @@ const FlowPage = () => {
                     ]}
                 />
 
-                <ProFormText
+                <ProFormTextArea
                     name={"description"}
                     label={"描述"}
                 />

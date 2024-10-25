@@ -1,6 +1,7 @@
 package com.codingapi.example.convert;
 
 import com.codingapi.example.entity.FlowRecordEntity;
+import com.codingapi.springboot.flow.content.FlowContent;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.em.FlowStatus;
 import com.codingapi.springboot.flow.em.RecodeType;
@@ -33,6 +34,12 @@ public class FlowRecordConvertor {
             entity.setOpinionAdvice(flowRecord.getOpinion().getAdvice());
             entity.setOpinionType(flowRecord.getOpinion().getType());
             entity.setOpinionSuccess(flowRecord.getOpinion().isSuccess());
+        }
+
+        if(flowRecord.getFlowContent()!=null){
+            FlowContent content = flowRecord.getFlowContent();
+            entity.setCurrentOperatorName(content.getCurrentOperator().getName());
+            entity.setCreateOperatorName(content.getCreateOperator().getName());
         }
 
         entity.setFlowStatus(flowRecord.getFlowStatus().name());
