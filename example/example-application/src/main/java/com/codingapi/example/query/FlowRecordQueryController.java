@@ -1,12 +1,15 @@
 package com.codingapi.example.query;
 
+import com.codingapi.example.domain.User;
 import com.codingapi.example.entity.FlowRecordEntity;
 import com.codingapi.example.jpa.FlowRecordEntityRepository;
+import com.codingapi.example.repository.UserRepository;
 import com.codingapi.springboot.flow.pojo.FlowDetail;
 import com.codingapi.springboot.flow.service.FlowService;
 import com.codingapi.springboot.framework.dto.request.SearchRequest;
 import com.codingapi.springboot.framework.dto.response.MultiResponse;
 import com.codingapi.springboot.framework.dto.response.SingleResponse;
+import com.codingapi.springboot.security.gateway.TokenContext;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class FlowRecordQueryController {
 
     private final FlowRecordEntityRepository flowRecordQuery;
+    private final UserRepository userRepository;
     private final FlowService flowService;
 
     @GetMapping("/list")
@@ -30,48 +34,48 @@ public class FlowRecordQueryController {
 
     @GetMapping("/detail")
     public SingleResponse<FlowDetail> detail(SearchRequest searchRequest) {
-        long operatorId = Long.parseLong(searchRequest.getParameter("operatorId"));
-        return SingleResponse.of(flowService.detail(operatorId));
+        long id = Long.parseLong(searchRequest.getParameter("id"));
+        return SingleResponse.of(flowService.detail(id));
     }
 
 
     @GetMapping("/findTodoByOperatorId")
     public MultiResponse<FlowRecordEntity> findTodoByOperatorId(SearchRequest searchRequest) {
-        long operatorId = Long.parseLong(searchRequest.getParameter("operatorId"));
+        User user = userRepository.getUserByUsername(TokenContext.current().getUsername());
         PageRequest pageRequest = PageRequest.of(searchRequest.getCurrent(), searchRequest.getPageSize());
-        return MultiResponse.of(flowRecordQuery.findTodoByOperatorId(operatorId, pageRequest));
+        return MultiResponse.of(flowRecordQuery.findTodoByOperatorId(user.getId(), pageRequest));
     }
 
 
     @GetMapping("/findDoneByOperatorId")
     public MultiResponse<FlowRecordEntity> findDoneByOperatorId(SearchRequest searchRequest) {
-        long operatorId = Long.parseLong(searchRequest.getParameter("operatorId"));
+        User user = userRepository.getUserByUsername(TokenContext.current().getUsername());
         PageRequest pageRequest = PageRequest.of(searchRequest.getCurrent(), searchRequest.getPageSize());
-        return MultiResponse.of(flowRecordQuery.findDoneByOperatorId(operatorId, pageRequest));
+        return MultiResponse.of(flowRecordQuery.findDoneByOperatorId(user.getId(), pageRequest));
     }
 
 
     @GetMapping("/findInitiatedByOperatorId")
     public MultiResponse<FlowRecordEntity> findInitiatedByOperatorId(SearchRequest searchRequest) {
-        long operatorId = Long.parseLong(searchRequest.getParameter("operatorId"));
+        User user = userRepository.getUserByUsername(TokenContext.current().getUsername());
         PageRequest pageRequest = PageRequest.of(searchRequest.getCurrent(), searchRequest.getPageSize());
-        return MultiResponse.of(flowRecordQuery.findInitiatedByOperatorId(operatorId, pageRequest));
+        return MultiResponse.of(flowRecordQuery.findInitiatedByOperatorId(user.getId(), pageRequest));
     }
 
 
     @GetMapping("/findTimeoutTodoByOperatorId")
     public MultiResponse<FlowRecordEntity> findTimeoutTodoByOperatorId(SearchRequest searchRequest) {
-        long operatorId = Long.parseLong(searchRequest.getParameter("operatorId"));
+        User user = userRepository.getUserByUsername(TokenContext.current().getUsername());
         PageRequest pageRequest = PageRequest.of(searchRequest.getCurrent(), searchRequest.getPageSize());
-        return MultiResponse.of(flowRecordQuery.findTimeoutTodoByOperatorId(operatorId, System.currentTimeMillis(), pageRequest));
+        return MultiResponse.of(flowRecordQuery.findTimeoutTodoByOperatorId(user.getId(), System.currentTimeMillis(), pageRequest));
     }
 
 
     @GetMapping("/findPostponedTodoByOperatorId")
     public MultiResponse<FlowRecordEntity> findPostponedTodoByOperatorId(SearchRequest searchRequest) {
-        long operatorId = Long.parseLong(searchRequest.getParameter("operatorId"));
+        User user = userRepository.getUserByUsername(TokenContext.current().getUsername());
         PageRequest pageRequest = PageRequest.of(searchRequest.getCurrent(), searchRequest.getPageSize());
-        return MultiResponse.of(flowRecordQuery.findPostponedTodoByOperatorId(operatorId, pageRequest));
+        return MultiResponse.of(flowRecordQuery.findPostponedTodoByOperatorId(user.getId(), pageRequest));
     }
 
 

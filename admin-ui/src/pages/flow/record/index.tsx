@@ -1,7 +1,14 @@
 import React from "react";
 import {PageContainer, ProTable} from "@ant-design/pro-components";
-import {flowRecordList} from "@/api/flow";
+import {
+    findDoneByOperatorId,
+    findInitiatedByOperatorId, findPostponedTodoByOperatorId,
+    findTimeoutTodoByOperatorId,
+    findTodoByOperatorId,
+    flowRecordList
+} from "@/api/flow";
 import moment from "moment";
+import {Tabs} from "antd";
 
 
 const FlowRecordPage = ()=>{
@@ -85,17 +92,112 @@ const FlowRecordPage = ()=>{
                 }
                 return text;
             }
+        },
+        {
+            title: '操作',
+            dataIndex: 'option',
+            valueType: 'option',
+            render: (_: any,record:any) => {
+
+                return [
+                    <a>详情</a>,
+                    <a>办理</a>,
+                    <a>转办</a>,
+                    <a>保存</a>,
+                    <a>撤销</a>,
+                    <a>催办</a>,
+                    <a>干预</a>,
+                    <a>延期</a>,
+                ]
+            }
         }
     ] as any[];
 
     return (
         <PageContainer>
-            <ProTable
-                search={false}
-                columns={columns}
-                request={async (params, sort, filter) => {
-                    return flowRecordList(params, sort, filter, []);
-                }}
+
+            <Tabs
+                items={[
+                    {
+                        label: '我的待办',
+                        key: 'todo',
+                        children:(
+                            <ProTable
+                                search={false}
+                                columns={columns}
+                                request={async (params, sort, filter) => {
+                                    return findTodoByOperatorId(params, sort, filter, []);
+                                }}
+                            />
+                        )
+                    },
+                    {
+                        label: '我的已办',
+                        key: 'done',
+                        children:(
+                            <ProTable
+                                search={false}
+                                columns={columns}
+                                request={async (params, sort, filter) => {
+                                    return findDoneByOperatorId(params, sort, filter, []);
+                                }}
+                            />
+                        )
+                    },
+                    {
+                        label: '我发起的',
+                        key: 'initiated',
+                        children:(
+                            <ProTable
+                                search={false}
+                                columns={columns}
+                                request={async (params, sort, filter) => {
+                                    return findInitiatedByOperatorId(params, sort, filter, []);
+                                }}
+                            />
+                        )
+                    },
+                    {
+                        label: '超时待办',
+                        key: 'timeoutTodo',
+                        children:(
+                            <ProTable
+                                search={false}
+                                columns={columns}
+                                request={async (params, sort, filter) => {
+                                    return findTimeoutTodoByOperatorId(params, sort, filter, []);
+                                }}
+                            />
+                        )
+                    },
+
+                    {
+                        label: '延期待办',
+                        key: 'postponedTodo',
+                        children:(
+                            <ProTable
+                                search={false}
+                                columns={columns}
+                                request={async (params, sort, filter) => {
+                                    return findPostponedTodoByOperatorId(params, sort, filter, []);
+                                }}
+                            />
+                        )
+                    },
+                    {
+                        label: '全部流程',
+                        key: 'all',
+                        children:(
+                            <ProTable
+                                search={false}
+                                columns={columns}
+                                request={async (params, sort, filter) => {
+                                    return flowRecordList(params, sort, filter, []);
+                                }}
+                            />
+                        )
+                    },
+                ]}
             />
 
         </PageContainer>

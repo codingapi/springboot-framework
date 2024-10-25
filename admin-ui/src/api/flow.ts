@@ -40,3 +40,55 @@ export async function flowRecordList(params: any,
     return page('/api/query/flowRecord/list', params, sort, filter, match);
 }
 
+
+export async function findTodoByOperatorId(params: any,
+                                     sort: any,
+                                     filter: any,
+                                     match: {
+                                         key: string,
+                                         type: string
+                                     }[]) {
+    return page('/api/query/flowRecord/findTodoByOperatorId', params, sort, filter, match);
+}
+
+export async function findDoneByOperatorId(params: any,
+                                           sort: any,
+                                           filter: any,
+                                           match: {
+                                               key: string,
+                                               type: string
+                                           }[]) {
+    return page('/api/query/flowRecord/findDoneByOperatorId', params, sort, filter, match);
+}
+
+
+export async function findInitiatedByOperatorId(params: any,
+                                           sort: any,
+                                           filter: any,
+                                           match: {
+                                               key: string,
+                                               type: string
+                                           }[]) {
+    return page('/api/query/flowRecord/findInitiatedByOperatorId', params, sort, filter, match);
+}
+
+
+export async function findTimeoutTodoByOperatorId(params: any,
+                                                sort: any,
+                                                filter: any,
+                                                match: {
+                                                    key: string,
+                                                    type: string
+                                                }[]) {
+    return page('/api/query/flowRecord/findTimeoutTodoByOperatorId', params, sort, filter, match);
+}
+
+export async function findPostponedTodoByOperatorId(params: any,
+                                                  sort: any,
+                                                  filter: any,
+                                                  match: {
+                                                      key: string,
+                                                      type: string
+                                                  }[]) {
+    return page('/api/query/flowRecord/findPostponedTodoByOperatorId', params, sort, filter, match);
+}
