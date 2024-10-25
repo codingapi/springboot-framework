@@ -3,7 +3,6 @@ package com.codingapi.example.repository;
 import com.codingapi.example.convert.FlowRecordConvertor;
 import com.codingapi.example.jpa.FlowRecordEntityRepository;
 import com.codingapi.springboot.flow.em.FlowStatus;
-import com.codingapi.springboot.flow.em.RecodeType;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.FlowRecordRepository;
 import lombok.AllArgsConstructor;
@@ -44,7 +43,7 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository {
 
     @Override
     public List<FlowRecord> findTodoFlowRecordByProcessId(String processId) {
-        return flowRecordEntityRepository.findFlowRecordEntityByProcessIdAndRecodeTypeAndFlowStatus(processId, RecodeType.TODO.name(), FlowStatus.RUNNING.name())
+        return flowRecordEntityRepository.findTodoFlowRecordByProcessId(processId)
                 .stream().map(FlowRecordConvertor::convert).toList();
     }
 
