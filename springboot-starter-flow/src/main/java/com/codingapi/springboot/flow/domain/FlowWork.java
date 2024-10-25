@@ -1,6 +1,7 @@
 package com.codingapi.springboot.flow.domain;
 
 import com.codingapi.springboot.flow.build.SchemaReader;
+import com.codingapi.springboot.flow.em.NodeType;
 import com.codingapi.springboot.flow.record.FlowProcess;
 import com.codingapi.springboot.flow.serializable.FlowWorkSerializable;
 import com.codingapi.springboot.flow.user.IFlowOperator;
@@ -110,7 +111,62 @@ public class FlowWork {
         if (!StringUtils.hasLength(title)) {
             throw new IllegalArgumentException("title is empty");
         }
+
+        this.verifyNodes();
+        this.verifyRelations();
+        this.checkRelation();
     }
+
+
+    private void checkRelation(){
+        FlowNode startNode = getNodeByCode(FlowNode.CODE_START);
+        if(startNode==null){
+            throw new IllegalArgumentException("start node is not exist");
+        }
+        FlowNode overNode = getNodeByCode(FlowNode.CODE_OVER);
+        if(overNode==null){
+            throw new IllegalArgumentException("over node is not exist");
+        }
+
+        List<String> sourceCodes = new ArrayList<>();
+        List<String> targetCodes = new ArrayList<>();
+        for(FlowRelation relation:relations){
+            sourceCodes.add(relation.getSource().getCode());
+            targetCodes.add(relation.getTarget().getCode());
+        }
+
+        if(!sourceCodes.contains(FlowNode.CODE_START)){
+            throw new IllegalArgumentException("start node relation is not exist");
+        }
+
+        if(!targetCodes.contains(FlowNode.CODE_OVER)){
+            throw new IllegalArgumentException("over node relation is not exist");
+        }
+
+    }
+
+
+    private void verifyNodes(){
+        List<String> nodeCodes = new ArrayList<>();
+
+        for(FlowNode node:nodes){
+            node.verify();
+            if(nodeCodes.contains(node.getCode())){
+                throw new IllegalArgumentException("node code is exist");
+            }
+            nodeCodes.add(node.getCode());
+        }
+    }
+
+
+    private void verifyRelations(){
+        for(FlowRelation relation:relations){
+            relation.verify();
+
+            relation.verifyNodes(nodes);
+        }
+    }
+
 
     /**
      * 序列化
@@ -136,10 +192,10 @@ public class FlowWork {
      * @param schema schema
      */
     public void schema(String schema) {
-        this.schema = schema;
         SchemaReader schemaReader = new SchemaReader(schema);
         this.relations = schemaReader.getFlowRelations();
         this.nodes = schemaReader.getFlowNodes();
+        this.schema = schema;
         this.verify();
         this.updateTime = System.currentTimeMillis();
     }

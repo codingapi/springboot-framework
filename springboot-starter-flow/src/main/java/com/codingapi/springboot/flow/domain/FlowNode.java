@@ -18,6 +18,7 @@ import com.codingapi.springboot.flow.user.IFlowOperator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -95,6 +96,25 @@ public class FlowNode {
      */
     @Setter
     private ErrTrigger errTrigger;
+
+
+    public void verify(){
+        if (this.titleGenerator == null) {
+            throw new IllegalArgumentException("titleGenerator is null");
+        }
+        if (this.operatorMatcher == null) {
+            throw new IllegalArgumentException("operatorMatcher is null");
+        }
+        if(timeout<0){
+            throw new IllegalArgumentException("timeout is less than 0");
+        }
+        if(!StringUtils.hasLength(id)){
+            throw new IllegalArgumentException("id is empty");
+        }
+        if(!StringUtils.hasLength(code)){
+            throw new IllegalArgumentException("code is empty");
+        }
+    }
 
 
     /**

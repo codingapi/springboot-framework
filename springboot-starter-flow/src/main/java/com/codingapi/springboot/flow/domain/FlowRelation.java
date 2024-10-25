@@ -1,11 +1,14 @@
 package com.codingapi.springboot.flow.domain;
 
 import com.codingapi.springboot.flow.content.FlowContent;
+import com.codingapi.springboot.flow.em.NodeType;
 import com.codingapi.springboot.flow.serializable.FlowRelationSerializable;
 import com.codingapi.springboot.flow.trigger.OutTrigger;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 /**
  * 流程关系
@@ -130,8 +133,7 @@ public class FlowRelation {
     /**
      * 验证
      */
-    private void verify() {
-
+    public void verify() {
         if (!StringUtils.hasLength(id)) {
             throw new RuntimeException("id is null");
         }
@@ -142,6 +144,26 @@ public class FlowRelation {
 
         if (outTrigger == null) {
             throw new RuntimeException("outTrigger is null");
+        }
+
+        if(source.getCode().equals(target.getCode())){
+            throw new RuntimeException("source node code is equals target node code");
+        }
+
+        if(back){
+            if(source.getType() != NodeType.APPROVAL){
+                throw new RuntimeException("source node type is not approval");
+            }
+        }
+    }
+
+    public void verifyNodes(List<FlowNode> nodes) {
+        if (nodes.stream().noneMatch(node -> node.getId().equals(source.getId()))) {
+            throw new RuntimeException("source node is not exists");
+        }
+
+        if (nodes.stream().noneMatch(node -> node.getId().equals(target.getId()))) {
+            throw new RuntimeException("target node is not exists");
         }
     }
 }

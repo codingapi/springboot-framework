@@ -43,8 +43,8 @@ public class FlowService {
         if (flowWork == null) {
             throw new IllegalArgumentException("flow work not found");
         }
-        flowWork.enableValidate();
         flowWork.verify();
+        flowWork.enableValidate();
 
         // 流程数据备份
         FlowBackup flowBackup = flowBackupRepository.getFlowBackupByWorkIdAndVersion(flowWork.getId(), flowWork.getUpdateTime());
