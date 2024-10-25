@@ -19,7 +19,7 @@ public class FlowRelationEntity {
     private String id;
 
 
-    private long workId;
+    private Long workId;
 
     /**
      * 名称
@@ -40,13 +40,13 @@ public class FlowRelationEntity {
      * 排序
      */
     @Column(name = "s_order")
-    private int order;
+    private Integer order;
 
     /**
      * 是否退回
      */
     @Column(name = "s_back")
-    private boolean back;
+    private Boolean back;
 
     /**
      * 出口触发器
@@ -58,11 +58,11 @@ public class FlowRelationEntity {
     /**
      * 创建时间
      */
-    private long createTime;
+    private Long createTime;
 
     /**
      * 修改时间
      */
-    private long updateTime;
+    private Long updateTime;
 
 }

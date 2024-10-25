@@ -11,6 +11,7 @@ public enum ApprovalType {
      */
     UN_SIGN;
 
+
     public static ApprovalType parser(String approvalType) {
         for(ApprovalType type:values()){
             if(type.name().equalsIgnoreCase(approvalType)){

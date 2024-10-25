@@ -3,7 +3,6 @@ package com.codingapi.springboot.flow.repository;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.record.FlowBackup;
 import com.codingapi.springboot.flow.record.FlowProcess;
-import com.codingapi.springboot.flow.serializable.FlowWorkSerializable;
 import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
@@ -22,7 +21,6 @@ public class FlowProcessRepositoryImpl implements FlowProcessRepository {
         List<String> ids = cache.stream().map(FlowProcess::getProcessId).toList();
         if (!ids.contains(flowProcess.getProcessId())) {
             cache.add(flowProcess);
-            flowProcess.setId(cache.size());
         }
     }
 
@@ -33,7 +31,7 @@ public class FlowProcessRepositoryImpl implements FlowProcessRepository {
             return null;
         }
         FlowBackup flowBackup = flowBackupRepository.getFlowBackupById(process.getBackupId());
-        return FlowWorkSerializable.fromSerializable(flowBackup.getBytes()).toFlowWork(userRepository);
+        return flowBackup.resume(userRepository);
     }
 
 

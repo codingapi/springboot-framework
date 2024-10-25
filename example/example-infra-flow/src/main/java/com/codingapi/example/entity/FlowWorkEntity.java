@@ -11,21 +11,21 @@ public class FlowWorkEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String title;
 
     private String description;
 
-    private long createUser;
+    private Long createUser;
 
-    private long createTime;
+    private Long createTime;
 
-    private long updateTime;
+    private Long updateTime;
 
-    private boolean enable;
+    private Boolean enable;
 
-    private int postponedMax;
+    private Integer postponedMax;
 
     @Lob
     private String schema;

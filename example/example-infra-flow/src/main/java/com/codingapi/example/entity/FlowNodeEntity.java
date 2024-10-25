@@ -18,7 +18,7 @@ public class FlowNodeEntity {
     private String id;
 
 
-    private long workId;
+    private Long workId;
 
     /**
      * 节点编码
@@ -60,21 +60,21 @@ public class FlowNodeEntity {
     /**
      * 是否可编辑
      */
-    private boolean editable;
+    private Boolean editable;
 
     /**
      * 创建时间
      */
-    private long createTime;
+    private Long createTime;
     /**
      * 更新时间
      */
-    private long updateTime;
+    private Long updateTime;
 
     /**
      * 超时时间（毫秒）
      */
-    private long timeout;
+    private Long timeout;
 
     /**
      * 异常触发器，当流程发生异常时异常通常是指找不到审批人，将会触发异常触发器，异常触发器可以是一个节点

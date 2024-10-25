@@ -16,10 +16,9 @@ public enum NodeType {
     OVER;
 
 
-
-    public static NodeType parser(String type){
-        for(NodeType nodeType:values()){
-            if(nodeType.name().equalsIgnoreCase(type)){
+    public static NodeType parser(String type) {
+        for (NodeType nodeType : values()) {
+            if (nodeType.name().equalsIgnoreCase(type)) {
                 return nodeType;
             }
         }

@@ -17,4 +17,14 @@ public enum RecodeType {
      * 转办
      */
     TRANSFER;
+
+
+    public static RecodeType parser(String type){
+        for(RecodeType recodeType:values()){
+            if(recodeType.name().equalsIgnoreCase(type)){
+                return recodeType;
+            }
+        }
+        return TODO;
+    }
 }

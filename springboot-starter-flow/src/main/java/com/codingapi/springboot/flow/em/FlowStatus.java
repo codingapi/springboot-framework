@@ -14,4 +14,14 @@ public enum FlowStatus {
      * 已完成
      */
     FINISH;
+
+
+    public static FlowStatus parser(String status) {
+        for (FlowStatus flowStatus : FlowStatus.values()) {
+            if (flowStatus.name().equalsIgnoreCase(status)) {
+                return flowStatus;
+            }
+        }
+        return RUNNING;
+    }
 }

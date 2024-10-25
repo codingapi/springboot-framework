@@ -1,6 +1,8 @@
 package com.codingapi.springboot.flow.record;
 
 import com.codingapi.springboot.flow.domain.FlowWork;
+import com.codingapi.springboot.flow.repository.FlowOperatorRepository;
+import com.codingapi.springboot.flow.serializable.FlowWorkSerializable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,6 +43,14 @@ public class FlowBackup {
      */
     private long workId;
 
+    /**
+     * 恢复流程
+     * @param flowOperatorRepository 操作者仓库
+     * @return 流程
+     */
+    public FlowWork resume(FlowOperatorRepository flowOperatorRepository) {
+        return FlowWorkSerializable.fromSerializable(this.bytes).toFlowWork(flowOperatorRepository);
+    }
 
     public FlowBackup(FlowWork flowWork) {
         this.bytes = flowWork.toSerializable().toSerializable();

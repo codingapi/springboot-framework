@@ -47,7 +47,7 @@ public class FlowWorkRepositoryImpl implements FlowWorkRepository {
                 userRepository.getUserById(entity.getCreateUser()),
                 entity.getCreateTime(),
                 entity.getUpdateTime(),
-                entity.isEnable(),
+                entity.getEnable(),
                 entity.getPostponedMax(),
                 flowNodes,
                 flowRelations,

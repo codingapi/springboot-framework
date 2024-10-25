@@ -5,12 +5,16 @@ import com.codingapi.example.infra.convert.UserConvertor;
 import com.codingapi.example.infra.entity.UserEntity;
 import com.codingapi.example.infra.jpa.UserEntityRepository;
 import com.codingapi.example.repository.UserRepository;
+import com.codingapi.springboot.flow.repository.FlowOperatorRepository;
+import com.codingapi.springboot.flow.user.IFlowOperator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @AllArgsConstructor
-public class UserRepositoryImpl implements UserRepository {
+public class UserRepositoryImpl implements UserRepository, FlowOperatorRepository {
 
     private final UserEntityRepository userEntityRepository;
 
@@ -29,5 +33,15 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User getUserById(long id) {
         return UserConvertor.convert(userEntityRepository.getUserEntityById(id));
+    }
+
+    @Override
+    public List<? extends IFlowOperator> findByIds(List<Long> ids) {
+        return userEntityRepository.findUserEntityByIdIn(ids).stream().map(UserConvertor::convert).toList();
+    }
+
+    @Override
+    public IFlowOperator getFlowOperatorById(long id) {
+        return this.getUserById(id);
     }
 }

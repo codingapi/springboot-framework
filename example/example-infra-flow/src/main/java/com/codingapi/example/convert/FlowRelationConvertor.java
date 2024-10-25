@@ -28,7 +28,7 @@ public class FlowRelationConvertor {
             }
         }
 
-        return new FlowRelation(entity.getId(), entity.getName(), source, target, entity.getOrder(), entity.isBack(), new OutTrigger(entity.getOutTrigger()), entity.getCreateTime(), entity.getUpdateTime());
+        return new FlowRelation(entity.getId(), entity.getName(), source, target, entity.getOrder(), entity.getBack(), new OutTrigger(entity.getOutTrigger()), entity.getCreateTime(), entity.getUpdateTime());
     }
 
 
