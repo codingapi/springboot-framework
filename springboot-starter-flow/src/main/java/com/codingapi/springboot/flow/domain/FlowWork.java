@@ -1,8 +1,6 @@
 package com.codingapi.springboot.flow.domain;
 
 import com.codingapi.springboot.flow.build.SchemaReader;
-import com.codingapi.springboot.flow.em.NodeType;
-import com.codingapi.springboot.flow.record.FlowProcess;
 import com.codingapi.springboot.flow.serializable.FlowWorkSerializable;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import lombok.AllArgsConstructor;
@@ -52,7 +50,6 @@ public class FlowWork {
     /**
      * 是否启用
      */
-    @Setter
     private boolean enable;
 
     /**
@@ -85,19 +82,22 @@ public class FlowWork {
         this.createUser = createUser;
         this.createTime = System.currentTimeMillis();
         this.updateTime = System.currentTimeMillis();
-        this.postponedMax = 1;
         this.nodes = new ArrayList<>();
         this.relations = new ArrayList<>();
+        this.enable = false;
+        this.postponedMax = 1;
     }
 
-    public FlowWork(String title, String description, IFlowOperator createUser) {
+    public FlowWork(String title, String description, int postponedMax, IFlowOperator createUser) {
         this.title = title;
         this.description = description;
+        this.postponedMax = postponedMax;
         this.createUser = createUser;
         this.createTime = System.currentTimeMillis();
         this.updateTime = System.currentTimeMillis();
         this.nodes = new ArrayList<>();
         this.relations = new ArrayList<>();
+        this.enable = false;
     }
 
 
@@ -118,40 +118,40 @@ public class FlowWork {
     }
 
 
-    private void checkRelation(){
+    private void checkRelation() {
         FlowNode startNode = getNodeByCode(FlowNode.CODE_START);
-        if(startNode==null){
+        if (startNode == null) {
             throw new IllegalArgumentException("start node is not exist");
         }
         FlowNode overNode = getNodeByCode(FlowNode.CODE_OVER);
-        if(overNode==null){
+        if (overNode == null) {
             throw new IllegalArgumentException("over node is not exist");
         }
 
         List<String> sourceCodes = new ArrayList<>();
         List<String> targetCodes = new ArrayList<>();
-        for(FlowRelation relation:relations){
+        for (FlowRelation relation : relations) {
             sourceCodes.add(relation.getSource().getCode());
             targetCodes.add(relation.getTarget().getCode());
         }
 
-        if(!sourceCodes.contains(FlowNode.CODE_START)){
+        if (!sourceCodes.contains(FlowNode.CODE_START)) {
             throw new IllegalArgumentException("start node relation is not exist");
         }
 
-        if(!targetCodes.contains(FlowNode.CODE_OVER)){
+        if (!targetCodes.contains(FlowNode.CODE_OVER)) {
             throw new IllegalArgumentException("over node relation is not exist");
         }
 
     }
 
 
-    private void verifyNodes(){
+    private void verifyNodes() {
         List<String> nodeCodes = new ArrayList<>();
 
-        for(FlowNode node:nodes){
+        for (FlowNode node : nodes) {
             node.verify();
-            if(nodeCodes.contains(node.getCode())){
+            if (nodeCodes.contains(node.getCode())) {
                 throw new IllegalArgumentException("node code is exist");
             }
             nodeCodes.add(node.getCode());
@@ -159,8 +159,8 @@ public class FlowWork {
     }
 
 
-    private void verifyRelations(){
-        for(FlowRelation relation:relations){
+    private void verifyRelations() {
+        for (FlowRelation relation : relations) {
             relation.verify();
 
             relation.verifyNodes(nodes);
@@ -170,6 +170,7 @@ public class FlowWork {
 
     /**
      * 序列化
+     *
      * @return FlowSerializable 流程序列化对象
      */
     public FlowWorkSerializable toSerializable() {
@@ -251,14 +252,12 @@ public class FlowWork {
     }
 
 
-
     /**
      * 是否存在退回关系
      */
     public boolean hasBackRelation() {
         return relations.stream().anyMatch(FlowRelation::isBack);
     }
-
 
 
     /**

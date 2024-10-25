@@ -113,7 +113,6 @@ public class FlowRelation {
         this.back = back;
         this.createTime = System.currentTimeMillis();
         this.updateTime = System.currentTimeMillis();
-        this.verify();
     }
 
     /**

@@ -30,11 +30,6 @@ public class FlowWorkBuilder {
         return this;
     }
 
-    public FlowWorkBuilder enable(boolean enable) {
-        this.work.setEnable(enable);
-        return this;
-    }
-
     public FlowWorkBuilder postponedMax(int postponedMax) {
         this.work.setPostponedMax(postponedMax);
         return this;

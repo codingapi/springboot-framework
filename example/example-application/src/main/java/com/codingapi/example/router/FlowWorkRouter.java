@@ -18,7 +18,7 @@ public class FlowWorkRouter {
     private final FlowWorkEntityRepository flowWorkEntityRepository;
     private final UserRepository userRepository;
 
-    public void delete(long id){
+    public void delete(long id) {
         flowWorkRepository.delete(id);
     }
 
@@ -26,7 +26,7 @@ public class FlowWorkRouter {
         User user = userRepository.getUserByUsername(request.getUsername());
         long id = request.getId();
         if (id == 0) {
-            FlowWork flowWork = new FlowWork(request.getTitle(), request.getDescription(), user);
+            FlowWork flowWork = new FlowWork(request.getTitle(), request.getDescription(), request.getPostponedMax(), user);
             flowWorkRepository.save(flowWork);
         } else {
             FlowWorkEntity flowWork = flowWorkEntityRepository.getFlowWorkEntityById(id);
@@ -39,13 +39,13 @@ public class FlowWorkRouter {
     }
 
     public void changeState(long id) {
-        FlowWorkEntity flowWork = flowWorkEntityRepository.getFlowWorkEntityById(id);
-        if(flowWork.isEnable()){
-            flowWork.setEnable(false);
-        }else{
-            flowWork.setEnable(true);
+        FlowWork flowWork = flowWorkRepository.getFlowWorkById(id);
+        if (flowWork.isEnable()) {
+            flowWork.disbale();
+        } else {
+            flowWork.enable();
         }
-        flowWorkEntityRepository.save(flowWork);
+        flowWorkRepository.save(flowWork);
     }
 
     public void schema(FlowWorkCmd.SchemaRequest request) {
