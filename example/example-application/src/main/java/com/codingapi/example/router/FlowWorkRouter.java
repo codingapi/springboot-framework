@@ -33,6 +33,7 @@ public class FlowWorkRouter {
             flowWork.setTitle(request.getTitle());
             flowWork.setDescription(request.getDescription());
             flowWork.setPostponedMax(request.getPostponedMax());
+            flowWork.setUpdateTime(System.currentTimeMillis());
             flowWorkEntityRepository.save(flowWork);
         }
     }

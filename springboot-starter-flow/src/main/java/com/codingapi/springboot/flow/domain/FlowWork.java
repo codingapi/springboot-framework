@@ -2,6 +2,7 @@ package com.codingapi.springboot.flow.domain;
 
 import com.codingapi.springboot.flow.build.SchemaReader;
 import com.codingapi.springboot.flow.record.FlowProcess;
+import com.codingapi.springboot.flow.serializable.FlowWorkSerializable;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 流程设计
@@ -72,7 +74,6 @@ public class FlowWork {
      */
     private String schema;
 
-
     /**
      * 构造函数
      *
@@ -97,6 +98,7 @@ public class FlowWork {
         this.relations = new ArrayList<>();
     }
 
+
     public void verify() {
         if (this.nodes == null || this.nodes.isEmpty()) {
             throw new IllegalArgumentException("nodes is empty");
@@ -107,6 +109,23 @@ public class FlowWork {
         if (!StringUtils.hasLength(title)) {
             throw new IllegalArgumentException("title is empty");
         }
+    }
+
+    /**
+     * 序列化
+     * @return FlowSerializable 流程序列化对象
+     */
+    public FlowWorkSerializable toSerializable() {
+        return new FlowWorkSerializable(id,
+                title,
+                description,
+                createUser.getUserId(),
+                createTime,
+                updateTime,
+                enable,
+                postponedMax,
+                nodes.stream().map(FlowNode::toSerializable).collect(Collectors.toCollection(ArrayList::new)),
+                relations.stream().map(FlowRelation::toSerializable).collect(Collectors.toCollection(ArrayList::new)));
     }
 
 

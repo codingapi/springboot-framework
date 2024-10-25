@@ -9,7 +9,7 @@ import org.springframework.util.StringUtils;
 /**
  * 标题生成器
  */
-public class TitleGenerator {
+public class TitleGenerator  {
 
     @Getter
     private final String script;

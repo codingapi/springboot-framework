@@ -31,24 +31,24 @@ public class OperatorMatcher {
     public static final int STATE_ANY = 3;
 
 
-    public boolean isAny(){
+    public boolean isAny() {
         return state == STATE_ANY;
     }
 
-    public boolean isCreator(){
+    public boolean isCreator() {
         return state == STATE_CREATOR;
     }
 
-    public boolean isSpecify(){
+    public boolean isSpecify() {
         return state == STATE_SPECIFY;
     }
 
 
     public OperatorMatcher(String script) {
-        this(script,STATE_SPECIFY);
+        this(script, STATE_SPECIFY);
     }
 
-    public OperatorMatcher(String script,int state) {
+    public OperatorMatcher(String script, int state) {
         if (!StringUtils.hasLength(script)) {
             throw new IllegalArgumentException("script is empty");
         }
@@ -64,7 +64,7 @@ public class OperatorMatcher {
      * @return 操作者匹配器
      */
     public static OperatorMatcher anyOperatorMatcher() {
-        return new OperatorMatcher("def run(content) {return [content.getCurrentOperator().getUserId()];}",STATE_ANY);
+        return new OperatorMatcher("def run(content) {return [content.getCurrentOperator().getUserId()];}", STATE_ANY);
     }
 
     /**
@@ -75,7 +75,7 @@ public class OperatorMatcher {
      */
     public static OperatorMatcher specifyOperatorMatcher(long... userIds) {
         String userIdsStr = Arrays.stream(userIds).mapToObj(String::valueOf).collect(Collectors.joining(","));
-        return new OperatorMatcher("def run(content) {return [" + userIdsStr + "];}",STATE_SPECIFY);
+        return new OperatorMatcher("def run(content) {return [" + userIdsStr + "];}", STATE_SPECIFY);
     }
 
     /**
@@ -85,7 +85,7 @@ public class OperatorMatcher {
      * @return 操作者匹配器
      */
     public static OperatorMatcher creatorOperatorMatcher() {
-        return new OperatorMatcher("def run(content) {return [content.getCreateOperator().getUserId()];}",STATE_CREATOR);
+        return new OperatorMatcher("def run(content) {return [content.getCreateOperator().getUserId()];}", STATE_CREATOR);
     }
 
     /**
@@ -95,11 +95,11 @@ public class OperatorMatcher {
      * @return 是否匹配
      */
     public List<Long> matcher(FlowContent flowContent) {
-        List<Object> values = (List<Object>)runtime.invokeMethod("run", flowContent);
-        return values.stream().map(item->{
-            if(item instanceof Number){
+        List<Object> values = (List<Object>) runtime.invokeMethod("run", flowContent);
+        return values.stream().map(item -> {
+            if (item instanceof Number) {
                 return ((Number) item).longValue();
-            }else{
+            } else {
                 return Long.parseLong(item.toString());
             }
         }).collect(Collectors.toList());

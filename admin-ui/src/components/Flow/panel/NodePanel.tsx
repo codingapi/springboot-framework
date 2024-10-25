@@ -59,12 +59,12 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                 />
                 <ProFormText
                     name={"view"}
-                    label={"试图名称"}
-                    tooltip={"界面渲染试图的名称"}
+                    label={"视图名称"}
+                    tooltip={"界面渲染视图的名称"}
                     rules={[
                         {
                             required: true,
-                            message: "请输入试图名称"
+                            message: "请输入视图名称"
                         }
                     ]}
                 />

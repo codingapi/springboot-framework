@@ -12,6 +12,8 @@ import com.codingapi.springboot.flow.generator.TitleGenerator;
 import com.codingapi.springboot.flow.matcher.OperatorMatcher;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.FlowOperatorRepository;
+import com.codingapi.springboot.flow.serializable.FlowNodeSerializable;
+import com.codingapi.springboot.flow.serializable.FlowWorkSerializable;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -93,6 +95,30 @@ public class FlowNode {
      */
     @Setter
     private ErrTrigger errTrigger;
+
+
+    /**
+     * 从序列化对象中创建节点
+     *
+     * @return FlowNodeSerializable 序列号节点
+     */
+    public FlowNodeSerializable toSerializable() {
+        return new FlowNodeSerializable(
+                this.id,
+                this.code,
+                this.name,
+                this.titleGenerator.getScript(),
+                this.type,
+                this.view,
+                this.approvalType,
+                this.operatorMatcher.getScript(),
+                this.editable,
+                this.createTime,
+                this.updateTime,
+                this.timeout,
+                this.errTrigger == null ? null : this.errTrigger.getScript()
+        );
+    }
 
 
     public FlowNode(String id,

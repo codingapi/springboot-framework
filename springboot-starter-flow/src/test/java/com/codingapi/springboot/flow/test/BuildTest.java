@@ -5,6 +5,7 @@ import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.em.ApprovalType;
 import com.codingapi.springboot.flow.matcher.OperatorMatcher;
 import com.codingapi.springboot.flow.repository.UserRepository;
+import com.codingapi.springboot.flow.serializable.FlowWorkSerializable;
 import com.codingapi.springboot.flow.user.User;
 import org.junit.jupiter.api.Test;
 
@@ -35,5 +36,14 @@ public class BuildTest {
         assertEquals("请假流程", flowWork.getTitle());
         assertEquals(4, flowWork.getNodes().size());
         assertEquals(3, flowWork.getRelations().size());
+
+
+        byte[] bytes = flowWork.toSerializable().toSerializable();
+        FlowWorkSerializable flowWorkSerializable = FlowWorkSerializable.fromSerializable(bytes);
+        assertEquals("请假流程", flowWorkSerializable.getTitle());
+
+        FlowWork serializableWork = flowWorkSerializable.toFlowWork(userRepository);
+        assertEquals("请假流程", serializableWork.getTitle());
+
     }
 }

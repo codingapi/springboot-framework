@@ -27,7 +27,7 @@ public class SignTest {
     private final FlowRecordRepositoryImpl flowRecordRepository = new FlowRecordRepositoryImpl();
     private final FlowBindDataRepositoryImpl flowBindDataRepository = new FlowBindDataRepositoryImpl();
     private final LeaveRepository leaveRepository = new LeaveRepository();
-    private final FlowProcessRepository flowProcessRepository = new FlowProcessRepositoryImpl();
+    private final FlowProcessRepository flowProcessRepository = new FlowProcessRepositoryImpl(userRepository);
     private final FlowService flowService = new FlowService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, userRepository,flowProcessRepository);
 
 
