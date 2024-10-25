@@ -31,63 +31,6 @@ public class FlowService {
     private final FlowProcessRepository flowProcessRepository;
     private final FlowBackupRepository flowBackupRepository;
 
-    /**
-     * 发起流程
-     *
-     * @param workId   流程id
-     * @param operator 操作者
-     * @param bindData 绑定数据
-     * @param advice   审批意见
-     */
-    public void startFlow(long workId, IFlowOperator operator, IBindData bindData, String advice) {
-        // 检测流程是否存在
-        FlowWork flowWork = flowWorkRepository.getFlowWorkById(workId);
-        if (flowWork == null) {
-            throw new IllegalArgumentException("flow work not found");
-        }
-        flowWork.verify();
-        flowWork.enableValidate();
-
-        // 流程数据备份
-        FlowBackup flowBackup = flowBackupRepository.getFlowBackupByWorkIdAndVersion(flowWork.getId(), flowWork.getUpdateTime());
-        if (flowBackup == null) {
-            flowBackup = flowBackupRepository.backup(flowWork);
-        }
-
-        // 保存流程
-        FlowProcess flowProcess = new FlowProcess(flowBackup.getId(), operator);
-        flowProcessRepository.save(flowProcess);
-
-        // 保存绑定数据
-        BindDataSnapshot snapshot = new BindDataSnapshot(bindData);
-        flowBindDataRepository.save(snapshot);
-
-        String processId = flowProcess.getProcessId();
-
-        Opinion opinion = Opinion.pass(advice);
-
-        FlowRecordService flowRecordService = new FlowRecordService(flowOperatorRepository, processId, operator, operator, snapshot, opinion, flowWork, opinion.isSuccess(), new ArrayList<>());
-        // 获取开始节点
-        FlowNode start = flowWork.getStartNode();
-        if (start == null) {
-            throw new IllegalArgumentException("start node not found");
-        }
-        long preId = 0;
-
-        // 创建待办记录
-        List<FlowRecord> records = flowRecordService.createRecord(preId, start);
-        if (records.isEmpty()) {
-            throw new IllegalArgumentException("flow record not found");
-        }
-        flowRecordRepository.save(records);
-
-        // 推送消息
-        for (FlowRecord record : records) {
-            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_CREATE, record, operator, flowWork));
-            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, record, operator, flowWork));
-        }
-
-    }
 
     /**
      * 流程详情
@@ -359,6 +302,65 @@ public class FlowService {
 
 
     /**
+     * 发起流程
+     *
+     * @param workId   流程id
+     * @param operator 操作者
+     * @param bindData 绑定数据
+     * @param advice   审批意见
+     */
+    public void startFlow(long workId, IFlowOperator operator, IBindData bindData, String advice) {
+        // 检测流程是否存在
+        FlowWork flowWork = flowWorkRepository.getFlowWorkById(workId);
+        if (flowWork == null) {
+            throw new IllegalArgumentException("flow work not found");
+        }
+        flowWork.verify();
+        flowWork.enableValidate();
+
+        // 流程数据备份
+        FlowBackup flowBackup = flowBackupRepository.getFlowBackupByWorkIdAndVersion(flowWork.getId(), flowWork.getUpdateTime());
+        if (flowBackup == null) {
+            flowBackup = flowBackupRepository.backup(flowWork);
+        }
+
+        // 保存流程
+        FlowProcess flowProcess = new FlowProcess(flowBackup.getId(), operator);
+        flowProcessRepository.save(flowProcess);
+
+        // 保存绑定数据
+        BindDataSnapshot snapshot = new BindDataSnapshot(bindData);
+        flowBindDataRepository.save(snapshot);
+
+        String processId = flowProcess.getProcessId();
+
+        Opinion opinion = Opinion.pass(advice);
+
+        FlowRecordService createRecordService = new FlowRecordService(flowOperatorRepository, processId, operator, operator, snapshot, opinion, flowWork, opinion.isSuccess(), new ArrayList<>());
+        // 获取开始节点
+        FlowNode start = flowWork.getStartNode();
+        if (start == null) {
+            throw new IllegalArgumentException("start node not found");
+        }
+        long preId = 0;
+
+        // 创建待办记录
+        List<FlowRecord> records = createRecordService.createRecord(preId, start);
+        if (records.isEmpty()) {
+            throw new IllegalArgumentException("flow record not found");
+        }
+
+        flowRecordRepository.save(records);
+
+        // 推送消息
+        for (FlowRecord record : records) {
+            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_CREATE, record, operator, flowWork));
+            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, record, operator, flowWork));
+        }
+
+    }
+
+    /**
      * 提交流程
      *
      * @param recordId        流程记录id
@@ -467,6 +469,12 @@ public class FlowService {
             return;
         }
 
+        this.createNextRecord(flowWork,flowNextStep,flowNode,processId,createOperator,currentOperator,snapshot,opinion,flowRecord,historyRecords);
+
+    }
+
+
+    private void createNextRecord(FlowWork flowWork,boolean flowNextStep,FlowNode flowNode,String processId,IFlowOperator createOperator,IFlowOperator currentOperator,BindDataSnapshot snapshot,Opinion opinion,FlowRecord flowRecord,List<FlowRecord> historyRecords){
         // 拥有退出条件 或审批通过时，匹配下一节点
         if (flowWork.hasBackRelation() || flowNextStep) {
 
