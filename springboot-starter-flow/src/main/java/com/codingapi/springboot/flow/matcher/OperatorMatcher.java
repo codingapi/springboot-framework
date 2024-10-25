@@ -43,9 +43,19 @@ public class OperatorMatcher {
         return state == STATE_SPECIFY;
     }
 
+    private static int parseState(String script){
+        if(script.contains("content.getCurrentOperator().getUserId()")){
+            return STATE_ANY;
+        }else if(script.contains("content.getCreateOperator().getUserId()")){
+            return STATE_CREATOR;
+        }else{
+            return STATE_SPECIFY;
+        }
+    }
+
 
     public OperatorMatcher(String script) {
-        this(script, STATE_SPECIFY);
+        this(script, parseState(script));
     }
 
     public OperatorMatcher(String script, int state) {

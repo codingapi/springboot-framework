@@ -19,7 +19,7 @@ public class FlowProcess {
     /**
      * 流程的字节码
      */
-    private FlowWork flowWork;
+    private byte[] bytes;
 
     /**
      * 创建时间
@@ -45,7 +45,7 @@ public class FlowProcess {
 
     public FlowProcess(FlowWork flowWork, IFlowOperator createOperator) {
         this.id = IDGenerator.generate();
-        this.flowWork = flowWork;
+        this.bytes = flowWork.toSerializable().toSerializable();
         this.workVersion = flowWork.getUpdateTime();
         this.workId = flowWork.getId();
         this.createOperatorId = createOperator.getUserId();

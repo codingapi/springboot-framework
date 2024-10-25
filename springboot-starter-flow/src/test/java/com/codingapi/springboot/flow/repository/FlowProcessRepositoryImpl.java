@@ -24,7 +24,7 @@ public class FlowProcessRepositoryImpl implements FlowProcessRepository {
 
     @Override
     public FlowWork getFlowWorkByProcessId(String processId) {
-        return cache.stream().filter(flowProcess -> flowProcess.getId().equals(processId)).findFirst().map(FlowProcess::getFlowWork).orElse(null);
-//        return FlowWorkSerializable.fromSerializable(bytes).toFlowWork(userRepository);
+        byte[] bytes = cache.stream().filter(flowProcess -> flowProcess.getId().equals(processId)).findFirst().map(FlowProcess::getBytes).orElse(null);
+        return FlowWorkSerializable.fromSerializable(bytes).toFlowWork(userRepository);
     }
 }
