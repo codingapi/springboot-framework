@@ -98,7 +98,7 @@ public class FlowRecordEntity {
      * 审批意见
      */
     private String opinionAdvice;
-    private Boolean opinionSuccess;
+    private Integer opinionResult;
     private Integer opinionType;
 
     /**

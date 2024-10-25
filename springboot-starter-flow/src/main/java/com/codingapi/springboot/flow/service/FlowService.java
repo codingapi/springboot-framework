@@ -81,8 +81,8 @@ public class FlowService {
 
         // 推送消息
         for (FlowRecord record : records) {
-            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_CREATE, record, operator));
-            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, record, operator));
+            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_CREATE, record, operator, flowWork));
+            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, record, operator, flowWork));
         }
 
     }
@@ -166,7 +166,7 @@ public class FlowService {
         // 推送催办消息
         for (FlowRecord record : todoRecords) {
             IFlowOperator pushOperator = flowOperatorRepository.getFlowOperatorById(record.getCurrentOperatorId());
-            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_URGE, record, pushOperator));
+            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_URGE, record, pushOperator,flowWork));
         }
 
     }
@@ -303,10 +303,10 @@ public class FlowService {
         flowRecordRepository.save(List.of(transferRecord));
 
         // 推送转办消息
-        EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TRANSFER, flowRecord, currentOperator));
+        EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TRANSFER, flowRecord, currentOperator,flowWork));
 
         // 推送待办消息
-        EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, transferRecord, targetOperator));
+        EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, transferRecord, targetOperator,flowWork));
     }
 
 
@@ -318,7 +318,7 @@ public class FlowService {
      * @param bindData        绑定数据
      * @param advice          审批意见
      */
-    public void save(long recordId, IFlowOperator currentOperator, IBindData bindData,String advice) {
+    public void save(long recordId, IFlowOperator currentOperator, IBindData bindData, String advice) {
         // 检测流程记录
         FlowRecord flowRecord = flowRecordRepository.getFlowRecordById(recordId);
         if (flowRecord == null) {
@@ -455,7 +455,7 @@ public class FlowService {
             flowRecordRepository.update(flowRecord);
 
             flowRecordRepository.finishFlowRecordByProcessId(processId);
-            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_FINISH, flowRecord, currentOperator));
+            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_FINISH, flowRecord, currentOperator,flowWork));
             return;
         }
 
@@ -487,7 +487,7 @@ public class FlowService {
 
             for (FlowRecord record : records) {
                 IFlowOperator pushOperator = flowOperatorRepository.getFlowOperatorById(record.getCurrentOperatorId());
-                EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, record, pushOperator));
+                EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, record, pushOperator,flowWork));
             }
 
         } else {
@@ -513,12 +513,12 @@ public class FlowService {
 
             for (FlowRecord record : records) {
                 IFlowOperator pushOperator = flowOperatorRepository.getFlowOperatorById(record.getCurrentOperatorId());
-                EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, record, pushOperator));
+                EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, record, pushOperator,flowWork));
             }
         }
 
         int eventState = flowNextStep ? FlowApprovalEvent.STATE_PASS : FlowApprovalEvent.STATE_REJECT;
-        EventPusher.push(new FlowApprovalEvent(eventState, flowRecord, currentOperator));
+        EventPusher.push(new FlowApprovalEvent(eventState, flowRecord, currentOperator,flowWork));
 
     }
 
@@ -570,7 +570,7 @@ public class FlowService {
         flowRecordRepository.update(flowRecord);
 
         flowRecordRepository.delete(childrenRecords);
-        EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_RECALL, flowRecord, currentOperator));
+        EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_RECALL, flowRecord, currentOperator,flowWork));
     }
 
 }

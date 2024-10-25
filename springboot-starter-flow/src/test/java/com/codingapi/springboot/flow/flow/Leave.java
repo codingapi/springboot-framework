@@ -21,8 +21,4 @@ public class Leave implements IBindData {
         this.days = days;
     }
 
-    @Override
-    public long getId() {
-        return id;
-    }
 }

@@ -1,7 +1,6 @@
 package com.codingapi.springboot.flow.record;
 
 import com.codingapi.springboot.flow.bind.BindDataSnapshot;
-import com.codingapi.springboot.flow.content.FlowContent;
 import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.em.FlowStatus;
@@ -125,12 +124,6 @@ public class FlowRecord {
      * 已读时间
      */
     private long readTime;
-
-
-    /**
-     * 当前流程内容
-     */
-    private transient FlowContent flowContent;
 
     /**
      * 延期时间

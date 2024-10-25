@@ -16,14 +16,16 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository {
 
     private final FlowRecordEntityRepository flowRecordEntityRepository;
 
+    private final UserRepository userRepository;
+
     @Override
     public void save(List<FlowRecord> records) {
-        flowRecordEntityRepository.saveAll(records.stream().map(FlowRecordConvertor::convert).toList());
+        flowRecordEntityRepository.saveAll(records.stream().map(item->FlowRecordConvertor.convert(item,userRepository)).toList());
     }
 
     @Override
     public void update(FlowRecord flowRecord) {
-        flowRecordEntityRepository.save(FlowRecordConvertor.convert(flowRecord));
+        flowRecordEntityRepository.save(FlowRecordConvertor.convert(flowRecord,userRepository));
     }
 
     @Override
@@ -59,6 +61,6 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository {
 
     @Override
     public void delete(List<FlowRecord> childrenRecords) {
-        flowRecordEntityRepository.deleteAll(childrenRecords.stream().map(FlowRecordConvertor::convert).toList());
+        flowRecordEntityRepository.deleteAll(childrenRecords.stream().map(item->FlowRecordConvertor.convert(item,userRepository)).toList());
     }
 }

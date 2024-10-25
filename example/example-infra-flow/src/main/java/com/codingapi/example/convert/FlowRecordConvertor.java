@@ -1,7 +1,7 @@
 package com.codingapi.example.convert;
 
 import com.codingapi.example.entity.FlowRecordEntity;
-import com.codingapi.springboot.flow.content.FlowContent;
+import com.codingapi.example.repository.UserRepository;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.em.FlowStatus;
 import com.codingapi.springboot.flow.em.RecodeType;
@@ -9,8 +9,8 @@ import com.codingapi.springboot.flow.record.FlowRecord;
 
 public class FlowRecordConvertor {
 
-    public static FlowRecordEntity convert(FlowRecord flowRecord){
-        if(flowRecord==null){
+    public static FlowRecordEntity convert(FlowRecord flowRecord, UserRepository userRepository) {
+        if (flowRecord == null) {
             return null;
         }
 
@@ -30,17 +30,14 @@ public class FlowRecordConvertor {
         entity.setTimeoutTime(flowRecord.getTimeoutTime());
         entity.setPostponedCount(flowRecord.getPostponedCount());
         entity.setCreateOperatorId(flowRecord.getCreateOperatorId());
-        if(flowRecord.getOpinion()!=null) {
+        if (flowRecord.getOpinion() != null) {
             entity.setOpinionAdvice(flowRecord.getOpinion().getAdvice());
             entity.setOpinionType(flowRecord.getOpinion().getType());
-            entity.setOpinionSuccess(flowRecord.getOpinion().isSuccess());
+            entity.setOpinionResult(flowRecord.getOpinion().getResult());
         }
 
-        if(flowRecord.getFlowContent()!=null){
-            FlowContent content = flowRecord.getFlowContent();
-            entity.setCurrentOperatorName(content.getCurrentOperator().getName());
-            entity.setCreateOperatorName(content.getCreateOperator().getName());
-        }
+        entity.setCurrentOperatorName(userRepository.getUserById(flowRecord.getCurrentOperatorId()).getName());
+        entity.setCreateOperatorName(userRepository.getUserById(flowRecord.getCreateOperatorId()).getName());
 
         entity.setFlowStatus(flowRecord.getFlowStatus().name());
         entity.setErrMessage(flowRecord.getErrMessage());
@@ -74,8 +71,8 @@ public class FlowRecordConvertor {
         flowRecord.setTimeoutTime(entity.getTimeoutTime());
         flowRecord.setPostponedCount(entity.getPostponedCount());
         flowRecord.setCreateOperatorId(entity.getCreateOperatorId());
-        if(entity.getOpinionSuccess()!=null && entity.getOpinionType()!=null && entity.getOpinionAdvice()!=null) {
-            flowRecord.setOpinion(new Opinion(entity.getOpinionAdvice(), entity.getOpinionSuccess(), entity.getOpinionType()));
+        if (entity.getOpinionResult() != null && entity.getOpinionType() != null) {
+            flowRecord.setOpinion(new Opinion(entity.getOpinionAdvice(), entity.getOpinionResult(), entity.getOpinionType()));
         }
         flowRecord.setFlowStatus(FlowStatus.parser(entity.getFlowStatus()));
         flowRecord.setErrMessage(entity.getErrMessage());

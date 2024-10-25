@@ -26,7 +26,7 @@ public class FlowRecordCmdController {
     @PostMapping("/startFlow")
     public Response startFlow(@RequestBody FlowCmd.StartFlow request) {
         User current = userRepository.getUserByUsername(request.getUserName());
-        flowService.startFlow(request.getWorkId(), current, request.getLeave(), request.getAdvice());
+        flowService.startFlow(request.getWorkId(), current, request.getBindData(), request.getAdvice());
         return Response.buildSuccess();
     }
 
@@ -34,7 +34,7 @@ public class FlowRecordCmdController {
     @PostMapping("/submitFlow")
     public Response submitFlow(@RequestBody FlowCmd.SubmitFlow request) {
         User current = userRepository.getUserByUsername(request.getUserName());
-        flowService.submitFlow(request.getRecordId(), current, request.getLeave(), request.getOpinion());
+        flowService.submitFlow(request.getRecordId(), current, request.getBindData(), request.getOpinion());
         return Response.buildSuccess();
     }
 
@@ -42,7 +42,7 @@ public class FlowRecordCmdController {
     @PostMapping("/save")
     public Response save(@RequestBody FlowCmd.SaveFlow request) {
         User current = userRepository.getUserByUsername(request.getUserName());
-        flowService.save(request.getRecordId(), current, request.getLeave());
+        flowService.save(request.getRecordId(), current, request.getBindData(),request.getAdvice());
         return Response.buildSuccess();
     }
 
@@ -58,7 +58,7 @@ public class FlowRecordCmdController {
     public Response transfer(@RequestBody FlowCmd.TransferFlow request) {
         User current = userRepository.getUserByUsername(request.getUserName());
         User target = userRepository.getUserById(request.getTargetUserId());
-        flowService.transfer(request.getRecordId(), current, target, request.getLeave(), request.getAdvice());
+        flowService.transfer(request.getRecordId(), current, target, request.getBindData(), request.getAdvice());
         return Response.buildSuccess();
     }
 
@@ -66,7 +66,7 @@ public class FlowRecordCmdController {
     @PostMapping("/interfere")
     public Response interfere(@RequestBody FlowCmd.InterfereFlow request) {
         User current = userRepository.getUserByUsername(request.getUserName());
-        flowService.interfere(request.getRecordId(), current, request.getLeave(), request.getOpinion());
+        flowService.interfere(request.getRecordId(), current, request.getBindData(), request.getOpinion());
         return Response.buildSuccess();
     }
 

@@ -1,5 +1,7 @@
 package com.codingapi.springboot.flow.event;
 
+import com.codingapi.springboot.flow.content.FlowContent;
+import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import com.codingapi.springboot.framework.event.ISyncEvent;
@@ -35,11 +37,13 @@ public class FlowApprovalEvent implements ISyncEvent {
     private final int state;
     private final IFlowOperator operator;
     private final FlowRecord flowRecord;
+    private final FlowWork flowWork;
 
-    public FlowApprovalEvent(int state,FlowRecord flowRecord,IFlowOperator operator) {
+    public FlowApprovalEvent(int state, FlowRecord flowRecord, IFlowOperator operator, FlowWork flowWork) {
         this.state = state;
         this.operator = operator;
         this.flowRecord = flowRecord;
+        this.flowWork = flowWork;
         log.info("FlowApprovalEvent:{}", this);
     }
 

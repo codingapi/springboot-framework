@@ -1,5 +1,8 @@
 import {get, page, post} from "@/api/index";
 
+
+// 流程设计
+
 export async function list(
     params: any,
     sort: any,
@@ -29,10 +32,17 @@ export async function schema(body: any) {
     return post('/api/cmd/flowWork/schema', body);
 }
 
+// 流程控制
+
 export async function detail(id:any) {
     return get('/api/query/flowRecord/detail', {id});
 }
 
+export async function saveFlow(body:any) {
+    return post('/api/cmd/flowRecord/save', body);
+}
+
+// 待办中心控制
 
 export async function flowRecordList(params: any,
                                      sort: any,

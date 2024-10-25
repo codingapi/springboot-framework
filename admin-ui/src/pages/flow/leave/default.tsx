@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {ProForm, ProFormDigit, ProFormTextArea} from "@ant-design/pro-components";
+import {ProForm, ProFormDigit, ProFormText, ProFormTextArea} from "@ant-design/pro-components";
 
 
 interface DefaultFlowViewProps {
@@ -19,6 +19,12 @@ const DefaultFlowView: React.FC<DefaultFlowViewProps> = (props) => {
             form={props.form}
             submitter={false}
         >
+
+            <ProFormText
+                name={"id"}
+                hidden={true}
+            />
+
             <ProFormDigit
                 name={"days"}
                 label={"请假天数"}

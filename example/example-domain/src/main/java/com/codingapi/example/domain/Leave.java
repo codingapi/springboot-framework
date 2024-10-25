@@ -15,8 +15,4 @@ public class Leave implements IBindData {
     private long createTime;
 
 
-    @Override
-    public long getId() {
-        return id;
-    }
 }

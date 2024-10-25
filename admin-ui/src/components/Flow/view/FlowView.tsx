@@ -1,6 +1,6 @@
 import React from "react";
 import {Button, Divider, Form, Modal, Row, Space, Tabs} from "antd";
-import {detail} from "@/api/flow";
+import {detail, saveFlow} from "@/api/flow";
 import {ProDescriptions, ProForm, ProFormTextArea} from "@ant-design/pro-components";
 import moment from "moment";
 
@@ -24,6 +24,29 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
     const [data, setData] = React.useState<any>(null);
 
     const [viewForm] = Form.useForm();
+
+    const [opinionForm] = Form.useForm();
+
+    const handlerSaveFlow = ()=>{
+        const advice = opinionForm.getFieldValue('advice');
+        const recordId = props.id;
+        const binData = viewForm.getFieldsValue();
+        const clazzName = data.flowRecord.bindClass;
+
+        const body = {
+            recordId,
+            advice,
+            formData:{
+                ...binData,
+                clazzName
+            }
+        }
+
+        console.log(body);
+        saveFlow(body).then(res=>{
+            console.log(res);
+        })
+    }
 
 
     const getOperator = (id: number) => {
@@ -105,7 +128,11 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
                     )}
 
                     {!props.review && (
-                        <Button>保存</Button>
+                        <Button
+                            onClick={()=>{
+                                handlerSaveFlow();
+                            }}
+                        >保存</Button>
                     )}
 
 
@@ -285,6 +312,7 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
                                                     审批
                                                 </Divider>
                                                 <ProForm
+                                                    form={opinionForm}
                                                     submitter={false}
                                                 >
                                                     <ProFormTextArea
