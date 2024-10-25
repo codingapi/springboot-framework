@@ -1,6 +1,6 @@
 import React from "react";
-import {Button, Divider, Form, Modal, Row, Space, Tabs} from "antd";
-import {detail, saveFlow} from "@/api/flow";
+import {Button, Divider, Form, message, Modal, Row, Space, Tabs} from "antd";
+import {detail, saveFlow, submitFlow} from "@/api/flow";
 import {ProDescriptions, ProForm, ProFormTextArea} from "@ant-design/pro-components";
 import moment from "moment";
 
@@ -27,24 +27,46 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
 
     const [opinionForm] = Form.useForm();
 
-    const handlerSaveFlow = ()=>{
+    const handlerSaveFlow = () => {
         const advice = opinionForm.getFieldValue('advice');
         const recordId = props.id;
         const binData = viewForm.getFieldsValue();
         const clazzName = data.flowRecord.bindClass;
-
         const body = {
             recordId,
             advice,
-            formData:{
+            formData: {
                 ...binData,
                 clazzName
             }
         }
+        saveFlow(body).then(res => {
+            if (res.success) {
+                message.success('保存成功').then();
+                props.setVisible(false);
+            }
+        })
+    }
 
-        console.log(body);
-        saveFlow(body).then(res=>{
-            console.log(res);
+    const handleSubmitFlow = (success: boolean) => {
+        const advice = opinionForm.getFieldValue('advice');
+        const recordId = props.id;
+        const binData = viewForm.getFieldsValue();
+        const clazzName = data.flowRecord.bindClass;
+        const body = {
+            recordId,
+            advice: advice,
+            success: success,
+            formData: {
+                ...binData,
+                clazzName
+            }
+        }
+        submitFlow(body).then(res => {
+            if (res.success) {
+                message.success('保存成功').then();
+                props.setVisible(false);
+            }
         })
     }
 
@@ -76,6 +98,7 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
     const handleDetail = () => {
         detail(props.id).then(res => {
             if (res.success) {
+                opinionForm.setFieldValue('advice', res.data.flowRecord.opinion.advice);
                 setData(res.data);
             }
         });
@@ -129,17 +152,19 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
 
                     {!props.review && (
                         <Button
-                            onClick={()=>{
+                            onClick={() => {
                                 handlerSaveFlow();
                             }}
                         >保存</Button>
                     )}
 
 
-
                     {!props.review && (
                         <Button
                             type={"primary"}
+                            onClick={() => {
+                                handleSubmitFlow(true);
+                            }}
                         >同意</Button>
                     )}
 
@@ -147,6 +172,9 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
                     {!props.review && (
                         <Button
                             type={"primary"}
+                            onClick={() => {
+                                handleSubmitFlow(false);
+                            }}
                             danger={true}
                         >拒绝</Button>
                     )}
@@ -263,12 +291,12 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
                                             <FlowView data={data} view={props.view}/>
                                         </div>
                                         <div>
-                                            {data.historyRecords && data.historyRecords.filter((item:any)=>item.recodeType ==='DONE').length>0 && (
+                                            {data.historyRecords && data.historyRecords.filter((item: any) => item.recodeType === 'DONE').length > 0 && (
                                                 <>
                                                     <Divider>
                                                         审批意见
                                                     </Divider>
-                                                    {data.historyRecords && data.historyRecords.filter((item:any)=>item.recodeType ==='DONE').map((item: any) => {
+                                                    {data.historyRecords && data.historyRecords.filter((item: any) => item.recodeType === 'DONE').map((item: any) => {
                                                         return (
                                                             <ProDescriptions
                                                                 column={2}
@@ -293,7 +321,7 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
                                                                         renderText: (text: any, record: any) => {
                                                                             return (
                                                                                 <>
-                                                                                    {record.opinion.success?'同意':'拒绝'}: {record.opinion.advice}
+                                                                                    {record.opinion.success ? '同意' : '拒绝'}: {record.opinion.advice}
                                                                                 </>
                                                                             )
                                                                         }
@@ -306,23 +334,21 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
                                             )}
                                         </div>
 
-                                        {!props.review && (
-                                            <>
-                                                <Divider>
-                                                    审批
-                                                </Divider>
-                                                <ProForm
-                                                    form={opinionForm}
-                                                    submitter={false}
-                                                >
-                                                    <ProFormTextArea
-                                                        label={"审批意见"}
-                                                        name={"advice"}
-                                                    />
 
-                                                </ProForm>
-                                            </>
-                                        )}
+                                        <Divider>
+                                            审批
+                                        </Divider>
+                                        <ProForm
+                                            form={opinionForm}
+                                            submitter={false}
+                                        >
+                                            <ProFormTextArea
+                                                disabled={props.review}
+                                                label={"审批意见"}
+                                                name={"advice"}
+                                            />
+
+                                        </ProForm>
 
                                     </>
                                 )

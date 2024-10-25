@@ -35,7 +35,8 @@ public class FlowCmd {
     public static class SubmitFlow {
 
         private long recordId;
-        private Opinion opinion;
+        private String advice;
+        private boolean success;
         private JSONObject formData;
 
         @SneakyThrows
@@ -46,6 +47,10 @@ public class FlowCmd {
 
         public String getUserName() {
             return TokenContext.current().getUsername();
+        }
+
+        public Opinion getOpinion() {
+            return new Opinion(advice, success ? Opinion.RESULT_PASS : Opinion.RESULT_REJECT, Opinion.TYPE_DEFAULT);
         }
     }
 

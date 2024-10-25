@@ -42,6 +42,10 @@ export async function saveFlow(body:any) {
     return post('/api/cmd/flowRecord/save', body);
 }
 
+export async function submitFlow(body:any) {
+    return post('/api/cmd/flowRecord/submitFlow', body);
+}
+
 // 待办中心控制
 
 export async function flowRecordList(params: any,

@@ -302,4 +302,11 @@ public class FlowNode {
     public boolean isOverNode() {
         return CODE_OVER.equals(this.code);
     }
+
+    /**
+     * 是否开始节点
+     */
+    public boolean isStartNode() {
+        return CODE_START.equals(this.code);
+    }
 }

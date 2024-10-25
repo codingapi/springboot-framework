@@ -15,10 +15,12 @@ import com.codingapi.springboot.flow.repository.*;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import com.codingapi.springboot.framework.event.EventPusher;
 import lombok.AllArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Transactional
 @AllArgsConstructor
 public class FlowService {
 
@@ -389,6 +391,14 @@ public class FlowService {
             throw new IllegalArgumentException("flow node not found");
         }
 
+        // 根据审批意见判断流程是否进入下一节点
+        boolean flowNextStep = opinion.isSuccess();
+
+        if(flowNode.isStartNode() && !flowNextStep){
+            throw new IllegalArgumentException("flow node is start node");
+        }
+
+
         // 下一流程的流程记录
         List<FlowRecord> childrenRecords = flowRecordRepository.findFlowRecordByPreId(recordId);
         // 不能存在后续的子流程
@@ -408,8 +418,6 @@ public class FlowService {
             snapshot = flowBindDataRepository.getBindDataSnapshotById(flowRecord.getSnapshotId());
         }
 
-        // 根据审批意见判断流程是否进入下一节点
-        boolean flowNextStep = opinion.isSuccess();
 
         // 与当前流程同级的流程记录
         List<FlowRecord> historyRecords = flowRecordRepository.findFlowRecordByPreId(flowRecord.getPreId());

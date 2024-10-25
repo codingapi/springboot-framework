@@ -1,5 +1,5 @@
-import React from "react";
-import {PageContainer, ProTable} from "@ant-design/pro-components";
+import React, {useEffect} from "react";
+import {ActionType, PageContainer, ProTable} from "@ant-design/pro-components";
 import {
     findDoneByOperatorId,
     findInitiatedByOperatorId, findPostponedTodoByOperatorId,
@@ -15,9 +15,12 @@ import DefaultFlowView from "@/pages/flow/leave/default";
 
 const FlowRecordPage = () => {
 
-    const [detailVisible, setDetailVisible] = React.useState(false);
+    const [flowViewVisible, setFlowViewVisible] = React.useState(false);
     const [currentId, setCurrentId] = React.useState<number>(0);
     const [reviewVisible, setReviewVisible] = React.useState(false);
+
+    const [key, setKey] = React.useState('todo');
+    const actionRef = React.useRef<ActionType>();
 
     const columns = [
         {
@@ -100,6 +103,11 @@ const FlowRecordPage = () => {
             }
         },
         {
+            title: '更新时间',
+            dataIndex: 'updateTime',
+            valueType: 'dateTime'
+        },
+        {
             title: '操作',
             dataIndex: 'option',
             valueType: 'option',
@@ -111,7 +119,7 @@ const FlowRecordPage = () => {
                         onClick={()=>{
                             setCurrentId(record.id);
                             setReviewVisible(true);
-                            setDetailVisible(true);
+                            setFlowViewVisible(true);
                         }}
                     >详情</a>,
                     <a
@@ -119,7 +127,7 @@ const FlowRecordPage = () => {
                         onClick={()=>{
                             setCurrentId(record.id);
                             setReviewVisible(false);
-                            setDetailVisible(true);
+                            setFlowViewVisible(true);
                         }}
                     >办理</a>,
                     <a>催办</a>,
@@ -129,16 +137,27 @@ const FlowRecordPage = () => {
         }
     ] as any[];
 
+
+    useEffect(() => {
+        if(!flowViewVisible){
+            actionRef.current?.reload();
+        }
+    }, [flowViewVisible,key]);
+
     return (
         <PageContainer>
 
             <Tabs
+                onChange={(key) => {
+                    setKey(key);
+                }}
                 items={[
                     {
                         label: '我的待办',
                         key: 'todo',
                         children: (
                             <ProTable
+                                actionRef={actionRef}
                                 search={false}
                                 columns={columns}
                                 request={async (params, sort, filter) => {
@@ -152,6 +171,7 @@ const FlowRecordPage = () => {
                         key: 'done',
                         children: (
                             <ProTable
+                                actionRef={actionRef}
                                 search={false}
                                 columns={columns}
                                 request={async (params, sort, filter) => {
@@ -165,6 +185,7 @@ const FlowRecordPage = () => {
                         key: 'initiated',
                         children: (
                             <ProTable
+                                actionRef={actionRef}
                                 search={false}
                                 columns={columns}
                                 request={async (params, sort, filter) => {
@@ -178,6 +199,7 @@ const FlowRecordPage = () => {
                         key: 'timeoutTodo',
                         children: (
                             <ProTable
+                                actionRef={actionRef}
                                 search={false}
                                 columns={columns}
                                 request={async (params, sort, filter) => {
@@ -192,6 +214,7 @@ const FlowRecordPage = () => {
                         key: 'postponedTodo',
                         children: (
                             <ProTable
+                                actionRef={actionRef}
                                 search={false}
                                 columns={columns}
                                 request={async (params, sort, filter) => {
@@ -205,6 +228,7 @@ const FlowRecordPage = () => {
                         key: 'all',
                         children: (
                             <ProTable
+                                actionRef={actionRef}
                                 search={false}
                                 columns={columns}
                                 request={async (params, sort, filter) => {
@@ -218,9 +242,9 @@ const FlowRecordPage = () => {
 
             <FlowView
                 id={currentId}
-                visible={detailVisible}
+                visible={flowViewVisible}
                 review={reviewVisible}
-                setVisible={setDetailVisible}
+                setVisible={setFlowViewVisible}
                 view={{
                     'default':DefaultFlowView
                 }}
