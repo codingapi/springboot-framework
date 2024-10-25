@@ -9,4 +9,6 @@ public interface UserRepository {
     User getUserById(long id);
 
     void save(User user);
+
+    void delete(long id);
 }

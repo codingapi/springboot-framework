@@ -39,6 +39,18 @@ export const menus = [
                 page: 'flow/work',
             },
             {
+                path: '/flow/leave',
+                name: '请假管理',
+                icon: "SmileOutlined",
+                page: 'flow/leave',
+            },
+            {
+                path: '/flow/user',
+                name: '流程用户',
+                icon: "SmileOutlined",
+                page: 'flow/user',
+            },
+            {
                 path: '/flow/creator',
                 name: '发起流程',
                 icon: "SmileOutlined",

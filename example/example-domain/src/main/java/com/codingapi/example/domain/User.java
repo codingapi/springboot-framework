@@ -17,6 +17,9 @@ public class User implements IFlowOperator {
 
     private String username;
     private String password;
+    private boolean isFlowManager;
+    private User entrustOperator;
+    private long createTime;
 
     public User(String name, PasswordEncoder passwordEncoder) {
         this.name = name;
@@ -47,11 +50,11 @@ public class User implements IFlowOperator {
 
     @Override
     public boolean isFlowManager() {
-        return false;
+        return isFlowManager;
     }
 
     @Override
     public IFlowOperator entrustOperator() {
-        return null;
+        return entrustOperator;
     }
 }

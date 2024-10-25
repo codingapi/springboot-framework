@@ -20,7 +20,7 @@ public class UserRepositoryImpl implements UserRepository, FlowOperatorRepositor
 
     @Override
     public User getUserByUsername(String username) {
-        return UserConvertor.convert(userEntityRepository.getUserEntityByUsername(username));
+        return UserConvertor.convert(userEntityRepository.getUserEntityByUsername(username), userEntityRepository);
     }
 
     @Override
@@ -32,12 +32,17 @@ public class UserRepositoryImpl implements UserRepository, FlowOperatorRepositor
 
     @Override
     public User getUserById(long id) {
-        return UserConvertor.convert(userEntityRepository.getUserEntityById(id));
+        return UserConvertor.convert(userEntityRepository.getUserEntityById(id), userEntityRepository);
     }
 
     @Override
     public List<? extends IFlowOperator> findByIds(List<Long> ids) {
-        return userEntityRepository.findUserEntityByIdIn(ids).stream().map(UserConvertor::convert).toList();
+        return userEntityRepository.findUserEntityByIdIn(ids).stream().map(item -> UserConvertor.convert(item, userEntityRepository)).toList();
+    }
+
+    @Override
+    public void delete(long id) {
+        userEntityRepository.deleteById(id);
     }
 
     @Override
