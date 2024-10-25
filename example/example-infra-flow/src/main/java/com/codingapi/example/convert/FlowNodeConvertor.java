@@ -37,9 +37,20 @@ public class FlowNodeConvertor {
         if(entity==null){
             return null;
         }
-        return new FlowNode(entity.getId(),entity.getCode(),entity.getName(),new TitleGenerator(entity.getTitleGenerator()), NodeType.parser(entity.getType()),entity.getView(),
-                ApprovalType.parser(entity.getApprovalType()),new OperatorMatcher(entity.getOperatorMatcher()),
-                entity.getEditable(),entity.getTimeout(),entity.getCreateTime(),entity.getUpdateTime(),StringUtils.hasLength(entity.getErrTrigger())?new ErrTrigger(entity.getErrTrigger()):null);
+        return new FlowNode(
+                entity.getId(),
+                entity.getCode(),
+                entity.getName(),
+                new TitleGenerator(entity.getTitleGenerator()),
+                NodeType.parser(entity.getType()),
+                entity.getView(),
+                ApprovalType.parser(entity.getApprovalType()),
+                new OperatorMatcher(entity.getOperatorMatcher()),
+                entity.getEditable(),
+                entity.getCreateTime(),
+                entity.getUpdateTime(),
+                entity.getTimeout(),
+                StringUtils.hasLength(entity.getErrTrigger())?new ErrTrigger(entity.getErrTrigger()):null);
     }
 
 }

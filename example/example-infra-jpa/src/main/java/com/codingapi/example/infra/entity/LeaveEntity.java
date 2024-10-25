@@ -18,6 +18,6 @@ public class LeaveEntity {
 
     private String desc;
     private int days;
-    private long userId;
-    private String userName;
+    private String username;
+    private long createTime;
 }

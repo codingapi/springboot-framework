@@ -1,18 +1,33 @@
 import React from "react";
 import Page from "@/components/Layout/Page";
-import {ModalForm, ProFormDigit, ProFormTextArea, ProTable} from "@ant-design/pro-components";
-import {list} from "@/api/leave";
-import {Button} from "antd";
+import {
+    ActionType,
+    ModalForm,
+    PageContainer,
+    ProForm,
+    ProFormDigit,
+    ProFormText,
+    ProFormTextArea,
+    ProTable
+} from "@ant-design/pro-components";
+import {list, startLeave} from "@/api/leave";
+import {Button, message} from "antd";
+import FlowSelect from "@/pages/flow/work/select";
 
 
-const LeavePage = ()=>{
+const LeavePage = () => {
 
-    const [visible,setVisible] = React.useState(false);
+    const [visible, setVisible] = React.useState(false);
+
+    const [flowSelectVisible, setFlowSelectVisible] = React.useState(false);
+    const [form] = ProForm.useForm();
+
+    const actionRef = React.useRef<ActionType>();
     const columns = [
         {
             title: '编号',
             dataIndex: 'id',
-            search:false
+            search: false
         },
         {
             title: '说明',
@@ -28,51 +43,113 @@ const LeavePage = ()=>{
         }
     ] as any[];
 
+
+    const handleStartFlow = async (values: any) => {
+        const res = await startLeave(values);
+        if (res.success) {
+            message.success("发起成功");
+            setVisible(false);
+            actionRef.current?.reload();
+        }
+    }
+
     return (
-        <Page>
-            <ProTable
-                toolBarRender={()=>[
-                    <Button onClick={()=>{
-                        setVisible(true);
+        <PageContainer>
+            <Page>
+                <ProTable
+                    actionRef={actionRef}
+                    toolBarRender={() => [
+                        <Button
+                            type={"primary"}
+                            onClick={() => {
+                                setVisible(true);
+                            }}
+                        >发起请假</Button>
+                    ]}
+                    columns={columns}
+                    search={false}
+                    rowKey={"id"}
+                    request={async (params, sort, filter) => {
+                        return list(params, sort, filter, []);
                     }}
-                    >发起请假</Button>
-                ]}
-                columns={columns}
-                search={false}
-                rowKey={"id"}
-                request={async (params, sort, filter) => {
-                    return list(params, sort, filter, []);
-                }}
-            />
-
-            <ModalForm
-                title={"发起请假"}
-                open={visible}
-                modalProps={{
-                    onCancel:()=>{
-                        setVisible(false);
-                    },
-                    onClose:()=>{
-                        setVisible(false);
-                    },
-                }}
-                onFinish={async (values)=>{
-                    console.log(values);
-                }}
-            >
-                <ProFormTextArea
-                    name={"desc"}
-                    label={"请假原因"}
                 />
 
-                <ProFormDigit
-                    name={"days"}
-                    label={"请假天数"}
-                />
+                <ModalForm
+                    form={form}
+                    title={"发起请假"}
+                    open={visible}
+                    modalProps={{
+                        onCancel: () => {
+                            setVisible(false);
+                        },
+                        onClose: () => {
+                            setVisible(false);
+                        },
+                    }}
+                    onFinish={async (values) => {
+                        await handleStartFlow(values);
+                    }}
+                >
 
-            </ModalForm>
+                    <ProFormText
+                        name={"flowId"}
+                        hidden={true}
+                    />
 
-        </Page>
+                    <ProFormText
+                        name={"flowName"}
+                        label={"流程名称"}
+                        disabled={true}
+                        rules={[
+                            {
+                                required: true,
+                                message: "请选择流程"
+                            }
+                        ]}
+                        fieldProps={{
+                            addonAfter: <a onClick={() => {
+                                setFlowSelectVisible(true);
+                            }
+                            }>选择流程</a>
+                        }}
+                    />
+
+                    <ProFormDigit
+                        name={"days"}
+                        label={"请假天数"}
+                        fieldProps={{
+                            step: 1
+                        }}
+                        rules={[
+                            {
+                                required: true,
+                                message: "请输入请假天数"
+                            }
+                        ]}
+                    />
+
+                    <ProFormTextArea
+                        name={"desc"}
+                        label={"请假原因"}
+                        rules={[
+                            {
+                                required: true,
+                                message: "请输入请假原因"
+                            }
+                        ]}
+                    />
+
+                </ModalForm>
+
+                <FlowSelect visible={flowSelectVisible} setVisible={setFlowSelectVisible} onSelect={(flow) => {
+
+                    form.setFieldValue('flowId', flow.id);
+                    form.setFieldValue('flowName', flow.title);
+
+                }}/>
+
+            </Page>
+        </PageContainer>
     )
 }
 

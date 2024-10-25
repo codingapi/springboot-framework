@@ -1,4 +1,4 @@
-import {get, page, post} from "@/api/index";
+import {page, post} from "@/api/index";
 
 export async function list(
     params: any,
@@ -30,34 +30,13 @@ export async function schema(body: any) {
 }
 
 
-//
-
-
-
-export async function create(body: any) {
-    return post('/api/cmd/flowWork/save', body);
+export async function flowRecordList(params: any,
+                                     sort: any,
+                                     filter: any,
+                                     match: {
+                                         key: string,
+                                         type: string
+                                     }[]) {
+    return page('/api/query/flowRecord/list', params, sort, filter, match);
 }
 
-
-export async function todo() {
-    return get('/api/approval/todo');
-}
-
-export async function done() {
-    return get('/api/approval/done');
-}
-
-export async function creator() {
-    return get('/api/approval/creator');
-}
-
-
-
-
-export async function submit(body: any) {
-    return post('/api/approval/submit', body);
-}
-
-export async function recall(recordId: string) {
-    return post('/api/approval/recall', {recordId});
-}

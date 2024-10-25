@@ -39,7 +39,7 @@ public class FlowRecordConvertor {
         entity.setErrMessage(flowRecord.getErrMessage());
         entity.setBindClass(flowRecord.getBindClass());
         entity.setSnapshotId(flowRecord.getSnapshotId());
-        entity.setRead(entity.getRead());
+        entity.setRead(flowRecord.isRead());
         entity.setInterfere(flowRecord.isInterfere());
         entity.setReadTime(flowRecord.getReadTime());
         return entity;

@@ -11,8 +11,8 @@ public class Leave implements IBindData {
     private long id;
     private String desc;
     private int days;
-    private long userId;
-    private String userName;
+    private String username;
+    private long createTime;
 
 
     @Override

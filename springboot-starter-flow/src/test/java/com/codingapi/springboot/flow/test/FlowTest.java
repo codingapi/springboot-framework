@@ -78,6 +78,7 @@ public class FlowTest {
 
         // 提交流程
         FlowRecord userTodo = userTodos.get(0);
+        assertEquals(0, userTodo.getTimeoutTime());
         // 保存流程
         leave.setTitle("我要出去看看~~");
         flowService.save(userTodo.getId(), user, leave);

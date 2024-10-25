@@ -1,4 +1,4 @@
-import {page} from "@/api/index";
+import {page, post} from "@/api/index";
 
 export async function list(
     params: any,
@@ -13,4 +13,8 @@ export async function list(
 }
 
 
+
+export async function startLeave(body: any) {
+    return post('/api/cmd/leave/startLeave', body);
+}
 

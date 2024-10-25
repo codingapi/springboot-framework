@@ -17,7 +17,7 @@ public class FlowWorkQueryController {
     private final FlowWorkEntityRepository flowWorkEntityRepository;
 
     @GetMapping("/list")
-    public MultiResponse<FlowWorkEntity> list(SearchRequest searchRequest){
+    public MultiResponse<FlowWorkEntity> list(SearchRequest searchRequest) {
         return MultiResponse.of(flowWorkEntityRepository.searchRequest(searchRequest));
     }
 

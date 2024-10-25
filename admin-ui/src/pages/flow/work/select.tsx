@@ -1,17 +1,17 @@
 import React from "react";
 import {ProTable} from "@ant-design/pro-components";
-import {list} from "@/api/user";
+import {list} from "@/api/flow";
 import {Modal} from "antd";
 
 
-interface UserSelectProps{
+interface FlowSelectProps {
     multiple?: boolean;
     visible: boolean;
     setVisible: (visible: boolean) => void;
-    onSelect: (record: any[]) => void;
+    onSelect: (record: any) => void;
 }
 
-const UserSelect:React.FC<UserSelectProps> = (props) => {
+const FlowSelect: React.FC<FlowSelectProps> = (props) => {
 
     const [selectedRows, setSelectedRows] = React.useState<any[]>([]);
 
@@ -19,21 +19,41 @@ const UserSelect:React.FC<UserSelectProps> = (props) => {
         {
             title: '编号',
             dataIndex: 'id',
-            search: false
+            search: false,
         },
         {
-            title: '姓名',
-            dataIndex: 'name',
+            title: '标题',
+            dataIndex: 'title',
         },
         {
-            title: '账号名',
-            dataIndex: 'username',
+            title: '说明',
+            dataIndex: 'description',
+            valueType: 'text',
+            search: false,
         },
-
         {
             title: '创建时间',
             dataIndex: 'createTime',
             valueType: 'dateTime',
+            search: false,
+        },
+        {
+            title: '修改时间',
+            dataIndex: 'updateTime',
+            valueType: 'dateTime',
+            search: false,
+        },
+        {
+            title: '状态',
+            dataIndex: 'enable',
+            search: false,
+            render: (text: any, record: any) => {
+                return (
+                    <>
+                        {record.enable ? '启用' : '禁用'}
+                    </>
+                )
+            }
         },
 
     ] as any[];
@@ -44,10 +64,12 @@ const UserSelect:React.FC<UserSelectProps> = (props) => {
             onCancel={() => props.setVisible(false)}
             onClose={() => props.setVisible(false)}
             destroyOnClose={true}
-            title={"选择用户"}
+            title={"选择流程"}
             onOk={() => {
                 if (props.onSelect) {
-                    props.onSelect(selectedRows);
+                    if (selectedRows.length > 0) {
+                        props.onSelect(selectedRows[0]);
+                    }
                 }
                 props.setVisible(false);
             }}
@@ -57,7 +79,7 @@ const UserSelect:React.FC<UserSelectProps> = (props) => {
                 rowKey={"id"}
                 search={false}
                 rowSelection={{
-                    type: props.multiple ? 'checkbox' : 'radio',
+                    type: 'radio',
                     selectedRowKeys:selectedRows.map(item=>item.id),
                     onChange: (selectedRowKeys,selectedRows) => {
                         setSelectedRows(selectedRows);
@@ -71,4 +93,4 @@ const UserSelect:React.FC<UserSelectProps> = (props) => {
     )
 };
 
-export default UserSelect;
+export default FlowSelect;

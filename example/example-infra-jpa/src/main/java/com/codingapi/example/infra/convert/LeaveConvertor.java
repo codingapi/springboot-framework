@@ -14,8 +14,8 @@ public class LeaveConvertor {
         LeaveEntity leaveEntity = new LeaveEntity();
         leaveEntity.setDesc(leave.getDesc());
         leaveEntity.setDays(leave.getDays());
-        leaveEntity.setUserId(leave.getUserId());
-        leaveEntity.setUserName(leave.getUserName());
+        leaveEntity.setUsername(leave.getUsername());
+        leaveEntity.setCreateTime(leave.getCreateTime());
         return leaveEntity;
 
     }
@@ -29,8 +29,8 @@ public class LeaveConvertor {
         Leave leave = new Leave();
         leave.setDesc(leaveEntity.getDesc());
         leave.setDays(leaveEntity.getDays());
-        leave.setUserId(leaveEntity.getUserId());
-        leave.setUserName(leaveEntity.getUserName());
+        leave.setCreateTime(leaveEntity.getCreateTime());
+        leave.setUsername(leaveEntity.getUsername());
         return leave;
 
     }

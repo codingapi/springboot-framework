@@ -1,6 +1,14 @@
 import React, {useRef} from "react";
 import Page from "@/components/Layout/Page";
-import {ActionType, ModalForm, ProForm, ProFormSwitch, ProFormText, ProTable} from "@ant-design/pro-components";
+import {
+    ActionType,
+    ModalForm,
+    PageContainer,
+    ProForm,
+    ProFormSwitch,
+    ProFormText,
+    ProTable
+} from "@ant-design/pro-components";
 import {changeManager, entrust, list, remove, removeEntrust, save} from "@/api/user";
 import {Button, message, Popconfirm, Space} from "antd";
 import {DeleteOutlined, SettingOutlined} from "@ant-design/icons";
@@ -159,102 +167,104 @@ const UserPage = () => {
     ] as any[];
 
     return (
-        <Page>
-            <ProTable
-                actionRef={actionRef}
-                toolBarRender={() => [
-                    <Button
-                        type={"primary"}
-                        onClick={() => {
-                            setVisible(true);
-                        }}
-                    >创建用户</Button>
-                ]}
-
-                columns={columns}
-                rowKey={"id"}
-                search={false}
-                request={async (params, sort, filter) => {
-                    return list(params, sort, filter, []);
-                }}
-            />
-
-            <ModalForm
-                form={form}
-                title={"编辑用户"}
-                open={visible}
-                modalProps={{
-                    onCancel: () => {
-                        setVisible(false);
-                    },
-                    onClose: () => {
-                        setVisible(false);
-                    },
-                    destroyOnClose: true
-                }}
-                onFinish={async (values) => {
-                    handleSave(values);
-                }}
-            >
-                <ProFormText
-                    name={"id"}
-                    hidden={true}
-                />
-
-                <ProFormText
-                    name={"name"}
-                    label={"姓名"}
-                    rules={[
-                        {
-                            required: true,
-                            message: "请输入姓名"
-                        }
+        <PageContainer>
+            <Page>
+                <ProTable
+                    actionRef={actionRef}
+                    toolBarRender={() => [
+                        <Button
+                            type={"primary"}
+                            onClick={() => {
+                                setVisible(true);
+                            }}
+                        >创建用户</Button>
                     ]}
+
+                    columns={columns}
+                    rowKey={"id"}
+                    search={false}
+                    request={async (params, sort, filter) => {
+                        return list(params, sort, filter, []);
+                    }}
                 />
 
-                <ProFormText
-                    name={"username"}
-                    label={"登录账号"}
-                    rules={[
-                        {
-                            required: true,
-                            message: "请输入登录账号"
+                <ModalForm
+                    form={form}
+                    title={"编辑用户"}
+                    open={visible}
+                    modalProps={{
+                        onCancel: () => {
+                            setVisible(false);
+                        },
+                        onClose: () => {
+                            setVisible(false);
+                        },
+                        destroyOnClose: true
+                    }}
+                    onFinish={async (values) => {
+                        handleSave(values);
+                    }}
+                >
+                    <ProFormText
+                        name={"id"}
+                        hidden={true}
+                    />
+
+                    <ProFormText
+                        name={"name"}
+                        label={"姓名"}
+                        rules={[
+                            {
+                                required: true,
+                                message: "请输入姓名"
+                            }
+                        ]}
+                    />
+
+                    <ProFormText
+                        name={"username"}
+                        label={"登录账号"}
+                        rules={[
+                            {
+                                required: true,
+                                message: "请输入登录账号"
+                            }
+                        ]}
+                    />
+
+                    <ProFormText
+                        name={"password"}
+                        label={"登录密码"}
+                        rules={[
+                            {
+                                required: true,
+                                message: "请输入登录密码"
+                            }
+                        ]}
+                    />
+
+                    <ProFormSwitch
+                        name={"flowManager"}
+                        label={"是否流程管理员"}
+                    />
+
+                </ModalForm>
+
+                <UserSelect
+                    multiple={false}
+                    visible={selectUserVisible}
+                    setVisible={setSelectUserVisible}
+                    onSelect={(selectedRowKeys) => {
+                        if (selectedRowKeys && selectedRowKeys.length > 0) {
+                            handlerEntrust({
+                                id: user.id,
+                                entrustUserId: selectedRowKeys[0].id
+                            });
                         }
-                    ]}
+                    }}
                 />
-
-                <ProFormText
-                    name={"password"}
-                    label={"登录密码"}
-                    rules={[
-                        {
-                            required: true,
-                            message: "请输入登录密码"
-                        }
-                    ]}
-                />
-
-                <ProFormSwitch
-                    name={"flowManager"}
-                    label={"是否流程管理员"}
-                />
-
-            </ModalForm>
-
-            <UserSelect
-                multiple={false}
-                visible={selectUserVisible}
-                setVisible={setSelectUserVisible}
-                onSelect={(selectedRowKeys) => {
-                    if (selectedRowKeys && selectedRowKeys.length > 0) {
-                        handlerEntrust({
-                            id: user.id,
-                            entrustUserId: selectedRowKeys[0]
-                        });
-                    }
-                }}
-            />
-        </Page>
+            </Page>
+        </PageContainer>
     )
 }
 

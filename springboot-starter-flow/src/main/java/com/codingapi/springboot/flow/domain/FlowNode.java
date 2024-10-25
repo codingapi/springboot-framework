@@ -13,7 +13,6 @@ import com.codingapi.springboot.flow.matcher.OperatorMatcher;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.FlowOperatorRepository;
 import com.codingapi.springboot.flow.serializable.FlowNodeSerializable;
-import com.codingapi.springboot.flow.serializable.FlowWorkSerializable;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -224,7 +223,7 @@ public class FlowNode {
         record.setPreId(preId);
         record.setTitle(title);
         record.setPass(pass);
-        record.setTimeoutTime(this.getTimeoutTime());
+        record.setTimeoutTime(this.loadTimeoutTime());
         record.setRecodeType(RecodeType.TODO);
         record.setErrMessage(null);
         record.setSnapshotId(snapshot.getId());
@@ -237,7 +236,7 @@ public class FlowNode {
      *
      * @return 超时时间
      */
-    private long getTimeoutTime() {
+    private long loadTimeoutTime() {
         if (this.timeout > 0) {
             return System.currentTimeMillis() + this.timeout;
         }
