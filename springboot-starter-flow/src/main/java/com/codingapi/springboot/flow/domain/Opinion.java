@@ -1,13 +1,17 @@
 package com.codingapi.springboot.flow.domain;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
  * 审批意见
  */
 @Getter
+@Setter
 @ToString
+@NoArgsConstructor
 public class Opinion {
 
     // 默认审批(人工审批)
@@ -20,15 +24,15 @@ public class Opinion {
     /**
      * 审批意见
      */
-    private final String advice;
+    private String advice;
     /**
      * 审批结果
      */
-    private final boolean success;
+    private boolean success;
     /**
      * 意见类型
      */
-    private final int type;
+    private int type;
 
     public Opinion(String advice, boolean success, int type) {
         this.advice = advice;
