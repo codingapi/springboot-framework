@@ -16,10 +16,18 @@ public class Opinion {
 
     // 默认审批(人工审批)
     public static final int TYPE_DEFAULT = 0;
-    // 非会签时自动审批
-    public static final int TYPE_UN_SIGN_AUTO = 1;
-    // 转办审批
-    public static final int TYPE_TRANSFER = 2;
+    // 系统自动审批
+    public static final int TYPE_AUTO = 1;
+
+
+    // 审批结果 暂存
+    public static final int RESULT_SAVE = 0;
+    // 审批结果 转办
+    public static final int RESULT_TRANSFER = 1;
+    // 审批结果 通过
+    public static final int RESULT_PASS = 2;
+    // 审批结果 驳回
+    public static final int RESULT_REJECT = 3;
 
     /**
      * 审批意见
@@ -28,44 +36,39 @@ public class Opinion {
     /**
      * 审批结果
      */
-    private boolean success;
+    private int result;
     /**
      * 意见类型
      */
     private int type;
 
-    public Opinion(String advice, boolean success, int type) {
+    public Opinion(String advice, int result, int type) {
         this.advice = advice;
-        this.success = success;
+        this.result = result;
         this.type = type;
     }
 
-    public boolean isTransfer() {
-        return type == TYPE_TRANSFER;
-    }
-
-    public boolean isUnSignAuto() {
-        return type == TYPE_UN_SIGN_AUTO;
-    }
-
-    public boolean isDefault() {
-        return type == TYPE_DEFAULT;
+    public static Opinion save(String advice) {
+        return new Opinion(advice, RESULT_SAVE, TYPE_DEFAULT);
     }
 
     public static Opinion pass(String advice) {
-        return new Opinion(advice, true, TYPE_DEFAULT);
+        return new Opinion(advice, RESULT_PASS, TYPE_DEFAULT);
     }
 
     public static Opinion reject(String advice) {
-        return new Opinion(advice, false, TYPE_DEFAULT);
+        return new Opinion(advice, RESULT_REJECT, TYPE_DEFAULT);
     }
 
     public static Opinion transfer(String advice) {
-        return new Opinion(advice, true, TYPE_TRANSFER);
+        return new Opinion(advice, RESULT_TRANSFER, TYPE_DEFAULT);
     }
 
     public static Opinion unSignAutoSuccess() {
-        return new Opinion("非会签自动审批", true, TYPE_UN_SIGN_AUTO);
+        return new Opinion("非会签自动审批", RESULT_PASS, TYPE_AUTO);
     }
 
+    public boolean isSuccess() {
+        return result == RESULT_PASS;
+    }
 }

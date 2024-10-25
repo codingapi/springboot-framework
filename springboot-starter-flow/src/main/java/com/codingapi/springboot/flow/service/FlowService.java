@@ -202,7 +202,19 @@ public class FlowService {
 
         BindDataSnapshot snapshot = flowBindDataRepository.getBindDataSnapshotById(flowRecord.getSnapshotId());
         List<FlowRecord> flowRecords = flowRecordRepository.findFlowRecordByProcessId(flowRecord.getProcessId());
-        return new FlowDetail(flowRecord, snapshot, flowWork, flowRecords);
+
+        List<Long> operatorIds = new ArrayList<>();
+        for (FlowRecord record : flowRecords) {
+            if (!operatorIds.contains(record.getCurrentOperatorId())) {
+                operatorIds.add(record.getCurrentOperatorId());
+            }
+            if (!operatorIds.contains(record.getCreateOperatorId())) {
+                operatorIds.add(record.getCreateOperatorId());
+            }
+        }
+
+        List<? extends IFlowOperator> operators = flowOperatorRepository.findByIds(operatorIds);
+        return new FlowDetail(flowRecord, snapshot, flowWork, flowRecords, operators);
     }
 
 
@@ -304,8 +316,9 @@ public class FlowService {
      * @param recordId        流程记录id
      * @param currentOperator 当前操作者
      * @param bindData        绑定数据
+     * @param advice          审批意见
      */
-    public void save(long recordId, IFlowOperator currentOperator, IBindData bindData) {
+    public void save(long recordId, IFlowOperator currentOperator, IBindData bindData,String advice) {
         // 检测流程记录
         FlowRecord flowRecord = flowRecordRepository.getFlowRecordById(recordId);
         if (flowRecord == null) {
@@ -336,7 +349,9 @@ public class FlowService {
         BindDataSnapshot snapshot = new BindDataSnapshot(flowRecord.getSnapshotId(), bindData);
         flowBindDataRepository.update(snapshot);
 
-        flowRecord.update();
+        Opinion opinion = Opinion.save(advice);
+
+        flowRecord.update(opinion);
         flowRecordRepository.update(flowRecord);
     }
 

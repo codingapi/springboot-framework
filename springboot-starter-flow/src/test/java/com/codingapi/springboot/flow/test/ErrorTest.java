@@ -80,7 +80,7 @@ public class ErrorTest {
         FlowRecord userTodo = userTodos.get(0);
         // 保存流程
         leave.setTitle("我要出去看看~~");
-        flowService.save(userTodo.getId(), user, leave);
+        flowService.save(userTodo.getId(), user, leave,"暂存");
 
         // 查看流程详情
         FlowDetail flowDetail = flowService.detail(userTodo.getId(), user);
@@ -175,7 +175,7 @@ public class ErrorTest {
         FlowRecord userTodo = userTodos.get(0);
         // 保存流程
         leave.setTitle("我要出去看看~~");
-        flowService.save(userTodo.getId(), user, leave);
+        flowService.save(userTodo.getId(), user, leave,"暂存");
 
         // 查看流程详情
         FlowDetail flowDetail = flowService.detail(userTodo.getId(), user);

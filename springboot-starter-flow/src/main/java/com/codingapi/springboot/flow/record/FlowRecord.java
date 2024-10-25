@@ -177,7 +177,8 @@ public class FlowRecord {
     /**
      * 更新时间
      */
-    public void update() {
+    public void update(Opinion opinion) {
+        this.opinion = opinion;
         this.updateTime = System.currentTimeMillis();
     }
 

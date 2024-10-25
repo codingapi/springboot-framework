@@ -9,13 +9,15 @@ import {
 } from "@/api/flow";
 import moment from "moment";
 import {Tabs} from "antd";
-import FlowDetail from "@/components/Flow/view/FlowDetail";
+import FlowView from "@/components/Flow/view/FlowView";
+import DefaultFlowView from "@/pages/flow/leave/default";
 
 
 const FlowRecordPage = () => {
 
     const [detailVisible, setDetailVisible] = React.useState(false);
     const [currentId, setCurrentId] = React.useState<number>(0);
+    const [reviewVisible, setReviewVisible] = React.useState(false);
 
     const columns = [
         {
@@ -108,15 +110,19 @@ const FlowRecordPage = () => {
                         key={"detail"}
                         onClick={()=>{
                             setCurrentId(record.id);
+                            setReviewVisible(true);
                             setDetailVisible(true);
                         }}
                     >详情</a>,
-                    <a>办理</a>,
-                    <a>转办</a>,
-                    <a>保存</a>,
-                    <a>撤销</a>,
+                    <a
+                        key={"submit"}
+                        onClick={()=>{
+                            setCurrentId(record.id);
+                            setReviewVisible(false);
+                            setDetailVisible(true);
+                        }}
+                    >办理</a>,
                     <a>催办</a>,
-                    <a>干预</a>,
                     <a>延期</a>,
                 ]
             }
@@ -210,7 +216,15 @@ const FlowRecordPage = () => {
                 ]}
             />
 
-            <FlowDetail id={currentId} visible={detailVisible} setVisible={setDetailVisible}/>
+            <FlowView
+                id={currentId}
+                visible={detailVisible}
+                review={reviewVisible}
+                setVisible={setDetailVisible}
+                view={{
+                    'default':DefaultFlowView
+                }}
+            />
 
         </PageContainer>
     )
