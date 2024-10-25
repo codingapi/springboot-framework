@@ -1,7 +1,14 @@
 import React from "react";
 import {Button, Divider, Form, message, Modal, Row, Space, Tabs} from "antd";
 import {detail, postponed, recall, saveFlow, submitFlow} from "@/api/flow";
-import {ModalForm, ProDescriptions, ProForm, ProFormDigit, ProFormTextArea} from "@ant-design/pro-components";
+import {
+    ModalForm,
+    ProDescriptions,
+    ProForm,
+    ProFormDigit,
+    ProFormText,
+    ProFormTextArea
+} from "@ant-design/pro-components";
 import moment from "moment";
 
 
@@ -24,6 +31,7 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
     const [data, setData] = React.useState<any>(null);
 
     const [postponedVisible, setPostponedVisible] = React.useState(false);
+    const [transferVisible,setTransferVisible] = React.useState(false);
 
     const [viewForm] = Form.useForm();
 
@@ -213,6 +221,9 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
                     {!props.review && (
                         <Button
                             type={"primary"}
+                            onClick={()=>{
+                                setTransferVisible(true);
+                            }}
                         >转办</Button>
                     )}
 
@@ -409,7 +420,6 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
                 </>
             )}
 
-
             <ModalForm
                 title={"延期调整"}
                 open={postponedVisible}
@@ -433,6 +443,41 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
                         {
                             required: true,
                             message: "请输入延期时间"
+                        }
+                    ]}
+                />
+            </ModalForm>
+
+
+            <ModalForm
+                title={"延期人员选择"}
+                open={transferVisible}
+                modalProps={{
+                    onCancel: () => {
+                        setTransferVisible(false);
+                    },
+                    onClose: () => {
+                        setTransferVisible(false);
+                    }
+                }}
+                onFinish={async (values) => {
+                    console.log(values);
+                }}
+            >
+                <ProFormText
+                    name={"user"}
+                    label={"转交人员"}
+                    fieldProps={{
+                        addonAfter: (
+                            <a onClick={()=>{
+                                console.log('选人员');
+                            }}>选人员</a>
+                        )
+                    }}
+                    rules={[
+                        {
+                            required: true,
+                            message: "请输入转交人员"
                         }
                     ]}
                 />

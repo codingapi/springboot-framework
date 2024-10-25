@@ -54,6 +54,10 @@ export async function postponed(body:any) {
     return post('/api/cmd/flowRecord/postponed', body);
 }
 
+export async function transfer(body:any) {
+    return post('/api/cmd/flowRecord/transfer', body);
+}
+
 
 // 待办中心控制
 
