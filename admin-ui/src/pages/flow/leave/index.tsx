@@ -47,7 +47,7 @@ const LeavePage = () => {
     const handleStartFlow = async (values: any) => {
         const res = await startLeave(values);
         if (res.success) {
-            message.success("发起成功");
+            message.success("发起成功,请到待办中心");
             setVisible(false);
             actionRef.current?.reload();
         }

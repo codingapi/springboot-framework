@@ -46,6 +46,15 @@ export async function submitFlow(body:any) {
     return post('/api/cmd/flowRecord/submitFlow', body);
 }
 
+export async function recall(body:any) {
+    return post('/api/cmd/flowRecord/recall', body);
+}
+
+export async function postponed(body:any) {
+    return post('/api/cmd/flowRecord/postponed', body);
+}
+
+
 // 待办中心控制
 
 export async function flowRecordList(params: any,

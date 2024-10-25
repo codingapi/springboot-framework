@@ -135,6 +135,7 @@ public class FlowTest {
     /**
      * 同意再拒绝
      */
+    @Test
     void passAndRejectTest() {
         PageRequest pageRequest = PageRequest.of(0, 1000);
 
@@ -145,7 +146,7 @@ public class FlowTest {
                 .title("请假流程")
                 .nodes()
                 .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
-                .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
+                .node("总经理审批", "manager", "default", ApprovalType.SIGN, OperatorMatcher.anyOperatorMatcher())
                 .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.creatorOperatorMatcher())
                 .relations()
                 .relation("开始节点", "start", "manager")
@@ -169,12 +170,16 @@ public class FlowTest {
 
         // 查看所有流程
         List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
-        assertEquals(2, records.size());
+        assertEquals(1, records.size());
+
+
+        FlowRecord userTodo = userTodos.get(0);
+        flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
 
         userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
         assertEquals(1, userTodos.size());
 
-        FlowRecord userTodo = userTodos.get(0);
+        userTodo = userTodos.get(0);
         flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
 
         userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();

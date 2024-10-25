@@ -420,13 +420,13 @@ public class FlowService {
             snapshot = flowBindDataRepository.getBindDataSnapshotById(flowRecord.getSnapshotId());
         }
 
+        // 提交流程
+        flowRecord.submitRecord(currentOperator, snapshot, opinion, flowNextStep);
+        flowRecordRepository.update(flowRecord);
 
         // 与当前流程同级的流程记录
         List<FlowRecord> historyRecords = flowRecordRepository.findFlowRecordByPreId(flowRecord.getPreId());
 
-        // 提交流程
-        flowRecord.submitRecord(currentOperator, snapshot, opinion, flowNextStep);
-        flowRecordRepository.update(flowRecord);
 
         // 会签处理流程
         if (flowNode.isSign()) {
@@ -564,6 +564,10 @@ public class FlowService {
         FlowNode flowNode = flowWork.getNodeByCode(flowRecord.getNodeCode());
         if (flowNode == null) {
             throw new IllegalArgumentException("flow node not found");
+        }
+
+        if (flowRecord.isFinish()) {
+            throw new IllegalArgumentException("flow record is finish");
         }
 
         if (flowRecord.isTodo()) {

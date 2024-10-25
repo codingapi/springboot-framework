@@ -1,7 +1,7 @@
 import React from "react";
 import {Button, Divider, Form, message, Modal, Row, Space, Tabs} from "antd";
-import {detail, saveFlow, submitFlow} from "@/api/flow";
-import {ProDescriptions, ProForm, ProFormTextArea} from "@ant-design/pro-components";
+import {detail, postponed, recall, saveFlow, submitFlow} from "@/api/flow";
+import {ModalForm, ProDescriptions, ProForm, ProFormDigit, ProFormTextArea} from "@ant-design/pro-components";
 import moment from "moment";
 
 
@@ -22,6 +22,8 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
 
 
     const [data, setData] = React.useState<any>(null);
+
+    const [postponedVisible, setPostponedVisible] = React.useState(false);
 
     const [viewForm] = Form.useForm();
 
@@ -44,6 +46,35 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
             if (res.success) {
                 message.success('保存成功').then();
                 props.setVisible(false);
+            }
+        })
+    }
+
+
+    const handleRecallFlow = () => {
+        const recordId = props.id;
+        const body = {
+            recordId,
+        }
+        recall(body).then(res => {
+            if (res.success) {
+                message.success('流程已撤回').then();
+                props.setVisible(false);
+            }
+        })
+    }
+
+
+    const handlePostponedFlow = (values: any) => {
+        const recordId = props.id;
+        const body = {
+            recordId,
+            timeOut: values.hours * 1000 * 60 * 60
+        }
+        postponed(body).then(res => {
+            if (res.success) {
+                message.success('已经延期').then();
+                setPostponedVisible(false)
             }
         })
     }
@@ -188,6 +219,9 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
                     {!props.review && (
                         <Button
                             type={"primary"}
+                            onClick={() => {
+                                setPostponedVisible(true);
+                            }}
                             danger={true}
                         >延期</Button>
                     )}
@@ -195,6 +229,9 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
                     {!props.review && (
                         <Button
                             type={"primary"}
+                            onClick={() => {
+                                handleRecallFlow();
+                            }}
                             danger={true}
                         >撤销</Button>
                     )}
@@ -371,6 +408,35 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
                     />
                 </>
             )}
+
+
+            <ModalForm
+                title={"延期调整"}
+                open={postponedVisible}
+                modalProps={{
+                    onCancel: () => {
+                        setPostponedVisible(false);
+                    },
+                    onClose: () => {
+                        setPostponedVisible(false);
+                    }
+                }}
+                onFinish={async (values) => {
+                    handlePostponedFlow(values);
+                }}
+
+            >
+                <ProFormDigit
+                    name={"hours"}
+                    label={"延期时间"}
+                    rules={[
+                        {
+                            required: true,
+                            message: "请输入延期时间"
+                        }
+                    ]}
+                />
+            </ModalForm>
 
 
         </Modal>

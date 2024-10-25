@@ -1,8 +1,9 @@
 import React, {useEffect} from "react";
-import {ActionType, PageContainer, ProTable} from "@ant-design/pro-components";
+import {ActionType, ModalForm, PageContainer, ProFormDigit, ProFormText, ProTable} from "@ant-design/pro-components";
 import {
     findDoneByOperatorId,
-    findInitiatedByOperatorId, findPostponedTodoByOperatorId,
+    findInitiatedByOperatorId,
+    findPostponedTodoByOperatorId,
     findTimeoutTodoByOperatorId,
     findTodoByOperatorId,
     flowRecordList
@@ -19,9 +20,14 @@ const FlowRecordPage = () => {
     const [currentId, setCurrentId] = React.useState<number>(0);
     const [reviewVisible, setReviewVisible] = React.useState(false);
 
-    const [key, setKey] = React.useState('todo');
-    const actionRef = React.useRef<ActionType>();
 
+    const [key, setKey] = React.useState('todo');
+    const todoActionRef = React.useRef<ActionType>();
+    const doneActionRef = React.useRef<ActionType>();
+    const initiatedActionRef = React.useRef<ActionType>();
+    const timeoutTodoActionRef = React.useRef<ActionType>();
+    const postponedTodoActionRef = React.useRef<ActionType>();
+    const allTodoActionRef = React.useRef<ActionType>();
     const columns = [
         {
             title: '编号',
@@ -116,7 +122,7 @@ const FlowRecordPage = () => {
                 return [
                     <a
                         key={"detail"}
-                        onClick={()=>{
+                        onClick={() => {
                             setCurrentId(record.id);
                             setReviewVisible(true);
                             setFlowViewVisible(true);
@@ -124,7 +130,7 @@ const FlowRecordPage = () => {
                     >详情</a>,
                     <a
                         key={"submit"}
-                        onClick={()=>{
+                        onClick={() => {
                             setCurrentId(record.id);
                             setReviewVisible(false);
                             setFlowViewVisible(true);
@@ -139,10 +145,25 @@ const FlowRecordPage = () => {
 
 
     useEffect(() => {
-        if(!flowViewVisible){
-            actionRef.current?.reload();
+        if (key === 'todo') {
+            todoActionRef.current?.reload();
         }
-    }, [flowViewVisible,key]);
+        if (key === 'done') {
+            doneActionRef.current?.reload();
+        }
+        if (key === 'initiated') {
+            initiatedActionRef.current?.reload();
+        }
+        if (key === 'timeoutTodo') {
+            timeoutTodoActionRef.current?.reload();
+        }
+        if (key === 'postponedTodo') {
+            postponedTodoActionRef.current?.reload();
+        }
+        if (key === 'all') {
+            allTodoActionRef.current?.reload();
+        }
+    }, [flowViewVisible, key]);
 
     return (
         <PageContainer>
@@ -157,7 +178,7 @@ const FlowRecordPage = () => {
                         key: 'todo',
                         children: (
                             <ProTable
-                                actionRef={actionRef}
+                                actionRef={todoActionRef}
                                 search={false}
                                 columns={columns}
                                 request={async (params, sort, filter) => {
@@ -171,7 +192,7 @@ const FlowRecordPage = () => {
                         key: 'done',
                         children: (
                             <ProTable
-                                actionRef={actionRef}
+                                actionRef={doneActionRef}
                                 search={false}
                                 columns={columns}
                                 request={async (params, sort, filter) => {
@@ -185,7 +206,7 @@ const FlowRecordPage = () => {
                         key: 'initiated',
                         children: (
                             <ProTable
-                                actionRef={actionRef}
+                                actionRef={initiatedActionRef}
                                 search={false}
                                 columns={columns}
                                 request={async (params, sort, filter) => {
@@ -199,7 +220,7 @@ const FlowRecordPage = () => {
                         key: 'timeoutTodo',
                         children: (
                             <ProTable
-                                actionRef={actionRef}
+                                actionRef={timeoutTodoActionRef}
                                 search={false}
                                 columns={columns}
                                 request={async (params, sort, filter) => {
@@ -214,7 +235,7 @@ const FlowRecordPage = () => {
                         key: 'postponedTodo',
                         children: (
                             <ProTable
-                                actionRef={actionRef}
+                                actionRef={postponedTodoActionRef}
                                 search={false}
                                 columns={columns}
                                 request={async (params, sort, filter) => {
@@ -228,7 +249,7 @@ const FlowRecordPage = () => {
                         key: 'all',
                         children: (
                             <ProTable
-                                actionRef={actionRef}
+                                actionRef={allTodoActionRef}
                                 search={false}
                                 columns={columns}
                                 request={async (params, sort, filter) => {
@@ -246,9 +267,10 @@ const FlowRecordPage = () => {
                 review={reviewVisible}
                 setVisible={setFlowViewVisible}
                 view={{
-                    'default':DefaultFlowView
+                    'default': DefaultFlowView
                 }}
             />
+
 
         </PageContainer>
     )
