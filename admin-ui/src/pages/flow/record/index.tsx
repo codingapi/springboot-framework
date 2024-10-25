@@ -9,9 +9,13 @@ import {
 } from "@/api/flow";
 import moment from "moment";
 import {Tabs} from "antd";
+import FlowDetail from "@/components/Flow/view/FlowDetail";
 
 
-const FlowRecordPage = ()=>{
+const FlowRecordPage = () => {
+
+    const [detailVisible, setDetailVisible] = React.useState(false);
+    const [currentId, setCurrentId] = React.useState<number>(0);
 
     const columns = [
         {
@@ -39,14 +43,14 @@ const FlowRecordPage = ()=>{
             title: '是否延期',
             dataIndex: 'postponedCount',
             render: (text: any) => {
-                return text>1 ? '延期' : '未延期';
+                return text > 1 ? '延期' : '未延期';
             }
         },
         {
             title: '超时到期时间',
             dataIndex: 'timeoutTime',
             render: (text: any) => {
-                return text<=0 ? '不限时间' : moment(text).format("YYYY-MM-DD HH:mm:ss");
+                return text <= 0 ? '不限时间' : moment(text).format("YYYY-MM-DD HH:mm:ss");
             }
         },
         {
@@ -61,13 +65,13 @@ const FlowRecordPage = ()=>{
             title: '状态',
             dataIndex: 'recodeType',
             render: (text: any) => {
-                if(text === 'TODO'){
+                if (text === 'TODO') {
                     return '办理中';
                 }
-                if(text === 'DONE'){
+                if (text === 'DONE') {
                     return '已办理';
                 }
-                if(text === 'TRANSFER'){
+                if (text === 'TRANSFER') {
                     return '已转办';
                 }
                 return text;
@@ -84,10 +88,10 @@ const FlowRecordPage = ()=>{
             title: '流程状态',
             dataIndex: 'flowStatus',
             render: (text: any) => {
-                if(text === 'RUNNING'){
+                if (text === 'RUNNING') {
                     return '进行中';
                 }
-                if(text === 'FINISH'){
+                if (text === 'FINISH') {
                     return '已结束';
                 }
                 return text;
@@ -97,10 +101,16 @@ const FlowRecordPage = ()=>{
             title: '操作',
             dataIndex: 'option',
             valueType: 'option',
-            render: (_: any,record:any) => {
+            render: (_: any, record: any) => {
 
                 return [
-                    <a>详情</a>,
+                    <a
+                        key={"detail"}
+                        onClick={()=>{
+                            setCurrentId(record.id);
+                            setDetailVisible(true);
+                        }}
+                    >详情</a>,
                     <a>办理</a>,
                     <a>转办</a>,
                     <a>保存</a>,
@@ -121,7 +131,7 @@ const FlowRecordPage = ()=>{
                     {
                         label: '我的待办',
                         key: 'todo',
-                        children:(
+                        children: (
                             <ProTable
                                 search={false}
                                 columns={columns}
@@ -134,7 +144,7 @@ const FlowRecordPage = ()=>{
                     {
                         label: '我的已办',
                         key: 'done',
-                        children:(
+                        children: (
                             <ProTable
                                 search={false}
                                 columns={columns}
@@ -147,7 +157,7 @@ const FlowRecordPage = ()=>{
                     {
                         label: '我发起的',
                         key: 'initiated',
-                        children:(
+                        children: (
                             <ProTable
                                 search={false}
                                 columns={columns}
@@ -160,7 +170,7 @@ const FlowRecordPage = ()=>{
                     {
                         label: '超时待办',
                         key: 'timeoutTodo',
-                        children:(
+                        children: (
                             <ProTable
                                 search={false}
                                 columns={columns}
@@ -174,7 +184,7 @@ const FlowRecordPage = ()=>{
                     {
                         label: '延期待办',
                         key: 'postponedTodo',
-                        children:(
+                        children: (
                             <ProTable
                                 search={false}
                                 columns={columns}
@@ -187,7 +197,7 @@ const FlowRecordPage = ()=>{
                     {
                         label: '全部流程',
                         key: 'all',
-                        children:(
+                        children: (
                             <ProTable
                                 search={false}
                                 columns={columns}
@@ -199,6 +209,8 @@ const FlowRecordPage = ()=>{
                     },
                 ]}
             />
+
+            <FlowDetail id={currentId} visible={detailVisible} setVisible={setDetailVisible}/>
 
         </PageContainer>
     )

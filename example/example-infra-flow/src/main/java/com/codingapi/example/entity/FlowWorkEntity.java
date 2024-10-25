@@ -28,6 +28,7 @@ public class FlowWorkEntity {
     private Integer postponedMax;
 
     @Lob
+    @Column(name = "m_schema", columnDefinition = "longtext")
     private String schema;
 
 }

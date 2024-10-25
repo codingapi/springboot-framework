@@ -1,4 +1,4 @@
-import {page, post} from "@/api/index";
+import {get, page, post} from "@/api/index";
 
 export async function list(
     params: any,
@@ -27,6 +27,10 @@ export async function changeState(id: any) {
 
 export async function schema(body: any) {
     return post('/api/cmd/flowWork/schema', body);
+}
+
+export async function detail(id:any) {
+    return get('/api/query/flowRecord/detail', {id});
 }
 
 
