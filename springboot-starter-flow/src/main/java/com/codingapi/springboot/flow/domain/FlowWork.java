@@ -45,6 +45,7 @@ public class FlowWork {
     private long createTime;
     /**
      * 更新时间
+     * 也是流程的版本号
      */
     private long updateTime;
     /**
@@ -193,13 +194,7 @@ public class FlowWork {
         return getNodeByCode(FlowNode.CODE_START);
     }
 
-    /**
-     * 生成流程
-     * @return 流程process
-     */
-    public FlowProcess generateProcess(IFlowOperator operator) {
-        return new FlowProcess(this,operator);
-    }
+
 
     /**
      * 是否存在退回关系

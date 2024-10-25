@@ -8,6 +8,7 @@ import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.event.FlowApprovalEvent;
 import com.codingapi.springboot.flow.pojo.FlowDetail;
+import com.codingapi.springboot.flow.record.FlowBackup;
 import com.codingapi.springboot.flow.record.FlowProcess;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.*;
@@ -26,6 +27,7 @@ public class FlowService {
     private final FlowBindDataRepository flowBindDataRepository;
     private final FlowOperatorRepository flowOperatorRepository;
     private final FlowProcessRepository flowProcessRepository;
+    private final FlowBackupRepository flowBackupRepository;
 
     /**
      * 发起流程
@@ -44,15 +46,21 @@ public class FlowService {
         flowWork.enableValidate();
         flowWork.verify();
 
+        // 流程数据备份
+        FlowBackup flowBackup = flowBackupRepository.getFlowBackupByWorkIdAndVersion(flowWork.getId(), flowWork.getUpdateTime());
+        if (flowBackup == null) {
+            flowBackup = flowBackupRepository.backup(flowWork);
+        }
+
         // 保存流程
-        FlowProcess flowProcess = flowWork.generateProcess(operator);
+        FlowProcess flowProcess = new FlowProcess(flowBackup.getId(), operator);
         flowProcessRepository.save(flowProcess);
 
         // 保存绑定数据
         BindDataSnapshot snapshot = new BindDataSnapshot(bindData);
         flowBindDataRepository.save(snapshot);
 
-        String processId = flowProcess.getId();
+        String processId = flowProcess.getProcessId();
 
         Opinion opinion = Opinion.pass(advice);
 
@@ -91,9 +99,10 @@ public class FlowService {
 
     /**
      * 延期待办
-     * @param recordId          流程记录id
-     * @param currentOperator   当前操作者
-     * @param time              延期时间
+     *
+     * @param recordId        流程记录id
+     * @param currentOperator 当前操作者
+     * @param time            延期时间
      */
     public void postponed(long recordId, IFlowOperator currentOperator, long time) {
         // 检测流程记录
@@ -319,7 +328,7 @@ public class FlowService {
         }
 
         // 流程节点不可编辑时，不能保存
-        if(!flowNode.isEditable()){
+        if (!flowNode.isEditable()) {
             throw new IllegalArgumentException("flow node is not editable");
         }
 
@@ -375,12 +384,12 @@ public class FlowService {
         // 获取创建者
         IFlowOperator createOperator = flowOperatorRepository.getFlowOperatorById(flowRecord.getCreateOperatorId());
 
-        BindDataSnapshot snapshot =null;
+        BindDataSnapshot snapshot = null;
         // 保存绑定数据
-        if(flowNode.isEditable()) {
+        if (flowNode.isEditable()) {
             snapshot = new BindDataSnapshot(bindData);
             flowBindDataRepository.save(snapshot);
-        }else {
+        } else {
             snapshot = flowBindDataRepository.getBindDataSnapshotById(flowRecord.getSnapshotId());
         }
 
@@ -397,13 +406,13 @@ public class FlowService {
         // 会签处理流程
         if (flowNode.isSign()) {
             // 会签下所有人尚未提交时，不执行下一节点
-            boolean allDone = historyRecords.stream().filter(item->!item.isTransfer()).allMatch(FlowRecord::isDone);
+            boolean allDone = historyRecords.stream().filter(item -> !item.isTransfer()).allMatch(FlowRecord::isDone);
             if (!allDone) {
                 // 流程尚未审批结束直接退出
                 return;
             }
             // 会签下所有人都同意，再执行下一节点
-            boolean allPass = historyRecords.stream().filter(item->!item.isTransfer()).allMatch(FlowRecord::isPass);
+            boolean allPass = historyRecords.stream().filter(item -> !item.isTransfer()).allMatch(FlowRecord::isPass);
             if (!allPass) {
                 flowNextStep = false;
             }

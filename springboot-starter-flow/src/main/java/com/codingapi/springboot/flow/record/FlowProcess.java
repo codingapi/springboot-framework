@@ -1,41 +1,31 @@
 package com.codingapi.springboot.flow.record;
 
-import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import com.codingapi.springboot.flow.utils.IDGenerator;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
- * 流程记录
+ * 流程process记录
  */
 @Getter
 public class FlowProcess {
 
     /**
+     * 数据id
+     */
+    @Setter
+    private long id;
+
+    /**
      * 流程id
      */
-    private String id;
+    private String processId;
 
     /**
      * 流程的字节码
      */
-    private byte[] bytes;
-
-    /**
-     * 创建时间
-     */
-    private long createTime;
-
-    /**
-     * 流程的版本号
-     * 以流程的修改时间为准
-     */
-    private long workVersion;
-
-    /**
-     * 流程的设计id
-     */
-    private long workId;
+    private long backupId;
 
     /**
      * 创建者id
@@ -43,12 +33,9 @@ public class FlowProcess {
     private long createOperatorId;
 
 
-    public FlowProcess(FlowWork flowWork, IFlowOperator createOperator) {
-        this.id = IDGenerator.generate();
-        this.bytes = flowWork.toSerializable().toSerializable();
-        this.workVersion = flowWork.getUpdateTime();
-        this.workId = flowWork.getId();
+    public FlowProcess(long backupId, IFlowOperator createOperator) {
+        this.processId = IDGenerator.generate();
+        this.backupId = backupId;
         this.createOperatorId = createOperator.getUserId();
-        this.createTime = System.currentTimeMillis();
     }
 }

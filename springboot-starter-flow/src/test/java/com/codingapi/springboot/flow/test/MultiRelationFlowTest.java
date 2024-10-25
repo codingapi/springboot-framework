@@ -27,9 +27,9 @@ public class MultiRelationFlowTest {
     private final FlowRecordRepositoryImpl flowRecordRepository = new FlowRecordRepositoryImpl();
     private final FlowBindDataRepositoryImpl flowBindDataRepository = new FlowBindDataRepositoryImpl();
     private final LeaveRepository leaveRepository = new LeaveRepository();
-    private final FlowProcessRepository flowProcessRepository = new FlowProcessRepositoryImpl(userRepository);
-    private final FlowService flowService = new FlowService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, userRepository,flowProcessRepository);
-
+    private final FlowBackupRepository flowBackupRepository = new FlowBackupRepositoryImpl();
+    private final FlowProcessRepository flowProcessRepository = new FlowProcessRepositoryImpl(flowBackupRepository,userRepository);
+    private final FlowService flowService = new FlowService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, userRepository,flowProcessRepository,flowBackupRepository);
 
     /**
      *  多条件流程测试

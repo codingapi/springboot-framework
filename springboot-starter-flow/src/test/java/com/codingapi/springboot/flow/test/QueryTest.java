@@ -26,9 +26,9 @@ public class QueryTest {
     private final FlowRecordRepositoryImpl flowRecordRepository = new FlowRecordRepositoryImpl();
     private final FlowBindDataRepositoryImpl flowBindDataRepository = new FlowBindDataRepositoryImpl();
     private final LeaveRepository leaveRepository = new LeaveRepository();
-    private final FlowProcessRepository flowProcessRepository = new FlowProcessRepositoryImpl(userRepository);
-    private final FlowService flowService = new FlowService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, userRepository,flowProcessRepository);
-
+    private final FlowBackupRepository flowBackupRepository = new FlowBackupRepositoryImpl();
+    private final FlowProcessRepository flowProcessRepository = new FlowProcessRepositoryImpl(flowBackupRepository,userRepository);
+    private final FlowService flowService = new FlowService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, userRepository,flowProcessRepository,flowBackupRepository);
 
     /**
      * 查询用户的待办
