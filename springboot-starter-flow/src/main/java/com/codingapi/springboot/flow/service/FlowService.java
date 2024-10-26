@@ -375,7 +375,10 @@ public class FlowService {
             EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_FINISH, flowRecord, currentOperator,flowWork));
             return;
         }
-        this.createNextRecord(flowWork,flowSourceDirection,flowNode,processId,createOperator,currentOperator,snapshot,opinion,flowRecord,historyRecords);
+
+        flowNodeService.createNextRecord();
+
+//        this.createNextRecord(flowWork,flowSourceDirection,flowNode,processId,createOperator,currentOperator,snapshot,opinion,flowRecord,historyRecords);
 
     }
 

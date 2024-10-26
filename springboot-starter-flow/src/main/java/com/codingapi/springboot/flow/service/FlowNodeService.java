@@ -6,10 +6,12 @@ import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.em.FlowSourceDirection;
+import com.codingapi.springboot.flow.event.FlowApprovalEvent;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.FlowBindDataRepository;
 import com.codingapi.springboot.flow.repository.FlowOperatorRepository;
 import com.codingapi.springboot.flow.user.IFlowOperator;
+import com.codingapi.springboot.framework.event.EventPusher;
 import lombok.Getter;
 
 import java.util.List;
@@ -22,6 +24,7 @@ class FlowNodeService {
 
     private final FlowRecordService2 flowRecordService2;
     private final String processId;
+    private final long preId;
 
     private final FlowRecord flowRecord;
     private final FlowWork flowWork;
@@ -60,7 +63,7 @@ class FlowNodeService {
         this.flowNode = flowRecordService2.getFlowNode();
 
         this.processId = flowRecord.getProcessId();
-
+        this.preId = flowRecord.getId();
     }
 
 
@@ -196,18 +199,27 @@ class FlowNodeService {
     }
 
 
+    /**
+     * 加载子节点的审批记录
+     * 即加载后续节点的审批记录
+     */
     public void loadChildrenRecords() {
         childrenRecords = flowRecordService2.flowRecordRepository.findFlowRecordByPreId(flowRecord.getId());
     }
 
 
+    /**
+     *  校验是否后续没有审批记录
+     */
     public void verifyChildrenRecordsIsEmpty() {
         if (!childrenRecords.isEmpty()) {
             throw new IllegalArgumentException("flow node is done");
         }
     }
 
-
+    /**
+     *  校验流程的审批方向
+     */
     public void verifyFlowSourceDirection() {
         if (flowSourceDirection == null) {
             throw new IllegalArgumentException("flow source direction is null");
@@ -216,4 +228,95 @@ class FlowNodeService {
             throw new IllegalArgumentException("flow node is start node");
         }
     }
+
+
+    public void createNextRecord(){
+
+        IFlowOperator createOperator = flowOperatorRepository.getFlowOperatorById(flowRecord.getCreateOperatorId());
+        if(flowSourceDirection == FlowSourceDirection.PASS){
+            FlowRecordService flowRecordService = new FlowRecordService(flowOperatorRepository, processId, createOperator, currentOperator, snapshot, opinion, flowWork, flowSourceDirection, historyRecords);
+            FlowNode nextNode = flowRecordService.matcherPassNextNode(flowNode);
+            if (nextNode == null) {
+                throw new IllegalArgumentException("next node not found");
+            }
+            List<FlowRecord> records = flowRecordService.createRecord(preId, nextNode);
+            flowRecordService2.flowRecordRepository.save(records);
+
+            for (FlowRecord record : records) {
+                IFlowOperator pushOperator = flowOperatorRepository.getFlowOperatorById(record.getCurrentOperatorId());
+                EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, record, pushOperator,flowWork));
+            }
+        }
+
+
+        if(flowSourceDirection == FlowSourceDirection.REJECT){
+
+            // 设置了退回流程
+            if(flowWork.hasBackRelation()){
+
+                FlowRecordService flowRecordService = new FlowRecordService(flowOperatorRepository, processId, createOperator, currentOperator, snapshot, opinion, flowWork, flowSourceDirection, historyRecords);
+                FlowNode nextNode = flowRecordService.matcherBackNextNode(flowNode);
+                if (nextNode == null) {
+                    throw new IllegalArgumentException("next node not found");
+                }
+
+                IFlowOperator flowOperator = currentOperator;
+                if (nextNode.isAnyOperatorMatcher()) {
+                    // 如果是任意人员操作时则需要指定为当时审批人员为当前审批人员
+                    FlowRecord preFlowRecord = flowRecordService2.flowRecordRepository.getFlowRecordById(flowRecord.getPreId());
+                    while (preFlowRecord.isTransfer() || !preFlowRecord.getNodeCode().equals(nextNode.getCode())) {
+                        preFlowRecord = flowRecordService2.flowRecordRepository.getFlowRecordById(preFlowRecord.getPreId());
+                    }
+                    flowOperator = flowOperatorRepository.getFlowOperatorById(preFlowRecord.getCurrentOperatorId());
+                }
+                flowRecordService.changeCurrentOperator(flowOperator);
+                List<FlowRecord> records = flowRecordService.createRecord(preId, nextNode);
+                flowRecordService2.flowRecordRepository.save(records);
+
+                for (FlowRecord record : records) {
+                    IFlowOperator pushOperator = flowOperatorRepository.getFlowOperatorById(record.getCurrentOperatorId());
+                    EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, record, pushOperator,flowWork));
+                }
+            }else{
+
+                IFlowOperator flowOperator;
+                // 拒绝时，默认返回上一个节点
+                FlowRecord preRecord = flowRecordService2.flowRecordRepository.getFlowRecordById(flowRecord.getPreId());
+                // 去除所有的转办的记录
+                while (preRecord.isTransfer()) {
+                    // 继续寻找上一个节点
+                    preRecord = flowRecordService2.flowRecordRepository.getFlowRecordById(preRecord.getPreId());
+                }
+
+                // 获取上一个节点的审批者，继续将审批者设置为当前审批者
+                flowOperator = flowOperatorRepository.getFlowOperatorById(preRecord.getCurrentOperatorId());
+
+                FlowRecordService flowRecordService = new FlowRecordService(flowOperatorRepository, processId, createOperator, flowOperator, snapshot, opinion, flowWork, flowSourceDirection, historyRecords);
+                FlowNode nextNode = flowWork.getNodeByCode(preRecord.getNodeCode());
+                if (nextNode == null) {
+                    throw new IllegalArgumentException("next node not found");
+                }
+                List<FlowRecord> records = flowRecordService.createRecord(preId, nextNode);
+
+                flowRecordService2.flowRecordRepository.save(records);
+
+                for (FlowRecord record : records) {
+                    IFlowOperator pushOperator = flowOperatorRepository.getFlowOperatorById(record.getCurrentOperatorId());
+                    EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, record, pushOperator,flowWork));
+                }
+
+            }
+
+        }
+
+
+        int eventState = flowSourceDirection== FlowSourceDirection.PASS ? FlowApprovalEvent.STATE_PASS : FlowApprovalEvent.STATE_REJECT;
+        EventPusher.push(new FlowApprovalEvent(eventState, flowRecord, currentOperator,flowWork));
+
+
+
+    }
+
+
+
 }

@@ -93,6 +93,63 @@ class FlowRecordService {
         }
     }
 
+    /**
+     * 获取下一个节点
+     *
+     * @param currentNode 当前节点
+     * @return 下一个节点
+     */
+    public FlowNode matcherBackNextNode(FlowNode currentNode) {
+        List<FlowRelation> relations = flowWork.getRelations().stream()
+                .filter(relation -> relation.sourceMatcher(currentNode.getCode()) && relation.isBack())
+                .sorted((o1, o2) -> (o2.getOrder() - o1.getOrder()))
+                .toList();
+        if (relations.isEmpty()) {
+            throw new IllegalArgumentException("relation not found");
+        }
+        FlowContent flowContent = new FlowContent(flowWork, currentNode, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
+        List<FlowNode> flowNodes = new ArrayList<>();
+        for (FlowRelation flowRelation : relations) {
+            FlowNode node = flowRelation.trigger(flowContent);
+            if (node != null) {
+                flowNodes.add(node);
+            }
+        }
+        if (flowNodes.isEmpty()) {
+            throw new IllegalArgumentException("next node not found");
+        }
+        return flowNodes.get(0);
+    }
+
+
+    /**
+     * 获取下一个节点
+     *
+     * @param currentNode 当前节点
+     * @return 下一个节点
+     */
+    public FlowNode matcherPassNextNode(FlowNode currentNode) {
+        List<FlowRelation> relations = flowWork.getRelations().stream()
+                .filter(relation -> relation.sourceMatcher(currentNode.getCode()) && !relation.isBack())
+                .sorted((o1, o2) -> (o2.getOrder() - o1.getOrder()))
+                .toList();
+        if (relations.isEmpty()) {
+            throw new IllegalArgumentException("relation not found");
+        }
+        FlowContent flowContent = new FlowContent(flowWork, currentNode, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
+        List<FlowNode> flowNodes = new ArrayList<>();
+        for (FlowRelation flowRelation : relations) {
+            FlowNode node = flowRelation.trigger(flowContent);
+            if (node != null) {
+                flowNodes.add(node);
+            }
+        }
+        if (flowNodes.isEmpty()) {
+            throw new IllegalArgumentException("next node not found");
+        }
+        return flowNodes.get(0);
+    }
+
 
     /**
      * 获取下一个节点
