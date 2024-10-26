@@ -36,7 +36,8 @@ public class FlowRecordQueryController {
     @GetMapping("/detail")
     public SingleResponse<FlowDetail> detail(SearchRequest searchRequest) {
         long id = Long.parseLong(searchRequest.getParameter("id"));
-        return SingleResponse.of(flowService.detail(id));
+        User user = userRepository.getUserByUsername(TokenContext.current().getUsername());
+        return SingleResponse.of(flowService.detail(id,user));
     }
 
 

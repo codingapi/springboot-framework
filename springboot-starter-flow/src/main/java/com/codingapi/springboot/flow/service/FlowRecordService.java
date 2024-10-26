@@ -86,7 +86,7 @@ class FlowRecordService {
             String recordTitle = currentNode.generateTitle(flowContent);
             List<FlowRecord> recordList = new ArrayList<>();
             for (IFlowOperator operator : operators) {
-                FlowRecord record = currentNode.createRecord(workId, processId, preId, recordTitle, createOperator, operator, snapshot, flowSourceDirection);
+                FlowRecord record = currentNode.createRecord(workId, processId, preId, recordTitle, createOperator, operator, snapshot);
                 recordList.add(record);
             }
             return recordList;
@@ -146,7 +146,7 @@ class FlowRecordService {
                 for (IFlowOperator operator : operators) {
                     FlowContent content = new FlowContent(flowWork, currentNode, createOperator, operator, snapshot.toBindData(), opinion, historyRecords);
                     String recordTitle = currentNode.generateTitle(content);
-                    FlowRecord record = currentNode.createRecord(flowWork.getId(), processId, preId, recordTitle, createOperator, operator, snapshot, flowSourceDirection);
+                    FlowRecord record = currentNode.createRecord(flowWork.getId(), processId, preId, recordTitle, createOperator, operator, snapshot);
                     recordList.add(record);
                 }
                 return recordList;
@@ -164,7 +164,7 @@ class FlowRecordService {
                 if (!matcherOperators.isEmpty()) {
                     for (IFlowOperator matcherOperator : matcherOperators) {
                         String recordTitle = node.generateTitle(content);
-                        FlowRecord record = node.createRecord(flowWork.getId(), processId, preId, recordTitle, createOperator, matcherOperator, snapshot, flowSourceDirection);
+                        FlowRecord record = node.createRecord(flowWork.getId(), processId, preId, recordTitle, createOperator, matcherOperator, snapshot);
                         recordList.add(record);
                     }
                 }

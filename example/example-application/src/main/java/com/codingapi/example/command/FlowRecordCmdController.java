@@ -34,7 +34,11 @@ public class FlowRecordCmdController {
     @PostMapping("/submitFlow")
     public Response submitFlow(@RequestBody FlowCmd.SubmitFlow request) {
         User current = userRepository.getUserByUsername(request.getUserName());
-        flowService.submitFlow(request.getRecordId(), current, request.getBindData(), request.getOpinion());
+        if(current.isFlowManager()){
+            flowService.interfere(request.getRecordId(), current, request.getBindData(), request.getOpinion());
+        }else {
+            flowService.submitFlow(request.getRecordId(), current, request.getBindData(), request.getOpinion());
+        }
         return Response.buildSuccess();
     }
 
@@ -63,14 +67,6 @@ public class FlowRecordCmdController {
     }
 
 
-    @PostMapping("/interfere")
-    public Response interfere(@RequestBody FlowCmd.InterfereFlow request) {
-        User current = userRepository.getUserByUsername(request.getUserName());
-        flowService.interfere(request.getRecordId(), current, request.getBindData(), request.getOpinion());
-        return Response.buildSuccess();
-    }
-
-
     @PostMapping("/postponed")
     public Response postponed(@RequestBody FlowCmd.PostponedFlow request) {
         User current = userRepository.getUserByUsername(request.getUserName());
@@ -86,12 +82,6 @@ public class FlowRecordCmdController {
         return Response.buildSuccess();
     }
 
-
-    @PostMapping("/read")
-    public SingleResponse<FlowDetail> read(@RequestBody FlowCmd.ReadFlow request) {
-        User current = userRepository.getUserByUsername(request.getUserName());
-        return SingleResponse.of(flowService.detail(request.getRecordId(), current));
-    }
 
 
 }

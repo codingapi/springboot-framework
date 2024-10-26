@@ -18,6 +18,8 @@ public interface FlowRecordEntityRepository extends FastRepository<FlowRecordEnt
 
     List<FlowRecordEntity> findFlowRecordEntityByProcessId(String processId);
 
+    @Query(value = "select r from FlowRecordEntity  r where r.flowType = 'TODO' and r.flowStatus = 'RUNNING' and r.processId = ?1")
+    List<FlowRecordEntity> findTodoFlowRecordByProcessId(String processId);
 
     @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.flowType = 'TODO' and r.flowStatus = 'RUNNING' order by r.id desc")
     Page<FlowRecordEntity> findTodoByOperatorId(long operatorId,PageRequest pageRequest);
@@ -34,6 +36,5 @@ public interface FlowRecordEntityRepository extends FastRepository<FlowRecordEnt
     @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.flowType = 'TODO' and r.flowStatus = 'RUNNING' and r.postponedCount > 0 order by r.id desc")
     Page<FlowRecordEntity> findPostponedTodoByOperatorId(long operatorId, PageRequest pageRequest);
 
-    @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.flowType = 'TODO' and r.flowStatus = 'RUNNING' order by r.id desc")
-    List<FlowRecordEntity> findTodoFlowRecordByProcessId(String processId);
+
 }

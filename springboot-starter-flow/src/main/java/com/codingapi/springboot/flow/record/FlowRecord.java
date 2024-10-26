@@ -317,11 +317,25 @@ public class FlowRecord {
         return this.opinion != null && this.opinion.isSuccess() && isDone();
     }
 
+    /**
+     * 匹配操作者
+     * @param currentOperator 当前操作者
+     */
     public void matcherOperator(IFlowOperator currentOperator) {
-        if (currentOperator.getUserId() != this.currentOperatorId) {
+        if (!isOperator(currentOperator)) {
             throw new IllegalArgumentException("current operator is not match");
         }
     }
+
+    /**
+     * 是否是当前操作者
+     * @param operator 操作者
+     * @return 是否是当前操作者
+     */
+    public boolean isOperator(IFlowOperator operator) {
+        return this.currentOperatorId == operator.getUserId();
+    }
+
 
     /**
      * 撤回流程

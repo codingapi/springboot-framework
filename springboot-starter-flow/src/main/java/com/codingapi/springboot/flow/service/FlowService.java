@@ -131,11 +131,11 @@ public class FlowService {
             throw new IllegalArgumentException("flow record not found");
         }
         if (currentOperator != null) {
-            flowRecord.matcherOperator(currentOperator);
-
-            if (!flowRecord.isRead()) {
-                flowRecord.read();
-                flowRecordRepository.update(flowRecord);
+            if(flowRecord.isOperator(currentOperator)) {
+                if (!flowRecord.isRead()) {
+                    flowRecord.read();
+                    flowRecordRepository.update(flowRecord);
+                }
             }
         }
 

@@ -23,7 +23,6 @@ interface FlowViewProps {
     setVisible: (visible: boolean) => void;
     view: FlowFormView;
     review?: boolean;
-    isFlowManager?: boolean;
 }
 
 const FlowView: React.FC<FlowViewProps> = (props) => {
@@ -209,7 +208,7 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
         >
             <Row justify="end">
                 <Space>
-                    {props.isFlowManager && (
+                    {props.review && (
                         <Button
                             type={"primary"}
                             danger={true}
@@ -529,6 +528,7 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
                             userId: user.id,
                             userName: user.name
                         });
+                        setSelectUserVisible(false);
                     }
                 }}
             />

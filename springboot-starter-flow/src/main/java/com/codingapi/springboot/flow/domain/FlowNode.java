@@ -185,7 +185,6 @@ public class FlowNode {
      * @param createOperator  流程操作者
      * @param currentOperator 当前操作者
      * @param snapshot        快照数据
-     * @param flowSourceDirection   流程方式
      * @return 流程记录
      */
     public FlowRecord createRecord(long workId,
@@ -194,8 +193,8 @@ public class FlowNode {
                                    String title,
                                    IFlowOperator createOperator,
                                    IFlowOperator currentOperator,
-                                   BindDataSnapshot snapshot,
-                                   FlowSourceDirection flowSourceDirection) {
+                                   BindDataSnapshot snapshot
+                                   ) {
 
         // 当前操作者存在委托人时，才需要寻找委托人
         IFlowOperator flowOperator = currentOperator;
@@ -216,7 +215,6 @@ public class FlowNode {
         record.setCurrentOperatorId(flowOperator.getUserId());
         record.setPreId(preId);
         record.setTitle(title);
-        record.setFlowSourceDirection(flowSourceDirection);
         record.setTimeoutTime(this.loadTimeoutTime());
         record.setFlowType(FlowType.TODO);
         record.setErrMessage(null);

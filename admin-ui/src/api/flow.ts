@@ -58,6 +58,10 @@ export async function transfer(body:any) {
     return post('/api/cmd/flowRecord/transfer', body);
 }
 
+export async function urge(body:any) {
+    return post('/api/cmd/flowRecord/urge', body);
+}
+
 
 // 待办中心控制
 

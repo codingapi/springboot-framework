@@ -6,12 +6,13 @@ import {
     findPostponedTodoByOperatorId,
     findTimeoutTodoByOperatorId,
     findTodoByOperatorId,
-    flowRecordList
+    flowRecordList, saveFlow, urge
 } from "@/api/flow";
 import moment from "moment";
-import {Tabs} from "antd";
+import {message, Tabs} from "antd";
 import FlowView from "@/components/Flow/view/FlowView";
 import DefaultFlowView from "@/pages/flow/leave/default";
+import "./index.scss";
 
 
 const FlowRecordPage = () => {
@@ -28,11 +29,29 @@ const FlowRecordPage = () => {
     const timeoutTodoActionRef = React.useRef<ActionType>();
     const postponedTodoActionRef = React.useRef<ActionType>();
     const allTodoActionRef = React.useRef<ActionType>();
+
+
+    const handlerUrgeFlow = (recordId:any) => {
+        const body = {
+            recordId,
+        }
+        urge(body).then(res => {
+            if (res.success) {
+                message.success('催办提醒已发送').then();
+                reloadTable();
+            }
+        })
+    }
+
     const columns = [
         {
             title: '编号',
             dataIndex: 'id',
             search: false
+        },
+        {
+            title: '流程编号',
+            dataIndex: 'processId',
         },
         {
             title: '标题',
@@ -44,24 +63,17 @@ const FlowRecordPage = () => {
             valueType: 'dateTime'
         },
         {
-            title: '是否已读',
-            dataIndex: 'read',
-            render: (text: any) => {
-                return text ? '已读' : '未读';
-            }
-        },
-        {
             title: '是否延期',
             dataIndex: 'postponedCount',
             render: (text: any) => {
-                return text > 1 ? '延期' : '未延期';
+                return text > 1 ? '延期' : '-';
             }
         },
         {
             title: '超时到期时间',
             dataIndex: 'timeoutTime',
             render: (text: any) => {
-                return text <= 0 ? '不限时间' : moment(text).format("YYYY-MM-DD HH:mm:ss");
+                return text <= 0 ? '-' : moment(text).format("YYYY-MM-DD HH:mm:ss");
             }
         },
         {
@@ -74,7 +86,7 @@ const FlowRecordPage = () => {
         },
         {
             title: '状态',
-            dataIndex: 'recodeType',
+            dataIndex: 'flowType',
             render: (text: any) => {
                 if (text === 'TODO') {
                     return '办理中';
@@ -89,10 +101,19 @@ const FlowRecordPage = () => {
             }
         },
         {
-            title: '是否干预',
-            dataIndex: 'interfere',
+            title: '办理意见',
+            dataIndex: 'flowSourceDirection',
             render: (text: any) => {
-                return text ? '干预' : '未干预';
+                if (text === 'PASS') {
+                    return '同意';
+                }
+                if (text === 'REJECT') {
+                    return '拒绝';
+                }
+                if (text === 'TRANSFER') {
+                    return '已转办';
+                }
+                return text;
             }
         },
         {
@@ -136,14 +157,20 @@ const FlowRecordPage = () => {
                             setFlowViewVisible(true);
                         }}
                     >办理</a>,
-                    <a>催办</a>,
+
+                    <a
+                        key={"urge"}
+                        onClick={() => {
+                            handlerUrgeFlow(record.id);
+                        }}
+                    >催办</a>,
                 ]
             }
         }
     ] as any[];
 
 
-    useEffect(() => {
+    const reloadTable = ()=>{
         if (key === 'todo') {
             todoActionRef.current?.reload();
         }
@@ -162,6 +189,10 @@ const FlowRecordPage = () => {
         if (key === 'all') {
             allTodoActionRef.current?.reload();
         }
+    }
+
+    useEffect(() => {
+        reloadTable();
     }, [flowViewVisible, key]);
 
     return (
@@ -180,6 +211,9 @@ const FlowRecordPage = () => {
                                 actionRef={todoActionRef}
                                 search={false}
                                 columns={columns}
+                                rowClassName={(record) => {
+                                    return record.read?"record-read":"record-unread";
+                                }}
                                 request={async (params, sort, filter) => {
                                     return findTodoByOperatorId(params, sort, filter, []);
                                 }}
@@ -194,6 +228,9 @@ const FlowRecordPage = () => {
                                 actionRef={doneActionRef}
                                 search={false}
                                 columns={columns}
+                                rowClassName={(record) => {
+                                    return record.read?"record-read":"record-unread";
+                                }}
                                 request={async (params, sort, filter) => {
                                     return findDoneByOperatorId(params, sort, filter, []);
                                 }}
@@ -208,6 +245,9 @@ const FlowRecordPage = () => {
                                 actionRef={initiatedActionRef}
                                 search={false}
                                 columns={columns}
+                                rowClassName={(record) => {
+                                    return record.read?"record-read":"record-unread";
+                                }}
                                 request={async (params, sort, filter) => {
                                     return findInitiatedByOperatorId(params, sort, filter, []);
                                 }}
@@ -222,6 +262,9 @@ const FlowRecordPage = () => {
                                 actionRef={timeoutTodoActionRef}
                                 search={false}
                                 columns={columns}
+                                rowClassName={(record) => {
+                                    return record.read?"record-read":"record-unread";
+                                }}
                                 request={async (params, sort, filter) => {
                                     return findTimeoutTodoByOperatorId(params, sort, filter, []);
                                 }}
@@ -237,6 +280,9 @@ const FlowRecordPage = () => {
                                 actionRef={postponedTodoActionRef}
                                 search={false}
                                 columns={columns}
+                                rowClassName={(record) => {
+                                    return record.read?"record-read":"record-unread";
+                                }}
                                 request={async (params, sort, filter) => {
                                     return findPostponedTodoByOperatorId(params, sort, filter, []);
                                 }}
@@ -251,6 +297,9 @@ const FlowRecordPage = () => {
                                 actionRef={allTodoActionRef}
                                 search={false}
                                 columns={columns}
+                                rowClassName={(record) => {
+                                    return record.read?"record-read":"record-unread";
+                                }}
                                 request={async (params, sort, filter) => {
                                     return flowRecordList(params, sort, filter, []);
                                 }}
