@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * 流程记录服务（流程内部服务）
  */
-class FlowRecordService {
+class FlowRecordService1 {
 
     private final FlowOperatorRepository flowOperatorRepository;
     private final String processId;
@@ -44,15 +44,15 @@ class FlowRecordService {
      * @param flowSourceDirection          流转方式
      * @param historyRecords         当前节点下的审批记录
      */
-    public FlowRecordService(FlowOperatorRepository flowOperatorRepository,
-                             String processId,
-                             IFlowOperator createOperator,
-                             IFlowOperator currentOperator,
-                             BindDataSnapshot snapshot,
-                             Opinion opinion,
-                             FlowWork flowWork,
-                             FlowSourceDirection flowSourceDirection,
-                             List<FlowRecord> historyRecords) {
+    public FlowRecordService1(FlowOperatorRepository flowOperatorRepository,
+                              String processId,
+                              IFlowOperator createOperator,
+                              IFlowOperator currentOperator,
+                              BindDataSnapshot snapshot,
+                              Opinion opinion,
+                              FlowWork flowWork,
+                              FlowSourceDirection flowSourceDirection,
+                              List<FlowRecord> historyRecords) {
         this.flowOperatorRepository = flowOperatorRepository;
         this.processId = processId;
         this.createOperator = createOperator;

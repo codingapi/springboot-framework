@@ -8,6 +8,8 @@ import com.codingapi.springboot.flow.repository.FlowRecordRepository;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import lombok.Getter;
 
+import java.util.List;
+
 /**
  * 流程记录服务（流程内部服务）
  */
@@ -183,6 +185,18 @@ class FlowRecordService2 {
                     flowRecordRepository.update(flowRecord);
                 }
             }
+        }
+    }
+
+
+
+    /**
+     * 校验是否后续没有审批记录
+     */
+    public void verifyChildrenRecordsIsEmpty() {
+        List<FlowRecord> childrenRecords = flowRecordRepository.findFlowRecordByPreId(flowRecord.getId());
+        if (!childrenRecords.isEmpty()) {
+            throw new IllegalArgumentException("flow node is done");
         }
     }
 

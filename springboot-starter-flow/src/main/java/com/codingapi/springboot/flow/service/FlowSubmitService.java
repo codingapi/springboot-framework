@@ -1,0 +1,214 @@
+package com.codingapi.springboot.flow.service;
+
+import com.codingapi.springboot.flow.bind.BindDataSnapshot;
+import com.codingapi.springboot.flow.content.FlowContent;
+import com.codingapi.springboot.flow.domain.FlowNode;
+import com.codingapi.springboot.flow.domain.FlowRelation;
+import com.codingapi.springboot.flow.domain.FlowWork;
+import com.codingapi.springboot.flow.domain.Opinion;
+import com.codingapi.springboot.flow.error.ErrorResult;
+import com.codingapi.springboot.flow.error.NodeResult;
+import com.codingapi.springboot.flow.error.OperatorResult;
+import com.codingapi.springboot.flow.record.FlowRecord;
+import com.codingapi.springboot.flow.repository.FlowOperatorRepository;
+import com.codingapi.springboot.flow.user.IFlowOperator;
+
+import java.util.ArrayList;
+import java.util.List;
+
+class FlowSubmitService {
+
+
+    private final FlowOperatorRepository flowOperatorRepository;
+
+    private final FlowRecordService2 flowRecordService2;
+    private final String processId;
+    private final long preId;
+
+    private final FlowRecord flowRecord;
+    private final FlowWork flowWork;
+    private final FlowNode flowNode;
+    private final Opinion opinion;
+    private final IFlowOperator currentOperator;
+    private final BindDataSnapshot snapshot;
+    private final List<FlowRecord> historyRecords;
+    private final IFlowOperator createOperator;
+
+
+    public FlowSubmitService(FlowOperatorRepository flowOperatorRepository,
+                             FlowRecordService2 flowRecordService2,
+                             BindDataSnapshot snapshot,
+                             Opinion opinion,
+                             IFlowOperator createOperator,
+                             List<FlowRecord> historyRecords) {
+
+        this.createOperator = createOperator;
+        this.flowOperatorRepository = flowOperatorRepository;
+
+        this.flowRecordService2 = flowRecordService2;
+        this.snapshot = snapshot;
+        this.opinion = opinion;
+        this.currentOperator = flowRecordService2.getCurrentOperator();
+
+        this.flowRecord = flowRecordService2.getFlowRecord();
+        this.flowWork = flowRecordService2.getFlowWork();
+        this.flowNode = flowRecordService2.getFlowNode();
+
+
+        this.processId = flowRecord.getProcessId();
+        this.preId = flowRecord.getId();
+        this.historyRecords = historyRecords;
+    }
+
+
+    /**
+     * 获取下一个节点
+     *
+     * @return 下一个节点
+     */
+    public FlowNode matcherNextNode(boolean back) {
+        List<FlowRelation> relations = flowWork.getRelations().stream()
+                .filter(relation -> relation.sourceMatcher(flowNode.getCode()))
+                .filter(relation -> relation.isBack() == back)
+                .sorted((o1, o2) -> (o2.getOrder() - o1.getOrder()))
+                .toList();
+        if (relations.isEmpty()) {
+            throw new IllegalArgumentException("relation not found");
+        }
+        FlowContent flowContent = new FlowContent(flowWork, flowNode, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
+        List<FlowNode> flowNodes = new ArrayList<>();
+        for (FlowRelation flowRelation : relations) {
+            FlowNode node = flowRelation.trigger(flowContent);
+            if (node != null) {
+                flowNodes.add(node);
+            }
+        }
+        if (flowNodes.isEmpty()) {
+            throw new IllegalArgumentException("next node not found");
+        }
+        return flowNodes.get(0);
+    }
+
+    /**
+     * 异常匹配
+     *
+     * @param currentNode     当前节点
+     * @param currentOperator 当前操作者
+     * @return 流程记录
+     */
+    private List<FlowRecord> errMatcher(FlowNode currentNode, IFlowOperator currentOperator) {
+        if (currentNode.hasErrTrigger()) {
+            FlowContent flowContent = new FlowContent(flowWork, currentNode, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
+            ErrorResult errorResult = currentNode.errMatcher(flowContent);
+            if (errorResult == null) {
+                throw new IllegalArgumentException("errMatcher match error.");
+            }
+
+            // 匹配操作者
+            if (errorResult.isOperator()) {
+                List<FlowRecord> recordList = new ArrayList<>();
+                List<Long> operatorIds = ((OperatorResult) errorResult).getOperatorIds();
+                List<? extends IFlowOperator> operators = flowOperatorRepository.findByIds(operatorIds);
+                for (IFlowOperator operator : operators) {
+                    FlowContent content = new FlowContent(flowWork, currentNode, createOperator, operator, snapshot.toBindData(), opinion, historyRecords);
+                    String recordTitle = currentNode.generateTitle(content);
+                    FlowRecord record = currentNode.createRecord(flowWork.getId(), processId, preId, recordTitle, createOperator, operator, snapshot);
+                    recordList.add(record);
+                }
+                return recordList;
+            }
+            // 匹配节点
+            if (errorResult.isNode()) {
+                String nodeCode = ((NodeResult) errorResult).getNode();
+                FlowNode node = flowWork.getNodeByCode(nodeCode);
+                if (node == null) {
+                    throw new IllegalArgumentException("node not found.");
+                }
+                List<FlowRecord> recordList = new ArrayList<>();
+                FlowContent content = new FlowContent(flowWork, node, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
+                List<? extends IFlowOperator> matcherOperators = node.loadFlowNodeOperator(content, flowOperatorRepository);
+                if (!matcherOperators.isEmpty()) {
+                    for (IFlowOperator matcherOperator : matcherOperators) {
+                        String recordTitle = node.generateTitle(content);
+                        FlowRecord record = node.createRecord(flowWork.getId(), processId, preId, recordTitle, createOperator, matcherOperator, snapshot);
+                        recordList.add(record);
+                    }
+                }
+                return recordList;
+            }
+            throw new IllegalArgumentException("errMatcher not match.");
+        }
+        throw new IllegalArgumentException("operator not match.");
+    }
+
+
+    /**
+     * 创建流程记录
+     *
+     * @param currentNode 当前节点
+     * @return 流程记录
+     */
+    public List<FlowRecord> createRecord(FlowNode currentNode, IFlowOperator currentOperator) {
+        FlowContent flowContent = new FlowContent(flowWork, currentNode, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
+        long workId = flowWork.getId();
+        List<? extends IFlowOperator> operators = currentNode.loadFlowNodeOperator(flowContent, flowOperatorRepository);
+        if (operators.isEmpty()) {
+            List<FlowRecord> errorRecordList = this.errMatcher(currentNode, currentOperator);
+            if (errorRecordList.isEmpty()) {
+                throw new IllegalArgumentException("operator not match.");
+            }
+            return errorRecordList;
+        } else {
+            String recordTitle = currentNode.generateTitle(flowContent);
+            List<FlowRecord> recordList = new ArrayList<>();
+            for (IFlowOperator operator : operators) {
+                FlowRecord record = currentNode.createRecord(workId, processId, preId, recordTitle, createOperator, operator, snapshot);
+                recordList.add(record);
+            }
+            return recordList;
+        }
+    }
+
+
+    public List<FlowRecord> createPassRecord() {
+        FlowNode nextNode = this.matcherNextNode(false);
+        return this.createRecord(nextNode, currentOperator);
+    }
+
+    public List<FlowRecord> createCustomBackRecord() {
+        FlowNode nextNode = this.matcherNextNode(true);
+        if (nextNode == null) {
+            throw new IllegalArgumentException("next node not found");
+        }
+        IFlowOperator flowOperator = currentOperator;
+        if (nextNode.isAnyOperatorMatcher()) {
+            // 如果是任意人员操作时则需要指定为当时审批人员为当前审批人员
+            FlowRecord preFlowRecord = flowRecordService2.flowRecordRepository.getFlowRecordById(flowRecord.getPreId());
+            while (preFlowRecord.isTransfer() || !preFlowRecord.getNodeCode().equals(nextNode.getCode())) {
+                preFlowRecord = flowRecordService2.flowRecordRepository.getFlowRecordById(preFlowRecord.getPreId());
+            }
+            flowOperator = flowOperatorRepository.getFlowOperatorById(preFlowRecord.getCurrentOperatorId());
+        }
+        return this.createRecord(nextNode, flowOperator);
+    }
+
+    public List<FlowRecord> createDefaultBackRecord() {
+        IFlowOperator flowOperator;
+        // 拒绝时，默认返回上一个节点
+        FlowRecord preRecord = flowRecordService2.flowRecordRepository.getFlowRecordById(flowRecord.getPreId());
+        // 去除所有的转办的记录
+        while (preRecord.isTransfer()) {
+            // 继续寻找上一个节点
+            preRecord = flowRecordService2.flowRecordRepository.getFlowRecordById(preRecord.getPreId());
+        }
+        // 获取上一个节点的审批者，继续将审批者设置为当前审批者
+        flowOperator = flowOperatorRepository.getFlowOperatorById(preRecord.getCurrentOperatorId());
+        FlowNode nextNode = flowWork.getNodeByCode(preRecord.getNodeCode());
+        if (nextNode == null) {
+            throw new IllegalArgumentException("next node not found");
+        }
+        return this.createRecord(nextNode, flowOperator);
+    }
+
+
+}
