@@ -6,6 +6,7 @@ import com.codingapi.springboot.flow.content.FlowContent;
 import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.domain.Opinion;
+import com.codingapi.springboot.flow.em.FlowDirection;
 import com.codingapi.springboot.flow.event.FlowApprovalEvent;
 import com.codingapi.springboot.flow.pojo.FlowDetail;
 import com.codingapi.springboot.flow.record.FlowBackup;
@@ -197,6 +198,11 @@ public class FlowService {
         flowRecord.submitStateVerify();
         flowRecord.matcherOperator(currentOperator);
 
+
+        if(currentOperator.getUserId() == targetOperator.getUserId()){
+            throw new IllegalArgumentException("current operator is target operator");
+        }
+
         Opinion opinion = Opinion.transfer(advice);
 
         // 检测流程
@@ -244,7 +250,7 @@ public class FlowService {
 
         // 创建转办记录
         FlowRecord transferRecord = flowRecord.copy();
-        transferRecord.toTodo(generateTitle, targetOperator);
+        transferRecord.transferToTodo(generateTitle, targetOperator);
         flowRecordRepository.save(List.of(transferRecord));
 
         // 推送转办消息
@@ -302,7 +308,7 @@ public class FlowService {
 
 
     /**
-     * 发起流程
+     * 发起流程 （不自动提交到下一节点）
      *
      * @param workId   流程id
      * @param operator 操作者
@@ -336,7 +342,7 @@ public class FlowService {
 
         Opinion opinion = Opinion.pass(advice);
 
-        FlowRecordService createRecordService = new FlowRecordService(flowOperatorRepository, processId, operator, operator, snapshot, opinion, flowWork, opinion.isSuccess(), new ArrayList<>());
+        FlowRecordService createRecordService = new FlowRecordService(flowOperatorRepository, processId, operator, operator, snapshot, opinion, flowWork, FlowDirection.PASS, new ArrayList<>());
         // 获取开始节点
         FlowNode start = flowWork.getStartNode();
         if (start == null) {
@@ -394,9 +400,9 @@ public class FlowService {
         }
 
         // 根据审批意见判断流程是否进入下一节点
-        boolean flowNextStep = opinion.isSuccess();
+        FlowDirection flowNextStep = opinion.isSuccess()?FlowDirection.PASS:FlowDirection.REJECT;
 
-        if(flowNode.isStartNode() && !flowNextStep){
+        if(flowNode.isStartNode() && flowNextStep == FlowDirection.REJECT){
             throw new IllegalArgumentException("flow node is start node");
         }
 
@@ -439,7 +445,7 @@ public class FlowService {
             // 会签下所有人都同意，再执行下一节点
             boolean allPass = historyRecords.stream().filter(item -> !item.isTransfer()).allMatch(FlowRecord::isPass);
             if (!allPass) {
-                flowNextStep = false;
+                flowNextStep = FlowDirection.REJECT;
             }
 
         }
@@ -457,7 +463,7 @@ public class FlowService {
         String processId = flowRecord.getProcessId();
 
         // 流程结束的情况
-        if (flowNextStep && flowNode.isOverNode()) {
+        if (flowNextStep==FlowDirection.PASS && flowNode.isOverNode()) {
             // 结束简单时自动审批
             flowRecord.finish();
             // 提交流程
@@ -474,9 +480,22 @@ public class FlowService {
     }
 
 
-    private void createNextRecord(FlowWork flowWork,boolean flowNextStep,FlowNode flowNode,String processId,IFlowOperator createOperator,IFlowOperator currentOperator,BindDataSnapshot snapshot,Opinion opinion,FlowRecord flowRecord,List<FlowRecord> historyRecords){
+    /**
+     * 创建下一个流程的记录
+     * @param flowWork          流程
+     * @param flowNextStep      是否通过
+     * @param flowNode          流程节点
+     * @param processId         流程id
+     * @param createOperator    流程创建者
+     * @param currentOperator   当前操作者
+     * @param snapshot          绑定数据
+     * @param opinion           上级审批意见
+     * @param flowRecord        流程记录
+     * @param historyRecords    历史记录
+     */
+    private void createNextRecord(FlowWork flowWork,FlowDirection flowNextStep,FlowNode flowNode,String processId,IFlowOperator createOperator,IFlowOperator currentOperator,BindDataSnapshot snapshot,Opinion opinion,FlowRecord flowRecord,List<FlowRecord> historyRecords){
         // 拥有退出条件 或审批通过时，匹配下一节点
-        if (flowWork.hasBackRelation() || flowNextStep) {
+        if (flowWork.hasBackRelation() || flowNextStep==FlowDirection.PASS) {
 
             FlowRecordService flowRecordService = new FlowRecordService(flowOperatorRepository, processId, createOperator, currentOperator, snapshot, opinion, flowWork, flowNextStep, historyRecords);
             FlowNode nextNode = flowRecordService.matcherNextNode(flowNode);
@@ -486,7 +505,7 @@ public class FlowService {
 
             IFlowOperator flowOperator = currentOperator;
             // 退回流程 并且  也设置了退回节点
-            if (!flowNextStep && flowWork.hasBackRelation()) {
+            if (flowNextStep==FlowDirection.REJECT && flowWork.hasBackRelation()) {
                 if (nextNode.isAnyOperatorMatcher()) {
                     // 如果是任意人员操作时则需要指定为当时审批人员为当前审批人员
                     FlowRecord preFlowRecord = flowRecordRepository.getFlowRecordById(flowRecord.getPreId());
@@ -533,7 +552,7 @@ public class FlowService {
             }
         }
 
-        int eventState = flowNextStep ? FlowApprovalEvent.STATE_PASS : FlowApprovalEvent.STATE_REJECT;
+        int eventState = flowNextStep==FlowDirection.PASS ? FlowApprovalEvent.STATE_PASS : FlowApprovalEvent.STATE_REJECT;
         EventPusher.push(new FlowApprovalEvent(eventState, flowRecord, currentOperator,flowWork));
 
     }

@@ -5,6 +5,7 @@ import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.em.FlowStatus;
 import com.codingapi.springboot.flow.em.RecodeType;
+import com.codingapi.springboot.flow.em.FlowDirection;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import lombok.Getter;
 import lombok.Setter;
@@ -56,7 +57,7 @@ public class FlowRecord {
      * 流转产生方式
      * 流程是退回产生的还是通过产生的
      */
-    private boolean pass;
+    private FlowDirection flowDirection;
 
     /**
      * 创建时间
@@ -192,12 +193,12 @@ public class FlowRecord {
     /**
      * 提交流程
      *
-     * @param flowOperator 操作者
-     * @param snapshot     绑定数据
-     * @param opinion      意见
-     * @param pass         是否通过
+     * @param flowOperator          操作者
+     * @param snapshot              绑定数据
+     * @param opinion               意见
+     * @param flowDirection       流转方式
      */
-    public void submitRecord(IFlowOperator flowOperator, BindDataSnapshot snapshot, Opinion opinion, boolean pass) {
+    public void submitRecord(IFlowOperator flowOperator, BindDataSnapshot snapshot, Opinion opinion, FlowDirection flowDirection) {
         if (!flowOperator.isFlowManager()) {
             if (flowOperator.getUserId() != this.currentOperatorId) {
                 throw new IllegalArgumentException("current operator is not match");
@@ -207,7 +208,7 @@ public class FlowRecord {
             this.interfere = true;
         }
         this.read();
-        this.pass = pass;
+        this.flowDirection = flowDirection;
         this.recodeType = RecodeType.DONE;
         this.updateTime = System.currentTimeMillis();
         this.snapshotId = snapshot.getId();
@@ -223,12 +224,33 @@ public class FlowRecord {
             throw new IllegalArgumentException("current operator is not match");
         }
         this.read();
-        this.pass = true;
+        this.flowDirection = FlowDirection.TRANSFER;
         this.recodeType = RecodeType.TRANSFER;
         this.updateTime = System.currentTimeMillis();
         this.snapshotId = snapshot.getId();
         this.bindClass = snapshot.getClazzName();
         this.opinion = opinion;
+    }
+
+
+    /**
+     * 转办产生的流程记录
+     *
+     * @param title    标题
+     * @param operator 操作者
+     */
+    public void transferToTodo(String title, IFlowOperator operator) {
+        this.id = 0;
+        this.recodeType = RecodeType.TODO;
+        this.flowStatus = FlowStatus.RUNNING;
+        this.postponedCount = 0;
+        this.updateTime = 0;
+        this.readTime = 0;
+        this.read = false;
+        this.title = title;
+        this.opinion = null;
+        this.flowDirection = null;
+        this.currentOperatorId = operator.getUserId();
     }
 
     /**
@@ -239,7 +261,7 @@ public class FlowRecord {
      */
     public void unSignAutoDone(IFlowOperator flowOperator, BindDataSnapshot snapshot) {
         this.read();
-        this.pass = true;
+        this.flowDirection = FlowDirection.PASS;
         this.currentOperatorId = flowOperator.getUserId();
         this.recodeType = RecodeType.DONE;
         this.updateTime = System.currentTimeMillis();
@@ -321,7 +343,7 @@ public class FlowRecord {
         record.setTitle(this.title);
         record.setCurrentOperatorId(this.currentOperatorId);
         record.setRecodeType(this.recodeType);
-        record.setPass(this.pass);
+        record.setFlowDirection(this.flowDirection);
         record.setCreateTime(this.createTime);
         record.setUpdateTime(this.updateTime);
         record.setFinishTime(this.finishTime);
@@ -338,25 +360,6 @@ public class FlowRecord {
         return record;
     }
 
-    /**
-     * 转待办
-     *
-     * @param title    标题
-     * @param operator 操作者
-     */
-    public void toTodo(String title, IFlowOperator operator) {
-        this.id = 0;
-        this.recodeType = RecodeType.TODO;
-        this.flowStatus = FlowStatus.RUNNING;
-        this.postponedCount = 0;
-        this.updateTime = 0;
-        this.readTime = 0;
-        this.read = false;
-        this.title = title;
-        this.opinion = null;
-        this.pass = false;
-        this.currentOperatorId = operator.getUserId();
-    }
 
     /**
      * 是否超时

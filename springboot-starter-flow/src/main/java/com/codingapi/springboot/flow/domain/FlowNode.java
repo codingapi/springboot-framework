@@ -2,10 +2,7 @@ package com.codingapi.springboot.flow.domain;
 
 import com.codingapi.springboot.flow.bind.BindDataSnapshot;
 import com.codingapi.springboot.flow.content.FlowContent;
-import com.codingapi.springboot.flow.em.ApprovalType;
-import com.codingapi.springboot.flow.em.FlowStatus;
-import com.codingapi.springboot.flow.em.NodeType;
-import com.codingapi.springboot.flow.em.RecodeType;
+import com.codingapi.springboot.flow.em.*;
 import com.codingapi.springboot.flow.error.ErrTrigger;
 import com.codingapi.springboot.flow.error.ErrorResult;
 import com.codingapi.springboot.flow.generator.TitleGenerator;
@@ -179,7 +176,7 @@ public class FlowNode {
 
 
     /**
-     * 开始流程
+     * 创建流程记录
      *
      * @param workId          流程设计id
      * @param processId       流程id
@@ -189,7 +186,7 @@ public class FlowNode {
      * @param currentOperator 当前操作者
      * @param snapshot        快照数据
      * @param opinion         审批意见
-     * @param pass            流程方式
+     * @param flowDirection   流程方式
      * @return 流程记录
      */
     public FlowRecord createRecord(long workId,
@@ -200,7 +197,7 @@ public class FlowNode {
                                    IFlowOperator currentOperator,
                                    BindDataSnapshot snapshot,
                                    Opinion opinion,
-                                   boolean pass) {
+                                   FlowDirection flowDirection) {
 
         // 当前操作者存在委托人时，才需要寻找委托人
         IFlowOperator flowOperator = currentOperator;
@@ -222,7 +219,7 @@ public class FlowNode {
         record.setCurrentOperatorId(flowOperator.getUserId());
         record.setPreId(preId);
         record.setTitle(title);
-        record.setPass(pass);
+        record.setFlowDirection(flowDirection);
         record.setTimeoutTime(this.loadTimeoutTime());
         record.setRecodeType(RecodeType.TODO);
         record.setErrMessage(null);

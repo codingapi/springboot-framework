@@ -12,6 +12,7 @@ import com.codingapi.springboot.framework.dto.response.SingleResponse;
 import com.codingapi.springboot.security.gateway.TokenContext;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +28,7 @@ public class FlowRecordQueryController {
 
     @GetMapping("/list")
     public MultiResponse<FlowRecordEntity> list(SearchRequest searchRequest) {
-        PageRequest pageRequest = PageRequest.of(searchRequest.getCurrent(), searchRequest.getPageSize());
+        PageRequest pageRequest = PageRequest.of(searchRequest.getCurrent(), searchRequest.getPageSize(), Sort.by("createTime").descending());
         return MultiResponse.of(flowRecordQuery.findAll(pageRequest));
     }
 

@@ -1,6 +1,6 @@
 import React from "react";
 import {Button, Divider, Form, message, Modal, Row, Space, Tabs} from "antd";
-import {detail, postponed, recall, saveFlow, submitFlow} from "@/api/flow";
+import {detail, postponed, recall, saveFlow, submitFlow, transfer} from "@/api/flow";
 import {
     ModalForm,
     ProDescriptions,
@@ -10,6 +10,7 @@ import {
     ProFormTextArea
 } from "@ant-design/pro-components";
 import moment from "moment";
+import UserSelect from "@/pages/flow/user/select";
 
 
 interface FlowFormView {
@@ -32,10 +33,13 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
 
     const [postponedVisible, setPostponedVisible] = React.useState(false);
     const [transferVisible,setTransferVisible] = React.useState(false);
+    const [selectUserVisible, setSelectUserVisible] = React.useState(false);
 
     const [viewForm] = Form.useForm();
 
     const [opinionForm] = Form.useForm();
+
+    const [transferForm] = Form.useForm();
 
     const handlerSaveFlow = () => {
         const advice = opinionForm.getFieldValue('advice');
@@ -87,6 +91,29 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
         })
     }
 
+    const handlerTransferFlow = (values:any) => {
+        const advice = opinionForm.getFieldValue('advice');
+        const recordId = props.id;
+        const binData = viewForm.getFieldsValue();
+        const clazzName = data.flowRecord.bindClass;
+        const body = {
+            recordId,
+            advice,
+            targetUserId: values.userId,
+            formData: {
+                ...binData,
+                clazzName
+            }
+        }
+        transfer(body).then(res => {
+            if (res.success) {
+                message.success('已经转办给'+values.userName).then();
+                setTransferVisible(false);
+                props.setVisible(false);
+            }
+        });
+    }
+
     const handleSubmitFlow = (success: boolean) => {
         const advice = opinionForm.getFieldValue('advice');
         const recordId = props.id;
@@ -103,7 +130,7 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
         }
         submitFlow(body).then(res => {
             if (res.success) {
-                message.success('保存成功').then();
+                message.success('流程已提交').then();
                 props.setVisible(false);
             }
         })
@@ -137,7 +164,7 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
     const handleDetail = () => {
         detail(props.id).then(res => {
             if (res.success) {
-                opinionForm.setFieldValue('advice', res.data.flowRecord.opinion.advice);
+                opinionForm.setFieldValue('advice', res.data.flowRecord.opinion?.advice);
                 setData(res.data);
             }
         });
@@ -451,6 +478,7 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
 
             <ModalForm
                 title={"延期人员选择"}
+                form={transferForm}
                 open={transferVisible}
                 modalProps={{
                     onCancel: () => {
@@ -461,16 +489,22 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
                     }
                 }}
                 onFinish={async (values) => {
-                    console.log(values);
+                    handlerTransferFlow(values);
                 }}
             >
+
                 <ProFormText
-                    name={"user"}
+                    name={"userId"}
+                    hidden={true}
+                />
+
+                <ProFormText
+                    name={"userName"}
                     label={"转交人员"}
                     fieldProps={{
                         addonAfter: (
                             <a onClick={()=>{
-                                console.log('选人员');
+                                setSelectUserVisible(true);
                             }}>选人员</a>
                         )
                     }}
@@ -482,6 +516,22 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
                     ]}
                 />
             </ModalForm>
+
+
+            <UserSelect
+                multiple={false}
+                visible={selectUserVisible}
+                setVisible={setSelectUserVisible}
+                onSelect={(selectedRowKeys) => {
+                    if (selectedRowKeys && selectedRowKeys.length > 0) {
+                        const user = selectedRowKeys[0];
+                        transferForm.setFieldsValue({
+                            userId: user.id,
+                            userName: user.name
+                        });
+                    }
+                }}
+            />
 
 
         </Modal>

@@ -19,21 +19,21 @@ public interface FlowRecordEntityRepository extends FastRepository<FlowRecordEnt
     List<FlowRecordEntity> findFlowRecordEntityByProcessId(String processId);
 
 
-    @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.recodeType = 'TODO' and r.flowStatus = 'RUNNING'")
+    @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.recodeType = 'TODO' and r.flowStatus = 'RUNNING' order by r.createTime desc")
     Page<FlowRecordEntity> findTodoByOperatorId(long operatorId,PageRequest pageRequest);
 
-    @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.recodeType = 'DONE'")
+    @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.recodeType = 'DONE' order by r.createTime desc")
     Page<FlowRecordEntity> findDoneByOperatorId(long operatorId, PageRequest pageRequest);
 
-    @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.preId = 0 and r.nodeCode = 'start'")
+    @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.preId = 0 and r.nodeCode = 'start' order by r.createTime desc")
     Page<FlowRecordEntity> findInitiatedByOperatorId(long operatorId, PageRequest pageRequest);
 
-    @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.recodeType = 'TODO' and r.flowStatus = 'RUNNING' and r.timeoutTime >0 and r.timeoutTime < ?2")
+    @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.recodeType = 'TODO' and r.flowStatus = 'RUNNING' and r.timeoutTime >0 and r.timeoutTime < ?2 order by r.createTime desc")
     Page<FlowRecordEntity> findTimeoutTodoByOperatorId(long operatorId,long currentTime, PageRequest pageRequest);
 
-    @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.recodeType = 'TODO' and r.flowStatus = 'RUNNING' and r.postponedCount > 0")
+    @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.recodeType = 'TODO' and r.flowStatus = 'RUNNING' and r.postponedCount > 0 order by r.createTime desc")
     Page<FlowRecordEntity> findPostponedTodoByOperatorId(long operatorId, PageRequest pageRequest);
 
-    @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.recodeType = 'TODO' and r.flowStatus = 'RUNNING'")
+    @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.recodeType = 'TODO' and r.flowStatus = 'RUNNING' order by r.createTime desc")
     List<FlowRecordEntity> findTodoFlowRecordByProcessId(String processId);
 }
