@@ -28,7 +28,7 @@ public class FlowRecordQueryController {
 
     @GetMapping("/list")
     public MultiResponse<FlowRecordEntity> list(SearchRequest searchRequest) {
-        PageRequest pageRequest = PageRequest.of(searchRequest.getCurrent(), searchRequest.getPageSize(), Sort.by("createTime").descending());
+        PageRequest pageRequest = PageRequest.of(searchRequest.getCurrent(), searchRequest.getPageSize(), Sort.by("id").descending());
         return MultiResponse.of(flowRecordQuery.findAll(pageRequest));
     }
 
