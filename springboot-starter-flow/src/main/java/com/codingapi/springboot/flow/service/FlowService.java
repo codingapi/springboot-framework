@@ -342,60 +342,39 @@ public class FlowService {
         // 获取创建者
         IFlowOperator createOperator = flowOperatorRepository.getFlowOperatorById(flowRecord.getCreateOperatorId());
 
-        flowNodeService.loadSnapshot();
+        flowNodeService.loadOrCreateSnapshot();
 
         BindDataSnapshot snapshot = flowNodeService.getSnapshot();
-        FlowSourceDirection flowSourceDirection = flowNodeService.getFlowSourceDirection();
+
 
         // 提交流程
-        flowRecord.submitRecord(currentOperator, snapshot, opinion, flowSourceDirection);
-        flowRecordRepository.update(flowRecord);
+        flowNodeService.submitFlowRecord();
 
         // 与当前流程同级的流程记录
-        List<FlowRecord> historyRecords = flowRecordRepository.findFlowRecordByPreId(flowRecord.getPreId());
+//        List<FlowRecord> historyRecords = flowRecordRepository.findFlowRecordByPreId(flowRecord.getPreId());
+        flowNodeService.loadHistoryRecords();
 
-
-        // 会签处理流程
-        if (flowNode.isSign()) {
-            // 会签下所有人尚未提交时，不执行下一节点
-            boolean allDone = historyRecords.stream().filter(item -> !item.isTransfer()).allMatch(FlowRecord::isDone);
-            if (!allDone) {
-                // 流程尚未审批结束直接退出
-                return;
-            }
-            // 会签下所有人都同意，再执行下一节点
-            boolean allPass = historyRecords.stream().filter(item -> !item.isTransfer()).allMatch(FlowRecord::isPass);
-            if (!allPass) {
-                flowSourceDirection = FlowSourceDirection.REJECT;
-            }
-
-        }
-        // 非会签处理流程
-        if (flowNode.isUnSign()) {
-            // 非会签下，默认其他将所有人未提交的流程，都自动提交然后再执行下一节点
-            for (FlowRecord record : historyRecords) {
-                if (record.isTodo() && record.getId() != recordId) {
-                    record.unSignAutoDone(currentOperator, snapshot);
-                    flowRecordRepository.update(flowRecord);
-                }
-            }
-        }
-
-        String processId = flowRecord.getProcessId();
-
-        // 流程结束的情况
-        if (flowSourceDirection== FlowSourceDirection.PASS && flowNode.isOverNode()) {
-            // 结束简单时自动审批
-            flowRecord.finish();
-            // 提交流程
-            flowRecord.submitRecord(currentOperator, snapshot, opinion, flowSourceDirection);
-            flowRecordRepository.update(flowRecord);
-
-            flowRecordRepository.finishFlowRecordByProcessId(processId);
-            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_FINISH, flowRecord, currentOperator,flowWork));
+        boolean next = flowNodeService.hasCurrentFlowNodeIsDone();
+        if(next){
             return;
         }
 
+        flowNodeService.reloadFlowSourceDirection();
+
+        flowNodeService.autoSubmitUnSignReload();
+
+        List<FlowRecord> historyRecords = flowNodeService.getHistoryRecords();
+
+        String processId = flowRecord.getProcessId();
+
+        FlowSourceDirection flowSourceDirection = flowNodeService.getFlowSourceDirection();
+
+        if(flowNodeService.hasCurrentFlowIsFinish()){
+            flowNodeService.finishFlow();
+
+            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_FINISH, flowRecord, currentOperator,flowWork));
+            return;
+        }
         this.createNextRecord(flowWork,flowSourceDirection,flowNode,processId,createOperator,currentOperator,snapshot,opinion,flowRecord,historyRecords);
 
     }

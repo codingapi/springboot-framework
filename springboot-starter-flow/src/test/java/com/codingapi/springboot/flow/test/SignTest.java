@@ -276,7 +276,12 @@ public class SignTest {
                 .nodes()
                 .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .node("部门领导审批", "dept", "default", ApprovalType.SIGN,
-                        OperatorMatcher.specifyOperatorMatcher(dept.getUserId(),caocao.getUserId(),lvBu.getUserId(),zhaoYun.getUserId()))
+                        OperatorMatcher.specifyOperatorMatcher(
+                                dept.getUserId(),
+                                caocao.getUserId(),
+                                lvBu.getUserId(),
+                                zhaoYun.getUserId()
+                        ))
                 .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
                 .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.creatorOperatorMatcher())
                 .relations()

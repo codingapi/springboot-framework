@@ -16,6 +16,7 @@ class FlowRecordService2 {
 
     // constructor params
     private final long recordId;
+    @Getter
     private final IFlowOperator currentOperator;
 
     // register repository

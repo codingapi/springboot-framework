@@ -267,7 +267,7 @@ public class FlowRecord {
      * @param flowOperator 操作者
      * @param snapshot     绑定数据
      */
-    public void unSignAutoDone(IFlowOperator flowOperator, BindDataSnapshot snapshot) {
+    public void autoPass(IFlowOperator flowOperator, BindDataSnapshot snapshot) {
         this.read();
         this.flowSourceDirection = FlowSourceDirection.PASS;
         this.currentOperatorId = flowOperator.getUserId();
