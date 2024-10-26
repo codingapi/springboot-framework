@@ -17,6 +17,9 @@ import com.codingapi.springboot.flow.user.IFlowOperator;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *  流程记录构建服务
+ */
 class FlowRecordBuilderService {
 
 

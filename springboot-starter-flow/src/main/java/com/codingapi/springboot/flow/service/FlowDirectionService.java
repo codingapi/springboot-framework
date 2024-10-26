@@ -9,6 +9,9 @@ import lombok.Getter;
 
 import java.util.List;
 
+/**
+ * 流程方向服务
+ */
 class FlowDirectionService {
 
     private final FlowWork flowWork;

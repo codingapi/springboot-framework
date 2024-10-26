@@ -21,6 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * 流程服务
+ */
 @Transactional
 @AllArgsConstructor
 public class FlowService {
@@ -110,7 +114,7 @@ public class FlowService {
                 recordId, currentOperator);
 
         flowRecordService.loadFlowRecord();
-        flowRecordService.flagReadFlowRecord();
+        flowRecordService.setFlowRecordRead();
         flowRecordService.loadFlowWork();
 
         FlowRecord flowRecord = flowRecordService.getFlowRecord();
@@ -306,7 +310,7 @@ public class FlowService {
         );
 
         // 创建待办记录
-        List<FlowRecord> records = flowRecordBuilderService.createRecord(start,operator);
+        List<FlowRecord> records = flowRecordBuilderService.createRecord(start, operator);
         if (records.isEmpty()) {
             throw new IllegalArgumentException("flow record not found");
         }
@@ -439,7 +443,7 @@ public class FlowService {
             records = flowRecordBuilderService.createDefaultBackRecord(flowRecord.getPreId());
         } else {
             // 审批拒绝，并且自定了返回节点
-            records = flowRecordBuilderService.createCustomBackRecord(flowNode,flowRecord.getPreId());
+            records = flowRecordBuilderService.createCustomBackRecord(flowNode, flowRecord.getPreId());
         }
 
         // 保存流程记录

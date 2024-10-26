@@ -168,7 +168,7 @@ class FlowRecordService {
     /**
      *  标记流程为已读状态
      */
-    public void flagReadFlowRecord() {
+    public void setFlowRecordRead() {
         if (currentOperator != null) {
             if(flowRecord.isOperator(currentOperator)) {
                 if (!flowRecord.isRead()) {
