@@ -103,15 +103,6 @@ class FlowRecordService {
     /**
      *  校验流程是否已完成
      */
-    public void verifyFlowRecordIsFinish() {
-        if (!flowRecord.isFinish()) {
-            throw new IllegalArgumentException("flow record is not finish");
-        }
-    }
-
-    /**
-     *  校验流程是否已完成
-     */
     public void verifyFlowRecordNotFinish() {
         if (flowRecord.isFinish()) {
             throw new IllegalArgumentException("flow record is finish");
@@ -187,8 +178,6 @@ class FlowRecordService {
             }
         }
     }
-
-
 
     /**
      * 校验是否后续没有审批记录

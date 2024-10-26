@@ -21,7 +21,7 @@ class FlowDirectionService {
 
     private List<FlowRecord> historyRecords;
 
-    public FlowDirectionService(FlowNode flowNode,FlowWork flowWork, Opinion opinion) {
+    public FlowDirectionService(FlowNode flowNode, FlowWork flowWork, Opinion opinion) {
         this.flowNode = flowNode;
         this.opinion = opinion;
         this.flowWork = flowWork;
@@ -31,7 +31,6 @@ class FlowDirectionService {
     public void bindHistoryRecords(List<FlowRecord> historyRecords) {
         this.historyRecords = historyRecords;
     }
-
 
 
     /**
@@ -45,7 +44,6 @@ class FlowDirectionService {
             flowSourceDirection = FlowSourceDirection.REJECT;
         }
     }
-
 
 
     /**
@@ -79,19 +77,14 @@ class FlowDirectionService {
      * 判断当前流程节点是否已经完成，是否可以继续流转
      */
     public boolean hasCurrentFlowNodeIsDone() {
-        // 会签处理流程
-        if (flowNode.isSign()) {
-            // 会签下所有人尚未提交时，不执行下一节点
-            boolean allDone = historyRecords.stream().filter(item -> !item.isTransfer()).allMatch(FlowRecord::isDone);
-            if (!allDone) {
-                // 流程尚未审批结束直接退出
-                return true;
-            }
+        // 会签下所有人尚未提交时，不执行下一节点
+        boolean allDone = historyRecords.stream().filter(item -> !item.isTransfer()).allMatch(FlowRecord::isDone);
+        if (!allDone) {
+            // 流程尚未审批结束直接退出
+            return true;
         }
         return false;
     }
-
-
 
 
     /**
