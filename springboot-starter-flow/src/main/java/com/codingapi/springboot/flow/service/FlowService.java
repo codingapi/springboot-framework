@@ -326,10 +326,6 @@ public class FlowService {
         flowRecordService2.loadFlowWork();
         flowRecordService2.loadFlowNode();
 
-        FlowRecord flowRecord = flowRecordService2.getFlowRecord();
-        FlowNode flowNode = flowRecordService2.getFlowNode();
-        FlowWork flowWork = flowRecordService2.getFlowWork();
-
         FlowNodeService flowNodeService = new FlowNodeService(flowOperatorRepository,flowBindDataRepository,flowRecordService2,bindData,opinion);
 
         flowNodeService.loadFlowSourceDirection();
@@ -339,19 +335,12 @@ public class FlowService {
         flowNodeService.loadChildrenRecords();
         flowNodeService.verifyChildrenRecordsIsEmpty();
 
-        // 获取创建者
-        IFlowOperator createOperator = flowOperatorRepository.getFlowOperatorById(flowRecord.getCreateOperatorId());
-
         flowNodeService.loadOrCreateSnapshot();
-
-        BindDataSnapshot snapshot = flowNodeService.getSnapshot();
-
 
         // 提交流程
         flowNodeService.submitFlowRecord();
 
         // 与当前流程同级的流程记录
-//        List<FlowRecord> historyRecords = flowRecordRepository.findFlowRecordByPreId(flowRecord.getPreId());
         flowNodeService.loadHistoryRecords();
 
         boolean next = flowNodeService.hasCurrentFlowNodeIsDone();
@@ -363,101 +352,33 @@ public class FlowService {
 
         flowNodeService.autoSubmitUnSignReload();
 
-        List<FlowRecord> historyRecords = flowNodeService.getHistoryRecords();
 
-        String processId = flowRecord.getProcessId();
-
-        FlowSourceDirection flowSourceDirection = flowNodeService.getFlowSourceDirection();
+        FlowRecord flowRecord = flowRecordService2.getFlowRecord();
+        FlowWork flowWork = flowRecordService2.getFlowWork();
 
         if(flowNodeService.hasCurrentFlowIsFinish()){
             flowNodeService.finishFlow();
-
             EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_FINISH, flowRecord, currentOperator,flowWork));
             return;
         }
 
-        flowNodeService.createNextRecord();
-
-//        this.createNextRecord(flowWork,flowSourceDirection,flowNode,processId,createOperator,currentOperator,snapshot,opinion,flowRecord,historyRecords);
-
-    }
-
-
-    /**
-     * 创建下一个流程的记录
-     * @param flowWork              流程
-     * @param flowSourceDirection   是否通过
-     * @param flowNode              流程节点
-     * @param processId             流程id
-     * @param createOperator        流程创建者
-     * @param currentOperator       当前操作者
-     * @param snapshot              绑定数据
-     * @param opinion               上级审批意见
-     * @param flowRecord            流程记录
-     * @param historyRecords        历史记录
-     */
-    private void createNextRecord(FlowWork flowWork, FlowSourceDirection flowSourceDirection, FlowNode flowNode, String processId, IFlowOperator createOperator, IFlowOperator currentOperator, BindDataSnapshot snapshot, Opinion opinion, FlowRecord flowRecord, List<FlowRecord> historyRecords){
-        long preId = flowRecord.getId();
-        // 拥有退出条件 或审批通过时，匹配下一节点
-        if (flowWork.hasBackRelation() || flowSourceDirection== FlowSourceDirection.PASS) {
-
-            FlowRecordService flowRecordService = new FlowRecordService(flowOperatorRepository, processId, createOperator, currentOperator, snapshot, opinion, flowWork, flowSourceDirection, historyRecords);
-            FlowNode nextNode = flowRecordService.matcherNextNode(flowNode);
-            if (nextNode == null) {
-                throw new IllegalArgumentException("next node not found");
-            }
-
-            IFlowOperator flowOperator = currentOperator;
-            // 退回流程 并且  也设置了退回节点
-            if (flowSourceDirection== FlowSourceDirection.REJECT && flowWork.hasBackRelation()) {
-                if (nextNode.isAnyOperatorMatcher()) {
-                    // 如果是任意人员操作时则需要指定为当时审批人员为当前审批人员
-                    FlowRecord preFlowRecord = flowRecordRepository.getFlowRecordById(flowRecord.getPreId());
-                    while (preFlowRecord.isTransfer() || !preFlowRecord.getNodeCode().equals(nextNode.getCode())) {
-                        preFlowRecord = flowRecordRepository.getFlowRecordById(preFlowRecord.getPreId());
-                    }
-                    flowOperator = flowOperatorRepository.getFlowOperatorById(preFlowRecord.getCurrentOperatorId());
-                }
-            }
-            flowRecordService.changeCurrentOperator(flowOperator);
-
-            this.createNexRecordList(flowRecordService,preId,nextNode,flowWork);
-
-        } else {
-            IFlowOperator flowOperator;
-            // 拒绝时，默认返回上一个节点
-            FlowRecord preRecord = flowRecordRepository.getFlowRecordById(flowRecord.getPreId());
-            // 去除所有的转办的记录
-            while (preRecord.isTransfer()) {
-                // 继续寻找上一个节点
-                preRecord = flowRecordRepository.getFlowRecordById(preRecord.getPreId());
-            }
-
-            // 获取上一个节点的审批者，继续将审批者设置为当前审批者
-            flowOperator = flowOperatorRepository.getFlowOperatorById(preRecord.getCurrentOperatorId());
-
-            FlowRecordService flowRecordService = new FlowRecordService(flowOperatorRepository, processId, createOperator, flowOperator, snapshot, opinion, flowWork, flowSourceDirection, historyRecords);
-            FlowNode nextNode = flowWork.getNodeByCode(preRecord.getNodeCode());
-            if (nextNode == null) {
-                throw new IllegalArgumentException("next node not found");
-            }
-            this.createNexRecordList(flowRecordService,preId,nextNode,flowWork);
-        }
-
-        int eventState = flowSourceDirection== FlowSourceDirection.PASS ? FlowApprovalEvent.STATE_PASS : FlowApprovalEvent.STATE_REJECT;
-        EventPusher.push(new FlowApprovalEvent(eventState, flowRecord, currentOperator,flowWork));
-
-    }
-
-    private void createNexRecordList(FlowRecordService flowRecordService,long preId,FlowNode nextNode,FlowWork flowWork){
-        List<FlowRecord> records = flowRecordService.createRecord(preId, nextNode);
-        flowRecordRepository.save(records);
+        List<FlowRecord> records =  flowNodeService.createNextRecord();
+        flowRecordService2.flowRecordRepository.save(records);
 
         for (FlowRecord record : records) {
             IFlowOperator pushOperator = flowOperatorRepository.getFlowOperatorById(record.getCurrentOperatorId());
-            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, record, pushOperator,flowWork));
+            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, record, pushOperator, flowWork));
         }
+
+        FlowSourceDirection flowSourceDirection = flowNodeService.getFlowSourceDirection();
+
+        int eventState = flowSourceDirection == FlowSourceDirection.PASS ? FlowApprovalEvent.STATE_PASS : FlowApprovalEvent.STATE_REJECT;
+        EventPusher.push(new FlowApprovalEvent(eventState, flowRecord, currentOperator, flowWork));
+
     }
+
+
+
 
 
     /**
