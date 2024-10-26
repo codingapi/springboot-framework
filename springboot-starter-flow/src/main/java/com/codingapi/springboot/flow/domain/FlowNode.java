@@ -185,7 +185,6 @@ public class FlowNode {
      * @param createOperator  流程操作者
      * @param currentOperator 当前操作者
      * @param snapshot        快照数据
-     * @param opinion         审批意见
      * @param flowSourceDirection   流程方式
      * @return 流程记录
      */
@@ -196,7 +195,6 @@ public class FlowNode {
                                    IFlowOperator createOperator,
                                    IFlowOperator currentOperator,
                                    BindDataSnapshot snapshot,
-                                   Opinion opinion,
                                    FlowSourceDirection flowSourceDirection) {
 
         // 当前操作者存在委托人时，才需要寻找委托人
@@ -215,7 +213,6 @@ public class FlowNode {
         record.setPostponedCount(0);
         record.setCreateOperatorId(createOperator.getUserId());
         record.setBindClass(snapshot.getClazzName());
-        record.setOpinion(opinion);
         record.setCurrentOperatorId(flowOperator.getUserId());
         record.setPreId(preId);
         record.setTitle(title);
