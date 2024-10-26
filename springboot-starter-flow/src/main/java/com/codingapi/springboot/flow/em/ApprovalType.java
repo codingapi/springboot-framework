@@ -1,5 +1,8 @@
 package com.codingapi.springboot.flow.em;
 
+/**
+ *  审批类型：会签与非会签
+ */
 public enum ApprovalType {
 
     /**

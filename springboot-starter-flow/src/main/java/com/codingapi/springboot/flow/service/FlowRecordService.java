@@ -6,7 +6,7 @@ import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.FlowRelation;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.domain.Opinion;
-import com.codingapi.springboot.flow.em.FlowDirection;
+import com.codingapi.springboot.flow.em.FlowSourceDirection;
 import com.codingapi.springboot.flow.error.ErrorResult;
 import com.codingapi.springboot.flow.error.NodeResult;
 import com.codingapi.springboot.flow.error.OperatorResult;
@@ -29,7 +29,7 @@ class FlowRecordService {
     private final BindDataSnapshot snapshot;
     private final Opinion opinion;
     private final FlowWork flowWork;
-    private final FlowDirection flowDirection;
+    private final FlowSourceDirection flowSourceDirection;
     private final List<FlowRecord> historyRecords;
 
 
@@ -41,7 +41,7 @@ class FlowRecordService {
      * @param snapshot               绑定数据快照
      * @param opinion                审批意见
      * @param flowWork               流程设计
-     * @param flowDirection          流转方式
+     * @param flowSourceDirection          流转方式
      * @param historyRecords         当前节点下的审批记录
      */
     public FlowRecordService(FlowOperatorRepository flowOperatorRepository,
@@ -51,7 +51,7 @@ class FlowRecordService {
                              BindDataSnapshot snapshot,
                              Opinion opinion,
                              FlowWork flowWork,
-                             FlowDirection flowDirection,
+                             FlowSourceDirection flowSourceDirection,
                              List<FlowRecord> historyRecords) {
         this.flowOperatorRepository = flowOperatorRepository;
         this.processId = processId;
@@ -60,7 +60,7 @@ class FlowRecordService {
         this.snapshot = snapshot;
         this.opinion = opinion;
         this.flowWork = flowWork;
-        this.flowDirection = flowDirection;
+        this.flowSourceDirection = flowSourceDirection;
         this.historyRecords = historyRecords;
     }
 
@@ -86,7 +86,7 @@ class FlowRecordService {
             String recordTitle = currentNode.generateTitle(flowContent);
             List<FlowRecord> recordList = new ArrayList<>();
             for (IFlowOperator operator : operators) {
-                FlowRecord record = currentNode.createRecord(workId, processId, preId, recordTitle, createOperator, operator, snapshot, opinion, flowDirection);
+                FlowRecord record = currentNode.createRecord(workId, processId, preId, recordTitle, createOperator, operator, snapshot, opinion, flowSourceDirection);
                 recordList.add(record);
             }
             return recordList;
@@ -102,7 +102,7 @@ class FlowRecordService {
      */
     public FlowNode matcherNextNode(FlowNode currentNode) {
         List<FlowRelation> relations = flowWork.getRelations().stream()
-                .filter(relation -> relation.sourceMatcher(currentNode.getCode()) && (flowDirection != FlowDirection.REJECT || relation.isBack()))
+                .filter(relation -> relation.sourceMatcher(currentNode.getCode()) && (flowSourceDirection != FlowSourceDirection.REJECT || relation.isBack()))
                 .sorted((o1, o2) -> (o2.getOrder() - o1.getOrder()))
                 .toList();
         if (relations.isEmpty()) {
@@ -146,7 +146,7 @@ class FlowRecordService {
                 for (IFlowOperator operator : operators) {
                     FlowContent content = new FlowContent(flowWork, currentNode, createOperator, operator, snapshot.toBindData(), opinion, historyRecords);
                     String recordTitle = currentNode.generateTitle(content);
-                    FlowRecord record = currentNode.createRecord(flowWork.getId(), processId, preId, recordTitle, createOperator, operator, snapshot, opinion, flowDirection);
+                    FlowRecord record = currentNode.createRecord(flowWork.getId(), processId, preId, recordTitle, createOperator, operator, snapshot, opinion, flowSourceDirection);
                     recordList.add(record);
                 }
                 return recordList;
@@ -164,7 +164,7 @@ class FlowRecordService {
                 if (!matcherOperators.isEmpty()) {
                     for (IFlowOperator matcherOperator : matcherOperators) {
                         String recordTitle = node.generateTitle(content);
-                        FlowRecord record = node.createRecord(flowWork.getId(), processId, preId, recordTitle, createOperator, matcherOperator, snapshot, opinion, flowDirection);
+                        FlowRecord record = node.createRecord(flowWork.getId(), processId, preId, recordTitle, createOperator, matcherOperator, snapshot, opinion, flowSourceDirection);
                         recordList.add(record);
                     }
                 }

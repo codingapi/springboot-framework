@@ -4,8 +4,8 @@ import com.codingapi.springboot.flow.bind.BindDataSnapshot;
 import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.em.FlowStatus;
-import com.codingapi.springboot.flow.em.RecodeType;
-import com.codingapi.springboot.flow.em.FlowDirection;
+import com.codingapi.springboot.flow.em.FlowType;
+import com.codingapi.springboot.flow.em.FlowSourceDirection;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,13 +51,13 @@ public class FlowRecord {
     /**
      * 节点状态 | 待办、已办
      */
-    private RecodeType recodeType;
+    private FlowType flowType;
 
     /**
      * 流转产生方式
      * 流程是退回产生的还是通过产生的
      */
-    private FlowDirection flowDirection;
+    private FlowSourceDirection flowSourceDirection;
 
     /**
      * 创建时间
@@ -185,7 +185,7 @@ public class FlowRecord {
         if (flowStatus == FlowStatus.FINISH) {
             throw new IllegalArgumentException("flow is finish");
         }
-        if (recodeType == RecodeType.DONE) {
+        if (flowType == FlowType.DONE) {
             throw new IllegalArgumentException("flow is done");
         }
     }
@@ -196,9 +196,9 @@ public class FlowRecord {
      * @param flowOperator          操作者
      * @param snapshot              绑定数据
      * @param opinion               意见
-     * @param flowDirection       流转方式
+     * @param flowSourceDirection       流转方式
      */
-    public void submitRecord(IFlowOperator flowOperator, BindDataSnapshot snapshot, Opinion opinion, FlowDirection flowDirection) {
+    public void submitRecord(IFlowOperator flowOperator, BindDataSnapshot snapshot, Opinion opinion, FlowSourceDirection flowSourceDirection) {
         if (!flowOperator.isFlowManager()) {
             if (flowOperator.getUserId() != this.currentOperatorId) {
                 throw new IllegalArgumentException("current operator is not match");
@@ -208,8 +208,8 @@ public class FlowRecord {
             this.interfere = true;
         }
         this.read();
-        this.flowDirection = flowDirection;
-        this.recodeType = RecodeType.DONE;
+        this.flowSourceDirection = flowSourceDirection;
+        this.flowType = FlowType.DONE;
         this.updateTime = System.currentTimeMillis();
         this.snapshotId = snapshot.getId();
         this.bindClass = snapshot.getClazzName();
@@ -224,8 +224,8 @@ public class FlowRecord {
             throw new IllegalArgumentException("current operator is not match");
         }
         this.read();
-        this.flowDirection = FlowDirection.TRANSFER;
-        this.recodeType = RecodeType.TRANSFER;
+        this.flowSourceDirection = FlowSourceDirection.TRANSFER;
+        this.flowType = FlowType.TRANSFER;
         this.updateTime = System.currentTimeMillis();
         this.snapshotId = snapshot.getId();
         this.bindClass = snapshot.getClazzName();
@@ -241,7 +241,7 @@ public class FlowRecord {
      */
     public void transferToTodo(String title, IFlowOperator operator) {
         this.id = 0;
-        this.recodeType = RecodeType.TODO;
+        this.flowType = FlowType.TODO;
         this.flowStatus = FlowStatus.RUNNING;
         this.postponedCount = 0;
         this.updateTime = 0;
@@ -249,7 +249,7 @@ public class FlowRecord {
         this.read = false;
         this.title = title;
         this.opinion = null;
-        this.flowDirection = null;
+        this.flowSourceDirection = null;
         this.currentOperatorId = operator.getUserId();
     }
 
@@ -261,9 +261,9 @@ public class FlowRecord {
      */
     public void unSignAutoDone(IFlowOperator flowOperator, BindDataSnapshot snapshot) {
         this.read();
-        this.flowDirection = FlowDirection.PASS;
+        this.flowSourceDirection = FlowSourceDirection.PASS;
         this.currentOperatorId = flowOperator.getUserId();
-        this.recodeType = RecodeType.DONE;
+        this.flowType = FlowType.DONE;
         this.updateTime = System.currentTimeMillis();
         this.snapshotId = snapshot.getId();
         this.bindClass = snapshot.getClazzName();
@@ -284,7 +284,7 @@ public class FlowRecord {
      * 是否已审批
      */
     public boolean isDone() {
-        return this.recodeType == RecodeType.DONE;
+        return this.flowType == FlowType.DONE;
     }
 
     /**
@@ -298,7 +298,7 @@ public class FlowRecord {
      * 是否是待办
      */
     public boolean isTodo() {
-        return this.recodeType == RecodeType.TODO && this.flowStatus == FlowStatus.RUNNING;
+        return this.flowType == FlowType.TODO && this.flowStatus == FlowStatus.RUNNING;
     }
 
     /**
@@ -307,7 +307,7 @@ public class FlowRecord {
      * @return 是否是转交
      */
     public boolean isTransfer() {
-        return this.recodeType == RecodeType.TRANSFER;
+        return this.flowType == FlowType.TRANSFER;
     }
 
     /**
@@ -327,7 +327,7 @@ public class FlowRecord {
      * 撤回流程
      */
     public void recall() {
-        this.recodeType = RecodeType.TODO;
+        this.flowType = FlowType.TODO;
         this.updateTime = System.currentTimeMillis();
     }
 
@@ -342,8 +342,8 @@ public class FlowRecord {
         record.setNodeCode(this.nodeCode);
         record.setTitle(this.title);
         record.setCurrentOperatorId(this.currentOperatorId);
-        record.setRecodeType(this.recodeType);
-        record.setFlowDirection(this.flowDirection);
+        record.setFlowType(this.flowType);
+        record.setFlowSourceDirection(this.flowSourceDirection);
         record.setCreateTime(this.createTime);
         record.setUpdateTime(this.updateTime);
         record.setFinishTime(this.finishTime);

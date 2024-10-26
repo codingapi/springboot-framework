@@ -50,15 +50,14 @@ public class FlowRecordEntity {
     private String currentOperatorName;
 
     /**
-     * 节点状态 | 待办、已办
+     * 节点类型 | 待办、已办、转办
      */
-    private String recodeType;
+    private String flowType;
 
     /**
-     * 流转产生方式
-     * 流程是退回产生的还是通过产生的
+     * 流转产生方式 ｜ 同意、拒绝、转办
      */
-    private Boolean pass;
+    private String flowSourceDirection;
 
     /**
      * 创建时间

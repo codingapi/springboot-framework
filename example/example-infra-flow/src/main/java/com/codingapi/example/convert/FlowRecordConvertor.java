@@ -3,8 +3,9 @@ package com.codingapi.example.convert;
 import com.codingapi.example.entity.FlowRecordEntity;
 import com.codingapi.example.repository.UserRepository;
 import com.codingapi.springboot.flow.domain.Opinion;
+import com.codingapi.springboot.flow.em.FlowSourceDirection;
 import com.codingapi.springboot.flow.em.FlowStatus;
-import com.codingapi.springboot.flow.em.RecodeType;
+import com.codingapi.springboot.flow.em.FlowType;
 import com.codingapi.springboot.flow.record.FlowRecord;
 
 public class FlowRecordConvertor {
@@ -22,8 +23,10 @@ public class FlowRecordConvertor {
         entity.setNodeCode(flowRecord.getNodeCode());
         entity.setTitle(flowRecord.getTitle());
         entity.setCurrentOperatorId(flowRecord.getCurrentOperatorId());
-        entity.setRecodeType(flowRecord.getRecodeType().name());
-        entity.setPass(flowRecord.isPass());
+        entity.setFlowType(flowRecord.getFlowType().name());
+        if(flowRecord.getFlowSourceDirection()!= null){
+            entity.setFlowSourceDirection(flowRecord.getFlowSourceDirection().name());
+        }
         entity.setCreateTime(flowRecord.getCreateTime());
         entity.setUpdateTime(flowRecord.getUpdateTime());
         entity.setFinishTime(flowRecord.getFinishTime());
@@ -63,8 +66,8 @@ public class FlowRecordConvertor {
         flowRecord.setNodeCode(entity.getNodeCode());
         flowRecord.setTitle(entity.getTitle());
         flowRecord.setCurrentOperatorId(entity.getCurrentOperatorId());
-        flowRecord.setRecodeType(RecodeType.parser(entity.getRecodeType()));
-        flowRecord.setPass(entity.getPass());
+        flowRecord.setFlowType(FlowType.parser(entity.getFlowType()));
+        flowRecord.setFlowSourceDirection(FlowSourceDirection.parser(entity.getFlowSourceDirection()));
         flowRecord.setCreateTime(entity.getCreateTime());
         flowRecord.setUpdateTime(entity.getUpdateTime());
         flowRecord.setFinishTime(entity.getFinishTime());

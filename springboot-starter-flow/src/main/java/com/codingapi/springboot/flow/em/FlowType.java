@@ -1,9 +1,9 @@
 package com.codingapi.springboot.flow.em;
 
 /**
- * 流转类型
+ * 流程的类型
  */
-public enum RecodeType {
+public enum FlowType {
 
     /**
      * 待办
@@ -19,10 +19,10 @@ public enum RecodeType {
     TRANSFER;
 
 
-    public static RecodeType parser(String type){
-        for(RecodeType recodeType:values()){
-            if(recodeType.name().equalsIgnoreCase(type)){
-                return recodeType;
+    public static FlowType parser(String type){
+        for(FlowType flowType :values()){
+            if(flowType.name().equalsIgnoreCase(type)){
+                return flowType;
             }
         }
         return TODO;

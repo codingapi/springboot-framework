@@ -1,5 +1,8 @@
 package com.codingapi.springboot.flow.em;
 
+/**
+ * 节点类型
+ */
 public enum NodeType {
 
     /**
