@@ -50,6 +50,11 @@ const FlowRecordPage = () => {
             search: false
         },
         {
+            title: 'pre编号',
+            dataIndex: 'preId',
+            search: false
+        },
+        {
             title: '流程编号',
             dataIndex: 'processId',
         },

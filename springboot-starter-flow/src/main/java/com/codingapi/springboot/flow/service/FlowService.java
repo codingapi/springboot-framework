@@ -382,6 +382,7 @@ public class FlowService {
         }
         flowRecord.submitStateVerify();
 
+        // 非流程管理员需要核验身份
         if (!currentOperator.isFlowManager()) {
             flowRecord.matcherOperator(currentOperator);
         }
@@ -494,6 +495,7 @@ public class FlowService {
      * @param historyRecords        历史记录
      */
     private void createNextRecord(FlowWork flowWork, FlowSourceDirection flowSourceDirection, FlowNode flowNode, String processId, IFlowOperator createOperator, IFlowOperator currentOperator, BindDataSnapshot snapshot, Opinion opinion, FlowRecord flowRecord, List<FlowRecord> historyRecords){
+        long preId = flowRecord.getId();
         // 拥有退出条件 或审批通过时，匹配下一节点
         if (flowWork.hasBackRelation() || flowSourceDirection== FlowSourceDirection.PASS) {
 
@@ -517,13 +519,7 @@ public class FlowService {
             }
             flowRecordService.changeCurrentOperator(flowOperator);
 
-            List<FlowRecord> records = flowRecordService.createRecord(flowRecord.getId(), nextNode);
-            flowRecordRepository.save(records);
-
-            for (FlowRecord record : records) {
-                IFlowOperator pushOperator = flowOperatorRepository.getFlowOperatorById(record.getCurrentOperatorId());
-                EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, record, pushOperator,flowWork));
-            }
+            this.createNexRecordList(flowRecordService,preId,nextNode,flowWork);
 
         } else {
             IFlowOperator flowOperator;
@@ -543,18 +539,22 @@ public class FlowService {
             if (nextNode == null) {
                 throw new IllegalArgumentException("next node not found");
             }
-            List<FlowRecord> records = flowRecordService.createRecord(preRecord.getId(), nextNode);
-            flowRecordRepository.save(records);
-
-            for (FlowRecord record : records) {
-                IFlowOperator pushOperator = flowOperatorRepository.getFlowOperatorById(record.getCurrentOperatorId());
-                EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, record, pushOperator,flowWork));
-            }
+            this.createNexRecordList(flowRecordService,preId,nextNode,flowWork);
         }
 
         int eventState = flowSourceDirection== FlowSourceDirection.PASS ? FlowApprovalEvent.STATE_PASS : FlowApprovalEvent.STATE_REJECT;
         EventPusher.push(new FlowApprovalEvent(eventState, flowRecord, currentOperator,flowWork));
 
+    }
+
+    private void createNexRecordList(FlowRecordService flowRecordService,long preId,FlowNode nextNode,FlowWork flowWork){
+        List<FlowRecord> records = flowRecordService.createRecord(preId, nextNode);
+        flowRecordRepository.save(records);
+
+        for (FlowRecord record : records) {
+            IFlowOperator pushOperator = flowOperatorRepository.getFlowOperatorById(record.getCurrentOperatorId());
+            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, record, pushOperator,flowWork));
+        }
     }
 
 

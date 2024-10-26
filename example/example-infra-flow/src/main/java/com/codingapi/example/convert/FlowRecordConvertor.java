@@ -24,7 +24,7 @@ public class FlowRecordConvertor {
         entity.setTitle(flowRecord.getTitle());
         entity.setCurrentOperatorId(flowRecord.getCurrentOperatorId());
         entity.setFlowType(flowRecord.getFlowType().name());
-        if(flowRecord.getFlowSourceDirection()!= null){
+        if (flowRecord.getFlowSourceDirection() != null) {
             entity.setFlowSourceDirection(flowRecord.getFlowSourceDirection().name());
         }
         entity.setCreateTime(flowRecord.getCreateTime());
@@ -48,6 +48,10 @@ public class FlowRecordConvertor {
         entity.setSnapshotId(flowRecord.getSnapshotId());
         entity.setRead(flowRecord.isRead());
         entity.setInterfere(flowRecord.isInterfere());
+        entity.setInterferedOperatorId(flowRecord.getInterferedOperatorId());
+        if (flowRecord.isInterfere() && flowRecord.getInterferedOperatorId() > 0) {
+            entity.setInterferedOperatorName(userRepository.getUserById(flowRecord.getInterferedOperatorId()).getName());
+        }
         entity.setReadTime(flowRecord.getReadTime());
         return entity;
     }

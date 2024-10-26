@@ -3,9 +3,9 @@ package com.codingapi.springboot.flow.record;
 import com.codingapi.springboot.flow.bind.BindDataSnapshot;
 import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.Opinion;
+import com.codingapi.springboot.flow.em.FlowSourceDirection;
 import com.codingapi.springboot.flow.em.FlowStatus;
 import com.codingapi.springboot.flow.em.FlowType;
-import com.codingapi.springboot.flow.em.FlowSourceDirection;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import lombok.Getter;
 import lombok.Setter;
@@ -89,7 +89,7 @@ public class FlowRecord {
      */
     private long createOperatorId;
     /**
-     * 审批意见
+     * 审批意见 (为办理时为空)
      */
     private Opinion opinion;
     /**
@@ -120,6 +120,11 @@ public class FlowRecord {
      * 是否干预
      */
     private boolean interfere;
+
+    /**
+     * 被干预的用户
+     */
+    private long interferedOperatorId;
 
     /**
      * 已读时间
@@ -193,10 +198,10 @@ public class FlowRecord {
     /**
      * 提交流程
      *
-     * @param flowOperator          操作者
-     * @param snapshot              绑定数据
-     * @param opinion               意见
-     * @param flowSourceDirection       流转方式
+     * @param flowOperator        操作者
+     * @param snapshot            绑定数据
+     * @param opinion             意见
+     * @param flowSourceDirection 流转方式
      */
     public void submitRecord(IFlowOperator flowOperator, BindDataSnapshot snapshot, Opinion opinion, FlowSourceDirection flowSourceDirection) {
         if (!flowOperator.isFlowManager()) {
@@ -204,6 +209,7 @@ public class FlowRecord {
                 throw new IllegalArgumentException("current operator is not match");
             }
         } else {
+            this.interferedOperatorId = this.currentOperatorId;
             this.currentOperatorId = flowOperator.getUserId();
             this.interfere = true;
         }
@@ -250,6 +256,8 @@ public class FlowRecord {
         this.title = title;
         this.opinion = null;
         this.flowSourceDirection = null;
+        this.interfere = false;
+        this.interferedOperatorId = 0;
         this.currentOperatorId = operator.getUserId();
     }
 
@@ -319,6 +327,7 @@ public class FlowRecord {
 
     /**
      * 匹配操作者
+     *
      * @param currentOperator 当前操作者
      */
     public void matcherOperator(IFlowOperator currentOperator) {
@@ -329,6 +338,7 @@ public class FlowRecord {
 
     /**
      * 是否是当前操作者
+     *
      * @param operator 操作者
      * @return 是否是当前操作者
      */
@@ -370,6 +380,7 @@ public class FlowRecord {
         record.setSnapshotId(this.snapshotId);
         record.setRead(this.read);
         record.setInterfere(this.interfere);
+        record.setInterferedOperatorId(this.interferedOperatorId);
         record.setReadTime(this.readTime);
         return record;
     }

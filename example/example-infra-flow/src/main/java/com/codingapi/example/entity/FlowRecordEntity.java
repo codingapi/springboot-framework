@@ -131,6 +131,16 @@ public class FlowRecordEntity {
     private Boolean interfere;
 
     /**
+     * 被干预的用户
+     */
+    private Long interferedOperatorId;
+
+    /**
+     * 被干预的用户
+     */
+    private String interferedOperatorName;
+
+    /**
      * 已读时间
      */
     private Long readTime;
