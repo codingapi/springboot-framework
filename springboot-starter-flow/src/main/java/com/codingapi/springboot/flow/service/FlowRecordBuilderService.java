@@ -1,7 +1,7 @@
 package com.codingapi.springboot.flow.service;
 
 import com.codingapi.springboot.flow.bind.BindDataSnapshot;
-import com.codingapi.springboot.flow.content.FlowContent;
+import com.codingapi.springboot.flow.content.FlowSession;
 import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.FlowRelation;
 import com.codingapi.springboot.flow.domain.FlowWork;
@@ -78,10 +78,10 @@ class FlowRecordBuilderService {
         if (relations.isEmpty()) {
             throw new IllegalArgumentException("relation not found");
         }
-        FlowContent flowContent = new FlowContent(flowWork, flowNode, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
+        FlowSession flowSession = new FlowSession(flowWork, flowNode, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
         List<FlowNode> flowNodes = new ArrayList<>();
         for (FlowRelation flowRelation : relations) {
-            FlowNode node = flowRelation.trigger(flowContent);
+            FlowNode node = flowRelation.trigger(flowSession);
             if (node != null) {
                 flowNodes.add(node);
             }
@@ -101,8 +101,8 @@ class FlowRecordBuilderService {
      */
     private List<FlowRecord> errMatcher(FlowNode currentNode, IFlowOperator currentOperator) {
         if (currentNode.hasErrTrigger()) {
-            FlowContent flowContent = new FlowContent(flowWork, currentNode, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
-            ErrorResult errorResult = currentNode.errMatcher(flowContent);
+            FlowSession flowSession = new FlowSession(flowWork, currentNode, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
+            ErrorResult errorResult = currentNode.errMatcher(flowSession);
             if (errorResult == null) {
                 throw new IllegalArgumentException("errMatcher match error.");
             }
@@ -113,7 +113,7 @@ class FlowRecordBuilderService {
                 List<Long> operatorIds = ((OperatorResult) errorResult).getOperatorIds();
                 List<? extends IFlowOperator> operators = flowOperatorRepository.findByIds(operatorIds);
                 for (IFlowOperator operator : operators) {
-                    FlowContent content = new FlowContent(flowWork, currentNode, createOperator, operator, snapshot.toBindData(), opinion, historyRecords);
+                    FlowSession content = new FlowSession(flowWork, currentNode, createOperator, operator, snapshot.toBindData(), opinion, historyRecords);
                     String recordTitle = currentNode.generateTitle(content);
                     FlowRecord record = currentNode.createRecord(flowWork.getId(), processId, preId, recordTitle, createOperator, operator, snapshot);
                     recordList.add(record);
@@ -128,7 +128,7 @@ class FlowRecordBuilderService {
                     throw new IllegalArgumentException("node not found.");
                 }
                 List<FlowRecord> recordList = new ArrayList<>();
-                FlowContent content = new FlowContent(flowWork, node, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
+                FlowSession content = new FlowSession(flowWork, node, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
                 List<? extends IFlowOperator> matcherOperators = node.loadFlowNodeOperator(content, flowOperatorRepository);
                 if (!matcherOperators.isEmpty()) {
                     for (IFlowOperator matcherOperator : matcherOperators) {
@@ -152,9 +152,9 @@ class FlowRecordBuilderService {
      * @return 流程记录
      */
     public List<FlowRecord> createRecord(FlowNode currentNode, IFlowOperator currentOperator) {
-        FlowContent flowContent = new FlowContent(flowWork, currentNode, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
+        FlowSession flowSession = new FlowSession(flowWork, currentNode, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
         long workId = flowWork.getId();
-        List<? extends IFlowOperator> operators = currentNode.loadFlowNodeOperator(flowContent, flowOperatorRepository);
+        List<? extends IFlowOperator> operators = currentNode.loadFlowNodeOperator(flowSession, flowOperatorRepository);
         if (operators.isEmpty()) {
             List<FlowRecord> errorRecordList = this.errMatcher(currentNode, currentOperator);
             if (errorRecordList.isEmpty()) {
@@ -162,7 +162,7 @@ class FlowRecordBuilderService {
             }
             return errorRecordList;
         } else {
-            String recordTitle = currentNode.generateTitle(flowContent);
+            String recordTitle = currentNode.generateTitle(flowSession);
             List<FlowRecord> recordList = new ArrayList<>();
             for (IFlowOperator operator : operators) {
                 FlowRecord record = currentNode.createRecord(workId, processId, preId, recordTitle, createOperator, operator, snapshot);

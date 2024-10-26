@@ -1,7 +1,7 @@
 package com.codingapi.springboot.flow.domain;
 
 import com.codingapi.springboot.flow.bind.BindDataSnapshot;
-import com.codingapi.springboot.flow.content.FlowContent;
+import com.codingapi.springboot.flow.content.FlowSession;
 import com.codingapi.springboot.flow.em.*;
 import com.codingapi.springboot.flow.error.ErrTrigger;
 import com.codingapi.springboot.flow.error.ErrorResult;
@@ -167,11 +167,11 @@ public class FlowNode {
     /**
      * 加载节点的操作者
      *
-     * @param flowContent 操作内容
+     * @param flowSession 操作内容
      * @return 是否匹配
      */
-    public List<? extends IFlowOperator> loadFlowNodeOperator(FlowContent flowContent, FlowOperatorRepository flowOperatorRepository) {
-        return flowOperatorRepository.findByIds(this.operatorMatcher.matcher(flowContent));
+    public List<? extends IFlowOperator> loadFlowNodeOperator(FlowSession flowSession, FlowOperatorRepository flowOperatorRepository) {
+        return flowOperatorRepository.findByIds(this.operatorMatcher.matcher(flowSession));
     }
 
 
@@ -245,11 +245,11 @@ public class FlowNode {
     /**
      * 异常匹配
      *
-     * @param flowContent 操作内容
+     * @param flowSession 操作内容
      */
-    public ErrorResult errMatcher(FlowContent flowContent) {
+    public ErrorResult errMatcher(FlowSession flowSession) {
         if (errTrigger != null) {
-            return errTrigger.trigger(flowContent);
+            return errTrigger.trigger(flowSession);
         }
         return null;
     }
@@ -266,11 +266,11 @@ public class FlowNode {
     /**
      * 生成标题
      *
-     * @param flowContent 流程内容
+     * @param flowSession 流程内容
      * @return 标题
      */
-    public String generateTitle(FlowContent flowContent) {
-        return titleGenerator.generate(flowContent);
+    public String generateTitle(FlowSession flowSession) {
+        return titleGenerator.generate(flowSession);
     }
 
 

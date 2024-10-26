@@ -1,6 +1,6 @@
 package com.codingapi.springboot.flow.generator;
 
-import com.codingapi.springboot.flow.content.FlowContent;
+import com.codingapi.springboot.flow.content.FlowSession;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 import lombok.Getter;
@@ -39,11 +39,11 @@ public class TitleGenerator  {
     /**
      * 生成标题
      *
-     * @param flowContent 流程内容
+     * @param flowSession 流程内容
      * @return 标题
      */
-    public String generate(FlowContent flowContent) {
-        return (String) this.runtime.invokeMethod("run", flowContent);
+    public String generate(FlowSession flowSession) {
+        return (String) this.runtime.invokeMethod("run", flowSession);
     }
 
 }

@@ -11,6 +11,9 @@ import lombok.Getter;
 import java.util.List;
 
 
+/**
+ *  流程详情的阻止对象
+ */
 @Getter
 public class FlowDetail {
 

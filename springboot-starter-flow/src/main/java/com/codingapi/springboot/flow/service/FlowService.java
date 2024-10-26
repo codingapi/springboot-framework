@@ -2,7 +2,7 @@ package com.codingapi.springboot.flow.service;
 
 import com.codingapi.springboot.flow.bind.BindDataSnapshot;
 import com.codingapi.springboot.flow.bind.IBindData;
-import com.codingapi.springboot.flow.content.FlowContent;
+import com.codingapi.springboot.flow.content.FlowSession;
 import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.domain.Opinion;
@@ -205,7 +205,7 @@ public class FlowService {
 
 
         // 创建新的待办标题
-        FlowContent content = new FlowContent(flowWork, flowNode, createOperator, targetOperator, snapshot.toBindData(), opinion, historyRecords);
+        FlowSession content = new FlowSession(flowWork, flowNode, createOperator, targetOperator, snapshot.toBindData(), opinion, historyRecords);
         String generateTitle = flowNode.generateTitle(content);
 
         // 创建转办记录

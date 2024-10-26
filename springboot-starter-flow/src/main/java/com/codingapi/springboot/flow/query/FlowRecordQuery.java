@@ -4,6 +4,9 @@ import com.codingapi.springboot.flow.record.FlowRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+/**
+ *  流程记录查询服务
+ */
 public interface FlowRecordQuery {
 
 

@@ -1,7 +1,7 @@
 package com.codingapi.springboot.flow.test;
 
 import com.codingapi.springboot.flow.build.FlowWorkBuilder;
-import com.codingapi.springboot.flow.content.FlowContent;
+import com.codingapi.springboot.flow.content.FlowSession;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.em.ApprovalType;
@@ -52,18 +52,18 @@ class ScriptTest {
         long now = System.currentTimeMillis();
         Leave leave = new Leave("我要请假");
 
-        FlowContent flowContent = new FlowContent(flowWork, flowWork.getNodeByCode("start"), user, user, leave, Opinion.pass("同意"),new ArrayList<>());
+        FlowSession flowSession = new FlowSession(flowWork, flowWork.getNodeByCode("start"), user, user, leave, Opinion.pass("同意"),new ArrayList<>());
 
-        List<Long> ids = matcher.matcher(flowContent);
+        List<Long> ids = matcher.matcher(flowSession);
         assertTrue(ids.contains(user.getUserId()));
 
-        String title = titleGenerator.generate(flowContent);
+        String title = titleGenerator.generate(flowSession);
         assertEquals("张三-请假流程-开始节点", title);
 
-        boolean next = outTrigger.trigger(flowContent);
+        boolean next = outTrigger.trigger(flowSession);
         assertTrue(next);
 
-        List<Long> userIds = specifyOperatorMatcher.matcher(flowContent);
+        List<Long> userIds = specifyOperatorMatcher.matcher(flowSession);
         assertTrue(userIds.contains(1L));
 
         long time = System.currentTimeMillis() - now;

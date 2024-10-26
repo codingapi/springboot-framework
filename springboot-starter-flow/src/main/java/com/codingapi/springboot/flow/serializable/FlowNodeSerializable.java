@@ -13,6 +13,9 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
+/**
+ * 流程节点序列化
+ */
 @Setter
 @Getter
 @NoArgsConstructor

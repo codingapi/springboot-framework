@@ -2,6 +2,10 @@ package com.codingapi.springboot.flow.repository;
 
 import com.codingapi.springboot.flow.bind.BindDataSnapshot;
 
+/**
+ *  流程绑定数据仓库
+ *  流程绑定数据即，流程的表单数据
+ */
 public interface FlowBindDataRepository {
 
     /**

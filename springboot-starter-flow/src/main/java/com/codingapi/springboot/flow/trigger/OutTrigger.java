@@ -1,6 +1,6 @@
 package com.codingapi.springboot.flow.trigger;
 
-import com.codingapi.springboot.flow.content.FlowContent;
+import com.codingapi.springboot.flow.content.FlowSession;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 import lombok.Getter;
@@ -36,11 +36,11 @@ public class OutTrigger {
 
     /**
      * 触发
-     * @param flowContent 流程内容
+     * @param flowSession 流程内容
      * @return true 进入下一节点，false 则返回上一节点
      */
-    public boolean trigger(FlowContent flowContent){
-        return (Boolean) runtime.invokeMethod("run", flowContent);
+    public boolean trigger(FlowSession flowSession){
+        return (Boolean) runtime.invokeMethod("run", flowSession);
     }
 
 }

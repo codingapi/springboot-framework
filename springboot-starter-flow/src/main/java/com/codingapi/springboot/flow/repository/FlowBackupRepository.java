@@ -3,6 +3,9 @@ package com.codingapi.springboot.flow.repository;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.record.FlowBackup;
 
+/**
+ *  流程备份仓库（流程快照仓库）
+ */
 public interface FlowBackupRepository {
 
     /**

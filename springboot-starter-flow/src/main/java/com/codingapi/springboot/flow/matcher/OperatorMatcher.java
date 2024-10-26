@@ -1,6 +1,6 @@
 package com.codingapi.springboot.flow.matcher;
 
-import com.codingapi.springboot.flow.content.FlowContent;
+import com.codingapi.springboot.flow.content.FlowSession;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 import lombok.Getter;
@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 /**
  * 操作者匹配器
  */
-
 public class OperatorMatcher {
 
     @Getter
@@ -101,11 +100,11 @@ public class OperatorMatcher {
     /**
      * 匹配操作者
      *
-     * @param flowContent 流程内容
+     * @param flowSession 流程内容
      * @return 是否匹配
      */
-    public List<Long> matcher(FlowContent flowContent) {
-        List<Object> values = (List<Object>) runtime.invokeMethod("run", flowContent);
+    public List<Long> matcher(FlowSession flowSession) {
+        List<Object> values = (List<Object>) runtime.invokeMethod("run", flowSession);
         return values.stream().map(item -> {
             if (item instanceof Number) {
                 return ((Number) item).longValue();

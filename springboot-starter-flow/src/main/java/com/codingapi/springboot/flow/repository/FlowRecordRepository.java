@@ -4,6 +4,10 @@ import com.codingapi.springboot.flow.record.FlowRecord;
 
 import java.util.List;
 
+
+/**
+ *  流转记录数据仓库
+ */
 public interface FlowRecordRepository {
 
     /**

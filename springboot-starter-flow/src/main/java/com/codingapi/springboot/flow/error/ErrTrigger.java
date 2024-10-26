@@ -1,6 +1,6 @@
 package com.codingapi.springboot.flow.error;
 
-import com.codingapi.springboot.flow.content.FlowContent;
+import com.codingapi.springboot.flow.content.FlowSession;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 import lombok.Getter;
@@ -29,10 +29,10 @@ public class ErrTrigger {
     /**
      * 触发
      *
-     * @param flowContent 流程内容
+     * @param flowSession 流程内容
      */
-    public ErrorResult trigger(FlowContent flowContent) {
-        return (ErrorResult) runtime.invokeMethod("run", flowContent);
+    public ErrorResult trigger(FlowSession flowSession) {
+        return (ErrorResult) runtime.invokeMethod("run", flowSession);
     }
 
 }

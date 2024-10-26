@@ -16,6 +16,9 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 流程设计schema读取器
+ */
 public class SchemaReader {
 
     private final JSONObject data;

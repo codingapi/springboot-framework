@@ -1,6 +1,6 @@
 package com.codingapi.springboot.flow.domain;
 
-import com.codingapi.springboot.flow.content.FlowContent;
+import com.codingapi.springboot.flow.content.FlowSession;
 import com.codingapi.springboot.flow.em.NodeType;
 import com.codingapi.springboot.flow.serializable.FlowRelationSerializable;
 import com.codingapi.springboot.flow.trigger.OutTrigger;
@@ -118,11 +118,11 @@ public class FlowRelation {
     /**
      * 触发条件
      *
-     * @param flowContent 流程内容
+     * @param flowSession 流程内容
      * @return 下一个节点
      */
-    public FlowNode trigger(FlowContent flowContent) {
-        if (outTrigger.trigger(flowContent)) {
+    public FlowNode trigger(FlowSession flowSession) {
+        if (outTrigger.trigger(flowSession)) {
             return target;
         }
         return null;

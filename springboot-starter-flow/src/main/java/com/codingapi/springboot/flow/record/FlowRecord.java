@@ -11,6 +11,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * 流程记录
+ */
 @Setter
 @Getter
 @ToString
@@ -356,6 +359,9 @@ public class FlowRecord {
     }
 
 
+    /**
+     * 复制流程记录
+     */
     public FlowRecord copy() {
         FlowRecord record = new FlowRecord();
         record.setId(this.id);

@@ -13,7 +13,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class FlowContent {
+public class FlowSession {
 
     private FlowWork flowWork;
     private FlowNode flowNode;
@@ -22,10 +22,10 @@ public class FlowContent {
     private IBindData bindData;
     private Opinion opinion;
     private List<FlowRecord> historyRecords;
-    private FlowHolder holder;
+    private FlowSessionBeanRegister holder;
 
 
-    public FlowContent(FlowWork flowWork, FlowNode flowNode, IFlowOperator createOperator, IFlowOperator currentOperator, IBindData bindData, Opinion opinion,List<FlowRecord> historyRecords) {
+    public FlowSession(FlowWork flowWork, FlowNode flowNode, IFlowOperator createOperator, IFlowOperator currentOperator, IBindData bindData, Opinion opinion, List<FlowRecord> historyRecords) {
         this.flowWork = flowWork;
         this.flowNode = flowNode;
         this.createOperator = createOperator;
@@ -33,7 +33,7 @@ public class FlowContent {
         this.bindData = bindData;
         this.opinion = opinion;
         this.historyRecords = historyRecords;
-        this.holder = FlowHolder.getInstance();
+        this.holder = FlowSessionBeanRegister.getInstance();
     }
 
 

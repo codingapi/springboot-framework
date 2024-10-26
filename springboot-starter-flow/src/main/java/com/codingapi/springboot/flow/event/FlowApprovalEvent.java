@@ -1,6 +1,5 @@
 package com.codingapi.springboot.flow.event;
 
-import com.codingapi.springboot.flow.content.FlowContent;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.user.IFlowOperator;
@@ -44,7 +43,7 @@ public class FlowApprovalEvent implements ISyncEvent {
         this.operator = operator;
         this.flowRecord = flowRecord;
         this.flowWork = flowWork;
-        log.info("FlowApprovalEvent:{}", this);
+        log.debug("FlowApprovalEvent:{}", this);
     }
 
     public boolean isUrge(){

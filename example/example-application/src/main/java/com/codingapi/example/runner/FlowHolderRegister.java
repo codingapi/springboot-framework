@@ -1,6 +1,6 @@
 package com.codingapi.example.runner;
 
-import com.codingapi.springboot.flow.content.FlowHolder;
+import com.codingapi.springboot.flow.content.FlowSessionBeanRegister;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -16,7 +16,7 @@ public class FlowHolderRegister implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         //注册spring容器
-        FlowHolder.getInstance().register(spring);
+        FlowSessionBeanRegister.getInstance().register(spring);
     }
 
 }

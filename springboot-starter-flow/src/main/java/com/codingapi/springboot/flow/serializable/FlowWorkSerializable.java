@@ -18,6 +18,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *  流程序列化
+ *  流程序列化为了减少数据存储的压力，该数据会存储到FlowProcess的创建过程中，为了降低数据的存储容量，将会自动判断
+ *  是否存在相同的版本，若存在时则不会存储新的数据。
+ *
+ */
 @Setter
 @Getter
 @NoArgsConstructor

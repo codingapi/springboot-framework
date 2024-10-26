@@ -12,6 +12,9 @@ import com.codingapi.springboot.flow.trigger.OutTrigger;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import com.codingapi.springboot.flow.utils.IDGenerator;
 
+/**
+ * 流程工作构建器
+ */
 public class FlowWorkBuilder {
 
     private FlowWork work = null;
