@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * 流程记录服务（流程内部服务）
  */
-class FlowRecordService2 {
+class FlowRecordService {
 
     // constructor params
     private final long recordId;
@@ -32,10 +32,10 @@ class FlowRecordService2 {
     @Getter
     private FlowRecord flowRecord;
 
-    public FlowRecordService2(FlowRecordRepository flowRecordRepository,
-                              FlowProcessRepository flowProcessRepository,
-                              long recordId,
-                              IFlowOperator currentOperator) {
+    public FlowRecordService(FlowRecordRepository flowRecordRepository,
+                             FlowProcessRepository flowProcessRepository,
+                             long recordId,
+                             IFlowOperator currentOperator) {
         this.flowRecordRepository = flowRecordRepository;
         this.flowProcessRepository = flowProcessRepository;
 
