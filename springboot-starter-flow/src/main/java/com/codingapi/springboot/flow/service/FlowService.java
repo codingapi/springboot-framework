@@ -241,9 +241,13 @@ public class FlowService {
         flowRecordService2.loadFlowNode();
         flowRecordService2.verifyFlowNodeEditableState(false);
 
-        FlowNodeService flowNodeService = new FlowNodeService(flowOperatorRepository,flowBindDataRepository,flowRecordService2,bindData,Opinion.save(advice));
-        flowNodeService.updateSnapshot();
-        flowNodeService.updateFlowRecord();
+        Opinion opinion = Opinion.save(advice);
+        FlowRecord flowRecord = flowRecordService2.getFlowRecord();
+        BindDataSnapshot snapshot = new BindDataSnapshot(flowRecord.getSnapshotId(), bindData);
+        flowBindDataRepository.update(snapshot);
+
+        flowRecord.setOpinion(opinion);
+        flowRecordService2.flowRecordRepository.update(flowRecord);
 
     }
 

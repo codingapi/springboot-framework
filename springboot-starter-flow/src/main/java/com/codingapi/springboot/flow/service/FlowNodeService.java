@@ -147,13 +147,6 @@ class FlowNodeService {
     }
 
 
-    /**
-     * 保存流程表单数据
-     */
-    public void updateSnapshot() {
-        BindDataSnapshot snapshot = new BindDataSnapshot(flowRecord.getSnapshotId(), bindData);
-        flowBindDataRepository.update(snapshot);
-    }
 
 
     /**
@@ -193,15 +186,6 @@ class FlowNodeService {
      */
     public void loadHistoryRecords() {
         historyRecords = flowRecordService2.flowRecordRepository.findFlowRecordByPreId(flowRecord.getPreId());
-    }
-
-
-    /**
-     * 更新流程记录
-     */
-    public void updateFlowRecord() {
-        flowRecord.setOpinion(opinion);
-        flowRecordService2.flowRecordRepository.update(flowRecord);
     }
 
 
