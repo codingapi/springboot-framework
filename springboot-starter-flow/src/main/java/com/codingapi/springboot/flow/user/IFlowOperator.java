@@ -1,5 +1,8 @@
 package com.codingapi.springboot.flow.user;
 
+/**
+ *  流程参与用户
+ */
 public interface IFlowOperator {
 
     /**

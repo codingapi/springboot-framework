@@ -4,14 +4,14 @@ import lombok.Getter;
 import org.springframework.context.ApplicationContext;
 
 /**
- * 流程回话 spring bean 注册对象
+ * 流程回话 spring bean 提供者
  */
-public class FlowSessionBeanRegister {
+public class FlowSessionBeanProvider {
 
     @Getter
-    private static final FlowSessionBeanRegister instance = new FlowSessionBeanRegister();
+    private static final FlowSessionBeanProvider instance = new FlowSessionBeanProvider();
 
-    private FlowSessionBeanRegister() {
+    private FlowSessionBeanProvider() {
     }
 
     private ApplicationContext spring;

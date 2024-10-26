@@ -12,18 +12,20 @@ import lombok.Getter;
 
 import java.util.List;
 
+/**
+ * 流程groovy脚本回话对象
+ */
 @Getter
 public class FlowSession {
 
-    private FlowWork flowWork;
-    private FlowNode flowNode;
-    private IFlowOperator createOperator;
-    private IFlowOperator currentOperator;
-    private IBindData bindData;
-    private Opinion opinion;
-    private List<FlowRecord> historyRecords;
-    private FlowSessionBeanRegister holder;
-
+    private final FlowWork flowWork;
+    private final FlowNode flowNode;
+    private final IFlowOperator createOperator;
+    private final IFlowOperator currentOperator;
+    private final IBindData bindData;
+    private final Opinion opinion;
+    private final List<FlowRecord> historyRecords;
+    private final FlowSessionBeanProvider provider;
 
     public FlowSession(FlowWork flowWork, FlowNode flowNode, IFlowOperator createOperator, IFlowOperator currentOperator, IBindData bindData, Opinion opinion, List<FlowRecord> historyRecords) {
         this.flowWork = flowWork;
@@ -33,16 +35,17 @@ public class FlowSession {
         this.bindData = bindData;
         this.opinion = opinion;
         this.historyRecords = historyRecords;
-        this.holder = FlowSessionBeanRegister.getInstance();
+        this.provider = FlowSessionBeanProvider.getInstance();
     }
 
 
     public Object getBean(String beanName) {
-        return holder.getBean(beanName);
+        return provider.getBean(beanName);
     }
 
     /**
      * 创建节点结果
+     *
      * @param nodeCode 节点code
      * @return 节点结果
      */
@@ -52,6 +55,7 @@ public class FlowSession {
 
     /**
      * 创建操作者结果
+     *
      * @param operatorIds 操作者id
      * @return 操作者结果
      */
@@ -61,6 +65,7 @@ public class FlowSession {
 
     /**
      * 创建操作者结果
+     *
      * @param operatorIds 操作者id
      * @return 操作者结果
      */

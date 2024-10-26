@@ -102,14 +102,23 @@ class FlowDirectionService {
     }
 
 
+    /**
+     * 判断当前流程是否为默认的驳回流程
+     */
     public boolean isDefaultBackRecord() {
         return flowSourceDirection == FlowSourceDirection.REJECT && !flowWork.hasBackRelation();
     }
 
+    /**
+     * 判断当前流程是否为通过流程
+     */
     public boolean isPassBackRecord() {
         return flowSourceDirection == FlowSourceDirection.PASS;
     }
 
+    /**
+     * 判断当前流程是否为自定义的驳回流程
+     */
     public boolean isCustomBackRecord() {
         return flowSourceDirection == FlowSourceDirection.REJECT && flowWork.hasBackRelation();
     }

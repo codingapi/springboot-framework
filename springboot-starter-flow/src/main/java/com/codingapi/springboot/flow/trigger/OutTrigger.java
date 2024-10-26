@@ -9,7 +9,6 @@ import org.springframework.util.StringUtils;
 /**
  * 出口触发器
  */
-
 public class OutTrigger {
 
     @Getter
