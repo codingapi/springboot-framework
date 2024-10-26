@@ -71,4 +71,8 @@ public class Opinion {
     public boolean isSuccess() {
         return result == RESULT_PASS;
     }
+
+    public boolean isReject() {
+        return result == RESULT_REJECT;
+    }
 }
