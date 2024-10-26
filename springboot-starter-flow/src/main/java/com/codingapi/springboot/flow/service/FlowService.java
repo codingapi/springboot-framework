@@ -51,28 +51,18 @@ public class FlowService {
      * @param time            延期时间
      */
     public void postponed(long recordId, IFlowOperator currentOperator, long time) {
-        // 检测流程记录
-        FlowRecord flowRecord = flowRecordRepository.getFlowRecordById(recordId);
-        if (flowRecord == null) {
-            throw new IllegalArgumentException("flow record not found");
-        }
-        flowRecord.submitStateVerify();
-        flowRecord.matcherOperator(currentOperator);
+        FlowRecordService2 flowRecordService2 = new FlowRecordService2(flowRecordRepository, flowProcessRepository, flowBindDataRepository,
+                recordId,currentOperator);
 
-        // 检测流程
-        FlowWork flowWork = flowProcessRepository.getFlowWorkByProcessId(flowRecord.getProcessId());
-        if (flowWork == null) {
-            throw new IllegalArgumentException("flow work not found");
-        }
-        flowWork.enableValidate();
+        flowRecordService2.loadFlowRecord();
+        flowRecordService2.verifyFlowRecordSubmitState();
+        flowRecordService2.verifyFlowRecordCurrentOperator();
+        flowRecordService2.loadFlowWork();
+        flowRecordService2.verifyFlowRecordNotFinish();
+        flowRecordService2.verifyFlowRecordNotDone();
 
-        if (flowRecord.isFinish()) {
-            throw new IllegalArgumentException("flow record is finish");
-        }
-
-        if (flowRecord.isDone()) {
-            throw new IllegalArgumentException("flow record is done");
-        }
+        FlowRecord flowRecord = flowRecordService2.getFlowRecord();
+        FlowWork flowWork = flowRecordService2.getFlowWork();
 
         flowRecord.postponedTime(flowWork.getPostponedMax(), time);
         flowRecordRepository.update(flowRecord);
@@ -85,27 +75,14 @@ public class FlowService {
      * @param currentOperator 当前操作者
      */
     public void urge(long recordId, IFlowOperator currentOperator) {
-        // 检测流程记录
-        FlowRecord flowRecord = flowRecordRepository.getFlowRecordById(recordId);
-        if (flowRecord == null) {
-            throw new IllegalArgumentException("flow record not found");
-        }
-        flowRecord.matcherOperator(currentOperator);
+        FlowRecordService2 flowRecordService2 = new FlowRecordService2(flowRecordRepository, flowProcessRepository, flowBindDataRepository,
+                recordId,currentOperator);
+        flowRecordService2.loadFlowRecord();
+        flowRecordService2.loadFlowWork();
+        flowRecordService2.verifyFlowRecordIsDone();
 
-        // 检测流程
-        FlowWork flowWork = flowProcessRepository.getFlowWorkByProcessId(flowRecord.getProcessId());
-        if (flowWork == null) {
-            throw new IllegalArgumentException("flow work not found");
-        }
-        flowWork.enableValidate();
-
-        if (flowRecord.isTodo()) {
-            throw new IllegalArgumentException("flow record is todo");
-        }
-
-        if (flowRecord.isFinish()) {
-            throw new IllegalArgumentException("flow record is finish");
-        }
+        FlowRecord flowRecord = flowRecordService2.getFlowRecord();
+        FlowWork flowWork = flowRecordService2.getFlowWork();
 
         List<FlowRecord> todoRecords = flowRecordRepository.findTodoFlowRecordByProcessId(flowRecord.getProcessId());
 
@@ -125,26 +102,17 @@ public class FlowService {
      * @param currentOperator 当前操作者
      */
     public FlowDetail detail(long recordId, IFlowOperator currentOperator) {
-        // 检测流程记录
-        FlowRecord flowRecord = flowRecordRepository.getFlowRecordById(recordId);
-        if (flowRecord == null) {
-            throw new IllegalArgumentException("flow record not found");
-        }
-        if (currentOperator != null) {
-            if(flowRecord.isOperator(currentOperator)) {
-                if (!flowRecord.isRead()) {
-                    flowRecord.read();
-                    flowRecordRepository.update(flowRecord);
-                }
-            }
-        }
 
-        // 检测流程
-        FlowWork flowWork = flowProcessRepository.getFlowWorkByProcessId(flowRecord.getProcessId());
-        if (flowWork == null) {
-            throw new IllegalArgumentException("flow work not found");
-        }
-        flowWork.enableValidate();
+        FlowRecordService2 flowRecordService2 = new FlowRecordService2(flowRecordRepository, flowProcessRepository, flowBindDataRepository,
+                recordId,currentOperator);
+
+        flowRecordService2.loadFlowRecord();
+        flowRecordService2.flagReadFlowRecord();
+        flowRecordService2.loadFlowWork();
+
+        FlowRecord flowRecord = flowRecordService2.getFlowRecord();
+        FlowWork flowWork = flowRecordService2.getFlowWork();
+
 
         BindDataSnapshot snapshot = flowBindDataRepository.getBindDataSnapshotById(flowRecord.getSnapshotId());
         List<FlowRecord> flowRecords = flowRecordRepository.findFlowRecordByProcessId(flowRecord.getProcessId());
@@ -190,37 +158,26 @@ public class FlowService {
      * @param advice          转办意见
      */
     public void transfer(long recordId, IFlowOperator currentOperator, IFlowOperator targetOperator, IBindData bindData, String advice) {
-        // 检测流程记录
-        FlowRecord flowRecord = flowRecordRepository.getFlowRecordById(recordId);
-        if (flowRecord == null) {
-            throw new IllegalArgumentException("flow record not found");
-        }
-        flowRecord.submitStateVerify();
-        flowRecord.matcherOperator(currentOperator);
 
+        FlowRecordService2 flowRecordService2 = new FlowRecordService2(flowRecordRepository, flowProcessRepository, flowBindDataRepository,
+                recordId,currentOperator);
 
-        if(currentOperator.getUserId() == targetOperator.getUserId()){
-            throw new IllegalArgumentException("current operator is target operator");
-        }
+        flowRecordService2.loadFlowRecord();
+        flowRecordService2.verifyFlowRecordSubmitState();
+        flowRecordService2.verifyFlowRecordCurrentOperator();
+        flowRecordService2.verifyTargetOperatorIsNotCurrentOperator(targetOperator);
+
 
         Opinion opinion = Opinion.transfer(advice);
 
-        // 检测流程
-        FlowWork flowWork = flowProcessRepository.getFlowWorkByProcessId(flowRecord.getProcessId());
-        if (flowWork == null) {
-            throw new IllegalArgumentException("flow work not found");
-        }
-        flowWork.enableValidate();
 
-        // 检测流程节点
-        FlowNode flowNode = flowWork.getNodeByCode(flowRecord.getNodeCode());
-        if (flowNode == null) {
-            throw new IllegalArgumentException("flow node not found");
-        }
+        flowRecordService2.loadFlowWork();
+        flowRecordService2.loadFlowNode();;
+        flowRecordService2.verifyFlowRecordIsTodo();
 
-        if (flowRecord.isDone()) {
-            throw new IllegalArgumentException("flow record is done");
-        }
+        FlowRecord flowRecord = flowRecordService2.getFlowRecord();
+        FlowWork flowWork = flowRecordService2.getFlowWork();
+        FlowNode flowNode = flowRecordService2.getFlowNode();
 
         // 下一流程的流程记录
         List<FlowRecord> childrenRecords = flowRecordRepository.findFlowRecordByPreId(recordId);
@@ -270,40 +227,20 @@ public class FlowService {
      * @param advice          审批意见
      */
     public void save(long recordId, IFlowOperator currentOperator, IBindData bindData, String advice) {
-        // 检测流程记录
-        FlowRecord flowRecord = flowRecordRepository.getFlowRecordById(recordId);
-        if (flowRecord == null) {
-            throw new IllegalArgumentException("flow record not found");
-        }
-        flowRecord.submitStateVerify();
-        flowRecord.matcherOperator(currentOperator);
+        FlowRecordService2 flowRecordService2 = new FlowRecordService2(flowRecordRepository, flowProcessRepository, flowBindDataRepository,
+                recordId,currentOperator);
+        flowRecordService2.bindBindData(bindData);
+        flowRecordService2.bindOpinion(Opinion.save(advice));
 
-        // 检测流程
-        FlowWork flowWork = flowProcessRepository.getFlowWorkByProcessId(flowRecord.getProcessId());
-        if (flowWork == null) {
-            throw new IllegalArgumentException("flow work not found");
-        }
-        flowWork.enableValidate();
+        flowRecordService2.loadFlowRecord();
+        flowRecordService2.verifyFlowRecordSubmitState();
+        flowRecordService2.verifyFlowRecordCurrentOperator();
+        flowRecordService2.loadFlowWork();
+        flowRecordService2.loadFlowNode();
+        flowRecordService2.verifyFlowNodeEditableState(false);
+        flowRecordService2.saveSnapshot();
+        flowRecordService2.updateFlowRecord();
 
-        // 检测流程节点
-        FlowNode flowNode = flowWork.getNodeByCode(flowRecord.getNodeCode());
-        if (flowNode == null) {
-            throw new IllegalArgumentException("flow node not found");
-        }
-
-        // 流程节点不可编辑时，不能保存
-        if (!flowNode.isEditable()) {
-            throw new IllegalArgumentException("flow node is not editable");
-        }
-
-        // 保存绑定数据
-        BindDataSnapshot snapshot = new BindDataSnapshot(flowRecord.getSnapshotId(), bindData);
-        flowBindDataRepository.update(snapshot);
-
-        Opinion opinion = Opinion.save(advice);
-
-        flowRecord.update(opinion);
-        flowRecordRepository.update(flowRecord);
     }
 
 
@@ -375,30 +312,23 @@ public class FlowService {
      * @param opinion         审批意见
      */
     public void submitFlow(long recordId, IFlowOperator currentOperator, IBindData bindData, Opinion opinion) {
-        // 检测流程记录
-        FlowRecord flowRecord = flowRecordRepository.getFlowRecordById(recordId);
-        if (flowRecord == null) {
-            throw new IllegalArgumentException("flow record not found");
-        }
-        flowRecord.submitStateVerify();
 
-        // 非流程管理员需要核验身份
-        if (!currentOperator.isFlowManager()) {
-            flowRecord.matcherOperator(currentOperator);
-        }
+        FlowRecordService2 flowRecordService2 = new FlowRecordService2(flowRecordRepository, flowProcessRepository, flowBindDataRepository,
+                recordId,currentOperator);
 
-        // 检测流程
-        FlowWork flowWork = flowProcessRepository.getFlowWorkByProcessId(flowRecord.getProcessId());
-        if (flowWork == null) {
-            throw new IllegalArgumentException("flow work not found");
-        }
-        flowWork.enableValidate();
+        flowRecordService2.bindBindData(bindData);
+        flowRecordService2.bindOpinion(opinion);
 
-        // 检测流程节点
-        FlowNode flowNode = flowWork.getNodeByCode(flowRecord.getNodeCode());
-        if (flowNode == null) {
-            throw new IllegalArgumentException("flow node not found");
-        }
+
+        flowRecordService2.loadFlowRecord();
+        flowRecordService2.verifyFlowRecordSubmitState();
+        flowRecordService2.verifyFlowRecordCurrentOperator();
+        flowRecordService2.loadFlowWork();
+        flowRecordService2.loadFlowNode();
+
+        FlowRecord flowRecord = flowRecordService2.getFlowRecord();
+        FlowNode flowNode = flowRecordService2.getFlowNode();
+        FlowWork flowWork = flowRecordService2.getFlowWork();
 
         // 根据审批意见判断流程是否进入下一节点
         FlowSourceDirection flowSourceDirection = opinion.isSuccess()? FlowSourceDirection.PASS: FlowSourceDirection.REJECT;
@@ -565,33 +495,20 @@ public class FlowService {
      * @param currentOperator 当前操作者
      */
     public void recall(long recordId, IFlowOperator currentOperator) {
-        // 检测流程记录
-        FlowRecord flowRecord = flowRecordRepository.getFlowRecordById(recordId);
-        if (flowRecord == null) {
-            throw new IllegalArgumentException("flow record not found");
-        }
-        flowRecord.matcherOperator(currentOperator);
+        FlowRecordService2 flowRecordService2 = new FlowRecordService2(flowRecordRepository, flowProcessRepository, flowBindDataRepository,
+                recordId,currentOperator);
 
-        // 检测流程
-        FlowWork flowWork = flowProcessRepository.getFlowWorkByProcessId(flowRecord.getProcessId());
-        if (flowWork == null) {
-            throw new IllegalArgumentException("flow work not found");
-        }
-        flowWork.enableValidate();
+        flowRecordService2.loadFlowRecord();
+        flowRecordService2.verifyFlowRecordCurrentOperator();
+        flowRecordService2.loadFlowWork();
+        flowRecordService2.loadFlowNode();
+        flowRecordService2.verifyFlowRecordNotFinish();
+        flowRecordService2.verifyFlowRecordNotTodo();
 
-        // 检测流程节点
-        FlowNode flowNode = flowWork.getNodeByCode(flowRecord.getNodeCode());
-        if (flowNode == null) {
-            throw new IllegalArgumentException("flow node not found");
-        }
+        FlowRecord flowRecord = flowRecordService2.getFlowRecord();
+        FlowWork flowWork = flowRecordService2.getFlowWork();
 
-        if (flowRecord.isFinish()) {
-            throw new IllegalArgumentException("flow record is finish");
-        }
 
-        if (flowRecord.isTodo()) {
-            throw new IllegalArgumentException("flow record is todo");
-        }
 
         // 下一流程的流程记录
         List<FlowRecord> childrenRecords = flowRecordRepository.findFlowRecordByPreId(recordId);
