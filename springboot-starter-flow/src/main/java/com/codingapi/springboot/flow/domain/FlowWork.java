@@ -3,6 +3,7 @@ package com.codingapi.springboot.flow.domain;
 import com.codingapi.springboot.flow.build.SchemaReader;
 import com.codingapi.springboot.flow.serializable.FlowWorkSerializable;
 import com.codingapi.springboot.flow.user.IFlowOperator;
+import com.codingapi.springboot.flow.utils.IDGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -87,6 +88,35 @@ public class FlowWork {
         this.enable = false;
         this.postponedMax = 1;
     }
+
+
+    /**
+     * 流程设计复制
+     * @return FlowWork 流程设计
+     */
+    public FlowWork copy(){
+        if(!StringUtils.hasLength(schema)){
+            throw new IllegalArgumentException("schema is empty");
+        }
+        String schema = this.getSchema();
+        for(FlowNode flowNode:this.getNodes()){
+            String newId = IDGenerator.generate();
+            schema = schema.replaceAll(flowNode.getId(),newId);
+        }
+
+        for(FlowRelation relation:this.getRelations()){
+            String newId = IDGenerator.generate();
+            schema = schema.replaceAll(relation.getId(),newId);
+        }
+
+        FlowWork flowWork = new FlowWork(this.createUser);
+        flowWork.setDescription(this.getDescription());
+        flowWork.setTitle(this.getTitle());
+        flowWork.setPostponedMax(this.getPostponedMax());
+        flowWork.schema(schema);
+        return flowWork;
+    }
+
 
     public FlowWork(String title, String description, int postponedMax, IFlowOperator createUser) {
         this.title = title;
