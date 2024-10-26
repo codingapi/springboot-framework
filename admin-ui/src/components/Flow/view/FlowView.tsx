@@ -85,7 +85,7 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
         postponed(body).then(res => {
             if (res.success) {
                 message.success('已经延期').then();
-                setPostponedVisible(false)
+                setPostponedVisible(false);
             }
         })
     }
@@ -208,13 +208,6 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
         >
             <Row justify="end">
                 <Space>
-                    {props.review && (
-                        <Button
-                            type={"primary"}
-                            danger={true}
-                        >干预</Button>
-                    )}
-
                     {!props.review && (
                         <Button
                             onClick={() => {
@@ -476,7 +469,7 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
 
 
             <ModalForm
-                title={"延期人员选择"}
+                title={"转办人员选择"}
                 form={transferForm}
                 open={transferVisible}
                 modalProps={{
@@ -489,6 +482,7 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
                 }}
                 onFinish={async (values) => {
                     handlerTransferFlow(values);
+                    setTransferVisible(false);
                 }}
             >
 
