@@ -53,7 +53,7 @@ public class FlowService {
     public void postponed(long recordId, IFlowOperator currentOperator, long time) {
         FlowRecordService2 flowRecordService2 = new FlowRecordService2(flowRecordRepository,
                 flowProcessRepository,
-                recordId,currentOperator);
+                recordId, currentOperator);
 
         flowRecordService2.loadFlowRecord();
         flowRecordService2.verifyFlowRecordSubmitState();
@@ -78,7 +78,7 @@ public class FlowService {
     public void urge(long recordId, IFlowOperator currentOperator) {
         FlowRecordService2 flowRecordService2 = new FlowRecordService2(flowRecordRepository,
                 flowProcessRepository,
-                recordId,currentOperator);
+                recordId, currentOperator);
         flowRecordService2.loadFlowRecord();
         flowRecordService2.loadFlowWork();
         flowRecordService2.verifyFlowRecordIsDone();
@@ -91,7 +91,7 @@ public class FlowService {
         // 推送催办消息
         for (FlowRecord record : todoRecords) {
             IFlowOperator pushOperator = flowOperatorRepository.getFlowOperatorById(record.getCurrentOperatorId());
-            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_URGE, record, pushOperator,flowWork));
+            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_URGE, record, pushOperator, flowWork));
         }
 
     }
@@ -107,7 +107,7 @@ public class FlowService {
 
         FlowRecordService2 flowRecordService2 = new FlowRecordService2(flowRecordRepository,
                 flowProcessRepository,
-                recordId,currentOperator);
+                recordId, currentOperator);
 
         flowRecordService2.loadFlowRecord();
         flowRecordService2.flagReadFlowRecord();
@@ -164,7 +164,7 @@ public class FlowService {
 
         FlowRecordService2 flowRecordService2 = new FlowRecordService2(flowRecordRepository,
                 flowProcessRepository,
-                recordId,currentOperator);
+                recordId, currentOperator);
 
         flowRecordService2.loadFlowRecord();
         flowRecordService2.verifyFlowRecordSubmitState();
@@ -176,7 +176,8 @@ public class FlowService {
 
 
         flowRecordService2.loadFlowWork();
-        flowRecordService2.loadFlowNode();;
+        flowRecordService2.loadFlowNode();
+        ;
         flowRecordService2.verifyFlowRecordIsTodo();
 
         FlowRecord flowRecord = flowRecordService2.getFlowRecord();
@@ -215,10 +216,10 @@ public class FlowService {
         flowRecordRepository.save(List.of(transferRecord));
 
         // 推送转办消息
-        EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TRANSFER, flowRecord, currentOperator,flowWork));
+        EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TRANSFER, flowRecord, currentOperator, flowWork));
 
         // 推送待办消息
-        EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, transferRecord, targetOperator,flowWork));
+        EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, transferRecord, targetOperator, flowWork));
     }
 
 
@@ -233,7 +234,7 @@ public class FlowService {
     public void save(long recordId, IFlowOperator currentOperator, IBindData bindData, String advice) {
         FlowRecordService2 flowRecordService2 = new FlowRecordService2(flowRecordRepository,
                 flowProcessRepository,
-                recordId,currentOperator);
+                recordId, currentOperator);
         flowRecordService2.loadFlowRecord();
         flowRecordService2.verifyFlowRecordSubmitState();
         flowRecordService2.verifyFlowRecordCurrentOperator();
@@ -287,7 +288,6 @@ public class FlowService {
 
         Opinion opinion = Opinion.pass(advice);
 
-        FlowRecordService1 createRecordService = new FlowRecordService1(flowOperatorRepository, processId, operator, operator, snapshot, opinion, flowWork, FlowSourceDirection.PASS, new ArrayList<>());
         // 获取开始节点
         FlowNode start = flowWork.getStartNode();
         if (start == null) {
@@ -295,8 +295,23 @@ public class FlowService {
         }
         long preId = 0;
 
+
+        FlowSubmitService flowSubmitService = new FlowSubmitService(
+                flowOperatorRepository,
+                flowRecordRepository,
+                snapshot,
+                opinion,
+                operator,
+                operator,
+                new ArrayList<>(),
+                flowWork,
+                start,
+                processId,
+                preId
+        );
+
         // 创建待办记录
-        List<FlowRecord> records = createRecordService.createRecord(preId, start);
+        List<FlowRecord> records = flowSubmitService.createRecord(start,operator);
         if (records.isEmpty()) {
             throw new IllegalArgumentException("flow record not found");
         }
@@ -322,7 +337,7 @@ public class FlowService {
     public void submitFlow(long recordId, IFlowOperator currentOperator, IBindData bindData, Opinion opinion) {
 
         FlowRecordService2 flowRecordService2 = new FlowRecordService2(flowRecordRepository, flowProcessRepository,
-                recordId,currentOperator);
+                recordId, currentOperator);
 
         flowRecordService2.loadFlowRecord();
         flowRecordService2.verifyFlowRecordSubmitState();
@@ -331,12 +346,12 @@ public class FlowService {
         flowRecordService2.loadFlowNode();
         flowRecordService2.verifyChildrenRecordsIsEmpty();
 
-        FlowBindDataService flowBindDataService = new FlowBindDataService(flowBindDataRepository,flowRecordService2.getFlowNode(),bindData);
+        FlowBindDataService flowBindDataService = new FlowBindDataService(flowBindDataRepository, flowRecordService2.getFlowNode(), bindData);
 
         FlowRecord flowRecord = flowRecordService2.getFlowRecord();
         BindDataSnapshot snapshot = flowBindDataService.loadOrCreateSnapshot(flowRecord);
 
-        FlowDirectionService flowDirectionService = new FlowDirectionService(flowRecordService2.getFlowNode(),flowRecordService2.getFlowWork(),opinion);
+        FlowDirectionService flowDirectionService = new FlowDirectionService(flowRecordService2.getFlowNode(), flowRecordService2.getFlowWork(), opinion);
 
 
         flowDirectionService.loadFlowSourceDirection();
@@ -348,16 +363,13 @@ public class FlowService {
         flowRecordRepository.update(flowRecord);
 
 
-
         // 与当前流程同级的流程记录
         List<FlowRecord> historyRecords = flowRecordRepository.findFlowRecordByPreId(flowRecord.getPreId());
         flowDirectionService.bindHistoryRecords(historyRecords);
 
 
-
-
         boolean next = flowDirectionService.hasCurrentFlowNodeIsDone();
-        if(next){
+        if (next) {
             return;
         }
 
@@ -365,8 +377,8 @@ public class FlowService {
 
         FlowNode flowNode = flowRecordService2.getFlowNode();
 
+        // 非会签下，默认其他将所有人未提交的流程，都自动提交然后再执行下一节点
         if (flowNode.isUnSign()) {
-            // 非会签下，默认其他将所有人未提交的流程，都自动提交然后再执行下一节点
             for (FlowRecord record : historyRecords) {
                 if (record.isTodo() && record.getId() != flowRecord.getId()) {
                     record.autoPass(currentOperator, snapshot);
@@ -378,29 +390,39 @@ public class FlowService {
 
         FlowWork flowWork = flowRecordService2.getFlowWork();
 
-        if(flowDirectionService.hasCurrentFlowIsFinish()){
+        if (flowDirectionService.hasCurrentFlowIsFinish()) {
             flowRecord.finish();
             flowRecord.submitRecord(currentOperator, snapshot, opinion, flowSourceDirection);
             flowRecordRepository.update(flowRecord);
             flowRecordRepository.finishFlowRecordByProcessId(flowRecord.getProcessId());
 
-            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_FINISH, flowRecord, currentOperator,flowWork));
+            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_FINISH, flowRecord, currentOperator, flowWork));
             return;
         }
 
         IFlowOperator createOperator = flowOperatorRepository.getFlowOperatorById(flowRecord.getCreateOperatorId());
 
-        FlowSubmitService flowSubmitService = new FlowSubmitService(flowOperatorRepository,flowRecordService2,snapshot,opinion,createOperator,historyRecords);
-//        List<FlowRecord> records =  flowSubmitService.createNextRecord();
-        List<FlowRecord> records = null;
+        FlowSubmitService flowSubmitService = new FlowSubmitService(
+                flowOperatorRepository,
+                flowRecordRepository,
+                snapshot,
+                opinion,
+                createOperator,
+                currentOperator,
+                historyRecords,
+                flowWork,
+                flowNode,
+                flowRecord.getProcessId(),
+                flowRecord.getId()
+        );
+
+        List<FlowRecord> records;
         if (flowDirectionService.isDefaultBackRecord()) {
-            records = flowSubmitService.createDefaultBackRecord();
-        }
-        if (flowDirectionService.isCustomBackRecord()) {
-            records = flowSubmitService.createCustomBackRecord();
-        }
-        if (flowDirectionService.isPassBackRecord()) {
-            records = flowSubmitService.createPassRecord();
+            records = flowSubmitService.createDefaultBackRecord(flowRecord);
+        } else if (flowDirectionService.isCustomBackRecord()) {
+            records = flowSubmitService.createCustomBackRecord(flowRecord);
+        } else {
+            records = flowSubmitService.createNextRecord();
         }
 
         flowRecordService2.flowRecordRepository.save(records);
@@ -417,9 +439,6 @@ public class FlowService {
     }
 
 
-
-
-
     /**
      * 撤回流程
      *
@@ -429,7 +448,7 @@ public class FlowService {
     public void recall(long recordId, IFlowOperator currentOperator) {
         FlowRecordService2 flowRecordService2 = new FlowRecordService2(flowRecordRepository,
                 flowProcessRepository,
-                recordId,currentOperator);
+                recordId, currentOperator);
 
         flowRecordService2.loadFlowRecord();
         flowRecordService2.verifyFlowRecordCurrentOperator();
@@ -440,7 +459,6 @@ public class FlowService {
 
         FlowRecord flowRecord = flowRecordService2.getFlowRecord();
         FlowWork flowWork = flowRecordService2.getFlowWork();
-
 
 
         // 下一流程的流程记录
@@ -459,7 +477,7 @@ public class FlowService {
         flowRecordRepository.update(flowRecord);
 
         flowRecordRepository.delete(childrenRecords);
-        EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_RECALL, flowRecord, currentOperator,flowWork));
+        EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_RECALL, flowRecord, currentOperator, flowWork));
     }
 
 }

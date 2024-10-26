@@ -11,6 +11,7 @@ import com.codingapi.springboot.flow.error.NodeResult;
 import com.codingapi.springboot.flow.error.OperatorResult;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.FlowOperatorRepository;
+import com.codingapi.springboot.flow.repository.FlowRecordRepository;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 
 import java.util.ArrayList;
@@ -20,12 +21,11 @@ class FlowSubmitService {
 
 
     private final FlowOperatorRepository flowOperatorRepository;
+    private final FlowRecordRepository flowRecordRepository;
 
-    private final FlowRecordService2 flowRecordService2;
     private final String processId;
     private final long preId;
 
-    private final FlowRecord flowRecord;
     private final FlowWork flowWork;
     private final FlowNode flowNode;
     private final Opinion opinion;
@@ -36,27 +36,30 @@ class FlowSubmitService {
 
 
     public FlowSubmitService(FlowOperatorRepository flowOperatorRepository,
-                             FlowRecordService2 flowRecordService2,
+                             FlowRecordRepository flowRecordRepository,
                              BindDataSnapshot snapshot,
                              Opinion opinion,
                              IFlowOperator createOperator,
-                             List<FlowRecord> historyRecords) {
+                             IFlowOperator currentOperator,
+                             List<FlowRecord> historyRecords,
+                             FlowWork flowWork,
+                             FlowNode flowNode,
+                             String processId,
+                             long preId) {
 
         this.createOperator = createOperator;
         this.flowOperatorRepository = flowOperatorRepository;
 
-        this.flowRecordService2 = flowRecordService2;
+        this.flowRecordRepository = flowRecordRepository;
         this.snapshot = snapshot;
         this.opinion = opinion;
-        this.currentOperator = flowRecordService2.getCurrentOperator();
-
-        this.flowRecord = flowRecordService2.getFlowRecord();
-        this.flowWork = flowRecordService2.getFlowWork();
-        this.flowNode = flowRecordService2.getFlowNode();
+        this.currentOperator = currentOperator;
+        this.flowWork = flowWork;
+        this.flowNode = flowNode;
 
 
-        this.processId = flowRecord.getProcessId();
-        this.preId = flowRecord.getId();
+        this.processId = processId;
+        this.preId = preId;
         this.historyRecords = historyRecords;
     }
 
@@ -170,12 +173,12 @@ class FlowSubmitService {
     }
 
 
-    public List<FlowRecord> createPassRecord() {
+    public List<FlowRecord> createNextRecord() {
         FlowNode nextNode = this.matcherNextNode(false);
         return this.createRecord(nextNode, currentOperator);
     }
 
-    public List<FlowRecord> createCustomBackRecord() {
+    public List<FlowRecord> createCustomBackRecord(FlowRecord flowRecord) {
         FlowNode nextNode = this.matcherNextNode(true);
         if (nextNode == null) {
             throw new IllegalArgumentException("next node not found");
@@ -183,23 +186,23 @@ class FlowSubmitService {
         IFlowOperator flowOperator = currentOperator;
         if (nextNode.isAnyOperatorMatcher()) {
             // 如果是任意人员操作时则需要指定为当时审批人员为当前审批人员
-            FlowRecord preFlowRecord = flowRecordService2.flowRecordRepository.getFlowRecordById(flowRecord.getPreId());
+            FlowRecord preFlowRecord = flowRecordRepository.getFlowRecordById(flowRecord.getPreId());
             while (preFlowRecord.isTransfer() || !preFlowRecord.getNodeCode().equals(nextNode.getCode())) {
-                preFlowRecord = flowRecordService2.flowRecordRepository.getFlowRecordById(preFlowRecord.getPreId());
+                preFlowRecord = flowRecordRepository.getFlowRecordById(preFlowRecord.getPreId());
             }
             flowOperator = flowOperatorRepository.getFlowOperatorById(preFlowRecord.getCurrentOperatorId());
         }
         return this.createRecord(nextNode, flowOperator);
     }
 
-    public List<FlowRecord> createDefaultBackRecord() {
+    public List<FlowRecord> createDefaultBackRecord(FlowRecord flowRecord) {
         IFlowOperator flowOperator;
         // 拒绝时，默认返回上一个节点
-        FlowRecord preRecord = flowRecordService2.flowRecordRepository.getFlowRecordById(flowRecord.getPreId());
+        FlowRecord preRecord = flowRecordRepository.getFlowRecordById(flowRecord.getPreId());
         // 去除所有的转办的记录
         while (preRecord.isTransfer()) {
             // 继续寻找上一个节点
-            preRecord = flowRecordService2.flowRecordRepository.getFlowRecordById(preRecord.getPreId());
+            preRecord = flowRecordRepository.getFlowRecordById(preRecord.getPreId());
         }
         // 获取上一个节点的审批者，继续将审批者设置为当前审批者
         flowOperator = flowOperatorRepository.getFlowOperatorById(preRecord.getCurrentOperatorId());
