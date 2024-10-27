@@ -9,7 +9,7 @@ import {
     ProFormText, ProFormTextArea,
     ProTable
 } from "@ant-design/pro-components";
-import {changeState, list, remove, save, schema} from "@/api/flow";
+import {changeState, copy, list, remove, save, schema} from "@/api/flow";
 import {Button, Drawer, message, Popconfirm, Space} from "antd";
 
 const FlowPage = () => {
@@ -29,6 +29,15 @@ const FlowPage = () => {
         }
         actionRef.current?.reload();
     }
+
+    const handlerCopy = async (id: any) => {
+        const res = await copy(id);
+        if (res.success) {
+            message.success("复制成功");
+        }
+        actionRef.current?.reload();
+    }
+
 
     const handlerChangeState = async (id: any) => {
         const res = await changeState(id);
@@ -110,15 +119,6 @@ const FlowPage = () => {
             valueType: 'option',
             render: (_: any, record: any) => [
                 <a
-                    key="editable"
-                    onClick={() => {
-                        form.setFieldsValue(record);
-                        setEditorVisible(true);
-                    }}
-                >
-                    编辑
-                </a>,
-                <a
                     key="design"
                     onClick={() => {
                         setCurrent(record);
@@ -127,6 +127,26 @@ const FlowPage = () => {
                 >
                     设计
                 </a>,
+
+                <a
+                    key="editable"
+                    onClick={() => {
+                        form.setFieldsValue(record);
+                        setEditorVisible(true);
+                    }}
+                >
+                    编辑
+                </a>,
+
+                <a
+                    key="copy"
+                    onClick={async () => {
+                        await handlerCopy(record.id);
+                    }}
+                >
+                    复制
+                </a>,
+
                 <Popconfirm
                     key="delete"
                     title={"确认删除?"}

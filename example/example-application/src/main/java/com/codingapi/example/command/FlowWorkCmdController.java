@@ -25,6 +25,12 @@ public class FlowWorkCmdController {
         return Response.buildSuccess();
     }
 
+    @PostMapping("/copy")
+    public Response copy(@RequestBody IdRequest request){
+        flowWorkRouter.copy(request.getLongId());
+        return Response.buildSuccess();
+    }
+
     @PostMapping("/schema")
     public Response schema(@RequestBody FlowWorkCmd.SchemaRequest request){
         log.info("schema:{}",request);

@@ -20,6 +20,10 @@ export async function save(body: any) {
     return post('/api/cmd/flowWork/save', body);
 }
 
+export async function copy(id: any) {
+    return post('/api/cmd/flowWork/copy', {id});
+}
+
 export async function remove(id: any) {
     return post('/api/cmd/flowWork/delete', {id});
 }

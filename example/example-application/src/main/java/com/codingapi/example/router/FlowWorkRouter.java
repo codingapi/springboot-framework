@@ -53,4 +53,10 @@ public class FlowWorkRouter {
         flowWork.schema(request.getSchema());
         flowWorkRepository.save(flowWork);
     }
+
+    public void copy(Long id) {
+        FlowWork flowWork = flowWorkRepository.getFlowWorkById(id);
+        FlowWork flowCopy = flowWork.copy();
+        flowWorkRepository.save(flowCopy);
+    }
 }
