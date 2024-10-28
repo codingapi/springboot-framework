@@ -4,6 +4,8 @@ public enum Relation {
 
     EQUAL,
     LIKE,
+    LEFT_LIKE,
+    RIGHT_LIKE,
     BETWEEN,
     IN,
     GREATER_THAN,
