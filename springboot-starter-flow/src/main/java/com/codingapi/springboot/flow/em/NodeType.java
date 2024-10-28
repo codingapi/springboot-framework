@@ -1,7 +1,7 @@
 package com.codingapi.springboot.flow.em;
 
 /**
- * 分为发起、审批、结束
+ * 节点类型
  */
 public enum NodeType {
 
@@ -18,4 +18,13 @@ public enum NodeType {
      */
     OVER;
 
+
+    public static NodeType parser(String type) {
+        for (NodeType nodeType : values()) {
+            if (nodeType.name().equalsIgnoreCase(type)) {
+                return nodeType;
+            }
+        }
+        return APPROVAL;
+    }
 }

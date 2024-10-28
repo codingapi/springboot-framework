@@ -1,36 +1,78 @@
 package com.codingapi.springboot.flow.domain;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
+/**
+ * 审批意见
+ */
 @Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class Opinion {
 
-    private final String opinion;
-    private final boolean pass;
+    // 默认审批(人工审批)
+    public static final int TYPE_DEFAULT = 0;
+    // 系统自动审批
+    public static final int TYPE_AUTO = 1;
 
-    public Opinion(String opinion, boolean pass) {
-        this.opinion = opinion;
-        this.pass = pass;
-    }
 
-    public Opinion(String opinion) {
-        this.opinion = opinion;
-        this.pass = true;
-    }
-
-    /**
-     * 通过
-     * @param opinion 意见
-     */
-    public static Opinion pass(String opinion) {
-        return new Opinion(opinion, true);
-    }
+    // 审批结果 暂存
+    public static final int RESULT_SAVE = 0;
+    // 审批结果 转办
+    public static final int RESULT_TRANSFER = 1;
+    // 审批结果 通过
+    public static final int RESULT_PASS = 2;
+    // 审批结果 驳回
+    public static final int RESULT_REJECT = 3;
 
     /**
-     * 拒绝
-     * @param opinion 意见
+     * 审批意见
      */
-    public static Opinion reject(String opinion) {
-        return new Opinion(opinion, false);
+    private String advice;
+    /**
+     * 审批结果
+     */
+    private int result;
+    /**
+     * 意见类型
+     */
+    private int type;
+
+    public Opinion(String advice, int result, int type) {
+        this.advice = advice;
+        this.result = result;
+        this.type = type;
+    }
+
+    public static Opinion save(String advice) {
+        return new Opinion(advice, RESULT_SAVE, TYPE_DEFAULT);
+    }
+
+    public static Opinion pass(String advice) {
+        return new Opinion(advice, RESULT_PASS, TYPE_DEFAULT);
+    }
+
+    public static Opinion reject(String advice) {
+        return new Opinion(advice, RESULT_REJECT, TYPE_DEFAULT);
+    }
+
+    public static Opinion transfer(String advice) {
+        return new Opinion(advice, RESULT_TRANSFER, TYPE_DEFAULT);
+    }
+
+    public static Opinion unSignAutoSuccess() {
+        return new Opinion("非会签自动审批", RESULT_PASS, TYPE_AUTO);
+    }
+
+    public boolean isSuccess() {
+        return result == RESULT_PASS;
+    }
+
+    public boolean isReject() {
+        return result == RESULT_REJECT;
     }
 }

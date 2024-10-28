@@ -1,6 +1,6 @@
 package com.codingapi.springboot.flow.repository;
 
-import com.codingapi.springboot.flow.operator.IFlowOperator;
+import com.codingapi.springboot.flow.user.IFlowOperator;
 import com.codingapi.springboot.flow.user.User;
 
 import java.util.ArrayList;
@@ -8,22 +8,31 @@ import java.util.List;
 
 public class UserRepository implements FlowOperatorRepository {
 
-    private final List<User> operators = new ArrayList<>();
+    private final List<User> cache = new ArrayList<>();
 
     public void save(User user) {
         if (user.getId() == 0) {
-            operators.add(user);
-            user.setId(operators.size());
+            cache.add(user);
+            user.setId(cache.size());
         }
     }
 
-    @Override
-    public IFlowOperator getOperatorById(long id) {
-        return operators.stream().filter(operator -> operator.getId() == id).findFirst().orElse(null);
+    public User getById(long id) {
+        for (User user : cache) {
+            if (user.getId() == id) {
+                return user;
+            }
+        }
+        return null;
     }
 
     @Override
-    public List<User> findOperatorByIds(List<Long> operatorIds) {
-        return operators.stream().filter(operator -> operatorIds.contains(operator.getId())).toList();
+    public IFlowOperator getFlowOperatorById(long createOperatorId) {
+        return getById(createOperatorId);
+    }
+
+    @Override
+    public List<User> findByIds(List<Long> ids) {
+        return cache.stream().filter(user -> ids.contains(user.getId())).toList();
     }
 }

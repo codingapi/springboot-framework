@@ -1,0 +1,13 @@
+.panel-title{
+  text-align: center;
+}
+.node-content {
+  margin: 10px;
+
+  .node-item {
+    cursor: pointer;
+    user-select: none;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+}

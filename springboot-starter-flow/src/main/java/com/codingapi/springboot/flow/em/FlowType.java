@@ -1,19 +1,30 @@
 package com.codingapi.springboot.flow.em;
 
 /**
- * 流程审批类型
+ * 流程的类型
  */
 public enum FlowType {
 
     /**
-     * 会签
+     * 待办
      */
-    SIGN,
+    TODO,
     /**
-     * 非会签
+     * 已办
      */
-    NOT_SIGN;
+    DONE,
+    /**
+     * 转办
+     */
+    TRANSFER;
 
 
-
+    public static FlowType parser(String type){
+        for(FlowType flowType :values()){
+            if(flowType.name().equalsIgnoreCase(type)){
+                return flowType;
+            }
+        }
+        return TODO;
+    }
 }

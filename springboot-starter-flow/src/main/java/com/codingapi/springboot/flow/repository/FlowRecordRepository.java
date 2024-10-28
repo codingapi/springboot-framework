@@ -1,67 +1,70 @@
 package com.codingapi.springboot.flow.repository;
 
-import com.codingapi.springboot.flow.domain.FlowRecord;
+import com.codingapi.springboot.flow.record.FlowRecord;
 
 import java.util.List;
 
+
+/**
+ *  流转记录数据仓库
+ */
 public interface FlowRecordRepository {
 
     /**
-     * 保存记录
+     * 保存流程记录
+     *
+     * @param records 流程记录
      */
-    void save(FlowRecord flowRecord);
+    void save(List<FlowRecord> records);
+
+    /**
+     * 更新流程记录
+     *
+     * @param flowRecord 流程记录
+     */
+    void update(FlowRecord flowRecord);
+
+    /**
+     * 根据ID查询流程记录
+     *
+     * @param id 流程记录ID
+     * @return FlowRecord
+     */
+    FlowRecord getFlowRecordById(long id);
+
+    /**
+     * 根据前置ID查询流程记录
+     *
+     * @param preId 前置ID
+     * @return List of FlowRecord
+     */
+    List<FlowRecord> findFlowRecordByPreId(long preId);
+
 
     /**
      * 根据流程id查询流程记录
+     * @param processId 流程id
+     */
+    List<FlowRecord> findFlowRecordByProcessId(String processId);
+
+
+    /**
+     * 查询所有未完成的流程记录
+     * @param processId 流程id
+     * @return List of FlowRecord
+     */
+    List<FlowRecord> findTodoFlowRecordByProcessId(String processId);
+
+    /**
+     * 根据流程id 修改所有的记录状态为已完成
      *
      * @param processId 流程id
-     * @return 流程记录
      */
-    List<FlowRecord> findAllFlowRecordByProcessId(long processId);
-
-
-    /**
-     * 根据父节点id查询子节点
-     * @param parentId 父节点id
-     * @return 子节点
-     */
-    List<FlowRecord> findChildrenFlowRecordByParentId(long parentId);
-
-
-    /**
-     * 查询用户下的所有流程记录
-     *
-     * @param operatorId 用户id
-     * @return 流程记录
-     */
-    List<FlowRecord> findAllFlowRecordByOperatorId(long operatorId);
-
-    /**
-     * 查询用户下的待办流程记录
-     *
-     * @param operatorId 用户id
-     * @return 流程记录
-     */
-    List<FlowRecord> findTodoFlowRecordByOperatorId(long operatorId);
-
-    /**
-     * 查询用户下的已办流程记录
-     *
-     * @param operatorId 用户id
-     * @return 流程记录
-     */
-    List<FlowRecord> findDoneFlowRecordByOperatorId(long operatorId);
+    void finishFlowRecordByProcessId(String processId);
 
     /**
      * 删除流程记录
-     * @param flowRecord 流程记录
+     * @param childrenRecords 流程记录
      */
-    void delete(FlowRecord flowRecord);
-
-    /**
-     * 根据id查询流程记录
-     * @param id 流程记录id
-     * @return 流程记录
-     */
-    FlowRecord getFlowRecordById(long id);
+    void delete(List<FlowRecord> childrenRecords);
 }

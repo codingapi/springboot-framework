@@ -139,16 +139,30 @@ public class SearchRequest {
         private Class<?> getKeyType(String key) {
             String[] keys = key.split("\\.");
             Class<?> keyClass = clazz;
+
             for (String k : keys) {
-                Field[] fields = keyClass.getDeclaredFields();
-                for (Field field : fields) {
-                    if (field.getName().equals(k)) {
-                        keyClass = field.getType();
-                        break;
-                    }
+                keyClass = findFieldInHierarchy(keyClass, k);
+
+                if (keyClass == null) {
+                    throw new IllegalArgumentException("Field " + k + " not found in class hierarchy.");
                 }
             }
             return keyClass;
+        }
+
+        private Class<?> findFieldInHierarchy(Class<?> clazz, String fieldName) {
+            Class<?> currentClass = clazz;
+
+            while (currentClass != null) {
+                Field[] fields = currentClass.getDeclaredFields();
+                for (Field field : fields) {
+                    if (field.getName().equals(fieldName)) {
+                        return field.getType();
+                    }
+                }
+                currentClass = currentClass.getSuperclass(); // 向上查找父类
+            }
+            return null;
         }
 
     }

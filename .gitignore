@@ -33,3 +33,6 @@ build/
 .vscode/
 *.db
 *.trace.db
+
+### jars ###
+/jars/
