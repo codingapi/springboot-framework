@@ -95,7 +95,7 @@ public class FlowService {
         // 推送催办消息
         for (FlowRecord record : todoRecords) {
             IFlowOperator pushOperator = flowOperatorRepository.getFlowOperatorById(record.getCurrentOperatorId());
-            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_URGE, record, pushOperator, flowWork));
+            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_URGE, record, pushOperator, flowWork,null));
         }
 
     }
@@ -214,10 +214,10 @@ public class FlowService {
         flowRecordRepository.save(List.of(transferRecord));
 
         // 推送转办消息
-        EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TRANSFER, flowRecord, currentOperator, flowWork));
+        EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TRANSFER, flowRecord, currentOperator, flowWork,snapshot.toBindData()));
 
         // 推送待办消息
-        EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, transferRecord, targetOperator, flowWork));
+        EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, transferRecord, targetOperator, flowWork,snapshot.toBindData()));
     }
 
 
@@ -320,8 +320,8 @@ public class FlowService {
 
         // 推送事件消息
         for (FlowRecord record : records) {
-            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_CREATE, record, operator, flowWork));
-            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, record, operator, flowWork));
+            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_CREATE, record, operator, flowWork,snapshot.toBindData()));
+            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, record, operator, flowWork,snapshot.toBindData()));
         }
 
     }
@@ -412,7 +412,7 @@ public class FlowService {
             flowRecordRepository.update(flowRecord);
             flowRecordRepository.finishFlowRecordByProcessId(flowRecord.getProcessId());
 
-            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_FINISH, flowRecord, currentOperator, flowWork));
+            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_FINISH, flowRecord, currentOperator, flowWork,snapshot.toBindData()));
             return;
         }
 
@@ -451,12 +451,12 @@ public class FlowService {
 
         // 推送审批事件消息
         int eventState = flowSourceDirection == FlowSourceDirection.PASS ? FlowApprovalEvent.STATE_PASS : FlowApprovalEvent.STATE_REJECT;
-        EventPusher.push(new FlowApprovalEvent(eventState, flowRecord, currentOperator, flowWork));
+        EventPusher.push(new FlowApprovalEvent(eventState, flowRecord, currentOperator, flowWork,snapshot.toBindData()));
 
         // 推送待办事件消息
         for (FlowRecord record : records) {
             IFlowOperator pushOperator = flowOperatorRepository.getFlowOperatorById(record.getCurrentOperatorId());
-            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, record, pushOperator, flowWork));
+            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, record, pushOperator, flowWork,snapshot.toBindData()));
         }
     }
 
@@ -498,7 +498,7 @@ public class FlowService {
         flowRecordRepository.update(flowRecord);
 
         flowRecordRepository.delete(childrenRecords);
-        EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_RECALL, flowRecord, currentOperator, flowWork));
+        EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_RECALL, flowRecord, currentOperator, flowWork,null));
     }
 
 }
