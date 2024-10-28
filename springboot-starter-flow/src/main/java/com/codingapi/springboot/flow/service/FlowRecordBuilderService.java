@@ -152,24 +152,44 @@ class FlowRecordBuilderService {
      * @return 流程记录
      */
     public List<FlowRecord> createRecord(FlowNode currentNode, IFlowOperator currentOperator) {
+       return this.createRecord(currentNode,currentOperator,null);
+    }
+
+    /**
+     * 创建流程记录
+     *
+     * @param currentNode       当前节点
+     * @param currentOperator   当前审批人
+     * @param opinion           审批意见
+     * @return 流程记录
+     */
+    public List<FlowRecord> createRecord(FlowNode currentNode, IFlowOperator currentOperator,Opinion opinion) {
         FlowSession flowSession = new FlowSession(flowWork, currentNode, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
         long workId = flowWork.getId();
         List<? extends IFlowOperator> operators = currentNode.loadFlowNodeOperator(flowSession, flowOperatorRepository);
+        List<FlowRecord> recordList;
         if (operators.isEmpty()) {
-            List<FlowRecord> errorRecordList = this.errMatcher(currentNode, currentOperator);
-            if (errorRecordList.isEmpty()) {
+            recordList= this.errMatcher(currentNode, currentOperator);
+            if (recordList.isEmpty()) {
                 throw new IllegalArgumentException("operator not match.");
             }
-            return errorRecordList;
         } else {
             String recordTitle = currentNode.generateTitle(flowSession);
-            List<FlowRecord> recordList = new ArrayList<>();
+            recordList = new ArrayList<>();
             for (IFlowOperator operator : operators) {
                 FlowRecord record = currentNode.createRecord(workId, processId, preId, recordTitle, createOperator, operator, snapshot);
                 recordList.add(record);
             }
-            return recordList;
         }
+        if(!recordList.isEmpty()){
+            for (FlowRecord record:recordList){
+                if(opinion!=null){
+                    record.updateOpinion(opinion);
+                }
+            }
+        }
+
+        return recordList;
     }
 
 

@@ -66,7 +66,6 @@ public class FlowTest2 {
         assertEquals(1, userTodos.size());
 
         FlowRecord userTodo = userTodos.get(0);
-        assertNull(userTodo.getOpinion());
         flowService.submitFlow(userTodo.getId(), lorne, leave, Opinion.pass("自己提交"));
 
         // 部门领导审批
@@ -74,6 +73,7 @@ public class FlowTest2 {
         assertEquals(1, deptTodos.size());
 
         FlowRecord deptTodo = deptTodos.get(0);
+        assertNull(deptTodo.getOpinion());
         flowService.transfer(deptTodo.getId(), lorne,boss, leave, "转交给领导审批通过");
 
         // 查看boss的待办

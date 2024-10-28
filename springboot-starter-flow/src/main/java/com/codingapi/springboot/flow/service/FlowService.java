@@ -310,7 +310,7 @@ public class FlowService {
         );
 
         // 创建待办记录
-        List<FlowRecord> records = flowRecordBuilderService.createRecord(start, operator);
+        List<FlowRecord> records = flowRecordBuilderService.createRecord(start, operator, opinion);
         if (records.isEmpty()) {
             throw new IllegalArgumentException("flow record not found");
         }
