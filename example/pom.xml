@@ -13,11 +13,11 @@
     <parent>
         <groupId>com.codingapi.springboot</groupId>
         <artifactId>springboot-parent</artifactId>
-        <version>3.3.2.1.dev</version>
+        <version>3.3.2.2.dev</version>
     </parent>
 
     <artifactId>springboot-example</artifactId>
-    <version>3.3.2.1.dev</version>
+    <version>3.3.2.2.dev</version>
 
     <name>springboot-example</name>
     <description>springboot-example project for Spring Boot</description>

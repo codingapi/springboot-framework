@@ -7,6 +7,7 @@ import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.em.ApprovalType;
 import com.codingapi.springboot.flow.flow.Leave;
 import com.codingapi.springboot.flow.matcher.OperatorMatcher;
+import com.codingapi.springboot.flow.pojo.FlowDetail;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.*;
 import com.codingapi.springboot.flow.service.FlowService;
@@ -421,9 +422,12 @@ public class QueryTest {
         // 查看所有流程是否都已经结束
         assertTrue(records.stream().allMatch(FlowRecord::isFinish));
 
+        FlowDetail flowDetail  = flowService.detail(records.get(0).getId(), user);
+        assertEquals(4, flowDetail.getHistoryRecords().size());
+        assertEquals(4, flowDetail.getOpinions().size());
+
         List<BindDataSnapshot> snapshots = flowBindDataRepository.findAll();
         assertEquals(5, snapshots.size());
-
 
 
         List<FlowRecord> userDones = flowRecordRepository.findDoneByOperatorId(user.getUserId(), pageRequest).getContent();

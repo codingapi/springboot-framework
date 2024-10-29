@@ -6,7 +6,7 @@
     <parent>
         <artifactId>springboot-parent</artifactId>
         <groupId>com.codingapi.springboot</groupId>
-        <version>3.3.2.1.dev</version>
+        <version>3.3.2.2.dev</version>
     </parent>
 
     <name>springboot-starter-flow</name>
