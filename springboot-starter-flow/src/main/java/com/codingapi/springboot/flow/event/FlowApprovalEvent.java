@@ -40,7 +40,7 @@ public class FlowApprovalEvent implements ISyncEvent {
     private final FlowWork flowWork;
     private final IBindData bindData;
 
-    public FlowApprovalEvent(int state, FlowRecord flowRecord, IFlowOperator operator, FlowWork flowWork,IBindData bindData) {
+    public FlowApprovalEvent(int state, FlowRecord flowRecord, IFlowOperator operator, FlowWork flowWork, IBindData bindData) {
         this.state = state;
         this.operator = operator;
         this.flowRecord = flowRecord;
@@ -49,11 +49,16 @@ public class FlowApprovalEvent implements ISyncEvent {
         log.debug("FlowApprovalEvent:{}", this);
     }
 
-    public boolean isUrge(){
+
+    public boolean match(Class<?> bindDataClass) {
+        return bindDataClass.isInstance(bindData);
+    }
+
+    public boolean isUrge() {
         return state == STATE_URGE;
     }
 
-    public boolean isTodo(){
+    public boolean isTodo() {
         return state == STATE_TODO;
     }
 
