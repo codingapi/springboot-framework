@@ -6,8 +6,7 @@ import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.user.User;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ScriptBuildTest {
 
@@ -28,6 +27,7 @@ public class ScriptBuildTest {
         FlowNode startNode = flowWork.getStartNode();
 
         FlowWork copyWork = flowWork.copy();
+        assertNotEquals(copyWork.getCode(), flowWork.getCode());
 
         assertEquals("请假流程", copyWork.getTitle());
         assertEquals(4, copyWork.getNodes().size());

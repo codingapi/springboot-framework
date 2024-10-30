@@ -120,7 +120,7 @@ public class FlowWork {
         FlowWork flowWork = new FlowWork(this.createUser);
         flowWork.setDescription(this.getDescription());
         flowWork.setTitle(this.getTitle());
-        flowWork.setCode(this.getCode());
+        flowWork.setCode(RandomGenerator.randomString(8));
         flowWork.setPostponedMax(this.getPostponedMax());
         flowWork.schema(schema);
         return flowWork;
