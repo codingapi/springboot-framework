@@ -8,11 +8,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FlowConfiguration {
 
-
     @Bean
     @ConditionalOnMissingBean
-    public FlowSessionBeanRegister flowHolderRegister(ApplicationContext spring) {
-        return new FlowSessionBeanRegister(spring);
+    public FlowFrameworkRegister flowFrameworkRegister(ApplicationContext spring) {
+        return new FlowFrameworkRegister(spring);
     }
 
 }

@@ -38,7 +38,7 @@ public class FlowWorkRepositoryImpl implements FlowWorkRepository {
 
         List<FlowRelation> flowRelations =
                 flowRelationEntityRepository.findFlowRelationEntityByWorkId(entity.getId())
-                        .stream().map(item->FlowRelationConvertor.convert(item,flowNodes)).toList();
+                        .stream().map(item -> FlowRelationConvertor.convert(item, flowNodes)).toList();
 
         return new FlowWork(
                 entity.getId(),
@@ -67,10 +67,10 @@ public class FlowWorkRepositoryImpl implements FlowWorkRepository {
         entity = flowWorkEntityRepository.save(entity);
         flowWork.setId(entity.getId());
 
-        if(!flowWork.getNodes().isEmpty()) {
+        if (!flowWork.getNodes().isEmpty()) {
             flowNodeEntityRepository.saveAll(flowWork.getNodes().stream().map((item) -> FlowNodeConvertor.convert(item, flowWork.getId())).toList());
         }
-        if(!flowWork.getRelations().isEmpty()) {
+        if (!flowWork.getRelations().isEmpty()) {
             flowRelationEntityRepository.saveAll(flowWork.getRelations().stream().map((item) -> FlowRelationConvertor.convert(item, flowWork.getId())).toList());
         }
     }

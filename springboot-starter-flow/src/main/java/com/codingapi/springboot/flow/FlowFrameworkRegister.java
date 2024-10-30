@@ -6,7 +6,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 
 @AllArgsConstructor
-public class FlowSessionBeanRegister implements InitializingBean {
+public class FlowFrameworkRegister implements InitializingBean {
 
     private final ApplicationContext application;
 
