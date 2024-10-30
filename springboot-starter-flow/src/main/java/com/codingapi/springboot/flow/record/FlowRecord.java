@@ -407,4 +407,11 @@ public class FlowRecord {
     public boolean isPostponed() {
         return this.postponedCount > 0;
     }
+
+    /**
+     * 是否是发起节点
+     */
+    public boolean isStartRecord() {
+        return this.preId == 0;
+    }
 }

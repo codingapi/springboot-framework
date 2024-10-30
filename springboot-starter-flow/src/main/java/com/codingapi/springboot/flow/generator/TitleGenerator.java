@@ -1,28 +1,26 @@
 package com.codingapi.springboot.flow.generator;
 
 import com.codingapi.springboot.flow.content.FlowSession;
-import groovy.lang.GroovyShell;
-import groovy.lang.Script;
+import com.codingapi.springboot.flow.script.GroovyShellContext;
 import lombok.Getter;
 import org.springframework.util.StringUtils;
 
 /**
  * 标题生成器
  */
-public class TitleGenerator  {
+public class TitleGenerator {
 
     @Getter
     private final String script;
 
-    private final Script runtime;
+    private final GroovyShellContext.ShellScript runtime;
 
     public TitleGenerator(String script) {
         if (!StringUtils.hasLength(script)) {
             throw new IllegalArgumentException("script is empty");
         }
         this.script = script;
-        GroovyShell groovyShell = new GroovyShell();
-        this.runtime = groovyShell.parse(script);
+        this.runtime = GroovyShellContext.getInstance().parse(script);
     }
 
 
@@ -32,7 +30,7 @@ public class TitleGenerator  {
      * @return 标题生成器
      */
     public static TitleGenerator defaultTitleGenerator() {
-        return new TitleGenerator("def run(content){ return content.getCreateOperator().getName() + '-' + content.getFlowWork().getTitle() + '-' + content.getFlowNode().getName();}");
+        return new TitleGenerator("def run(content){ return content.getCurrentOperator().getName() + '-' + content.getFlowWork().getTitle() + '-' + content.getFlowNode().getName();}");
     }
 
 

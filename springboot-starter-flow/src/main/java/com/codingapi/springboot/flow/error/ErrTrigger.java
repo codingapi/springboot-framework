@@ -1,8 +1,7 @@
 package com.codingapi.springboot.flow.error;
 
 import com.codingapi.springboot.flow.content.FlowSession;
-import groovy.lang.GroovyShell;
-import groovy.lang.Script;
+import com.codingapi.springboot.flow.script.GroovyShellContext;
 import lombok.Getter;
 import org.springframework.util.StringUtils;
 
@@ -14,7 +13,7 @@ public class ErrTrigger {
     @Getter
     private final String script;
 
-    private final Script runtime;
+    private final GroovyShellContext.ShellScript runtime;
 
 
     public ErrTrigger(String script) {
@@ -22,8 +21,7 @@ public class ErrTrigger {
             throw new IllegalArgumentException("script is empty");
         }
         this.script = script;
-        GroovyShell groovyShell = new GroovyShell();
-        this.runtime = groovyShell.parse(script);
+        this.runtime = GroovyShellContext.getInstance().parse(script);
     }
 
     /**

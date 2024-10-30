@@ -68,10 +68,7 @@ public class FlowDetail {
         this.flowRecord = flowRecord;
         this.flowWork = flowWork;
         this.bindData = snapshot.toBindData();
-        this.historyRecords = historyRecords.
-                stream().
-                sorted((o1, o2) -> (int) (o1.getCreateTime() - o2.getCreateTime()))
-                .toList();
+        this.historyRecords = historyRecords;
         this.opinions = historyRecords.stream().map(FlowOpinion::new).toList();
         this.flowCreator = operators.stream().filter(o -> o.getUserId() == flowRecord.getCreateOperatorId()).findFirst().orElse(null);
         this.flowCreateTime = flowRecord.getCreateTime();
