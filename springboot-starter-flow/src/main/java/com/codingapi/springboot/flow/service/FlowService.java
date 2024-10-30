@@ -261,14 +261,14 @@ public class FlowService {
     /**
      * 发起流程 （不自动提交到下一节点）
      *
-     * @param workId   流程id
+     * @param workCode 流程编码
      * @param operator 操作者
      * @param bindData 绑定数据
      * @param advice   审批意见
      */
-    public void startFlow(long workId, IFlowOperator operator, IBindData bindData, String advice) {
+    public void startFlow(String workCode, IFlowOperator operator, IBindData bindData, String advice) {
         // 检测流程是否存在
-        FlowWork flowWork = flowWorkRepository.getFlowWorkById(workId);
+        FlowWork flowWork = flowWorkRepository.getFlowWorkByCode(workCode);
         if (flowWork == null) {
             throw new IllegalArgumentException("flow work not found");
         }

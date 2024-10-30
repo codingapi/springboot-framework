@@ -92,7 +92,7 @@ const LeavePage = () => {
                 >
 
                     <ProFormText
-                        name={"flowId"}
+                        name={"flowCode"}
                         hidden={true}
                     />
 
@@ -143,7 +143,7 @@ const LeavePage = () => {
 
                 <FlowSelect visible={flowSelectVisible} setVisible={setFlowSelectVisible} onSelect={(flow) => {
 
-                    form.setFieldValue('flowId', flow.id);
+                    form.setFieldValue('flowCode', flow.code);
                     form.setFieldValue('flowName', flow.title);
 
                 }}/>

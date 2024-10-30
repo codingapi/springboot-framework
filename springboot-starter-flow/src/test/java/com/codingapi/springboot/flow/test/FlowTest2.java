@@ -54,13 +54,13 @@ public class FlowTest2 {
 
         flowWorkRepository.save(flowWork);
 
-        long workId = flowWork.getId();
+        String workCode = flowWork.getCode();
 
         Leave leave = new Leave("我想要出去看看");
         leaveRepository.save(leave);
 
         // 创建流程
-        flowService.startFlow(workId, lorne, leave, "发起流程");
+        flowService.startFlow(workCode, lorne, leave, "发起流程");
         // 查看我的待办
         List<FlowRecord> userTodos = flowRecordRepository.findTodoByOperatorId(lorne.getUserId(), pageRequest).getContent();
         assertEquals(1, userTodos.size());

@@ -9,6 +9,8 @@ public interface FlowWorkRepository {
 
     FlowWork getFlowWorkById(long id);
 
+    FlowWork getFlowWorkByCode(String code);
+
     void save(FlowWork flowWork);
 
     void delete(long id);

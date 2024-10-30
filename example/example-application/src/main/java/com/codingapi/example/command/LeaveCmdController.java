@@ -31,7 +31,7 @@ public class LeaveCmdController {
         leave.setDays(request.getDays());
         leave.setCreateTime(System.currentTimeMillis());
 
-        flowService.startFlow(request.getFlowId(), user, leave, request.getDesc());
+        flowService.startFlow(request.getFlowCode(), user, leave, request.getDesc());
 
         return Response.buildSuccess();
     }

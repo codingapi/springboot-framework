@@ -10,7 +10,7 @@ import com.codingapi.springboot.flow.generator.TitleGenerator;
 import com.codingapi.springboot.flow.matcher.OperatorMatcher;
 import com.codingapi.springboot.flow.trigger.OutTrigger;
 import com.codingapi.springboot.flow.user.IFlowOperator;
-import com.codingapi.springboot.flow.utils.IDGenerator;
+import com.codingapi.springboot.flow.utils.RandomGenerator;
 
 /**
  * 流程工作构建器
@@ -72,10 +72,10 @@ public class FlowWorkBuilder {
         }
 
         public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher,long timeout, boolean editable) {
-            return node(IDGenerator.generate(),name, code, view, approvalType, operatorMatcher, timeout, TitleGenerator.defaultTitleGenerator(), null, editable);
+            return node(RandomGenerator.generateUUID(),name, code, view, approvalType, operatorMatcher, timeout, TitleGenerator.defaultTitleGenerator(), null, editable);
         }
         public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, boolean editable) {
-            return node(IDGenerator.generate(),name, code, view, approvalType, operatorMatcher, 0, TitleGenerator.defaultTitleGenerator(), null, editable);
+            return node(RandomGenerator.generateUUID(),name, code, view, approvalType, operatorMatcher, 0, TitleGenerator.defaultTitleGenerator(), null, editable);
         }
 
         public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher) {
@@ -83,7 +83,7 @@ public class FlowWorkBuilder {
         }
 
         public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher,  ErrTrigger errTrigger, boolean editable) {
-            return node(IDGenerator.generate(),name, code, view, approvalType, operatorMatcher, 0, TitleGenerator.defaultTitleGenerator(), errTrigger, editable);
+            return node(RandomGenerator.generateUUID(),name, code, view, approvalType, operatorMatcher, 0, TitleGenerator.defaultTitleGenerator(), errTrigger, editable);
         }
 
 
@@ -108,7 +108,7 @@ public class FlowWorkBuilder {
         public Relations relation(String name, String source, String target, OutTrigger outTrigger,int order, boolean back) {
             FlowNode from = work.getNodeByCode(source);
             FlowNode to = work.getNodeByCode(target);
-            FlowRelation relation = new FlowRelation(IDGenerator.generate(), name, from, to, outTrigger,order, back);
+            FlowRelation relation = new FlowRelation(RandomGenerator.generateUUID(), name, from, to, outTrigger,order, back);
             work.addRelation(relation);
             return this;
         }

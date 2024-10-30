@@ -13,6 +13,7 @@ public class FlowWorkCmd {
 
         private long id;
         private String title;
+        private String code;
         private String description;
         private int postponedMax;
 

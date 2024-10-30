@@ -15,6 +15,11 @@ public class FlowWorkRepositoryImpl implements FlowWorkRepository{
     }
 
     @Override
+    public FlowWork getFlowWorkByCode(String code) {
+        return cache.stream().filter(flowWork -> flowWork.getCode().equals(code)).findFirst().orElse(null);
+    }
+
+    @Override
     public void save(FlowWork flowWork) {
         if(flowWork.getId()==0){
             cache.add(flowWork);

@@ -63,13 +63,13 @@ public class QueryTest {
 
         flowWorkRepository.save(flowWork);
 
-        long workId = flowWork.getId();
+        String workCode = flowWork.getCode();
 
         Leave leave = new Leave("我要出去看看");
         leaveRepository.save(leave);
 
         // 创建流程
-        flowService.startFlow(workId, user, leave, "发起流程");
+        flowService.startFlow(workCode, user, leave, "发起流程");
 
         // 查看我的待办
         List<FlowRecord> userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
@@ -157,13 +157,13 @@ public class QueryTest {
 
         flowWorkRepository.save(flowWork);
 
-        long workId = flowWork.getId();
+        String workCode = flowWork.getCode();
 
         Leave leave = new Leave("我要出去看看");
         leaveRepository.save(leave);
 
         // 创建流程
-        flowService.startFlow(workId, user, leave, "发起流程");
+        flowService.startFlow(workCode, user, leave, "发起流程");
 
         // 查看我的待办
         List<FlowRecord> userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
@@ -263,13 +263,13 @@ public class QueryTest {
 
         flowWorkRepository.save(flowWork);
 
-        long workId = flowWork.getId();
+        String workCode = flowWork.getCode();
 
         Leave leave = new Leave("我要出去看看");
         leaveRepository.save(leave);
 
         // 创建流程
-        flowService.startFlow(workId, user, leave, "发起流程");
+        flowService.startFlow(workCode, user, leave, "发起流程");
 
         // 查看我的待办
         List<FlowRecord> userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
@@ -375,13 +375,13 @@ public class QueryTest {
 
         flowWorkRepository.save(flowWork);
 
-        long workId = flowWork.getId();
+        String workCode = flowWork.getCode();
 
         Leave leave = new Leave("我要出去看看");
         leaveRepository.save(leave);
 
         // 创建流程
-        flowService.startFlow(workId, user, leave, "发起流程");
+        flowService.startFlow(workCode, user, leave, "发起流程");
 
         // 查看我的待办
         List<FlowRecord> userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
@@ -475,13 +475,13 @@ public class QueryTest {
 
         flowWorkRepository.save(flowWork);
 
-        long workId = flowWork.getId();
+        String workCode = flowWork.getCode();
 
         Leave leave = new Leave("我要出去看看");
         leaveRepository.save(leave);
 
         // 创建流程
-        flowService.startFlow(workId, user, leave, "发起流程");
+        flowService.startFlow(workCode, user, leave, "发起流程");
 
         // 查看我的待办
         List<FlowRecord> userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();

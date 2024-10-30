@@ -42,6 +42,7 @@ public class FlowWorkRepositoryImpl implements FlowWorkRepository {
 
         return new FlowWork(
                 entity.getId(),
+                entity.getCode(),
                 entity.getTitle(),
                 entity.getDescription(),
                 userRepository.getUserById(entity.getCreateUser()),
@@ -55,6 +56,37 @@ public class FlowWorkRepositoryImpl implements FlowWorkRepository {
         );
     }
 
+
+    @Override
+    public FlowWork getFlowWorkByCode(String code) {
+        FlowWorkEntity entity = flowWorkEntityRepository.getFlowWorkEntityByCode(code);
+        if (entity == null) {
+            return null;
+        }
+
+        List<FlowNode> flowNodes =
+                flowNodeEntityRepository.findFlowNodeEntityByWorkId(entity.getId())
+                        .stream().map(FlowNodeConvertor::convert).toList();
+
+        List<FlowRelation> flowRelations =
+                flowRelationEntityRepository.findFlowRelationEntityByWorkId(entity.getId())
+                        .stream().map(item -> FlowRelationConvertor.convert(item, flowNodes)).toList();
+
+        return new FlowWork(
+                entity.getId(),
+                entity.getCode(),
+                entity.getTitle(),
+                entity.getDescription(),
+                userRepository.getUserById(entity.getCreateUser()),
+                entity.getCreateTime(),
+                entity.getUpdateTime(),
+                entity.getEnable(),
+                entity.getPostponedMax(),
+                flowNodes,
+                flowRelations,
+                entity.getSchema()
+        );
+    }
 
     @Override
     public void delete(long id) {

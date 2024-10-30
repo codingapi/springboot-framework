@@ -3,10 +3,8 @@ package com.codingapi.example.command;
 import com.codingapi.example.domain.User;
 import com.codingapi.example.pojo.cmd.FlowCmd;
 import com.codingapi.example.repository.UserRepository;
-import com.codingapi.springboot.flow.pojo.FlowDetail;
 import com.codingapi.springboot.flow.service.FlowService;
 import com.codingapi.springboot.framework.dto.response.Response;
-import com.codingapi.springboot.framework.dto.response.SingleResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,7 +24,7 @@ public class FlowRecordCmdController {
     @PostMapping("/startFlow")
     public Response startFlow(@RequestBody FlowCmd.StartFlow request) {
         User current = userRepository.getUserByUsername(request.getUserName());
-        flowService.startFlow(request.getWorkId(), current, request.getBindData(), request.getAdvice());
+        flowService.startFlow(request.getWorkCode(), current, request.getBindData(), request.getAdvice());
         return Response.buildSuccess();
     }
 
