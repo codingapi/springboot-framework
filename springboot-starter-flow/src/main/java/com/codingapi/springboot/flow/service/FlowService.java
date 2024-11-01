@@ -124,13 +124,14 @@ public class FlowService {
 
 
         BindDataSnapshot snapshot = flowBindDataRepository.getBindDataSnapshotById(flowRecord.getSnapshotId());
-        List<FlowRecord> flowRecords = flowRecordRepository.findFlowRecordByProcessId(flowRecord.getProcessId()).
-                stream().
-                sorted((o1, o2) -> (int) (o1.getId() - o2.getId()))
-                .toList();
+        List<FlowRecord> flowRecords =
+                flowRecordRepository.findFlowRecordByProcessId(flowRecord.getProcessId()).
+                        stream().
+                        sorted((o1, o2) -> (int) (o2.getId() - o1.getId()))
+                        .toList();
 
         List<IFlowOperator> operators = new ArrayList<>();
-                // 获取所有的操作者
+        // 获取所有的操作者
         for (FlowRecord record : flowRecords) {
             operators.add(record.getCreateOperator());
             operators.add(record.getCurrentOperator());
@@ -199,7 +200,7 @@ public class FlowService {
         flowRecordRepository.update(flowRecord);
 
         // 获取创建者
-        IFlowOperator createOperator =flowRecord.getCreateOperator();
+        IFlowOperator createOperator = flowRecord.getCreateOperator();
 
         // 与当前流程同级的流程记录
         List<FlowRecord> historyRecords;
@@ -330,7 +331,7 @@ public class FlowService {
             EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, record, operator, flowWork, snapshot.toBindData()));
         }
         // 当前的审批记录
-        return new FlowResult(flowWork,records);
+        return new FlowResult(flowWork, records);
     }
 
     /**
@@ -400,7 +401,7 @@ public class FlowService {
             boolean next = flowDirectionService.hasCurrentFlowNodeIsDone();
             if (next) {
                 List<FlowRecord> todoRecords = historyRecords.stream().filter(FlowRecord::isTodo).toList();
-                return new FlowResult(flowWork,todoRecords);
+                return new FlowResult(flowWork, todoRecords);
             }
         }
 
@@ -426,7 +427,7 @@ public class FlowService {
             flowRecordRepository.finishFlowRecordByProcessId(flowRecord.getProcessId());
 
             EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_FINISH, flowRecord, currentOperator, flowWork, snapshot.toBindData()));
-            return new FlowResult(flowWork,flowRecord);
+            return new FlowResult(flowWork, flowRecord);
         }
 
         // 获取流程的发起者
@@ -472,7 +473,7 @@ public class FlowService {
             EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, record, pushOperator, flowWork, snapshot.toBindData()));
         }
 
-        return new FlowResult(flowWork,records);
+        return new FlowResult(flowWork, records);
     }
 
 
