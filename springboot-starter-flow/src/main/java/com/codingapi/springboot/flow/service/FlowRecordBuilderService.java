@@ -48,6 +48,10 @@ class FlowRecordBuilderService {
                                     String processId,
                                     long preId) {
 
+        if(createOperator==null){
+            throw new IllegalArgumentException("createOperator is null");
+        }
+
         this.createOperator = createOperator;
         this.flowOperatorRepository = flowOperatorRepository;
 
@@ -216,7 +220,7 @@ class FlowRecordBuilderService {
             while (preFlowRecord.isTransfer() || !preFlowRecord.getNodeCode().equals(nextNode.getCode())) {
                 preFlowRecord = flowRecordRepository.getFlowRecordById(preFlowRecord.getPreId());
             }
-            flowOperator = flowOperatorRepository.getFlowOperatorById(preFlowRecord.getCurrentOperatorId());
+            flowOperator = preFlowRecord.getCurrentOperator();
         }
         return this.createRecord(nextNode, flowOperator);
     }
@@ -234,7 +238,7 @@ class FlowRecordBuilderService {
             preRecord = flowRecordRepository.getFlowRecordById(preRecord.getPreId());
         }
         // 获取上一个节点的审批者，继续将审批者设置为当前审批者
-        flowOperator = flowOperatorRepository.getFlowOperatorById(preRecord.getCurrentOperatorId());
+        flowOperator = preRecord.getCurrentOperator();
         FlowNode nextNode = flowWork.getNodeByCode(preRecord.getNodeCode());
         if (nextNode == null) {
             throw new IllegalArgumentException("next node not found");

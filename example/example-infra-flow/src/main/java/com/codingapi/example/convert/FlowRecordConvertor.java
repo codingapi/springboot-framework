@@ -10,7 +10,7 @@ import com.codingapi.springboot.flow.record.FlowRecord;
 
 public class FlowRecordConvertor {
 
-    public static FlowRecordEntity convert(FlowRecord flowRecord, UserRepository userRepository) {
+    public static FlowRecordEntity convert(FlowRecord flowRecord) {
         if (flowRecord == null) {
             return null;
         }
@@ -22,7 +22,7 @@ public class FlowRecordConvertor {
         entity.setProcessId(flowRecord.getProcessId());
         entity.setNodeCode(flowRecord.getNodeCode());
         entity.setTitle(flowRecord.getTitle());
-        entity.setCurrentOperatorId(flowRecord.getCurrentOperatorId());
+        entity.setCurrentOperatorId(flowRecord.getCurrentOperator().getUserId());
         entity.setFlowType(flowRecord.getFlowType().name());
         if (flowRecord.getFlowSourceDirection() != null) {
             entity.setFlowSourceDirection(flowRecord.getFlowSourceDirection().name());
@@ -32,15 +32,16 @@ public class FlowRecordConvertor {
         entity.setFinishTime(flowRecord.getFinishTime());
         entity.setTimeoutTime(flowRecord.getTimeoutTime());
         entity.setPostponedCount(flowRecord.getPostponedCount());
-        entity.setCreateOperatorId(flowRecord.getCreateOperatorId());
+        entity.setCreateOperatorId(flowRecord.getCreateOperator().getUserId());
         if (flowRecord.getOpinion() != null) {
             entity.setOpinionAdvice(flowRecord.getOpinion().getAdvice());
             entity.setOpinionType(flowRecord.getOpinion().getType());
             entity.setOpinionResult(flowRecord.getOpinion().getResult());
         }
 
-        entity.setCurrentOperatorName(userRepository.getUserById(flowRecord.getCurrentOperatorId()).getName());
-        entity.setCreateOperatorName(userRepository.getUserById(flowRecord.getCreateOperatorId()).getName());
+
+        entity.setCurrentOperatorName(flowRecord.getCurrentOperator().getName());
+        entity.setCreateOperatorName(flowRecord.getCreateOperator().getName());
 
         entity.setFlowStatus(flowRecord.getFlowStatus().name());
         entity.setErrMessage(flowRecord.getErrMessage());
@@ -48,16 +49,17 @@ public class FlowRecordConvertor {
         entity.setSnapshotId(flowRecord.getSnapshotId());
         entity.setRead(flowRecord.isRead());
         entity.setInterfere(flowRecord.isInterfere());
-        entity.setInterferedOperatorId(flowRecord.getInterferedOperatorId());
-        if (flowRecord.isInterfere() && flowRecord.getInterferedOperatorId() > 0) {
-            entity.setInterferedOperatorName(userRepository.getUserById(flowRecord.getInterferedOperatorId()).getName());
+
+        if (flowRecord.getInterferedOperator()!=null) {
+            entity.setInterferedOperatorId(flowRecord.getInterferedOperator().getUserId());
+            entity.setInterferedOperatorName(flowRecord.getInterferedOperator().getName());
         }
         entity.setReadTime(flowRecord.getReadTime());
         return entity;
     }
 
 
-    public static FlowRecord convert(FlowRecordEntity entity) {
+    public static FlowRecord convert(FlowRecordEntity entity, UserRepository userRepository) {
         if (entity == null) {
             return null;
         }
@@ -69,7 +71,7 @@ public class FlowRecordConvertor {
         flowRecord.setProcessId(entity.getProcessId());
         flowRecord.setNodeCode(entity.getNodeCode());
         flowRecord.setTitle(entity.getTitle());
-        flowRecord.setCurrentOperatorId(entity.getCurrentOperatorId());
+        flowRecord.setCurrentOperator(userRepository.getUserById(entity.getCurrentOperatorId()));
         flowRecord.setFlowType(FlowType.parser(entity.getFlowType()));
         flowRecord.setFlowSourceDirection(FlowSourceDirection.parser(entity.getFlowSourceDirection()));
         flowRecord.setCreateTime(entity.getCreateTime());
@@ -77,7 +79,7 @@ public class FlowRecordConvertor {
         flowRecord.setFinishTime(entity.getFinishTime());
         flowRecord.setTimeoutTime(entity.getTimeoutTime());
         flowRecord.setPostponedCount(entity.getPostponedCount());
-        flowRecord.setCreateOperatorId(entity.getCreateOperatorId());
+        flowRecord.setCreateOperator(userRepository.getUserById(entity.getCreateOperatorId()));
         if (entity.getOpinionResult() != null && entity.getOpinionType() != null) {
             flowRecord.setOpinion(new Opinion(entity.getOpinionAdvice(), entity.getOpinionResult(), entity.getOpinionType()));
         }
@@ -87,6 +89,9 @@ public class FlowRecordConvertor {
         flowRecord.setSnapshotId(entity.getSnapshotId());
         flowRecord.setRead(entity.getRead());
         flowRecord.setInterfere(entity.getInterfere());
+        if(entity.getInterferedOperatorId()!=null) {
+            flowRecord.setInterferedOperator(userRepository.getUserById(entity.getInterferedOperatorId()));
+        }
         flowRecord.setReadTime(entity.getReadTime());
         return flowRecord;
     }

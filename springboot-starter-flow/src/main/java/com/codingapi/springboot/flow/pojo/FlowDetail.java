@@ -70,7 +70,7 @@ public class FlowDetail {
         this.bindData = snapshot.toBindData();
         this.historyRecords = historyRecords;
         this.opinions = historyRecords.stream().map(FlowOpinion::new).toList();
-        this.flowCreator = operators.stream().filter(o -> o.getUserId() == flowRecord.getCreateOperatorId()).findFirst().orElse(null);
+        this.flowCreator = flowRecord.getCreateOperator();
         this.flowCreateTime = flowRecord.getCreateTime();
         this.flowNode = flowWork.getNodeByCode(flowRecord.getNodeCode());
     }
@@ -86,7 +86,7 @@ public class FlowDetail {
         public FlowOpinion(FlowRecord flowRecord) {
             this.recordId = flowRecord.getId();
             this.opinion = flowRecord.getOpinion();
-            this.operator = operators.stream().filter(o -> o.getUserId() == flowRecord.getCurrentOperatorId()).findFirst().orElse(null);
+            this.operator = flowRecord.getCurrentOperator();
             this.createTime = flowRecord.getUpdateTime();
         }
     }

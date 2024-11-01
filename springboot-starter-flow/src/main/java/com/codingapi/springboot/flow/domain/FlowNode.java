@@ -202,7 +202,6 @@ public class FlowNode {
             //寻找委托人
             flowOperator = flowOperator.entrustOperator();
         }
-
         FlowRecord record = new FlowRecord();
         record.setProcessId(processId);
         record.setNodeCode(this.code);
@@ -210,9 +209,9 @@ public class FlowNode {
         record.setWorkId(workId);
         record.setFlowStatus(FlowStatus.RUNNING);
         record.setPostponedCount(0);
-        record.setCreateOperatorId(createOperator.getUserId());
+        record.setCreateOperator(createOperator);
         record.setBindClass(snapshot.getClazzName());
-        record.setCurrentOperatorId(flowOperator.getUserId());
+        record.setCurrentOperator(flowOperator);
         record.setPreId(preId);
         record.setTitle(title);
         record.setTimeoutTime(this.loadTimeoutTime());
