@@ -50,7 +50,7 @@ public class FlowRecord {
     /**
      * 当前操作者
      */
-    private long currentOperatorId;
+    private IFlowOperator currentOperator;
     /**
      * 节点状态 | 待办、已办
      */
@@ -90,7 +90,7 @@ public class FlowRecord {
     /**
      * 发起者id
      */
-    private long createOperatorId;
+    private IFlowOperator createOperator;
     /**
      * 审批意见 (为办理时为空)
      */
@@ -127,7 +127,7 @@ public class FlowRecord {
     /**
      * 被干预的用户
      */
-    private long interferedOperatorId;
+    private IFlowOperator interferedOperator;
 
     /**
      * 已读时间
@@ -177,10 +177,9 @@ public class FlowRecord {
 
 
     /**
-     * 更新时间
+     * 更新opinion
      */
-    public void update(Opinion opinion) {
-        this.read();
+    public void updateOpinion(Opinion opinion) {
         this.opinion = opinion;
         this.updateTime = System.currentTimeMillis();
     }
@@ -208,12 +207,12 @@ public class FlowRecord {
      */
     public void submitRecord(IFlowOperator flowOperator, BindDataSnapshot snapshot, Opinion opinion, FlowSourceDirection flowSourceDirection) {
         if (!flowOperator.isFlowManager()) {
-            if (flowOperator.getUserId() != this.currentOperatorId) {
+            if (flowOperator.getUserId() != this.currentOperator.getUserId()) {
                 throw new IllegalArgumentException("current operator is not match");
             }
         } else {
-            this.interferedOperatorId = this.currentOperatorId;
-            this.currentOperatorId = flowOperator.getUserId();
+            this.interferedOperator = this.currentOperator;
+            this.currentOperator = flowOperator;
             this.interfere = true;
         }
         this.read();
@@ -229,7 +228,7 @@ public class FlowRecord {
      * 转交流程
      */
     public void transfer(IFlowOperator flowOperator, BindDataSnapshot snapshot, Opinion opinion) {
-        if (flowOperator.getUserId() != this.currentOperatorId) {
+        if (flowOperator.getUserId() != this.currentOperator.getUserId()) {
             throw new IllegalArgumentException("current operator is not match");
         }
         this.read();
@@ -260,8 +259,8 @@ public class FlowRecord {
         this.opinion = null;
         this.flowSourceDirection = null;
         this.interfere = false;
-        this.interferedOperatorId = 0;
-        this.currentOperatorId = operator.getUserId();
+        this.interferedOperator = null;
+        this.currentOperator = operator;
     }
 
     /**
@@ -273,7 +272,7 @@ public class FlowRecord {
     public void autoPass(IFlowOperator flowOperator, BindDataSnapshot snapshot) {
         this.read();
         this.flowSourceDirection = FlowSourceDirection.PASS;
-        this.currentOperatorId = flowOperator.getUserId();
+        this.currentOperator = flowOperator;
         this.flowType = FlowType.DONE;
         this.updateTime = System.currentTimeMillis();
         this.snapshotId = snapshot.getId();
@@ -346,7 +345,7 @@ public class FlowRecord {
      * @return 是否是当前操作者
      */
     public boolean isOperator(IFlowOperator operator) {
-        return this.currentOperatorId == operator.getUserId();
+        return this.currentOperator.getUserId() == operator.getUserId();
     }
 
 
@@ -371,14 +370,14 @@ public class FlowRecord {
         record.setProcessId(this.processId);
         record.setNodeCode(this.nodeCode);
         record.setTitle(this.title);
-        record.setCurrentOperatorId(this.currentOperatorId);
+        record.setCurrentOperator(this.currentOperator);
         record.setFlowType(this.flowType);
         record.setFlowSourceDirection(this.flowSourceDirection);
         record.setCreateTime(this.createTime);
         record.setUpdateTime(this.updateTime);
         record.setFinishTime(this.finishTime);
         record.setTimeoutTime(this.timeoutTime);
-        record.setCreateOperatorId(this.createOperatorId);
+        record.setCreateOperator(this.createOperator);
         record.setOpinion(this.opinion);
         record.setFlowStatus(this.flowStatus);
         record.setErrMessage(this.errMessage);
@@ -386,7 +385,7 @@ public class FlowRecord {
         record.setSnapshotId(this.snapshotId);
         record.setRead(this.read);
         record.setInterfere(this.interfere);
-        record.setInterferedOperatorId(this.interferedOperatorId);
+        record.setInterferedOperator(this.interferedOperator);
         record.setReadTime(this.readTime);
         return record;
     }
@@ -407,5 +406,12 @@ public class FlowRecord {
      */
     public boolean isPostponed() {
         return this.postponedCount > 0;
+    }
+
+    /**
+     * 是否是发起节点
+     */
+    public boolean isStartRecord() {
+        return this.preId == 0;
     }
 }

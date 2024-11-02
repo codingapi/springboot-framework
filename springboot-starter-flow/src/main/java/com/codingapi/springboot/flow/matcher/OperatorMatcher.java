@@ -1,8 +1,7 @@
 package com.codingapi.springboot.flow.matcher;
 
 import com.codingapi.springboot.flow.content.FlowSession;
-import groovy.lang.GroovyShell;
-import groovy.lang.Script;
+import com.codingapi.springboot.flow.script.GroovyShellContext;
 import lombok.Getter;
 import org.springframework.util.StringUtils;
 
@@ -20,7 +19,7 @@ public class OperatorMatcher {
 
     private final int state;
 
-    private final Script runtime;
+    private final GroovyShellContext.ShellScript runtime;
 
     // 指定用户
     public static final int STATE_SPECIFY = 1;
@@ -42,12 +41,12 @@ public class OperatorMatcher {
         return state == STATE_SPECIFY;
     }
 
-    private static int parseState(String script){
-        if(script.contains("content.getCurrentOperator().getUserId()")){
+    private static int parseState(String script) {
+        if (script.contains("content.getCurrentOperator().getUserId()")) {
             return STATE_ANY;
-        }else if(script.contains("content.getCreateOperator().getUserId()")){
+        } else if (script.contains("content.getCreateOperator().getUserId()")) {
             return STATE_CREATOR;
-        }else{
+        } else {
             return STATE_SPECIFY;
         }
     }
@@ -63,8 +62,7 @@ public class OperatorMatcher {
         }
         this.script = script;
         this.state = state;
-        GroovyShell groovyShell = new GroovyShell();
-        this.runtime = groovyShell.parse(script);
+        this.runtime = GroovyShellContext.getInstance().parse(script);
     }
 
     /**

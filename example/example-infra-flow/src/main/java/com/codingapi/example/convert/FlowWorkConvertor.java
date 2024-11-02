@@ -12,6 +12,7 @@ public class FlowWorkConvertor {
         }
         FlowWorkEntity entity = new FlowWorkEntity();
         entity.setId(flowWork.getId());
+        entity.setCode(flowWork.getCode());
         entity.setTitle(flowWork.getTitle());
         entity.setDescription(flowWork.getDescription());
         entity.setCreateUser(flowWork.getCreateUser().getUserId());

@@ -8,4 +8,6 @@ public interface FlowWorkEntityRepository extends FastRepository<FlowWorkEntity,
 
     FlowWorkEntity getFlowWorkEntityById(long id);
 
+    FlowWorkEntity getFlowWorkEntityByCode(String code);
+
 }

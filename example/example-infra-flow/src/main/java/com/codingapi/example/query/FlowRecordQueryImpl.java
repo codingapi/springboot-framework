@@ -3,6 +3,7 @@ package com.codingapi.example.query;
 import com.codingapi.example.convert.FlowRecordConvertor;
 import com.codingapi.example.entity.FlowRecordEntity;
 import com.codingapi.example.jpa.FlowRecordEntityRepository;
+import com.codingapi.example.repository.UserRepository;
 import com.codingapi.springboot.flow.query.FlowRecordQuery;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import lombok.AllArgsConstructor;
@@ -15,41 +16,42 @@ import org.springframework.stereotype.Repository;
 public class FlowRecordQueryImpl implements FlowRecordQuery {
 
     private final FlowRecordEntityRepository flowRecordEntityRepository;
+    private final UserRepository userRepository;
 
 
     @Override
     public Page<FlowRecord> findAll(PageRequest pageRequest) {
         Page<FlowRecordEntity> page = flowRecordEntityRepository.findAll(pageRequest);
-        return page.map(FlowRecordConvertor::convert);
+        return page.map(item->FlowRecordConvertor.convert(item,userRepository));
     }
 
     @Override
     public Page<FlowRecord> findTodoByOperatorId(long operatorId, PageRequest pageRequest) {
         Page<FlowRecordEntity> page = flowRecordEntityRepository.findTodoByOperatorId(operatorId,pageRequest);
-        return page.map(FlowRecordConvertor::convert);
+        return page.map(item->FlowRecordConvertor.convert(item,userRepository));
     }
 
     @Override
     public Page<FlowRecord> findDoneByOperatorId(long operatorId, PageRequest pageRequest) {
         Page<FlowRecordEntity> page = flowRecordEntityRepository.findDoneByOperatorId(operatorId,pageRequest);
-        return page.map(FlowRecordConvertor::convert);
+        return page.map(item->FlowRecordConvertor.convert(item,userRepository));
     }
 
     @Override
     public Page<FlowRecord> findInitiatedByOperatorId(long operatorId, PageRequest pageRequest) {
         Page<FlowRecordEntity> page = flowRecordEntityRepository.findInitiatedByOperatorId(operatorId,pageRequest);
-        return page.map(FlowRecordConvertor::convert);
+        return page.map(item->FlowRecordConvertor.convert(item,userRepository));
     }
 
     @Override
     public Page<FlowRecord> findTimeoutTodoByOperatorId(long operatorId, PageRequest pageRequest) {
         Page<FlowRecordEntity> page = flowRecordEntityRepository.findTimeoutTodoByOperatorId(operatorId,System.currentTimeMillis(), pageRequest);
-        return page.map(FlowRecordConvertor::convert);
+        return page.map(item->FlowRecordConvertor.convert(item,userRepository));
     }
 
     @Override
     public Page<FlowRecord> findPostponedTodoByOperatorId(long operatorId, PageRequest pageRequest) {
         Page<FlowRecordEntity> page = flowRecordEntityRepository.findPostponedTodoByOperatorId(operatorId,pageRequest);
-        return page.map(FlowRecordConvertor::convert);
+        return page.map(item->FlowRecordConvertor.convert(item,userRepository));
     }
 }

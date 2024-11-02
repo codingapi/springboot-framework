@@ -14,7 +14,7 @@ public class FlowCmd {
     @Getter
     public static class StartFlow {
 
-        private long workId;
+        private String workCode;
         private String advice;
         private JSONObject formData;
 

@@ -1,5 +1,6 @@
 package com.codingapi.springboot.flow.event;
 
+import com.codingapi.springboot.flow.bind.IBindData;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.user.IFlowOperator;
@@ -37,20 +38,27 @@ public class FlowApprovalEvent implements ISyncEvent {
     private final IFlowOperator operator;
     private final FlowRecord flowRecord;
     private final FlowWork flowWork;
+    private final IBindData bindData;
 
-    public FlowApprovalEvent(int state, FlowRecord flowRecord, IFlowOperator operator, FlowWork flowWork) {
+    public FlowApprovalEvent(int state, FlowRecord flowRecord, IFlowOperator operator, FlowWork flowWork, IBindData bindData) {
         this.state = state;
         this.operator = operator;
         this.flowRecord = flowRecord;
         this.flowWork = flowWork;
+        this.bindData = bindData;
         log.debug("FlowApprovalEvent:{}", this);
     }
 
-    public boolean isUrge(){
+
+    public boolean match(Class<?> bindDataClass) {
+        return bindDataClass.isInstance(bindData);
+    }
+
+    public boolean isUrge() {
         return state == STATE_URGE;
     }
 
-    public boolean isTodo(){
+    public boolean isTodo() {
         return state == STATE_TODO;
     }
 

@@ -34,6 +34,12 @@ public class FlowWorkSerializable implements Serializable {
      * 流程的设计id
      */
     private long id;
+
+    /**
+     * 流程编号
+     */
+    private String code;
+
     /**
      * 流程标题
      */
@@ -115,6 +121,7 @@ public class FlowWorkSerializable implements Serializable {
         List<FlowNode> flowNodes = nodes.stream().map(FlowNodeSerializable::toFlowNode).toList();
         return new FlowWork(
                 id,
+                code,
                 title,
                 description,
                 flowOperatorRepository.getFlowOperatorById(createUser),

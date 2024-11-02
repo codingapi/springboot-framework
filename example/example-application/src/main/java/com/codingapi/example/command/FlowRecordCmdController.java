@@ -3,7 +3,8 @@ package com.codingapi.example.command;
 import com.codingapi.example.domain.User;
 import com.codingapi.example.pojo.cmd.FlowCmd;
 import com.codingapi.example.repository.UserRepository;
-import com.codingapi.springboot.flow.pojo.FlowDetail;
+import com.codingapi.springboot.flow.pojo.FlowResult;
+import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.service.FlowService;
 import com.codingapi.springboot.framework.dto.response.Response;
 import com.codingapi.springboot.framework.dto.response.SingleResponse;
@@ -24,22 +25,20 @@ public class FlowRecordCmdController {
     private final UserRepository userRepository;
 
     @PostMapping("/startFlow")
-    public Response startFlow(@RequestBody FlowCmd.StartFlow request) {
+    public SingleResponse<FlowResult> startFlow(@RequestBody FlowCmd.StartFlow request) {
         User current = userRepository.getUserByUsername(request.getUserName());
-        flowService.startFlow(request.getWorkId(), current, request.getBindData(), request.getAdvice());
-        return Response.buildSuccess();
+        return SingleResponse.of(flowService.startFlow(request.getWorkCode(), current, request.getBindData(), request.getAdvice()));
     }
 
 
     @PostMapping("/submitFlow")
-    public Response submitFlow(@RequestBody FlowCmd.SubmitFlow request) {
+    public SingleResponse<FlowResult> submitFlow(@RequestBody FlowCmd.SubmitFlow request) {
         User current = userRepository.getUserByUsername(request.getUserName());
         if(current.isFlowManager()){
-            flowService.interfere(request.getRecordId(), current, request.getBindData(), request.getOpinion());
+            return SingleResponse.of(flowService.interfere(request.getRecordId(), current, request.getBindData(), request.getOpinion()));
         }else {
-            flowService.submitFlow(request.getRecordId(), current, request.getBindData(), request.getOpinion());
+            return SingleResponse.of(flowService.submitFlow(request.getRecordId(), current, request.getBindData(), request.getOpinion()));
         }
-        return Response.buildSuccess();
     }
 
 

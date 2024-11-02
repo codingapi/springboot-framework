@@ -76,6 +76,10 @@ const FlowPage = () => {
             search: false,
         },
         {
+            title: '编码',
+            dataIndex: 'code',
+        },
+        {
             title: '标题',
             dataIndex: 'title',
         },
@@ -214,6 +218,17 @@ const FlowPage = () => {
                         {
                             required: true,
                             message: "请输入标题"
+                        }
+                    ]}
+                />
+
+                <ProFormText
+                    name={"code"}
+                    label={"编码"}
+                    rules={[
+                        {
+                            required: true,
+                            message: "请输入编码"
                         }
                     ]}
                 />

@@ -3,7 +3,7 @@
 class GroovyScript {
 
     public static defaultOutTrigger = "def run(content) {return true;}";
-    public static defaultTitleGenerator = "def run(content){ return content.getCreateOperator().getName() + \'-\' + content.getFlowWork().getTitle() + \'-\' + content.getFlowNode().getName();}";
+    public static defaultTitleGenerator = "def run(content){ return content.getCurrentOperator().getName() + '-' + content.getFlowWork().getTitle() + '-' + content.getFlowNode().getName();}";
 
     public static anyOperatorMatcher="def run(content) {return [content.getCurrentOperator().getUserId()];}";
     public static creatorOperatorMatcher="def run(content) {return [content.getCreateOperator().getUserId()];}";

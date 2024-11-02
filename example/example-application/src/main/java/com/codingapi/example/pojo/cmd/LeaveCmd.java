@@ -11,7 +11,7 @@ public class LeaveCmd {
     public static class StartLeave{
         private String desc;
         private int days;
-        private long flowId;
+        private String flowCode;
 
 
         public String getUsername(){

@@ -1,7 +1,7 @@
 package com.codingapi.springboot.flow.record;
 
 import com.codingapi.springboot.flow.user.IFlowOperator;
-import com.codingapi.springboot.flow.utils.IDGenerator;
+import com.codingapi.springboot.flow.utils.RandomGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -34,7 +34,7 @@ public class FlowProcess {
 
 
     public FlowProcess(long backupId, IFlowOperator createOperator) {
-        this.processId = IDGenerator.generate();
+        this.processId = RandomGenerator.generateUUID();
         this.createTime = System.currentTimeMillis();
         this.backupId = backupId;
         this.createOperatorId = createOperator.getUserId();

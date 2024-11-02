@@ -3,7 +3,7 @@ package com.codingapi.springboot.flow.domain;
 import com.codingapi.springboot.flow.build.SchemaReader;
 import com.codingapi.springboot.flow.serializable.FlowWorkSerializable;
 import com.codingapi.springboot.flow.user.IFlowOperator;
-import com.codingapi.springboot.flow.utils.IDGenerator;
+import com.codingapi.springboot.flow.utils.RandomGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +25,13 @@ public class FlowWork {
      */
     @Setter
     private long id;
+
+    /**
+     * 流程编码 （唯一值）
+     */
+    @Setter
+    private String code;
+
     /**
      * 流程标题
      */
@@ -87,6 +94,7 @@ public class FlowWork {
         this.relations = new ArrayList<>();
         this.enable = false;
         this.postponedMax = 1;
+        this.code = RandomGenerator.randomString(8);
     }
 
 
@@ -100,26 +108,28 @@ public class FlowWork {
         }
         String schema = this.getSchema();
         for(FlowNode flowNode:this.getNodes()){
-            String newId = IDGenerator.generate();
+            String newId = RandomGenerator.generateUUID();
             schema = schema.replaceAll(flowNode.getId(),newId);
         }
 
         for(FlowRelation relation:this.getRelations()){
-            String newId = IDGenerator.generate();
+            String newId = RandomGenerator.generateUUID();
             schema = schema.replaceAll(relation.getId(),newId);
         }
 
         FlowWork flowWork = new FlowWork(this.createUser);
         flowWork.setDescription(this.getDescription());
         flowWork.setTitle(this.getTitle());
+        flowWork.setCode(RandomGenerator.randomString(8));
         flowWork.setPostponedMax(this.getPostponedMax());
         flowWork.schema(schema);
         return flowWork;
     }
 
 
-    public FlowWork(String title, String description, int postponedMax, IFlowOperator createUser) {
+    public FlowWork(String code,String title, String description, int postponedMax, IFlowOperator createUser) {
         this.title = title;
+        this.code = code;
         this.description = description;
         this.postponedMax = postponedMax;
         this.createUser = createUser;
@@ -140,6 +150,9 @@ public class FlowWork {
         }
         if (!StringUtils.hasLength(title)) {
             throw new IllegalArgumentException("title is empty");
+        }
+        if (!StringUtils.hasLength(code)) {
+            throw new IllegalArgumentException("code is empty");
         }
 
         this.verifyNodes();
@@ -204,7 +217,9 @@ public class FlowWork {
      * @return FlowSerializable 流程序列化对象
      */
     public FlowWorkSerializable toSerializable() {
-        return new FlowWorkSerializable(id,
+        return new FlowWorkSerializable(
+                id,
+                code,
                 title,
                 description,
                 createUser.getUserId(),
