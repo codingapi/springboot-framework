@@ -42,7 +42,7 @@ v.3.x 为springboot 3.x版本,使用jdk17版本
         <version>${last.version}</version>
     </dependency>
     
-     <!-- 快速数据呈现框架 -->
+     <!-- 流程引擎框架 -->
      <dependency>
         <groupId>com.codingapi.springboot</groupId>
         <artifactId>springboot-starter-flow</artifactId>
