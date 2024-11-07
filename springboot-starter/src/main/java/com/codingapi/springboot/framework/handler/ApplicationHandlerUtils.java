@@ -1,18 +1,14 @@
 package com.codingapi.springboot.framework.handler;
 
 import com.codingapi.springboot.framework.event.IEvent;
-import lombok.extern.slf4j.Slf4j;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-@Slf4j
 class ApplicationHandlerUtils implements IHandler<IEvent> {
 
     private static ApplicationHandlerUtils instance;
-    private List<IHandler<IEvent>> handlers;
+    private final List<IHandler<IEvent>> handlers;
 
 
     private ApplicationHandlerUtils() {
@@ -47,39 +43,27 @@ class ApplicationHandlerUtils implements IHandler<IEvent> {
     @Override
     public void handler(IEvent event) {
         for (IHandler<IEvent> handler : handlers) {
-            String targetClassName = null;
             try {
                 Class<?> eventClass = event.getClass();
-                Class<?> targetClass = getHandlerEventClass(handler);
+                Class<?> targetClass = handler.getHandlerEventClass();
                 if (eventClass.equals(targetClass)) {
-                    targetClassName = targetClass.getName();
                     handler.handler(event);
                 }
             } catch (Exception e) {
-                //IPersistenceEvent 抛出异常
-                if ("com.codingapi.springboot.framework.persistence.PersistenceEvent".equals(targetClassName)) {
-                    throw e;
+                Exception error = null;
+                try {
+                    handler.error(e);
+                } catch (Exception err) {
+                    error = err;
                 }
-                log.warn("handler exception", e);
-                handler.error(e);
-
+                if (error != null) {
+                    throw new RuntimeException(error);
+                }
             }
         }
     }
 
-    private Class<?> getHandlerEventClass(IHandler<IEvent> handler) {
-        Type[] types = handler.getClass().getGenericInterfaces();
-        for (Type type : types) {
-            if (type instanceof ParameterizedType) {
-                ParameterizedType parameterizedType = (ParameterizedType) type;
-                Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-                if (actualTypeArguments != null) {
-                    return (Class<?>) actualTypeArguments[0];
-                }
-            }
-        }
-        return null;
-    }
+
 
 
 }
