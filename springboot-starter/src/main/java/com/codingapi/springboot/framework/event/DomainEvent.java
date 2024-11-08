@@ -18,10 +18,14 @@ public class DomainEvent extends ApplicationEvent {
     @Getter
     private final boolean sync;
 
-    public DomainEvent(Object source, boolean sync) {
+    @Getter
+    private final String traceId;
+
+
+    public DomainEvent(Object source, boolean sync, String traceId) {
         super(source);
         this.event = (IEvent) source;
         this.sync = sync;
+        this.traceId = traceId;
     }
-
 }

@@ -1,6 +1,4 @@
-package com.codingapi.springboot.framework.handler;
-
-import com.codingapi.springboot.framework.event.IEvent;
+package com.codingapi.springboot.framework.event;
 
 import java.util.ArrayList;
 import java.util.List;

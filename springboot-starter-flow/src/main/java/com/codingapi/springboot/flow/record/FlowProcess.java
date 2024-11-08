@@ -1,7 +1,7 @@
 package com.codingapi.springboot.flow.record;
 
 import com.codingapi.springboot.flow.user.IFlowOperator;
-import com.codingapi.springboot.flow.utils.RandomGenerator;
+import com.codingapi.springboot.framework.utils.RandomGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

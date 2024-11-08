@@ -1,4 +1,4 @@
-package com.codingapi.springboot.framework.handler;
+package com.codingapi.springboot.framework.event;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

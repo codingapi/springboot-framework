@@ -3,7 +3,7 @@ package com.codingapi.springboot.flow.domain;
 import com.codingapi.springboot.flow.build.SchemaReader;
 import com.codingapi.springboot.flow.serializable.FlowWorkSerializable;
 import com.codingapi.springboot.flow.user.IFlowOperator;
-import com.codingapi.springboot.flow.utils.RandomGenerator;
+import com.codingapi.springboot.framework.utils.RandomGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

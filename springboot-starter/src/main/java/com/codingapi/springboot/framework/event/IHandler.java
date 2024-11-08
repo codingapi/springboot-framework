@@ -1,6 +1,5 @@
-package com.codingapi.springboot.framework.handler;
+package com.codingapi.springboot.framework.event;
 
-import com.codingapi.springboot.framework.event.IEvent;
 import org.springframework.core.ResolvableType;
 
 /**
@@ -22,7 +21,7 @@ public interface IHandler<T extends IEvent> {
      *
      * @param exception 异常信息
      */
-    default void error(Exception exception) throws Exception{
+    default void error(Exception exception) throws Exception {
         throw exception;
     }
 
@@ -32,7 +31,7 @@ public interface IHandler<T extends IEvent> {
      */
     default Class<?> getHandlerEventClass() {
         ResolvableType resolvableType = ResolvableType.forClass(getClass()).as(IHandler.class);
-        return (Class<T>) resolvableType.getGeneric(0).resolve();
+        return resolvableType.getGeneric(0).resolve();
     }
 
 
