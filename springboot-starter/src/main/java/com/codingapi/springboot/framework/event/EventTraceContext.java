@@ -61,8 +61,8 @@ public class EventTraceContext {
                 traceKeys.remove(traceId);
                 EventStackContext.getInstance().remove(traceId);
             }
+            eventKeyState.remove(eventKey);
         }
-        eventKeyState.remove(eventKey);
         threadLocal.remove();
     }
 

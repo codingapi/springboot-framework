@@ -18,6 +18,7 @@ public interface IHandler<T extends IEvent> {
 
     /**
      * 异常回掉,在多订阅的情况下,为了实现订阅的独立性,将异常的处理放在回掉函数中。
+     * 当异常抛出以后，会阻止后续的事件执行
      *
      * @param exception 异常信息
      */
