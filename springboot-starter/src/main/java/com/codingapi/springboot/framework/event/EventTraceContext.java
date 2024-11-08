@@ -6,6 +6,9 @@ import lombok.Getter;
 
 import java.util.*;
 
+/**
+ * 事件跟踪上下文
+ */
 public class EventTraceContext {
 
     @Getter
@@ -17,11 +20,9 @@ public class EventTraceContext {
     // thread local
     private final ThreadLocal<String> threadLocal = new ThreadLocal<>();
 
-    // event listener state
+    // event listenerKey state
     private final Map<String, Boolean> eventKeyState = new HashMap<>();
 
-    // event stack
-    private final Map<String, List<Class<?>>> eventStack = new HashMap<>();
 
     private EventTraceContext() {
     }
@@ -36,7 +37,11 @@ public class EventTraceContext {
         return traceId;
     }
 
-    public String getEventKey(){
+    /**
+     * get event key
+     * traceId = eventKey.split("#")[0]
+     */
+    public String getEventKey() {
         return threadLocal.get();
     }
 
@@ -54,8 +59,7 @@ public class EventTraceContext {
                 // event execute finish
                 String traceId = eventKey.split("#")[0];
                 traceKeys.remove(traceId);
-                eventStack.remove(traceId);
-                EventLogContext.getInstance().removeEvents(traceId);
+                EventStackContext.getInstance().remove(traceId);
             }
         }
         eventKeyState.remove(eventKey);
@@ -63,22 +67,15 @@ public class EventTraceContext {
     }
 
     void addEvent(String traceId, IEvent event) {
-        List<Class<?>> stack = eventStack.get(traceId);
-        if (stack == null) {
-            stack = new ArrayList<>();
-        } else {
-            if (stack.contains(event.getClass())) {
-                //清空trace记录
-                traceKeys.remove(traceId);
-                eventStack.remove(traceId);
-                eventKeyState.remove(traceId);
-                threadLocal.remove();
-                EventLogContext.getInstance().removeEvents(traceId);
-                throw new EventLoopException(stack, event);
-            }
+        boolean hasEventLoop = EventStackContext.getInstance().checkEventLoop(traceId, event);
+        if (hasEventLoop) {
+            List<Class<?>> stack = EventStackContext.getInstance().getEventClasses(traceId);
+            traceKeys.remove(traceId);
+            EventStackContext.getInstance().remove(traceId);
+            eventKeyState.remove(traceId);
+            threadLocal.remove();
+            throw new EventLoopException(stack, event);
         }
-        EventLogContext.getInstance().addEvent(traceId,event);
-        stack.add(event.getClass());
-        eventStack.put(traceId, stack);
+        EventStackContext.getInstance().addEvent(traceId, event);
     }
 }
