@@ -30,14 +30,14 @@ public class SpringEventHandler implements ApplicationListener<DomainEvent> {
         String traceId = domainEvent.getTraceId();
 
         if (domainEvent.isSync()) {
-            EventTraceContext.getInstance().createEventListener(traceId);
+            EventTraceContext.getInstance().createEventKey(traceId);
             ApplicationHandlerUtils.getInstance().handler(domainEvent.getEvent());
-            EventTraceContext.getInstance().checkListener();
+            EventTraceContext.getInstance().checkEventState();
         } else {
             executorService.execute(() -> {
-                EventTraceContext.getInstance().createEventListener(traceId);
+                EventTraceContext.getInstance().createEventKey(traceId);
                 ApplicationHandlerUtils.getInstance().handler(domainEvent.getEvent());
-                EventTraceContext.getInstance().checkListener();
+                EventTraceContext.getInstance().checkEventState();
             });
         }
     }

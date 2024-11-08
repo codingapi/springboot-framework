@@ -14,7 +14,7 @@ public class AHandler implements IHandler<AEvent> {
 
     @Override
     public void handler(AEvent event) {
-        log.info("a event:{},traceId:{}",event, EventTraceContext.getInstance().getListenerKey());
+        log.info("a event:{},eventKey:{}",event, EventTraceContext.getInstance().getEventKey());
 
         EventPusher.push(new BEvent());
     }

@@ -18,7 +18,7 @@ public class EventTraceContext {
     private final ThreadLocal<String> threadLocal = new ThreadLocal<>();
 
     // event listener state
-    private final Map<String, Boolean> eventListenerState = new HashMap<>();
+    private final Map<String, Boolean> eventKeyState = new HashMap<>();
 
     // event stack
     private final Map<String, List<Class<?>>> eventStack = new HashMap<>();
@@ -27,37 +27,38 @@ public class EventTraceContext {
     }
 
     String getOrCreateTrace() {
-        String listenerKey = threadLocal.get();
-        if (listenerKey != null) {
-            return listenerKey.split("#")[0];
+        String eventKey = threadLocal.get();
+        if (eventKey != null) {
+            return eventKey.split("#")[0];
         }
-        String traceId = UUID.randomUUID().toString();
+        String traceId = UUID.randomUUID().toString().replaceAll("-", "");
         traceKeys.add(traceId);
         return traceId;
     }
 
-    public String getListenerKey(){
+    public String getEventKey(){
         return threadLocal.get();
     }
 
-    void createEventListener(String traceId) {
-        String listenerKey = traceId + "#" + RandomGenerator.randomString(8);
-        eventListenerState.put(listenerKey, false);
-        threadLocal.set(listenerKey);
+    void createEventKey(String traceId) {
+        String eventKey = traceId + "#" + RandomGenerator.randomString(8);
+        eventKeyState.put(eventKey, false);
+        threadLocal.set(eventKey);
     }
 
-    void checkListener() {
-        String listenerKey = threadLocal.get();
-        if (listenerKey != null) {
-            boolean state = eventListenerState.get(listenerKey);
+    void checkEventState() {
+        String eventKey = threadLocal.get();
+        if (eventKey != null) {
+            boolean state = eventKeyState.get(eventKey);
             if (!state) {
                 // event execute finish
-                String traceId = listenerKey.split("#")[0];
+                String traceId = eventKey.split("#")[0];
                 traceKeys.remove(traceId);
                 eventStack.remove(traceId);
+                EventLogContext.getInstance().removeEvents(traceId);
             }
         }
-        eventListenerState.remove(listenerKey);
+        eventKeyState.remove(eventKey);
         threadLocal.remove();
     }
 
@@ -70,11 +71,13 @@ public class EventTraceContext {
                 //清空trace记录
                 traceKeys.remove(traceId);
                 eventStack.remove(traceId);
-                eventListenerState.remove(traceId);
+                eventKeyState.remove(traceId);
                 threadLocal.remove();
+                EventLogContext.getInstance().removeEvents(traceId);
                 throw new EventLoopException(stack, event);
             }
         }
+        EventLogContext.getInstance().addEvent(traceId,event);
         stack.add(event.getClass());
         eventStack.put(traceId, stack);
     }
