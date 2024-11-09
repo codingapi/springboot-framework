@@ -1,6 +1,8 @@
 package com.codingapi.example.handler;
 
+import com.codingapi.example.event.AEvent;
 import com.codingapi.example.event.CEvent;
+import com.codingapi.springboot.framework.event.EventPusher;
 import com.codingapi.springboot.framework.event.EventTraceContext;
 import com.codingapi.springboot.framework.event.IHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +16,7 @@ public class CHandler implements IHandler<CEvent> {
     public void handler(CEvent event) {
         log.info("c event:{},eventKey:{}", event, EventTraceContext.getInstance().getEventKey());
 
-//        EventPusher.push(new AEvent());
+//        EventPusher.push(new AEvent(),true);
 //        throw new RuntimeException("c handler error");
     }
 
