@@ -13,5 +13,8 @@ public class EventException extends RuntimeException {
     public EventException(List<Exception> error) {
         super(error.stream().map(Exception::getMessage).collect(Collectors.joining("\n")));
         this.error = error;
+        for (Exception e : error) {
+            e.printStackTrace();
+        }
     }
 }
