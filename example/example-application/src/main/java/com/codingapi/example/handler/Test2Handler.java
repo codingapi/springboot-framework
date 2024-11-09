@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @AllArgsConstructor
-public class TestHandler implements IHandler<TestEvent> {
+public class Test2Handler implements IHandler<TestEvent> {
 
     private TestEntityRepository testEntityRepository;
 
@@ -29,8 +29,9 @@ public class TestHandler implements IHandler<TestEvent> {
 //        }).start();
     }
 
+
     @Override
     public int order() {
-        return 10;
+        return 100;
     }
 }

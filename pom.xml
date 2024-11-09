@@ -6,13 +6,13 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.4</version>
+        <version>3.3.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>com.codingapi.springboot</groupId>
     <artifactId>springboot-parent</artifactId>
-    <version>3.3.5</version>
+    <version>3.3.6</version>
 
     <url>https://github.com/codingapi/springboot-framewrok</url>
     <name>springboot-parent</name>
@@ -31,18 +31,19 @@
         <nexus.staging.maven.plugin>1.6.13</nexus.staging.maven.plugin>
         <maven.gpg.plugin>3.1.0</maven.gpg.plugin>
         <codingapi.framework.version>${project.version}</codingapi.framework.version>
-        <fastjson.version>2.0.42</fastjson.version>
-        <jsonwebtoken.jjwt.version>0.12.5</jsonwebtoken.jjwt.version>
-        <commons-io.version>2.15.0</commons-io.version>
+        <fastjson.version>2.0.53</fastjson.version>
+        <jsonwebtoken.jjwt.version>0.12.6</jsonwebtoken.jjwt.version>
+        <commons-io.version>2.17.0</commons-io.version>
+        <commons-lang3.version>3.17.0</commons-lang3.version>
         <commons-dbutils.version>1.8.1</commons-dbutils.version>
-        <commons-text.version>1.11.0</commons-text.version>
+        <commons-text.version>1.12.0</commons-text.version>
         <org.reflections.version>0.10.2</org.reflections.version>
         <perf4j.version>0.9.16</perf4j.version>
-        <bcprov-jdk18on.version>1.77</bcprov-jdk18on.version>
+        <bcprov-jdk18on.version>1.79</bcprov-jdk18on.version>
         <commons-crypto.version>1.2.0</commons-crypto.version>
         <snakeyaml.version>2.2</snakeyaml.version>
-        <apache-groovy.version>4.0.15</apache-groovy.version>
-        <h2.version>2.2.224</h2.version>
+        <apache-groovy.version>4.0.24</apache-groovy.version>
+        <h2.version>2.3.232</h2.version>
         <esotericsoftware.kryo.version>5.6.2</esotericsoftware.kryo.version>
     </properties>
 
@@ -109,6 +110,19 @@
             </dependency>
 
             <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+
+
+            <dependency>
                 <groupId>org.perf4j</groupId>
                 <artifactId>perf4j</artifactId>
                 <version>${perf4j.version}</version>
@@ -166,12 +180,6 @@
                 <groupId>com.codingapi.springboot</groupId>
                 <artifactId>springboot-starter-data-fast</artifactId>
                 <version>${codingapi.framework.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>commons-dbutils</groupId>
-                <artifactId>commons-dbutils</artifactId>
-                <version>${commons-dbutils.version}</version>
             </dependency>
 
             <dependency>
@@ -301,7 +309,7 @@
                     <plugin>
                         <groupId>org.openclover</groupId>
                         <artifactId>clover-maven-plugin</artifactId>
-                        <version>4.4.1</version>
+                        <version>4.5.2</version>
                         <configuration>
                             <generateHtml>true</generateHtml>
                             <generateXml>true</generateXml>
