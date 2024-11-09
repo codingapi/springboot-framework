@@ -1,6 +1,5 @@
-package com.codingapi.springboot.framework.handler;
+package com.codingapi.springboot.framework.event;
 
-import com.codingapi.springboot.framework.event.IEvent;
 import org.springframework.core.ResolvableType;
 
 /**
@@ -19,10 +18,11 @@ public interface IHandler<T extends IEvent> {
 
     /**
      * 异常回掉,在多订阅的情况下,为了实现订阅的独立性,将异常的处理放在回掉函数中。
+     * 当异常抛出以后，会阻止后续的事件执行
      *
      * @param exception 异常信息
      */
-    default void error(Exception exception) throws Exception{
+    default void error(Exception exception) throws Exception {
         throw exception;
     }
 
@@ -32,7 +32,7 @@ public interface IHandler<T extends IEvent> {
      */
     default Class<?> getHandlerEventClass() {
         ResolvableType resolvableType = ResolvableType.forClass(getClass()).as(IHandler.class);
-        return (Class<T>) resolvableType.getGeneric(0).resolve();
+        return resolvableType.getGeneric(0).resolve();
     }
 
 

@@ -1,6 +1,7 @@
-package com.codingapi.springboot.framework.handler;
+package com.codingapi.springboot.framework.event;
 
-import com.codingapi.springboot.framework.event.IEvent;
+import com.codingapi.springboot.framework.exception.EventException;
+import com.codingapi.springboot.framework.exception.EventLoopException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,28 +43,32 @@ class ApplicationHandlerUtils implements IHandler<IEvent> {
 
     @Override
     public void handler(IEvent event) {
+        Class<?> eventClass = event.getClass();
+        List<Exception> errorStack = new ArrayList<>();
+        boolean throwException = false;
         for (IHandler<IEvent> handler : handlers) {
             try {
-                Class<?> eventClass = event.getClass();
                 Class<?> targetClass = handler.getHandlerEventClass();
                 if (eventClass.equals(targetClass)) {
                     handler.handler(event);
                 }
             } catch (Exception e) {
-                Exception error = null;
+                if (e instanceof EventLoopException) {
+                    throw e;
+                }
                 try {
                     handler.error(e);
+                    errorStack.add(e);
                 } catch (Exception err) {
-                    error = err;
-                }
-                if (error != null) {
-                    throw new RuntimeException(error);
+                    throwException = true;
+                    errorStack.add(err);
                 }
             }
         }
+        if(throwException){
+            throw new EventException(errorStack);
+        }
     }
-
-
 
 
 }

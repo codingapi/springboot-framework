@@ -1,6 +1,5 @@
-package com.codingapi.springboot.framework.handler;
+package com.codingapi.springboot.framework.event;
 
-import com.codingapi.springboot.framework.event.DomainEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 
@@ -28,11 +27,23 @@ public class SpringEventHandler implements ApplicationListener<DomainEvent> {
 
     @Override
     public void onApplicationEvent(DomainEvent domainEvent) {
+        String traceId = domainEvent.getTraceId();
+
         if (domainEvent.isSync()) {
-            ApplicationHandlerUtils.getInstance().handler(domainEvent.getEvent());
+            try {
+                EventTraceContext.getInstance().createEventKey(traceId);
+                ApplicationHandlerUtils.getInstance().handler(domainEvent.getEvent());
+            } finally {
+                EventTraceContext.getInstance().checkEventState();
+            }
         } else {
             executorService.execute(() -> {
-                ApplicationHandlerUtils.getInstance().handler(domainEvent.getEvent());
+                try {
+                    EventTraceContext.getInstance().createEventKey(traceId);
+                    ApplicationHandlerUtils.getInstance().handler(domainEvent.getEvent());
+                } finally {
+                    EventTraceContext.getInstance().checkEventState();
+                }
             });
         }
     }
