@@ -1,4 +1,4 @@
-package com.codingapi.springboot.framework.handler;
+package com.codingapi.springboot.framework.event;
 
 import java.lang.annotation.*;
 

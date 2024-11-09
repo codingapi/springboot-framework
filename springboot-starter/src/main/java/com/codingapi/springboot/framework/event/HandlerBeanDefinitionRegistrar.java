@@ -1,4 +1,4 @@
-package com.codingapi.springboot.framework.handler;
+package com.codingapi.springboot.framework.event;
 
 import com.codingapi.springboot.framework.registrar.RegisterBeanScanner;
 import lombok.SneakyThrows;

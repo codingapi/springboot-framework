@@ -10,7 +10,7 @@ import com.codingapi.springboot.flow.generator.TitleGenerator;
 import com.codingapi.springboot.flow.matcher.OperatorMatcher;
 import com.codingapi.springboot.flow.trigger.OutTrigger;
 import com.codingapi.springboot.flow.user.IFlowOperator;
-import com.codingapi.springboot.flow.utils.RandomGenerator;
+import com.codingapi.springboot.framework.utils.RandomGenerator;
 
 /**
  * 流程工作构建器

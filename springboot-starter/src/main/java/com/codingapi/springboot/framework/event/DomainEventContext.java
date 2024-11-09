@@ -25,7 +25,9 @@ class DomainEventContext {
 
     private void push(IEvent event, boolean sync) {
         if (context != null) {
-            context.publishEvent(new DomainEvent(event, sync));
+            String traceId = EventTraceContext.getInstance().getOrCreateTrace();
+            EventTraceContext.getInstance().addEvent(traceId,event);
+            context.publishEvent(new DomainEvent(event, sync,traceId));
         }
     }
 
