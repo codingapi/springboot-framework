@@ -2,9 +2,12 @@ package com.codingapi.springboot.framework.event;
 
 import com.codingapi.springboot.framework.exception.EventException;
 import com.codingapi.springboot.framework.exception.EventLoopException;
+import org.springframework.core.ResolvableType;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class ApplicationHandlerUtils implements IHandler<IEvent> {
 
@@ -40,18 +43,37 @@ class ApplicationHandlerUtils implements IHandler<IEvent> {
         }
     }
 
+    /**
+     * 获取订阅的事件类型
+     */
+    private Class<?> getHandlerEventClass(IHandler<?> handler) {
+        ResolvableType resolvableType = ResolvableType.forClass(handler.getClass()).as(IHandler.class);
+        return resolvableType.getGeneric(0).resolve();
+    }
+
 
     @Override
     public void handler(IEvent event) {
         Class<?> eventClass = event.getClass();
+
+        List<IHandler<IEvent>> matchHandlers = handlers
+                .stream()
+                .filter(handler -> {
+                    Class<?> targetClass = getHandlerEventClass(handler);
+                    return targetClass.isAssignableFrom(eventClass);
+                })
+                .sorted(Comparator.comparingInt(IHandler::order))
+                .collect(Collectors.toList());
+
+        if (matchHandlers.isEmpty()) {
+            return;
+        }
+
         List<Exception> errorStack = new ArrayList<>();
-        boolean throwException = false;
-        for (IHandler<IEvent> handler : handlers) {
+        boolean hasThrowException = false;
+        for (IHandler<IEvent> handler : matchHandlers) {
             try {
-                Class<?> targetClass = handler.getHandlerEventClass();
-                if (eventClass.equals(targetClass)) {
-                    handler.handler(event);
-                }
+                handler.handler(event);
             } catch (Exception e) {
                 if (e instanceof EventLoopException) {
                     throw e;
@@ -60,12 +82,12 @@ class ApplicationHandlerUtils implements IHandler<IEvent> {
                     handler.error(e);
                     errorStack.add(e);
                 } catch (Exception err) {
-                    throwException = true;
+                    hasThrowException = true;
                     errorStack.add(err);
                 }
             }
         }
-        if(throwException){
+        if (hasThrowException) {
             throw new EventException(errorStack);
         }
     }
