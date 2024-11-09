@@ -1,13 +1,19 @@
 package com.codingapi.springboot.framework.event;
 
-import org.springframework.core.ResolvableType;
-
 /**
  * handler 订阅
  *
  * @param <T> Event 类型
  */
 public interface IHandler<T extends IEvent> {
+
+    /**
+     * 事件订阅排序
+     * 在同样的事件中，可以通过order来控制订阅的顺序
+     */
+    default int order() {
+        return 0;
+    }
 
     /**
      * 订阅触发
@@ -27,13 +33,6 @@ public interface IHandler<T extends IEvent> {
     }
 
 
-    /**
-     * 获取订阅的事件类型
-     */
-    default Class<?> getHandlerEventClass() {
-        ResolvableType resolvableType = ResolvableType.forClass(getClass()).as(IHandler.class);
-        return resolvableType.getGeneric(0).resolve();
-    }
 
 
 }

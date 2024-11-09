@@ -15,7 +15,7 @@ public class CHandler implements IHandler<CEvent> {
         log.info("c event:{},eventKey:{}", event, EventTraceContext.getInstance().getEventKey());
 
 //        EventPusher.push(new AEvent());
-        throw new RuntimeException("c handler error");
+//        throw new RuntimeException("c handler error");
     }
 
     @Override
