@@ -23,9 +23,13 @@ class DomainEventContext {
         return instance;
     }
 
-    private void push(IEvent event, boolean sync) {
+    private void push(IEvent event, boolean sync,boolean hasLoopEvent) {
         if (context != null) {
             String traceId = EventTraceContext.getInstance().getOrCreateTrace();
+            if(hasLoopEvent){
+                EventTraceContext.getInstance().clearTrace();
+                traceId = EventTraceContext.getInstance().getOrCreateTrace();
+            }
             EventTraceContext.getInstance().addEvent(traceId,event);
             context.publishEvent(new DomainEvent(event, sync,traceId));
         }
@@ -36,13 +40,13 @@ class DomainEventContext {
      * @see EventPusher
      * 默认 同步事件
      */
-    public void push(IEvent event) {
+    public void push(IEvent event,boolean hasLoopEvent) {
         if (event instanceof IAsyncEvent) {
-            this.push(event, false);
+            this.push(event, false,hasLoopEvent);
         } else if (event instanceof ISyncEvent) {
-            this.push(event, true);
+            this.push(event, true,hasLoopEvent);
         } else {
-            this.push(event, true);
+            this.push(event, true,hasLoopEvent);
         }
     }
 

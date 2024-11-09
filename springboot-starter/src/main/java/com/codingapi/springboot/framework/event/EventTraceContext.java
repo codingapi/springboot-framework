@@ -45,12 +45,19 @@ public class EventTraceContext {
         return threadLocal.get();
     }
 
+    /**
+     * create event key
+     * @param traceId traceId
+     */
     void createEventKey(String traceId) {
         String eventKey = traceId + "#" + RandomGenerator.randomString(8);
         eventKeyState.put(eventKey, false);
         threadLocal.set(eventKey);
     }
 
+    /**
+     * check event state
+     */
     void checkEventState() {
         String eventKey = threadLocal.get();
         if (eventKey != null) {
@@ -66,6 +73,11 @@ public class EventTraceContext {
         threadLocal.remove();
     }
 
+    /**
+     * add event
+     * @param traceId traceId
+     * @param event event
+     */
     void addEvent(String traceId, IEvent event) {
         boolean hasEventLoop = EventStackContext.getInstance().checkEventLoop(traceId, event);
         if (hasEventLoop) {
@@ -77,5 +89,19 @@ public class EventTraceContext {
             throw new EventLoopException(stack, event);
         }
         EventStackContext.getInstance().addEvent(traceId, event);
+    }
+
+    /**
+     * clear trace
+     */
+    public void clearTrace() {
+        String eventKey = threadLocal.get();
+        if (eventKey != null) {
+            String traceId = eventKey.split("#")[0];
+            traceKeys.remove(traceId);
+            EventStackContext.getInstance().remove(traceId);
+            eventKeyState.remove(eventKey);
+            threadLocal.remove();
+        }
     }
 }
