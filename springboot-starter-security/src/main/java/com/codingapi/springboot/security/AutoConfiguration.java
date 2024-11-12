@@ -78,7 +78,7 @@ public class AutoConfiguration {
             }
 
             @Override
-            public LoginResponse postHandle(HttpServletRequest request, HttpServletResponse response, LoginRequest loginRequest, Token token) {
+            public LoginResponse postHandle(HttpServletRequest request, HttpServletResponse response, LoginRequest loginRequest,UserDetails userDetails, Token token) {
                 LoginResponse loginResponse = new LoginResponse();
                 loginResponse.setUsername(token.getUsername());
                 loginResponse.setToken(token.getToken());

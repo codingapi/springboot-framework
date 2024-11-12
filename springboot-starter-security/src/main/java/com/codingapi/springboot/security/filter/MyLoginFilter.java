@@ -18,7 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -69,16 +69,21 @@ public class MyLoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         log.debug("login success authentication ~");
-        User user = (User) authResult.getPrincipal();
+        UserDetails user = (UserDetails) authResult.getPrincipal();
         LoginRequest loginRequest = LoginRequestContext.getInstance().get();
 
         Token token = tokenGateway.create(user.getUsername(), loginRequest.getPassword(),
                 user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()),
                 TokenContext.getExtra());
 
-        LoginResponse loginResponse = loginHandler.postHandle(request, response, loginRequest, token);
+        LoginResponse loginResponse = loginHandler.postHandle(request, response, loginRequest, user, token);
 
         String content = JSONObject.toJSONString(SingleResponse.of(loginResponse));
+
+        // 设置响应的 Content-Type 为 JSON，并指定字符编码为 UTF-8
+        response.setContentType("application/json;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
         IOUtils.write(content, response.getOutputStream(), StandardCharsets.UTF_8);
 
         LoginRequestContext.getInstance().clean();
@@ -89,7 +94,13 @@ public class MyLoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         log.debug("login fail authentication ~");
         String content = JSONObject.toJSONString(Response.buildFailure("login.error", failed.getMessage()));
+
+        // 设置响应的 Content-Type 为 JSON，并指定字符编码为 UTF-8
+        response.setContentType("application/json;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
         IOUtils.write(content, response.getOutputStream(), StandardCharsets.UTF_8);
+
         LoginRequestContext.getInstance().clean();
     }
 }
