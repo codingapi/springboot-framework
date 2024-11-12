@@ -80,6 +80,10 @@ public class MyAuthenticationFilter extends BasicAuthenticationFilter {
 
     private void writeResponse(HttpServletResponse servletResponse, Response returnResponse) throws IOException {
         String content = JSONObject.toJSONString(returnResponse);
+        // 设置响应的 Content-Type 为 JSON，并指定字符编码为 UTF-8
+        servletResponse.setContentType("application/json;charset=UTF-8");
+        servletResponse.setCharacterEncoding("UTF-8");
+
         IOUtils.write(content, servletResponse.getOutputStream(), StandardCharsets.UTF_8);
     }
 
