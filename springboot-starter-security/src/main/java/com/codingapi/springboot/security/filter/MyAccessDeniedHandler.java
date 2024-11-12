@@ -20,6 +20,10 @@ public class MyAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         log.debug("access denied");
         String content = JSONObject.toJSONString(Response.buildFailure("not.access", "please check user authentication."));
+        // 设置响应的 Content-Type 为 JSON，并指定字符编码为 UTF-8
+        response.setContentType("application/json;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
         IOUtils.write(content, response.getOutputStream(), StandardCharsets.UTF_8);
     }
 }
