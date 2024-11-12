@@ -2,7 +2,6 @@ package com.codingapi.springboot.security.filter;
 
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.springboot.framework.dto.response.Response;
-import com.codingapi.springboot.security.dto.request.LoginRequestContext;
 import com.codingapi.springboot.security.exception.TokenExpiredException;
 import com.codingapi.springboot.security.gateway.Token;
 import com.codingapi.springboot.security.gateway.TokenGateway;
