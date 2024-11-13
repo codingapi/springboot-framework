@@ -1,17 +1,20 @@
 package com.codingapi.springboot.fast;
 
 import com.codingapi.springboot.fast.entity.Demo;
+import com.codingapi.springboot.fast.jpa.SQLBuilder;
 import com.codingapi.springboot.fast.repository.DemoRepository;
 import com.codingapi.springboot.framework.dto.request.Filter;
 import com.codingapi.springboot.framework.dto.request.PageRequest;
 import com.codingapi.springboot.framework.dto.request.Relation;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -139,7 +142,11 @@ public class DemoRepositoryTest {
         demo2.setName("456");
         demoRepository.save(demo2);
 
-        List<Demo> list = demoRepository.dynamicListQuery("from Demo where name = ?1", "123");
+        SQLBuilder builder = new SQLBuilder("from Demo where 1=1");
+        String search = "12";
+        builder.append("and name like ?","%"+search+"%");
+
+        List<Demo> list = demoRepository.dynamicListQuery(builder.getSQL(), builder.getParams());
         assertEquals(1, list.size());
     }
 
@@ -155,7 +162,11 @@ public class DemoRepositoryTest {
         demo2.setName("456");
         demoRepository.save(demo2);
 
-        Page<Demo> page = demoRepository.dynamicPageQuery("from Demo where name = ?1", PageRequest.of(1, 2), "123");
+        SQLBuilder builder = new SQLBuilder("select d from Demo d where 1=1","select count(1) from Demo d where 1=1");
+        String search = "12";
+        builder.append("and d.name like ?","%"+search+"%");
+
+        Page<Demo> page = demoRepository.dynamicPageQuery(builder.getSQL(),builder.getCountSQL(), PageRequest.of(1, 2), builder.getParams());
         assertEquals(1, page.getTotalElements());
     }
 
