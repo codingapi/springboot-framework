@@ -1,6 +1,7 @@
 package com.codingapi.springboot.fast;
 
 import com.codingapi.springboot.fast.entity.Demo;
+import com.codingapi.springboot.fast.jpa.SQLBuilder;
 import com.codingapi.springboot.fast.repository.DemoRepository;
 import com.codingapi.springboot.framework.dto.request.Filter;
 import com.codingapi.springboot.framework.dto.request.PageRequest;
@@ -47,7 +48,7 @@ public class DemoRepositoryTest {
         demoRepository.save(demo2);
 
         PageRequest request = new PageRequest();
-        request.setCurrent(0);
+        request.setCurrent(1);
         request.setPageSize(10);
         request.addFilter("name", "123");
 
@@ -68,7 +69,7 @@ public class DemoRepositoryTest {
         demoRepository.save(demo2);
 
         PageRequest request = new PageRequest();
-        request.setCurrent(0);
+        request.setCurrent(1);
         request.setPageSize(10);
         request.addFilter("name", Relation.LIKE, "%2%");
 
@@ -89,7 +90,7 @@ public class DemoRepositoryTest {
         demoRepository.save(demo2);
 
         PageRequest request = new PageRequest();
-        request.setCurrent(0);
+        request.setCurrent(1);
         request.setPageSize(10);
 
         request.addFilter("id", Relation.IN, 1, 2, 3);
@@ -116,7 +117,12 @@ public class DemoRepositoryTest {
         request.setPageSize(10);
 
 
-        request.orFilters(Filter.as("id", Relation.IN, 1, 2, 3), Filter.as("name", "123"));
+//        request.andFilter(Filter.as("id", Relation.IN, 1, 2, 3), Filter.as("name", "123"));
+        request.addFilter("name", "456").orFilters(Filter.as("id", Relation.IN, 1, 2, 3), Filter.as("name", "123"));
+
+        request.addSort(Sort.by("id").descending());
+
+
 
         Page<Demo> page = demoRepository.pageRequest(request);
         log.info("demo:{}", page.getContent());
@@ -134,7 +140,32 @@ public class DemoRepositoryTest {
         demo2.setName("456");
         demoRepository.save(demo2);
 
-        List<Demo> list = demoRepository.dynamicListQuery("from Demo where name = ?1", "123");
+        SQLBuilder builder = new SQLBuilder(Demo.class,"from Demo where 1=1");
+        String search = "12";
+        builder.append("and name like ?","%"+search+"%");
+
+        List<Demo> list = demoRepository.dynamicListQuery(builder);
+        assertEquals(1, list.size());
+    }
+
+
+
+    @Test
+    void dynamicNativeListQuery() {
+        demoRepository.deleteAll();
+        Demo demo1 = new Demo();
+        demo1.setName("123");
+        demoRepository.save(demo1);
+
+        Demo demo2 = new Demo();
+        demo2.setName("456");
+        demoRepository.save(demo2);
+
+        SQLBuilder builder = new SQLBuilder(Demo.class,"select * from t_demo where 1=1");
+        String search = "12";
+        builder.append("and name like ?","%"+search+"%");
+
+        List<Demo> list = demoRepository.dynamicNativeListQuery(builder);
         assertEquals(1, list.size());
     }
 
@@ -150,7 +181,11 @@ public class DemoRepositoryTest {
         demo2.setName("456");
         demoRepository.save(demo2);
 
-        Page<Demo> page = demoRepository.dynamicPageQuery("from Demo where name = ?1", PageRequest.of(1, 2), "123");
+        SQLBuilder builder = new SQLBuilder(Demo.class,"select d from Demo d where 1=1","select count(1) from Demo d where 1=1");
+        String search = "12";
+        builder.append("and d.name like ?","%"+search+"%");
+
+        Page<Demo> page = demoRepository.dynamicPageQuery(builder,PageRequest.of(1, 2));
         assertEquals(1, page.getTotalElements());
     }
 
