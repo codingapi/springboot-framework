@@ -8,13 +8,11 @@ import com.codingapi.springboot.framework.dto.request.PageRequest;
 import com.codingapi.springboot.framework.dto.request.Relation;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -146,7 +144,28 @@ public class DemoRepositoryTest {
         String search = "12";
         builder.append("and name like ?","%"+search+"%");
 
-        List<Demo> list = demoRepository.dynamicListQuery(builder.getSQL(), builder.getParams());
+        List<Demo> list = demoRepository.dynamicListQuery(builder);
+        assertEquals(1, list.size());
+    }
+
+
+
+    @Test
+    void dynamicNativeListQuery() {
+        demoRepository.deleteAll();
+        Demo demo1 = new Demo();
+        demo1.setName("123");
+        demoRepository.save(demo1);
+
+        Demo demo2 = new Demo();
+        demo2.setName("456");
+        demoRepository.save(demo2);
+
+        SQLBuilder builder = new SQLBuilder(Demo.class,"select * from t_demo where 1=1");
+        String search = "12";
+        builder.append("and name like ?","%"+search+"%");
+
+        List<Demo> list = demoRepository.dynamicNativeListQuery(builder);
         assertEquals(1, list.size());
     }
 
@@ -162,11 +181,11 @@ public class DemoRepositoryTest {
         demo2.setName("456");
         demoRepository.save(demo2);
 
-        SQLBuilder builder = new SQLBuilder("select d from Demo d where 1=1","select count(1) from Demo d where 1=1");
+        SQLBuilder builder = new SQLBuilder(Demo.class,"select d from Demo d where 1=1","select count(1) from Demo d where 1=1");
         String search = "12";
         builder.append("and d.name like ?","%"+search+"%");
 
-        Page<Demo> page = demoRepository.dynamicPageQuery(builder.getSQL(),builder.getCountSQL(), PageRequest.of(1, 2), builder.getParams());
+        Page<Demo> page = demoRepository.dynamicPageQuery(builder,PageRequest.of(1, 2));
         assertEquals(1, page.getTotalElements());
     }
 
