@@ -179,6 +179,7 @@ public class FlowNode {
      * 创建流程记录
      *
      * @param workId          流程设计id
+     * @param workCode        流程设计编码
      * @param processId       流程id
      * @param preId           上一条流程记录id
      * @param title           流程标题
@@ -188,6 +189,7 @@ public class FlowNode {
      * @return 流程记录
      */
     public FlowRecord createRecord(long workId,
+                                   String workCode,
                                    String processId,
                                    long preId,
                                    String title,
@@ -207,6 +209,7 @@ public class FlowNode {
         record.setNodeCode(this.code);
         record.setCreateTime(System.currentTimeMillis());
         record.setWorkId(workId);
+        record.setWorkCode(workCode);
         record.setFlowStatus(FlowStatus.RUNNING);
         record.setPostponedCount(0);
         record.setCreateOperator(createOperator);

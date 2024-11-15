@@ -120,7 +120,7 @@ class FlowRecordBuilderService {
                 for (IFlowOperator operator : operators) {
                     FlowSession content = new FlowSession(flowWork, currentNode, createOperator, operator, snapshot.toBindData(), opinion, historyRecords);
                     String recordTitle = currentNode.generateTitle(content);
-                    FlowRecord record = currentNode.createRecord(flowWork.getId(), processId, preId, recordTitle, createOperator, operator, snapshot);
+                    FlowRecord record = currentNode.createRecord(flowWork.getId(),flowWork.getCode(), processId, preId, recordTitle, createOperator, operator, snapshot);
                     recordList.add(record);
                 }
                 return recordList;
@@ -138,7 +138,7 @@ class FlowRecordBuilderService {
                 if (!matcherOperators.isEmpty()) {
                     for (IFlowOperator matcherOperator : matcherOperators) {
                         String recordTitle = node.generateTitle(content);
-                        FlowRecord record = node.createRecord(flowWork.getId(), processId, preId, recordTitle, createOperator, matcherOperator, snapshot);
+                        FlowRecord record = node.createRecord(flowWork.getId(),flowWork.getCode(), processId, preId, recordTitle, createOperator, matcherOperator, snapshot);
                         recordList.add(record);
                     }
                 }
@@ -182,7 +182,7 @@ class FlowRecordBuilderService {
             String recordTitle = currentNode.generateTitle(flowSession);
             recordList = new ArrayList<>();
             for (IFlowOperator operator : operators) {
-                FlowRecord record = currentNode.createRecord(workId, processId, preId, recordTitle, createOperator, operator, snapshot);
+                FlowRecord record = currentNode.createRecord(workId,flowWork.getCode(), processId, preId, recordTitle, createOperator, operator, snapshot);
                 recordList.add(record);
             }
         }

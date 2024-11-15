@@ -33,6 +33,12 @@ public class FlowRecord {
      * 工作id
      */
     private long workId;
+
+    /**
+     * 流程编码
+     */
+    private String workCode;
+
     /**
      * 流程id
      */
@@ -367,6 +373,7 @@ public class FlowRecord {
         record.setPostponedCount(this.postponedCount);
         record.setPreId(this.preId);
         record.setWorkId(this.workId);
+        record.setWorkCode(this.workCode);
         record.setProcessId(this.processId);
         record.setNodeCode(this.nodeCode);
         record.setTitle(this.title);
