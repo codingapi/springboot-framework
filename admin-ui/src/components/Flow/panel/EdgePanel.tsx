@@ -181,7 +181,7 @@ const EdgePanel: React.FC<EdgePanelProps> = (props) => {
 
             <ScriptModal
                 onFinish={(values) => {
-                    handlerChangeOutTrigger(values.type, values.outTrigger);
+                    handlerChangeOutTrigger(values.type, values.script);
                 }}
                 form={form}
                 setVisible={setVisible}

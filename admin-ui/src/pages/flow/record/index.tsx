@@ -9,7 +9,7 @@ import {
     flowRecordList, saveFlow, urge
 } from "@/api/flow";
 import moment from "moment";
-import {message, Tabs} from "antd";
+import {message, Modal, Tabs} from "antd";
 import FlowView from "@/components/Flow/view/FlowView";
 import DefaultFlowView from "@/pages/flow/leave/default";
 import "./index.scss";
@@ -61,6 +61,11 @@ const FlowRecordPage = () => {
         {
             title: '标题',
             dataIndex: 'title',
+            render:(value:any,record:any)=>{
+                return (
+                    <div dangerouslySetInnerHTML={{ __html: value }}></div>
+                );
+            }
         },
         {
             title: '创建时间',
