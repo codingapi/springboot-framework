@@ -303,4 +303,11 @@ public class FlowNode {
     public boolean isStartNode() {
         return CODE_START.equals(this.code);
     }
+
+    /**
+     * 是否抄送节点
+     */
+    public boolean isCC() {
+        return approvalType == ApprovalType.CC;
+    }
 }
