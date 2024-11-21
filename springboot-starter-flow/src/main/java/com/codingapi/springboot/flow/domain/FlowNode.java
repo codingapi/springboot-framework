@@ -305,9 +305,9 @@ public class FlowNode {
     }
 
     /**
-     * 是否抄送节点
+     * 是否传阅节点
      */
-    public boolean isCC() {
-        return approvalType == ApprovalType.CC;
+    public boolean isCirculate() {
+        return approvalType == ApprovalType.CIRCULATE;
     }
 }

@@ -63,17 +63,34 @@ class FlowNodeService {
     }
 
 
+    /**
+     * 设置下一个节点
+     */
     public void setNextNode(FlowNode nextNode) {
         this.nextNode = nextNode;
         this.nextOperator = currentOperator;
     }
 
 
+    /**
+     * 加载下一个节点
+     */
     public void loadNextPassNode(FlowNode currentNode){
         this.nextNode = matcherNextNode(currentNode, false);
         this.nextOperator = currentOperator;
     }
 
+    /**
+     * 跳过传阅节点流转
+     */
+    public void skipCirculate() {
+        this.nextNode = matcherNextNode(nextNode, false);
+        this.nextOperator = currentOperator;
+    }
+
+    /**
+     * 加载默认回退节点
+     */
     public void loadDefaultBackNode(long parentRecordId){
         IFlowOperator flowOperator;
         // 拒绝时，默认返回上一个已办节点
@@ -94,6 +111,9 @@ class FlowNodeService {
     }
 
 
+    /**
+     * 加载自定义回退节点
+     */
     public void loadCustomBackNode(FlowNode flowNode, long parentRecordId){
         FlowNode nextNode = this.matcherNextNode(flowNode, true);
         if (nextNode == null) {
@@ -232,8 +252,8 @@ class FlowNodeService {
     /**
      * 下一节点的类型
      */
-    public boolean nextNodeIsCC() {
-        return nextNode.isCC();
+    public boolean nextNodeIsCirculate() {
+        return nextNode.isCirculate();
     }
 
 
@@ -243,4 +263,6 @@ class FlowNodeService {
     public boolean nextNodeIsOver(){
         return nextNode.isOverNode();
     }
+
+
 }

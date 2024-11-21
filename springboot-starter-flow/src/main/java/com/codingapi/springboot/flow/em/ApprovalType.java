@@ -14,9 +14,9 @@ public enum ApprovalType {
      */
     UN_SIGN,
     /**
-     * 抄送
+     * 传阅
      */
-    CC;
+    CIRCULATE;
 
 
     public static ApprovalType parser(String approvalType) {

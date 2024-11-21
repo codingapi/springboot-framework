@@ -276,7 +276,6 @@ const FlowPage = () => {
                             onClick={async () => {
                                 const data = flowActionType.current?.getData();
                                 const json = JSON.stringify(data);
-                                console.log(json);
                                 await handlerSchema(json);
                             }}
                         >

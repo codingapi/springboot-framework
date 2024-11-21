@@ -54,7 +54,7 @@ public class QueryTest {
                 .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(dept.getUserId()))
                 .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
-                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.creatorOperatorMatcher())
+                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .relations()
                 .relation("部门领导审批", "start", "dept")
                 .relation("总经理审批", "dept", "manager")
@@ -97,21 +97,18 @@ public class QueryTest {
 
         // 查看所有流程
         List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
-        assertEquals(4, records.size());
+        assertEquals(3, records.size());
 
         userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
-        assertEquals(1, userTodos.size());
-
-        userTodo = userTodos.get(0);
-        flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
+        assertEquals(0, userTodos.size());
 
         records = flowRecordRepository.findAll(pageRequest).getContent();
-        assertEquals(4, records.size());
+        assertEquals(3, records.size());
         // 查看所有流程是否都已经结束
         assertTrue(records.stream().allMatch(FlowRecord::isFinish));
 
         List<BindDataSnapshot> snapshots = flowBindDataRepository.findAll();
-        assertEquals(5, snapshots.size());
+        assertEquals(4, snapshots.size());
 
         userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
         assertEquals(0, userTodos.size());
@@ -148,7 +145,7 @@ public class QueryTest {
                 .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher(),100,true)
                 .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(dept.getUserId()))
                 .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
-                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.creatorOperatorMatcher())
+                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .relations()
                 .relation("部门领导审批", "start", "dept")
                 .relation("总经理审批", "dept", "manager")
@@ -202,21 +199,18 @@ public class QueryTest {
 
         // 查看所有流程
         List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();;
-        assertEquals(4, records.size());
+        assertEquals(3, records.size());
 
         userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
-        assertEquals(1, userTodos.size());
-
-        userTodo = userTodos.get(0);
-        flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
+        assertEquals(0, userTodos.size());
 
         records = flowRecordRepository.findAll(pageRequest).getContent();
-        assertEquals(4, records.size());
+        assertEquals(3, records.size());
         // 查看所有流程是否都已经结束
         assertTrue(records.stream().allMatch(FlowRecord::isFinish));
 
         List<BindDataSnapshot> snapshots = flowBindDataRepository.findAll();
-        assertEquals(5, snapshots.size());
+        assertEquals(4, snapshots.size());
 
         userTodos = flowRecordRepository.findTimeoutTodoByOperatorId(user.getUserId(), pageRequest).getContent();
         assertEquals(0, userTodos.size());
@@ -254,7 +248,7 @@ public class QueryTest {
                 .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher(),100,true)
                 .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(dept.getUserId()))
                 .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
-                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.creatorOperatorMatcher())
+                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .relations()
                 .relation("部门领导审批", "start", "dept")
                 .relation("总经理审批", "dept", "manager")
@@ -314,21 +308,19 @@ public class QueryTest {
 
         // 查看所有流程
         List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
-        assertEquals(4, records.size());
+        assertEquals(3, records.size());
 
         userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
-        assertEquals(1, userTodos.size());
+        assertEquals(0, userTodos.size());
 
-        userTodo = userTodos.get(0);
-        flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
 
         records = flowRecordRepository.findAll(pageRequest).getContent();
-        assertEquals(4, records.size());
+        assertEquals(3, records.size());
         // 查看所有流程是否都已经结束
         assertTrue(records.stream().allMatch(FlowRecord::isFinish));
 
         List<BindDataSnapshot> snapshots = flowBindDataRepository.findAll();
-        assertEquals(5, snapshots.size());
+        assertEquals(4, snapshots.size());
 
         userTodos = flowRecordRepository.findPostponedTodoByOperatorId(user.getUserId(), pageRequest).getContent();
         assertEquals(0, userTodos.size());
@@ -366,7 +358,7 @@ public class QueryTest {
                 .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(dept.getUserId()))
                 .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
-                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.creatorOperatorMatcher())
+                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .relations()
                 .relation("部门领导审批", "start", "dept")
                 .relation("总经理审批", "dept", "manager")
@@ -409,29 +401,26 @@ public class QueryTest {
 
         // 查看所有流程
         List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
-        assertEquals(4, records.size());
+        assertEquals(3, records.size());
 
         userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
-        assertEquals(1, userTodos.size());
-
-        userTodo = userTodos.get(0);
-        flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
+        assertEquals(0, userTodos.size());
 
         records = flowRecordRepository.findAll(pageRequest).getContent();
-        assertEquals(4, records.size());
+        assertEquals(3, records.size());
         // 查看所有流程是否都已经结束
         assertTrue(records.stream().allMatch(FlowRecord::isFinish));
 
         FlowDetail flowDetail  = flowService.detail(records.get(0).getId(), user);
-        assertEquals(4, flowDetail.getHistoryRecords().size());
-        assertEquals(4, flowDetail.getOpinions().size());
+        assertEquals(3, flowDetail.getHistoryRecords().size());
+        assertEquals(3, flowDetail.getOpinions().size());
 
         List<BindDataSnapshot> snapshots = flowBindDataRepository.findAll();
-        assertEquals(5, snapshots.size());
+        assertEquals(4, snapshots.size());
 
 
         List<FlowRecord> userDones = flowRecordRepository.findDoneByOperatorId(user.getUserId(), pageRequest).getContent();
-        assertEquals(2, userDones.size());
+        assertEquals(1, userDones.size());
 
         List<FlowRecord> deptDones = flowRecordRepository.findDoneByOperatorId(dept.getUserId(), pageRequest).getContent();
         assertEquals(1, deptDones.size());
@@ -439,6 +428,7 @@ public class QueryTest {
         List<FlowRecord> bossDones = flowRecordRepository.findDoneByOperatorId(boss.getUserId(), pageRequest).getContent();
         assertEquals(1, bossDones.size());
 
+        assertTrue(bossDones.stream().allMatch(FlowRecord::isRead));
     }
 
 
@@ -466,7 +456,7 @@ public class QueryTest {
                 .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(dept.getUserId()))
                 .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
-                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.creatorOperatorMatcher())
+                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .relations()
                 .relation("部门领导审批", "start", "dept")
                 .relation("总经理审批", "dept", "manager")
@@ -509,21 +499,18 @@ public class QueryTest {
 
         // 查看所有流程
         List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
-        assertEquals(4, records.size());
+        assertEquals(3, records.size());
 
         userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
-        assertEquals(1, userTodos.size());
-
-        userTodo = userTodos.get(0);
-        flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
+        assertEquals(0, userTodos.size());
 
         records = flowRecordRepository.findAll(pageRequest).getContent();
-        assertEquals(4, records.size());
+        assertEquals(3, records.size());
         // 查看所有流程是否都已经结束
         assertTrue(records.stream().allMatch(FlowRecord::isFinish));
 
         List<BindDataSnapshot> snapshots = flowBindDataRepository.findAll();
-        assertEquals(5, snapshots.size());
+        assertEquals(4, snapshots.size());
 
 
 

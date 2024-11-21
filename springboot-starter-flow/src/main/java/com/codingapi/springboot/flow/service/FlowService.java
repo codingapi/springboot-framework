@@ -424,18 +424,6 @@ public class FlowService {
         // 根据所有提交意见，重新加载审批方向
         flowSourceDirection = flowDirectionService.reloadFlowSourceDirection();
 
-
-        // 判断流程是否完成
-        if (flowDirectionService.hasCurrentFlowIsFinish()) {
-            flowRecord.finish();
-            flowRecord.submitRecord(currentOperator, snapshot, opinion, flowSourceDirection);
-            flowRecordRepository.update(flowRecord);
-            flowRecordRepository.finishFlowRecordByProcessId(flowRecord.getProcessId());
-
-            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_FINISH, flowRecord, currentOperator, flowWork, snapshot.toBindData()), true);
-            return new FlowResult(flowWork, flowRecord);
-        }
-
         // 获取流程的发起者
         IFlowOperator createOperator = flowRecord.getCreateOperator();
 
@@ -453,7 +441,6 @@ public class FlowService {
                 flowRecord.getId()
         );
 
-
         // 审批通过并进入下一节点
         if (flowDirectionService.isPassRecord()) {
             flowNodeService.loadNextPassNode(flowNode);
@@ -465,37 +452,69 @@ public class FlowService {
             // 审批拒绝，并且自定了返回节点
         }
 
-
         // 创建下一节点的流程记录
         List<FlowRecord> records = flowNodeService.createRecord();
 
-//        if(flowNodeService.nextNodeIsOver() && records.size()==1){
-//            FlowRecord record = records.get(0);
-//            record.finish();
-//            record.submitRecord(currentOperator, snapshot, opinion, flowSourceDirection);
-//            flowRecordRepository.update(record);
-//            flowRecordRepository.finishFlowRecordByProcessId(record.getProcessId());
-//
-//            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_FINISH, record, currentOperator, flowWork, snapshot.toBindData()), true);
-//            return new FlowResult(flowWork, record);
-//        }
+        // 检测流程是否为抄送节点
+        while (flowNodeService.nextNodeIsCirculate()){
+            for (FlowRecord record : records) {
+                record.circulate();
+            }
+            flowRecordRepository.save(records);
+
+            for (FlowRecord record : records) {
+                IFlowOperator pushOperator = record.getCurrentOperator();
+
+                EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_CIRCULATE,
+                        record,
+                        pushOperator,
+                        flowWork,
+                        snapshot.toBindData()),
+                        true);
+            }
+
+            flowNodeService.skipCirculate();
+
+            records = flowNodeService.createRecord();
+        }
+
+        // 判断流程是否完成
+        if(flowNodeService.nextNodeIsOver()){
+            flowRecord.finish();
+            flowRecord.submitRecord(currentOperator, snapshot, opinion, flowSourceDirection);
+            flowRecordRepository.update(flowRecord);
+            flowRecordRepository.finishFlowRecordByProcessId(flowRecord.getProcessId());
+
+            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_FINISH,
+                    flowRecord,
+                    currentOperator,
+                    flowWork,
+                    snapshot.toBindData()),
+                    true);
+            return new FlowResult(flowWork, flowRecord);
+        }
 
         // 保存流程记录
         flowRecordRepository.save(records);
 
-        // 检测流程是否为抄送节点
-
-        // 检测流程是否为结束节点
-
-
         // 推送审批事件消息
         int eventState = flowSourceDirection == FlowSourceDirection.PASS ? FlowApprovalEvent.STATE_PASS : FlowApprovalEvent.STATE_REJECT;
-        EventPusher.push(new FlowApprovalEvent(eventState, flowRecord, currentOperator, flowWork, snapshot.toBindData()), true);
+        EventPusher.push(new FlowApprovalEvent(eventState,
+                flowRecord,
+                currentOperator,
+                flowWork,
+                snapshot.toBindData()),
+                true);
 
         // 推送待办事件消息
         for (FlowRecord record : records) {
             IFlowOperator pushOperator = record.getCurrentOperator();
-            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO, record, pushOperator, flowWork, snapshot.toBindData()), true);
+            EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_TODO,
+                    record,
+                    pushOperator,
+                    flowWork,
+                    snapshot.toBindData()),
+                    true);
         }
 
         return new FlowResult(flowWork, records);

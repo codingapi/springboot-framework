@@ -28,6 +28,8 @@ public class Opinion {
     public static final int RESULT_PASS = 2;
     // 审批结果 驳回
     public static final int RESULT_REJECT = 3;
+    // 审批结果 抄送
+    public static final int RESULT_CIRCULATE = 4;
 
     /**
      * 审批意见
@@ -66,6 +68,14 @@ public class Opinion {
 
     public static Opinion unSignAutoSuccess() {
         return new Opinion("非会签自动审批", RESULT_PASS, TYPE_AUTO);
+    }
+
+    public static Opinion circulate() {
+        return new Opinion("抄送", RESULT_CIRCULATE, TYPE_AUTO);
+    }
+
+    public boolean isCirculate() {
+        return result == RESULT_CIRCULATE;
     }
 
     public boolean isSuccess() {

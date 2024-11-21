@@ -33,7 +33,7 @@ public class FlowApprovalEvent implements ISyncEvent {
     // 催办
     public static final int STATE_URGE = 8;
     // 抄送
-    public static final int STATE_CC = 9;
+    public static final int STATE_CIRCULATE = 9;
 
 
     private final int state;

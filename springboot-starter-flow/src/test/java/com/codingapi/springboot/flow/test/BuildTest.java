@@ -27,14 +27,14 @@ public class BuildTest {
                 .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
-                .node("抄送节点", "cc", "default", ApprovalType.CC, OperatorMatcher.anyOperatorMatcher())
+                .node("抄送节点", "circulate", "default", ApprovalType.CIRCULATE, OperatorMatcher.anyOperatorMatcher())
                 .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
 
                 .relations()
                 .relation("部门领导审批", "start", "dept")
                 .relation("总经理审批", "dept", "manager")
-                .relation("抄送节点", "manager", "cc")
-                .relation("结束节点", "cc", "over")
+                .relation("抄送节点", "manager", "circulate")
+                .relation("结束节点", "circulate", "over")
                 .build();
         assertEquals("请假流程", flowWork.getTitle());
         assertEquals(5, flowWork.getNodes().size());

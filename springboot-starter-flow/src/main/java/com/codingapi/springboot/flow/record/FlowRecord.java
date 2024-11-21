@@ -230,6 +230,17 @@ public class FlowRecord {
         this.opinion = opinion;
     }
 
+
+    /**
+     * 传阅流程
+     */
+    public void circulate() {
+        this.flowSourceDirection = FlowSourceDirection.PASS;
+        this.flowType = FlowType.CIRCULATE;
+        this.updateTime = System.currentTimeMillis();
+        this.opinion = Opinion.circulate();
+    }
+
     /**
      * 转交流程
      */

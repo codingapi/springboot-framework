@@ -14,9 +14,9 @@ public enum NodeType {
      */
     APPROVAL,
     /**
-     * 抄送
+     * 传阅
      */
-    CC,
+    CIRCULATE,
     /**
      * 结束
      */
