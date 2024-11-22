@@ -8,7 +8,6 @@ import {PageContainer} from "@ant-design/pro-components";
 const Test1 = () => {
     const counter = useSelector((state: RootState) => state.counter.value);
     const dispatch = useDispatch();
-
     return (
         <PageContainer>
             <div style={{

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import logo from '@/assets/logo.svg';
 import './index.scss';
 import {useSelector} from "react-redux";
@@ -10,6 +10,26 @@ const Index = () => {
 
     const counter = useSelector((state: RootState) => state.counter.value);
     const username = localStorage.getItem('username');
+
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                console.log('Tab is active');
+                // 执行页面重新激活时的操作
+            } else {
+                console.log('Tab is inactive');
+                // 执行页面被隐藏时的操作
+            }
+        };
+
+        // 监听 visibilitychange 事件
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        // 清理事件监听器
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        };
+    }, []);
 
     return (
         <Page enablePageContainer={true}>

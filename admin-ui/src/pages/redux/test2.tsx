@@ -9,7 +9,6 @@ const Test2 = () => {
     const counter = useSelector((state: RootState) => state.counter.value);
     const dispatch = useDispatch();
 
-
     return (
         <PageContainer>
             <div style={{
