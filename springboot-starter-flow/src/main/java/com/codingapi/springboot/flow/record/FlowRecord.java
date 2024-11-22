@@ -235,7 +235,7 @@ public class FlowRecord {
      * 传阅流程
      */
     public void circulate() {
-        this.flowSourceDirection = FlowSourceDirection.PASS;
+        this.flowSourceDirection = FlowSourceDirection.CIRCULATE;
         this.flowType = FlowType.CIRCULATE;
         this.updateTime = System.currentTimeMillis();
         this.opinion = Opinion.circulate();

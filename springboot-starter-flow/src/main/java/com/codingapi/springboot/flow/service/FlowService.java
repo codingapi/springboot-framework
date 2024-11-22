@@ -135,7 +135,9 @@ public class FlowService {
         for (FlowRecord record : flowRecords) {
             operators.add(record.getCreateOperator());
             operators.add(record.getCurrentOperator());
-            operators.add(record.getInterferedOperator());
+            if(record.getInterferedOperator()!=null) {
+                operators.add(record.getInterferedOperator());
+            }
         }
 
         return new FlowDetail(flowRecord, snapshot, flowWork, flowRecords, operators);

@@ -107,24 +107,15 @@ const FlowRecordPage = () => {
                 if (text === 'TRANSFER') {
                     return '已转办';
                 }
+                if (text === 'CIRCULATE') {
+                    return '抄送';
+                }
                 return text;
             }
         },
         {
             title: '办理意见',
-            dataIndex: 'flowSourceDirection',
-            render: (text: any) => {
-                if (text === 'PASS') {
-                    return '同意';
-                }
-                if (text === 'REJECT') {
-                    return '拒绝';
-                }
-                if (text === 'TRANSFER') {
-                    return '已转办';
-                }
-                return text;
-            }
+            dataIndex: 'opinionAdvice',
         },
         {
             title: '流程状态',

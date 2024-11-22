@@ -27,6 +27,12 @@ public interface FlowRecordEntityRepository extends FastRepository<FlowRecordEnt
     @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1  and r.workCode = ?2 and r.flowType = 'TODO' and r.flowStatus = 'RUNNING' order by r.id desc")
     Page<FlowRecordEntity> findTodoByOperatorIdAndWorkCode(long operatorId, String workCode, PageRequest pageRequest);
 
+    @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.read = false and r.flowStatus = 'RUNNING' order by r.id desc")
+    Page<FlowRecordEntity> findUnReadByOperatorId(long operatorId, PageRequest pageRequest);
+
+    @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1  and r.workCode = ?2 and r.read = false and r.flowStatus = 'RUNNING' order by r.id desc")
+    Page<FlowRecordEntity> findUnReadByOperatorIdAndWorkCode(long operatorId, String workCode, PageRequest pageRequest);
+
     @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.flowType = 'DONE' order by r.id desc")
     Page<FlowRecordEntity> findDoneByOperatorId(long operatorId, PageRequest pageRequest);
 

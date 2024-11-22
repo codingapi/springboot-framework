@@ -2,13 +2,7 @@ import React from "react";
 import {ProForm} from "@ant-design/pro-components";
 import {Button, Drawer, Space} from "antd";
 import NodePanel from "@/components/Flow/panel/NodePanel";
-
-interface SettingPanelProps {
-    visible: boolean;
-    setVisible: (visible: boolean) => void;
-    properties: any;
-    onSettingChange: (values: any) => void;
-}
+import {SettingPanelProps} from "@/components/Flow/panel/panel.types";
 
 const OverSettingPanel: React.FC<SettingPanelProps> = (props) => {
 

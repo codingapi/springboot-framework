@@ -18,7 +18,6 @@ public class FlowRecordQueryImpl implements FlowRecordQuery {
     private final FlowRecordEntityRepository flowRecordEntityRepository;
     private final UserRepository userRepository;
 
-
     @Override
     public Page<FlowRecord> findAll(PageRequest pageRequest) {
         Page<FlowRecordEntity> page = flowRecordEntityRepository.findAll(pageRequest);
@@ -38,13 +37,24 @@ public class FlowRecordQueryImpl implements FlowRecordQuery {
         return page.map(item->FlowRecordConvertor.convert(item,userRepository));
     }
 
+    @Override
+    public Page<FlowRecord> findUnReadByOperatorId(long operatorId, PageRequest pageRequest) {
+        Page<FlowRecordEntity> page = flowRecordEntityRepository.findUnReadByOperatorId(operatorId,pageRequest);
+        return page.map(item->FlowRecordConvertor.convert(item,userRepository));
+    }
+
+    @Override
+    public Page<FlowRecord> findUnReadByOperatorId(long operatorId, String workCode, PageRequest pageRequest) {
+        Page<FlowRecordEntity> page = flowRecordEntityRepository.findUnReadByOperatorIdAndWorkCode(operatorId,workCode,pageRequest);
+        return page.map(item->FlowRecordConvertor.convert(item,userRepository));
+    }
+
 
     @Override
     public Page<FlowRecord> findDoneByOperatorId(long operatorId, PageRequest pageRequest) {
         Page<FlowRecordEntity> page = flowRecordEntityRepository.findDoneByOperatorId(operatorId,pageRequest);
         return page.map(item->FlowRecordConvertor.convert(item,userRepository));
     }
-
 
     @Override
     public Page<FlowRecord> findDoneByOperatorId(long operatorId, String workCode, PageRequest pageRequest) {

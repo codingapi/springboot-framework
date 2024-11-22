@@ -48,7 +48,7 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                 />
                 <ProFormText
                     name={"code"}
-                    disabled={props.type !== 'node'}
+                    disabled={props.type === 'start' || props.type === 'over'}
                     label={"节点编码"}
                     rules={[
                         {
@@ -144,6 +144,7 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                         step: 1
                     }}
                     name={"timeout"}
+                    hidden={props.type === 'circulate'}
                     label={"超时时间"}
                 />
 
@@ -238,7 +239,7 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
             </ProForm>
 
             <ScriptModal
-                onFinish={(values)=>{
+                onFinish={(values) => {
                     const type = values.type;
                     props.form.setFieldsValue({
                         [type]: values.script

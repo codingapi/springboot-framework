@@ -99,6 +99,9 @@ public class FlowWorkRepositoryImpl implements FlowWorkRepository {
         entity = flowWorkEntityRepository.save(entity);
         flowWork.setId(entity.getId());
 
+        flowNodeEntityRepository.deleteAllByWorkId(flowWork.getId());
+        flowRelationEntityRepository.deleteAllByWorkId(flowWork.getId());
+
         if (!flowWork.getNodes().isEmpty()) {
             flowNodeEntityRepository.saveAll(flowWork.getNodes().stream().map((item) -> FlowNodeConvertor.convert(item, flowWork.getId())).toList());
         }

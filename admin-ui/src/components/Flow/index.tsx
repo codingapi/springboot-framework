@@ -8,6 +8,7 @@ import {DndPanel, Menu, MiniMap, Snapshot} from "@logicflow/extension";
 import Start from "@/components/Flow/nodes/Start";
 import Node from "@/components/Flow/nodes/Node";
 import Over from "@/components/Flow/nodes/Over";
+import Circulate from "@/components/Flow/nodes/Circulate";
 import ControlPanel from "@/components/Flow/layout/ControlPanel";
 import NodePanel from "@/components/Flow/layout/NodePanel";
 import {message} from "antd";
@@ -20,6 +21,15 @@ export interface FlowActionType {
 interface FlowProps {
     data?: LogicFlow.GraphConfigData;
     actionRef?: React.Ref<any>
+}
+
+
+const generateUUID = ()=> {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        const r = (Math.random() * 16) | 0;
+        const v = c === 'x' ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+    });
 }
 
 const Flow: React.FC<FlowProps> = (props) => {
@@ -79,6 +89,7 @@ const Flow: React.FC<FlowProps> = (props) => {
         lfRef.current.register(Start);
         lfRef.current.register(Node);
         lfRef.current.register(Over);
+        lfRef.current.register(Circulate);
 
         lfRef.current.render(data);
 
@@ -121,7 +132,7 @@ const Flow: React.FC<FlowProps> = (props) => {
                 className={"flow-panel"}
                 onDrag={async (type, properties) => {
                     if (await nodeVerify(type)) {
-                        const UUID = crypto.randomUUID();
+                        const UUID = generateUUID();
                         lfRef.current?.dnd.startDrag({
                             id: UUID,
                             type: type,

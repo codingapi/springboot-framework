@@ -71,7 +71,7 @@ public class Opinion {
     }
 
     public static Opinion circulate() {
-        return new Opinion("抄送", RESULT_CIRCULATE, TYPE_AUTO);
+        return new Opinion("", RESULT_CIRCULATE, TYPE_AUTO);
     }
 
     public boolean isCirculate() {
