@@ -9,10 +9,12 @@ import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.error.ErrorResult;
 import com.codingapi.springboot.flow.error.NodeResult;
 import com.codingapi.springboot.flow.error.OperatorResult;
+import com.codingapi.springboot.flow.event.FlowApprovalEvent;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.FlowOperatorRepository;
 import com.codingapi.springboot.flow.repository.FlowRecordRepository;
 import com.codingapi.springboot.flow.user.IFlowOperator;
+import com.codingapi.springboot.framework.event.EventPusher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -168,7 +170,37 @@ class FlowNodeService {
      * @return 流程记录
      */
     public List<FlowRecord> createRecord() {
+        // 创建下一节点的流程记录
+        List<FlowRecord> records = this.createNextRecord();
 
+        // 检测流程是否为抄送节点
+        while (this.nextNodeIsCirculate()){
+            for (FlowRecord record : records) {
+                record.circulate();
+            }
+            flowRecordRepository.save(records);
+
+            for (FlowRecord record : records) {
+                IFlowOperator pushOperator = record.getCurrentOperator();
+
+                EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_CIRCULATE,
+                                record,
+                                pushOperator,
+                                flowWork,
+                                snapshot.toBindData()),
+                        true);
+            }
+
+            this.skipCirculate();
+
+            records = this.createNextRecord();
+        }
+        return records;
+    }
+
+
+
+    private List<FlowRecord> createNextRecord(){
         FlowSession flowSession = new FlowSession(flowWork,
                 nextNode,
                 createOperator,

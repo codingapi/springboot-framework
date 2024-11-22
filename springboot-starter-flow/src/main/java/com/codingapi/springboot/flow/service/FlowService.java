@@ -327,6 +327,28 @@ public class FlowService {
             }
         }
 
+        // 检测流程是否结束
+        if(flowNodeService.nextNodeIsOver()){
+            for (FlowRecord record : records) {
+                record.submitRecord(operator, snapshot, opinion, FlowSourceDirection.PASS);
+                record.finish();
+            }
+
+            flowRecordRepository.save(records);
+
+            // 推送事件
+            for (FlowRecord record : records) {
+                EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_CREATE, record, operator, flowWork, snapshot.toBindData()), true);
+
+                EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_FINISH,
+                                record,
+                                operator,
+                                flowWork,
+                                snapshot.toBindData()),
+                        true);
+            }
+            return new FlowResult(flowWork, records);
+        }
 
         // 保存流程记录
         flowRecordRepository.save(records);
@@ -448,40 +470,16 @@ public class FlowService {
         } else if (flowDirectionService.isDefaultBackRecord()) {
             flowNodeService.loadDefaultBackNode(flowRecord.getPreId());
         } else {
-            flowNodeService.loadCustomBackNode(flowNode, flowRecord.getPreId());
             // 审批拒绝，并且自定了返回节点
+            flowNodeService.loadCustomBackNode(flowNode, flowRecord.getPreId());
         }
 
-        // 创建下一节点的流程记录
         List<FlowRecord> records = flowNodeService.createRecord();
-
-        // 检测流程是否为抄送节点
-        while (flowNodeService.nextNodeIsCirculate()){
-            for (FlowRecord record : records) {
-                record.circulate();
-            }
-            flowRecordRepository.save(records);
-
-            for (FlowRecord record : records) {
-                IFlowOperator pushOperator = record.getCurrentOperator();
-
-                EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_CIRCULATE,
-                        record,
-                        pushOperator,
-                        flowWork,
-                        snapshot.toBindData()),
-                        true);
-            }
-
-            flowNodeService.skipCirculate();
-
-            records = flowNodeService.createRecord();
-        }
 
         // 判断流程是否完成
         if(flowNodeService.nextNodeIsOver()){
-            flowRecord.finish();
             flowRecord.submitRecord(currentOperator, snapshot, opinion, flowSourceDirection);
+            flowRecord.finish();
             flowRecordRepository.update(flowRecord);
             flowRecordRepository.finishFlowRecordByProcessId(flowRecord.getProcessId());
 
