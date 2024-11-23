@@ -3,6 +3,7 @@ import {ProForm} from "@ant-design/pro-components";
 import {Button, Drawer, Space, Tabs} from "antd";
 import NodePanel from "@/components/Flow/panel/NodePanel";
 import EdgePanel from "@/components/Flow/panel/EdgePanel";
+import ButtonPanel from "@/components/Flow/panel/ButtonPanel";
 
 interface SettingPanelProps {
     visible: boolean;
@@ -58,6 +59,14 @@ const NodeSettingPanel: React.FC<SettingPanelProps> = (props) => {
                         )
                     },
                     {
+                        label: "节点按钮",
+                        key: "buttons",
+                        children: (
+                            <ButtonPanel
+                                id={props.properties?.id}/>
+                        )
+                    },
+                    {
                         label: "关系设置",
                         key: "edges",
                         children: (
@@ -65,7 +74,7 @@ const NodeSettingPanel: React.FC<SettingPanelProps> = (props) => {
                                 type={"node"}
                                 id={props.properties?.id}/>
                         )
-                    }
+                    },
                 ]}
             />
 

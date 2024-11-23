@@ -28,6 +28,12 @@ export const menus = [
         page: 'jar',
     },
     {
+        path: '/form',
+        name: '表单',
+        icon: "SmileOutlined",
+        page: 'form',
+    },
+    {
         path: '/flow',
         name: '流程',
         icon: "SmileOutlined",

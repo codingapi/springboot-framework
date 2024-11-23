@@ -13,6 +13,7 @@ import ControlPanel from "@/components/Flow/layout/ControlPanel";
 import NodePanel from "@/components/Flow/layout/NodePanel";
 import {message} from "antd";
 import {copy} from "@/components/Flow/panel/shortcuts";
+import FlowUtils from "@/components/Flow/utils";
 
 export interface FlowActionType {
     getData: () => any;
@@ -21,15 +22,6 @@ export interface FlowActionType {
 interface FlowProps {
     data?: LogicFlow.GraphConfigData;
     actionRef?: React.Ref<any>
-}
-
-
-const generateUUID = ()=> {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        const r = (Math.random() * 16) | 0;
-        const v = c === 'x' ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-    });
 }
 
 const Flow: React.FC<FlowProps> = (props) => {
@@ -132,7 +124,7 @@ const Flow: React.FC<FlowProps> = (props) => {
                 className={"flow-panel"}
                 onDrag={async (type, properties) => {
                     if (await nodeVerify(type)) {
-                        const UUID = generateUUID();
+                        const UUID = FlowUtils.generateUUID();
                         lfRef.current?.dnd.startDrag({
                             id: UUID,
                             type: type,

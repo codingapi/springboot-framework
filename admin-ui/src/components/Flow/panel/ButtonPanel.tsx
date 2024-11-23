@@ -1,0 +1,216 @@
+import React from "react";
+import {
+    ActionType,
+    ModalForm,
+    ProColumns,
+    ProForm,
+    ProFormColorPicker,
+    ProFormDigit,
+    ProFormSelect,
+    ProFormText,
+    ProTable
+} from "@ant-design/pro-components";
+import {Button, ColorPicker, Form, Popconfirm} from "antd";
+import FlowUtils from "@/components/Flow/utils";
+
+
+interface ButtonPanelProps {
+    id: string;
+}
+
+
+const buttonEventOptions = [
+    {
+        label: "保存",
+        value: "save"
+    },
+    {
+        label: "提交",
+        value: "submit"
+    }
+]
+
+
+const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
+
+    const actionRef = React.useRef<ActionType>();
+
+    const [form] = ProForm.useForm();
+
+    const [visible, setVisible] = React.useState(false);
+
+    const columns = [
+        {
+            title: 'id',
+            dataIndex: 'id',
+            key: 'id',
+            hidden: true
+        },
+        {
+            title: '按钮名称',
+            dataIndex: 'name',
+            key: 'name',
+        },
+        {
+            title: '事件类型',
+            dataIndex: 'event',
+            key: 'event',
+            render: (value: string) => {
+                return buttonEventOptions.find((item: any) => item.value == value)?.label;
+            }
+        },
+        {
+            title: '按钮颜色',
+            dataIndex: 'color',
+            valueType: 'color',
+            key: 'color',
+        },
+        {
+            title: '排序',
+            dataIndex: 'order',
+            key: 'order',
+        },
+        {
+            title: "操作",
+            valueType: "option",
+            render: (_: any, record: any) => {
+                return [
+                    <a
+                        key={"edit"}
+                        onClick={() => {
+                            form.resetFields();
+                            form.setFieldsValue(record);
+                            setVisible(true);
+                        }}
+                    >
+                        修改
+                    </a>,
+                    <Popconfirm
+                        key={"delete"}
+                        title={"确认要删除吗？"}
+                        onConfirm={() => {
+                            FlowUtils.deleteButton(props.id, record.id);
+                            actionRef.current?.reload();
+                        }}>
+                        <a>删除</a>
+                    </Popconfirm>
+                ]
+            }
+        }
+    ] as ProColumns[];
+
+    return (
+        <>
+            <ProTable
+                columns={columns}
+                actionRef={actionRef}
+                key={"id"}
+                search={false}
+                options={false}
+                pagination={false}
+                request={async () => {
+                    const buttons = FlowUtils.getButtons(props.id);
+                    return {
+                        data: buttons,
+                        total: buttons.length,
+                    }
+                }}
+                toolBarRender={() => {
+                    return [
+                        <Button
+                            type={"primary"}
+                            onClick={() => {
+                                form.resetFields();
+                                setVisible(true);
+                            }}
+                        >添加按钮</Button>
+                    ]
+                }}
+            />
+
+            <ModalForm
+                title={"添加节点按钮"}
+                open={visible}
+                form={form}
+                modalProps={{
+                    onCancel: () => {
+                        setVisible(false);
+                    },
+                    onOk: () => {
+                        setVisible(false);
+                    },
+                    destroyOnClose: true
+                }}
+                onFinish={async (values) => {
+                    FlowUtils.updateButton(props.id, values);
+                    actionRef.current?.reload();
+                    setVisible(false);
+                }}
+            >
+                <ProFormText
+                    name={"id"}
+                    hidden={true}
+                />
+
+                <ProFormText
+                    name={"name"}
+                    label={"按钮名称"}
+                    placeholder={"请输入按钮名称"}
+                    rules={[
+                        {
+                            required: true,
+                            message: '请输入按钮名称'
+                        }
+                    ]}
+                />
+
+                <ProFormSelect
+                    name={"event"}
+                    label={"按钮类型"}
+                    placeholder={"请输入按钮类型"}
+                    rules={[
+                        {
+                            required: true,
+                            message: '请输入按钮类型'
+                        }
+                    ]}
+                    options={buttonEventOptions}
+                />
+
+                <ProFormColorPicker
+                    name={"color"}
+                    label={"按钮颜色"}
+                    normalize={(value) => {
+                        return value.toHexString();
+                    }}
+                    placeholder={"请选择按钮颜色"}
+                    rules={[
+                        {
+                            required: true,
+                            message: '请选择按钮颜色'
+                        }
+                    ]}
+                />
+
+                <ProFormDigit
+                    name={"order"}
+                    label={"排序"}
+                    min={0}
+                    fieldProps={{
+                        step:1
+                    }}
+                    placeholder={"请输入排序"}
+                    rules={[
+                        {
+                            required: true,
+                            message: '请输入排序'
+                        }
+                    ]}
+                />
+
+            </ModalForm>
+        </>
+    )
+}
+
+export default ButtonPanel;
