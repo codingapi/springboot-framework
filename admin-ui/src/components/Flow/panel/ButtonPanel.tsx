@@ -10,14 +10,12 @@ import {
     ProFormText,
     ProTable
 } from "@ant-design/pro-components";
-import {Button, ColorPicker, Form, Popconfirm} from "antd";
+import {Button, Popconfirm} from "antd";
 import FlowUtils from "@/components/Flow/utils";
-
 
 interface ButtonPanelProps {
     id: string;
 }
-
 
 const buttonEventOptions = [
     {
