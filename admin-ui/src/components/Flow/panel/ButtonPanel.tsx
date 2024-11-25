@@ -10,8 +10,10 @@ import {
     ProFormText,
     ProTable
 } from "@ant-design/pro-components";
-import {Button, Popconfirm} from "antd";
+import {Button, ColorPicker, Popconfirm, Space} from "antd";
 import FlowUtils from "@/components/Flow/utils";
+import ScriptModal from "@/components/Flow/panel/ScriptModal";
+import {EyeOutlined} from "@ant-design/icons";
 
 interface ButtonPanelProps {
     id: string;
@@ -20,12 +22,36 @@ interface ButtonPanelProps {
 const buttonEventOptions = [
     {
         label: "保存",
-        value: "save"
+        value: "SAVE"
     },
     {
         label: "提交",
-        value: "submit"
-    }
+        value: "SUBMIT"
+    },
+    {
+        label: "指定人员提交",
+        value: "SPECIFY_SUBMIT"
+    },
+    {
+        label: "驳回",
+        value: "REJECT"
+    },
+    {
+        label: "转办",
+        value: "TRANSFER"
+    },
+    {
+        label: "撤销",
+        value: "RECALL"
+    },
+    {
+        label: "延期",
+        value: "POSTPONED"
+    },
+    {
+        label: "自定义",
+        value: "CUSTOM"
+    },
 ]
 
 
@@ -35,7 +61,13 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
 
     const [form] = ProForm.useForm();
 
+    const [groovyForm] = ProForm.useForm();
+
     const [visible, setVisible] = React.useState(false);
+
+    const [scriptVisible, setScriptVisible] = React.useState(false);
+
+    const [type, setType] = React.useState<string>();
 
     const columns = [
         {
@@ -51,17 +83,19 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
         },
         {
             title: '事件类型',
-            dataIndex: 'event',
-            key: 'event',
+            dataIndex: 'type',
+            key: 'type',
             render: (value: string) => {
                 return buttonEventOptions.find((item: any) => item.value == value)?.label;
             }
         },
         {
             title: '按钮颜色',
-            dataIndex: 'color',
-            valueType: 'color',
-            key: 'color',
+            dataIndex: 'style',
+            key: 'style',
+            render: (_: any, record: any) => {
+                return <ColorPicker value={record.style.color} disabled={true}/>;
+            }
         },
         {
             title: '排序',
@@ -78,6 +112,7 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
                         onClick={() => {
                             form.resetFields();
                             form.setFieldsValue(record);
+                            setType(record.type);
                             setVisible(true);
                         }}
                     >
@@ -141,14 +176,15 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
                 }}
                 onFinish={async (values) => {
                     FlowUtils.updateButton(props.id, values);
-                    actionRef.current?.reload();
                     setVisible(false);
+                    actionRef.current?.reload();
                 }}
             >
                 <ProFormText
                     name={"id"}
                     hidden={true}
                 />
+
 
                 <ProFormText
                     name={"name"}
@@ -162,24 +198,22 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
                     ]}
                 />
 
-                <ProFormSelect
-                    name={"event"}
-                    label={"按钮类型"}
-                    placeholder={"请输入按钮类型"}
-                    rules={[
-                        {
-                            required: true,
-                            message: '请输入按钮类型'
-                        }
-                    ]}
-                    options={buttonEventOptions}
-                />
-
                 <ProFormColorPicker
-                    name={"color"}
+                    name={"style"}
                     label={"按钮颜色"}
                     normalize={(value) => {
-                        return value.toHexString();
+                        return {
+                            color: value.toHexString()
+                        };
+                    }}
+                    getValueProps={(value) => {
+                        const color = value?.color;
+                        if (color) {
+                            return {
+                                value: color
+                            }
+                        }
+                        return value;
                     }}
                     placeholder={"请选择按钮颜色"}
                     rules={[
@@ -190,12 +224,60 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
                     ]}
                 />
 
+                <ProFormSelect
+                    name={"type"}
+                    label={(
+                        <Space>
+                            按钮类型
+
+                            {type === 'CUSTOM' && (
+                                <EyeOutlined
+                                    onClick={() => {
+                                        groovyForm.resetFields();
+                                        const script = form.getFieldValue('groovy') || 'def run(content){\n    // 你的代码\n  \n}';
+                                        groovyForm.setFieldsValue({
+                                            'script': script
+                                        });
+                                        setScriptVisible(!scriptVisible);
+                                    }}/>
+                            )}
+
+                        </Space>
+                    )}
+                    placeholder={"请输入按钮类型"}
+                    rules={[
+                        {
+                            required: true,
+                            message: '请输入按钮类型'
+                        }
+                    ]}
+                    options={buttonEventOptions}
+                    onChange={(value:string)=>{
+                        setType(value);
+                    }}
+                />
+
+                <ProFormText
+                    name={"groovy"}
+                    hidden={true}
+                />
+
+                <ScriptModal
+                    onFinish={(values) => {
+                        form.setFieldsValue({
+                            'groovy': values.script
+                        });
+                    }}
+                    form={groovyForm}
+                    setVisible={setScriptVisible}
+                    visible={scriptVisible}/>
+
                 <ProFormDigit
                     name={"order"}
                     label={"排序"}
                     min={0}
                     fieldProps={{
-                        step:1
+                        step: 1
                     }}
                     placeholder={"请输入排序"}
                     rules={[

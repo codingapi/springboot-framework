@@ -54,9 +54,10 @@ const FlowUtils = {
         for(const item of buttons){
             if(item.id == button.id){
                 item.name = button.name;
-                item.color = button.color;
-                item.event = button.event;
+                item.style = button.style;
+                item.type = button.type;
                 item.order = button.order;
+                item.groovy = button.groovy;
 
                 update = true;
             }
