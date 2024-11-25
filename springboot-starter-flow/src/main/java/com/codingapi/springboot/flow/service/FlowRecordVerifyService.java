@@ -87,7 +87,9 @@ class FlowRecordVerifyService {
      */
     public void verifyFlowRecordNotTodo() {
         if (flowRecord.isTodo()) {
-            throw new IllegalArgumentException("flow record is todo");
+            if(!flowRecord.isStartRecord()) {
+                throw new IllegalArgumentException("flow record is todo");
+            }
         }
     }
 

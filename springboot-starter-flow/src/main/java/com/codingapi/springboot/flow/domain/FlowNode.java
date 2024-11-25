@@ -93,6 +93,11 @@ public class FlowNode {
     @Setter
     private ErrTrigger errTrigger;
 
+    /**
+     * 流程节点按钮
+     */
+    private List<FlowButton> buttons;
+
 
     public void verify(){
         if (this.titleGenerator == null) {
@@ -132,7 +137,8 @@ public class FlowNode {
                 this.createTime,
                 this.updateTime,
                 this.timeout,
-                this.errTrigger == null ? null : this.errTrigger.getScript()
+                this.errTrigger == null ? null : this.errTrigger.getScript(),
+                this.buttons
         );
     }
 

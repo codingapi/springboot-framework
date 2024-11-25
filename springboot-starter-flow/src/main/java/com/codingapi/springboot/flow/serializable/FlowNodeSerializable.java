@@ -1,5 +1,6 @@
 package com.codingapi.springboot.flow.serializable;
 
+import com.codingapi.springboot.flow.domain.FlowButton;
 import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.em.ApprovalType;
 import com.codingapi.springboot.flow.em.NodeType;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 流程节点序列化
@@ -86,9 +88,13 @@ public class FlowNodeSerializable implements Serializable {
      */
     private String errTrigger;
 
+    /**
+     * 流程节点按钮
+     */
+    private List<FlowButton> buttons;
 
     public FlowNode toFlowNode() {
         return new FlowNode(id, code, name, new TitleGenerator(titleGenerator), type, view, approvalType,
-                new OperatorMatcher(operatorMatcher), editable, createTime, updateTime, timeout, errTrigger == null ? null : new ErrTrigger(errTrigger));
+                new OperatorMatcher(operatorMatcher), editable, createTime, updateTime, timeout, errTrigger == null ? null : new ErrTrigger(errTrigger),buttons);
     }
 }

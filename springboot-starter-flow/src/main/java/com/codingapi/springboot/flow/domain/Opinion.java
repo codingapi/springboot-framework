@@ -5,6 +5,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 审批意见
  */
@@ -44,10 +47,29 @@ public class Opinion {
      */
     private int type;
 
+    /**
+     *  指定流程的操作者
+     *  operatorIds 为空时，表示不指定操作者，由流程配置的操作者匹配器决定
+     */
+    private List<Long> operatorIds;
+
     public Opinion(String advice, int result, int type) {
         this.advice = advice;
         this.result = result;
         this.type = type;
+    }
+
+    public Opinion specify(List<Long> operatorIds) {
+        this.operatorIds = operatorIds;
+        return this;
+    }
+
+    public Opinion specify(long... operatorIds) {
+        List<Long> operatorIdList = new ArrayList<>();
+        for (long operatorId : operatorIds) {
+            operatorIdList.add(operatorId);
+        }
+        return specify(operatorIdList);
     }
 
     public static Opinion save(String advice) {

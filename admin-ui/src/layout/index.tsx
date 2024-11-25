@@ -10,6 +10,7 @@ import "./index.scss";
 import {useSelector} from "react-redux";
 import {RootState} from "@/store/Redux";
 import NotFound from "@/layout/pages/NotFound";
+import "@/config/register.component";
 
 const welcomePath = config.welcomePath;
 const loginPath = config.loginPath;

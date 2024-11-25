@@ -50,7 +50,7 @@ class FlowNodeService {
                            List<FlowRecord> historyRecords,
                            FlowWork flowWork,
                            String processId,
-                           long preId){
+                           long preId) {
 
         this.flowOperatorRepository = flowOperatorRepository;
         this.flowRecordRepository = flowRecordRepository;
@@ -77,7 +77,7 @@ class FlowNodeService {
     /**
      * 加载下一个节点
      */
-    public void loadNextPassNode(FlowNode currentNode){
+    public void loadNextPassNode(FlowNode currentNode) {
         this.nextNode = matcherNextNode(currentNode, false);
         this.nextOperator = currentOperator;
     }
@@ -93,7 +93,7 @@ class FlowNodeService {
     /**
      * 加载默认回退节点
      */
-    public void loadDefaultBackNode(long parentRecordId){
+    public void loadDefaultBackNode(long parentRecordId) {
         IFlowOperator flowOperator;
         // 拒绝时，默认返回上一个已办节点
         FlowRecord preRecord = flowRecordRepository.getFlowRecordById(parentRecordId);
@@ -116,7 +116,7 @@ class FlowNodeService {
     /**
      * 加载自定义回退节点
      */
-    public void loadCustomBackNode(FlowNode flowNode, long parentRecordId){
+    public void loadCustomBackNode(FlowNode flowNode, long parentRecordId) {
         FlowNode nextNode = this.matcherNextNode(flowNode, true);
         if (nextNode == null) {
             throw new IllegalArgumentException("next node not found");
@@ -174,7 +174,7 @@ class FlowNodeService {
         List<FlowRecord> records = this.createNextRecord();
 
         // 检测流程是否为抄送节点
-        while (this.nextNodeIsCirculate()){
+        while (this.nextNodeIsCirculate()) {
             for (FlowRecord record : records) {
                 record.circulate();
             }
@@ -199,8 +199,30 @@ class FlowNodeService {
     }
 
 
+    /**
+     * 加载下一节点的操作者
+     * @return 操作者
+     */
+    public List<? extends IFlowOperator> loadNextNodeOperators() {
+        FlowSession flowSession = new FlowSession(flowWork, nextNode, createOperator, nextOperator, snapshot.toBindData(), opinion, historyRecords);
+        List<? extends IFlowOperator> operators = nextNode.loadFlowNodeOperator(flowSession, flowOperatorRepository);
+        if (operators.isEmpty()) {
+            if (nextNode.hasErrTrigger()) {
+                ErrorResult errorResult = nextNode.errMatcher(flowSession);
+                if (errorResult == null) {
+                    throw new IllegalArgumentException("errMatcher match error.");
+                }
+                if (errorResult.isOperator()) {
+                    List<Long> operatorIds = ((OperatorResult) errorResult).getOperatorIds();
+                    operators = flowOperatorRepository.findByIds(operatorIds);
+                }
+            }
+        }
+        return operators;
+    }
 
-    private List<FlowRecord> createNextRecord(){
+
+    private List<FlowRecord> createNextRecord() {
         FlowSession flowSession = new FlowSession(flowWork,
                 nextNode,
                 createOperator,
@@ -211,9 +233,16 @@ class FlowNodeService {
 
         long workId = flowWork.getId();
         List<? extends IFlowOperator> operators = nextNode.loadFlowNodeOperator(flowSession, flowOperatorRepository);
+        List<Long> customOperatorIds =  opinion.getOperatorIds();
+        if(customOperatorIds!=null && !customOperatorIds.isEmpty()) {
+            operators = operators.stream().filter(operator -> customOperatorIds.contains(operator.getUserId())).toList();
+            if(operators.size() != customOperatorIds.size()){
+                throw new IllegalArgumentException("operator not match.");
+            }
+        }
         List<FlowRecord> recordList;
         if (operators.isEmpty()) {
-            recordList= this.errMatcher(nextNode, nextOperator);
+            recordList = this.errMatcher(nextNode, nextOperator);
             if (recordList.isEmpty()) {
                 throw new IllegalArgumentException("operator not match.");
             }
@@ -221,7 +250,7 @@ class FlowNodeService {
             String recordTitle = nextNode.generateTitle(flowSession);
             recordList = new ArrayList<>();
             for (IFlowOperator operator : operators) {
-                FlowRecord record = nextNode.createRecord(workId,flowWork.getCode(), processId, preId, recordTitle, createOperator, operator, snapshot);
+                FlowRecord record = nextNode.createRecord(workId, flowWork.getCode(), processId, preId, recordTitle, createOperator, operator, snapshot);
                 recordList.add(record);
             }
         }
@@ -251,7 +280,7 @@ class FlowNodeService {
                 for (IFlowOperator operator : operators) {
                     FlowSession content = new FlowSession(flowWork, currentNode, createOperator, operator, snapshot.toBindData(), opinion, historyRecords);
                     String recordTitle = currentNode.generateTitle(content);
-                    FlowRecord record = currentNode.createRecord(flowWork.getId(),flowWork.getCode(), processId, preId, recordTitle, createOperator, operator, snapshot);
+                    FlowRecord record = currentNode.createRecord(flowWork.getId(), flowWork.getCode(), processId, preId, recordTitle, createOperator, operator, snapshot);
                     recordList.add(record);
                 }
                 return recordList;
@@ -269,7 +298,7 @@ class FlowNodeService {
                 if (!matcherOperators.isEmpty()) {
                     for (IFlowOperator matcherOperator : matcherOperators) {
                         String recordTitle = node.generateTitle(content);
-                        FlowRecord record = node.createRecord(flowWork.getId(),flowWork.getCode(), processId, preId, recordTitle, createOperator, matcherOperator, snapshot);
+                        FlowRecord record = node.createRecord(flowWork.getId(), flowWork.getCode(), processId, preId, recordTitle, createOperator, matcherOperator, snapshot);
                         recordList.add(record);
                     }
                 }
@@ -292,7 +321,7 @@ class FlowNodeService {
     /**
      * 下一节点是否结束节点
      */
-    public boolean nextNodeIsOver(){
+    public boolean nextNodeIsOver() {
         return nextNode.isOverNode();
     }
 
