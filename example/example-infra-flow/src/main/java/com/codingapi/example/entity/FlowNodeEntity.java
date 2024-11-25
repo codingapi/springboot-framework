@@ -1,10 +1,15 @@
 package com.codingapi.example.entity;
 
+import com.alibaba.fastjson.JSON;
+import com.codingapi.springboot.flow.domain.FlowButton;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 @Setter
 @Getter
@@ -81,4 +86,19 @@ public class FlowNodeEntity {
      */
     @Lob
     private String errTrigger;
+
+
+    /**
+     * 自定义按钮
+     */
+    @Lob
+    private String buttons;
+
+
+    public List<FlowButton> toFlowButtons(){
+        if(StringUtils.hasText(buttons)) {
+            return JSON.parseArray(buttons, FlowButton.class);
+        }
+        return null;
+    }
 }

@@ -1,5 +1,6 @@
 package com.codingapi.example.convert;
 
+import com.alibaba.fastjson.JSON;
 import com.codingapi.example.entity.FlowNodeEntity;
 import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.em.ApprovalType;
@@ -30,6 +31,10 @@ public class FlowNodeConvertor {
         entity.setOperatorMatcher(flowNode.getOperatorMatcher().getScript());
         entity.setUpdateTime(flowNode.getUpdateTime());
         entity.setWorkId(workId);
+        if(flowNode.getButtons()!=null) {
+            String json = JSON.toJSONString(flowNode.getButtons());
+            entity.setButtons(json);
+        }
         return entity;
     }
 
@@ -50,7 +55,8 @@ public class FlowNodeConvertor {
                 entity.getCreateTime(),
                 entity.getUpdateTime(),
                 entity.getTimeout(),
-                StringUtils.hasLength(entity.getErrTrigger())?new ErrTrigger(entity.getErrTrigger()):null);
+                StringUtils.hasLength(entity.getErrTrigger())?new ErrTrigger(entity.getErrTrigger()):null,
+                entity.toFlowButtons());
     }
 
 }
