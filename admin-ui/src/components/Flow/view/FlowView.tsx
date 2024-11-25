@@ -1,6 +1,6 @@
 import React from "react";
 import {Button, Divider, Form, message, Modal, Row, Space, Tabs} from "antd";
-import {detail, postponed, recall, saveFlow, submitFlow, transfer} from "@/api/flow";
+import {custom, detail, postponed, recall, saveFlow, submitFlow, transfer, trySubmitFlow} from "@/api/flow";
 import {
     ModalForm,
     ProDescriptions,
@@ -39,6 +39,67 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
     const [opinionForm] = Form.useForm();
 
     const [transferForm] = Form.useForm();
+
+    const handlerTool = (key:string,buttonId:string) =>{
+        switch (key) {
+            case 'SAVE':
+                handlerSaveFlow();
+                break;
+            case 'SUBMIT':
+                handleSubmitFlow(true);
+                break;
+            case 'TRY_SUBMIT':
+                handleTrySubmitFlow();
+                break;
+            case 'REJECT':
+                handleSubmitFlow(false);
+                break;
+            case 'TRANSFER':
+                setTransferVisible(true);
+                break;
+            case 'POSTPONED':
+                setPostponedVisible(true);
+                break;
+            case 'RECALL':
+                handleRecallFlow();
+                break;
+            case 'SPECIFY_SUBMIT':
+                handleSubmitFlow(true);
+                break;
+            case 'CUSTOM':
+                handleCustomFlow(buttonId);
+                break;
+        }
+    }
+
+    const ToolButtons = () => {
+        if(!data){
+            return null;
+        }
+        return (
+            <Space>
+                {data.flowNode.buttons && data.flowNode.buttons.map((item:any)=>{
+                    const style = item.style && {
+                        ...JSON.parse(item.style),
+                        color:"white",
+                    } || {};
+                    return (
+                        <Button
+                            key={item.id}
+                            onClick={()=>{
+                                handlerTool(item.type,item.id);
+                            }}
+                            style={{
+                                ...style
+                            }}
+                        >
+                            {item.name}
+                        </Button>
+                    )
+                })}
+            </Space>
+        )
+    }
 
     const handlerSaveFlow = () => {
         const advice = opinionForm.getFieldValue('advice');
@@ -111,6 +172,54 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
                 props.setVisible(false);
             }
         });
+    }
+
+    const handleCustomFlow = (buttonId:string) => {
+        const recordId = props.id;
+        const advice = opinionForm.getFieldValue('advice');
+        const binData = viewForm.getFieldsValue();
+        const clazzName = data.flowRecord.bindClass;
+        const body = {
+            recordId,
+            buttonId,
+            advice: advice,
+            formData: {
+                ...binData,
+                clazzName
+            }
+        }
+        custom(body).then(res => {
+            if (res.success) {
+                message.success(res.data).then();
+            }
+        })
+    }
+
+
+    const handleTrySubmitFlow = () => {
+        const advice = opinionForm.getFieldValue('advice');
+        const recordId = props.id;
+        const binData = viewForm.getFieldsValue();
+        const clazzName = data.flowRecord.bindClass;
+        const body = {
+            recordId,
+            advice: advice,
+            success: true,
+            formData: {
+                ...binData,
+                clazzName
+            }
+        }
+        trySubmitFlow(body).then(res => {
+            if (res.success) {
+                const operators = res.data.operators;
+                const usernames = operators.map((item:any)=>{
+                    return item.name;
+                });
+                const messageText = `下级节点:${res.data.flowNode.name},下一流程审批人:${usernames.join(',')}`;
+                message.success(messageText).then();
+            }
+        })
     }
 
     const handleSubmitFlow = (success: boolean) => {
@@ -208,62 +317,9 @@ const FlowView: React.FC<FlowViewProps> = (props) => {
         >
             <Row justify="end">
                 <Space>
-                    {!props.review && (
-                        <Button
-                            onClick={() => {
-                                handlerSaveFlow();
-                            }}
-                        >保存</Button>
-                    )}
-
 
                     {!props.review && (
-                        <Button
-                            type={"primary"}
-                            onClick={() => {
-                                handleSubmitFlow(true);
-                            }}
-                        >同意</Button>
-                    )}
-
-
-                    {!props.review && (
-                        <Button
-                            type={"primary"}
-                            onClick={() => {
-                                handleSubmitFlow(false);
-                            }}
-                            danger={true}
-                        >拒绝</Button>
-                    )}
-
-                    {!props.review && (
-                        <Button
-                            type={"primary"}
-                            onClick={()=>{
-                                setTransferVisible(true);
-                            }}
-                        >转办</Button>
-                    )}
-
-                    {!props.review && (
-                        <Button
-                            type={"primary"}
-                            onClick={() => {
-                                setPostponedVisible(true);
-                            }}
-                            danger={true}
-                        >延期</Button>
-                    )}
-
-                    {!props.review && (
-                        <Button
-                            type={"primary"}
-                            onClick={() => {
-                                handleRecallFlow();
-                            }}
-                            danger={true}
-                        >撤销</Button>
+                        <ToolButtons/>
                     )}
 
                     <Button

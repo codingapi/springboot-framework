@@ -6,6 +6,8 @@ public enum FlowButtonType {
     SAVE,
     // 提交
     SUBMIT,
+    // 预提交
+    TRY_SUBMIT,
     // 指定人员提交
     SPECIFY_SUBMIT,
     // 驳回

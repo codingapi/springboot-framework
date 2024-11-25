@@ -15,6 +15,7 @@ import com.codingapi.springboot.flow.repository.FlowOperatorRepository;
 import com.codingapi.springboot.flow.repository.FlowRecordRepository;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import com.codingapi.springboot.framework.event.EventPusher;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.List;
  */
 class FlowNodeService {
 
+    @Getter
     private FlowNode nextNode;
     private IFlowOperator nextOperator;
 
@@ -324,6 +326,4 @@ class FlowNodeService {
     public boolean nextNodeIsOver() {
         return nextNode.isOverNode();
     }
-
-
 }

@@ -13,7 +13,7 @@ import {
 import {Button, ColorPicker, Popconfirm, Space} from "antd";
 import FlowUtils from "@/components/Flow/utils";
 import ScriptModal from "@/components/Flow/panel/ScriptModal";
-import {EyeOutlined} from "@ant-design/icons";
+import {EyeOutlined, ReloadOutlined} from "@ant-design/icons";
 
 interface ButtonPanelProps {
     id: string;
@@ -27,6 +27,10 @@ const buttonEventOptions = [
     {
         label: "提交",
         value: "SUBMIT"
+    },
+    {
+        label: "预提交",
+        value: "TRY_SUBMIT"
     },
     {
         label: "指定人员提交",
@@ -94,7 +98,7 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
             dataIndex: 'style',
             key: 'style',
             render: (_: any, record: any) => {
-                return <ColorPicker value={record.style.color} disabled={true}/>;
+                return <ColorPicker value={record.style?.background} disabled={true}/>;
             }
         },
         {
@@ -200,14 +204,27 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
 
                 <ProFormColorPicker
                     name={"style"}
-                    label={"按钮颜色"}
+                    label={(
+                        <Space>
+                            按钮颜色
+                            <ReloadOutlined
+                                alt={"重置"}
+                                onClick={() => {
+                                    form.setFieldsValue({'style': null});
+                                }}
+                            />
+                        </Space>
+                    )}
                     normalize={(value) => {
-                        return {
-                            color: value.toHexString()
-                        };
+                        if(value) {
+                            return {
+                                background: value.toHexString()
+                            };
+                        }
+                        return value;
                     }}
                     getValueProps={(value) => {
-                        const color = value?.color;
+                        const color = value?.background;
                         if (color) {
                             return {
                                 value: color
@@ -216,12 +233,6 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
                         return value;
                     }}
                     placeholder={"请选择按钮颜色"}
-                    rules={[
-                        {
-                            required: true,
-                            message: '请选择按钮颜色'
-                        }
-                    ]}
                 />
 
                 <ProFormSelect
@@ -252,7 +263,7 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
                         }
                     ]}
                     options={buttonEventOptions}
-                    onChange={(value:string)=>{
+                    onChange={(value: string) => {
                         setType(value);
                     }}
                 />

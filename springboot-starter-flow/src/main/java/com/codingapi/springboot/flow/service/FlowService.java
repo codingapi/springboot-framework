@@ -3,6 +3,7 @@ package com.codingapi.springboot.flow.service;
 import com.codingapi.springboot.flow.bind.BindDataSnapshot;
 import com.codingapi.springboot.flow.bind.IBindData;
 import com.codingapi.springboot.flow.content.FlowSession;
+import com.codingapi.springboot.flow.domain.FlowButton;
 import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.domain.Opinion;
@@ -366,7 +367,6 @@ public class FlowService {
     }
 
 
-
     /**
      * 尝试提交流程
      *
@@ -433,7 +433,7 @@ public class FlowService {
             boolean next = flowDirectionService.hasCurrentFlowNodeIsDone();
             if (next) {
                 List<FlowRecord> todoRecords = historyRecords.stream().filter(FlowRecord::isTodo).toList();
-                return new FlowNodeResult(flowWork,flowNode, todoRecords.stream().map(FlowRecord::getCurrentOperator).toList());
+                return new FlowNodeResult(flowWork, flowNode, todoRecords.stream().map(FlowRecord::getCurrentOperator).toList());
             }
         }
 
@@ -477,8 +477,10 @@ public class FlowService {
             flowNodeService.loadCustomBackNode(flowNode, flowRecord.getPreId());
         }
 
-        List<? extends IFlowOperator> operators =  flowNodeService.loadNextNodeOperators();
-        return new FlowNodeResult(flowWork, flowNode,operators);
+        FlowNode nextNode = flowNodeService.getNextNode();
+
+        List<? extends IFlowOperator> operators = flowNodeService.loadNextNodeOperators();
+        return new FlowNodeResult(flowWork, nextNode, operators);
     }
 
 
@@ -640,6 +642,57 @@ public class FlowService {
 
 
     /**
+     * 自定义事件
+     *
+     * @param recordId        流程记录id
+     * @param currentOperator 当前操作者
+     * @param buttonId        按钮id
+     * @param bindData        绑定数据
+     * @param opinion         审批意见
+     */
+    public String customFlow(long recordId, IFlowOperator currentOperator, String buttonId, IBindData bindData, Opinion opinion) {
+        FlowRecordVerifyService flowRecordVerifyService = new FlowRecordVerifyService(flowRecordRepository, flowProcessRepository, recordId, currentOperator);
+
+        // 加载流程
+        flowRecordVerifyService.loadFlowRecord();
+        // 验证流程的提交状态
+        flowRecordVerifyService.verifyFlowRecordSubmitState();
+        // 验证当前操作者
+        flowRecordVerifyService.verifyFlowRecordCurrentOperator();
+        // 加载流程设计
+        flowRecordVerifyService.loadFlowWork();
+        // 加载流程节点
+        flowRecordVerifyService.loadFlowNode();
+        // 验证没有子流程
+        flowRecordVerifyService.verifyChildrenRecordsIsEmpty();
+
+        // 获取流程记录对象
+        FlowRecord flowRecord = flowRecordVerifyService.getFlowRecord();
+        FlowNode flowNode = flowRecordVerifyService.getFlowNode();
+        FlowWork flowWork = flowRecordVerifyService.getFlowWork();
+
+        // 与当前流程同级的流程记录
+        List<FlowRecord> historyRecords;
+        if (flowRecord.isStartRecord()) {
+            historyRecords = new ArrayList<>();
+        } else {
+            historyRecords = flowRecordRepository.findFlowRecordByPreId(flowRecord.getPreId());
+        }
+
+        // 获取流程的发起者
+        IFlowOperator createOperator = flowRecord.getCreateOperator();
+        FlowButton flowButton = flowNode.getButton(buttonId);
+        if (flowButton == null) {
+            throw new IllegalArgumentException("flow button not found");
+        }
+        if (!flowButton.isGroovy()) {
+            throw new IllegalArgumentException("flow button not groovy");
+        }
+        return flowButton.run(flowNode, flowWork, createOperator, currentOperator, bindData, opinion, historyRecords);
+    }
+
+
+    /**
      * 撤回流程
      *
      * @param recordId        流程记录id
@@ -688,5 +741,6 @@ public class FlowService {
 
         EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_RECALL, flowRecord, currentOperator, flowWork, null), true);
     }
+
 
 }

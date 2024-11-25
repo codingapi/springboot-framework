@@ -50,6 +50,14 @@ export async function submitFlow(body:any) {
     return post('/api/cmd/flowRecord/submitFlow', body);
 }
 
+export async function trySubmitFlow(body:any) {
+    return post('/api/cmd/flowRecord/trySubmitFlow', body);
+}
+
+export async function custom(body:any) {
+    return post('/api/cmd/flowRecord/custom', body);
+}
+
 export async function recall(body:any) {
     return post('/api/cmd/flowRecord/recall', body);
 }

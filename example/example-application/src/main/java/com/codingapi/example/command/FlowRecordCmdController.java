@@ -3,8 +3,8 @@ package com.codingapi.example.command;
 import com.codingapi.example.domain.User;
 import com.codingapi.example.pojo.cmd.FlowCmd;
 import com.codingapi.example.repository.UserRepository;
+import com.codingapi.springboot.flow.pojo.FlowNodeResult;
 import com.codingapi.springboot.flow.pojo.FlowResult;
-import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.service.FlowService;
 import com.codingapi.springboot.framework.dto.response.Response;
 import com.codingapi.springboot.framework.dto.response.SingleResponse;
@@ -31,21 +31,34 @@ public class FlowRecordCmdController {
     }
 
 
+    @PostMapping("/trySubmitFlow")
+    public SingleResponse<FlowNodeResult> trySubmitFlow(@RequestBody FlowCmd.SubmitFlow request) {
+        User current = userRepository.getUserByUsername(request.getUserName());
+        return SingleResponse.of(flowService.trySubmitFlow(request.getRecordId(), current, request.getBindData(), request.getOpinion()));
+    }
+
+
     @PostMapping("/submitFlow")
     public SingleResponse<FlowResult> submitFlow(@RequestBody FlowCmd.SubmitFlow request) {
         User current = userRepository.getUserByUsername(request.getUserName());
-        if(current.isFlowManager()){
+        if (current.isFlowManager()) {
             return SingleResponse.of(flowService.interfere(request.getRecordId(), current, request.getBindData(), request.getOpinion()));
-        }else {
+        } else {
             return SingleResponse.of(flowService.submitFlow(request.getRecordId(), current, request.getBindData(), request.getOpinion()));
         }
+    }
+
+    @PostMapping("/custom")
+    public SingleResponse<String> customFlow(@RequestBody FlowCmd.CustomFlow request) {
+        User current = userRepository.getUserByUsername(request.getUserName());
+        return SingleResponse.of(flowService.customFlow(request.getRecordId(), current, request.getButtonId(), request.getBindData(), request.getOpinion()));
     }
 
 
     @PostMapping("/save")
     public Response save(@RequestBody FlowCmd.SaveFlow request) {
         User current = userRepository.getUserByUsername(request.getUserName());
-        flowService.save(request.getRecordId(), current, request.getBindData(),request.getAdvice());
+        flowService.save(request.getRecordId(), current, request.getBindData(), request.getAdvice());
         return Response.buildSuccess();
     }
 
@@ -80,7 +93,6 @@ public class FlowRecordCmdController {
         flowService.urge(request.getRecordId(), current);
         return Response.buildSuccess();
     }
-
 
 
 }

@@ -318,4 +318,14 @@ public class FlowNode {
     public boolean isCirculate() {
         return approvalType == ApprovalType.CIRCULATE;
     }
+
+
+    public FlowButton getButton(String buttonId) {
+        for (FlowButton button : buttons) {
+            if (button.getId().equals(buttonId)) {
+                return button;
+            }
+        }
+        return null;
+    }
 }
