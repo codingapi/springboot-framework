@@ -153,7 +153,8 @@ public class FlowNode {
                     OperatorMatcher operatorMatcher,
                     long timeout,
                     ErrTrigger errTrigger,
-                    boolean editable) {
+                    boolean editable,
+                    List<FlowButton> buttons) {
         this.id = id;
         this.code = code;
         this.name = name;
@@ -167,6 +168,7 @@ public class FlowNode {
         this.errTrigger = errTrigger;
         this.timeout = timeout;
         this.editable = editable;
+        this.buttons = buttons;
     }
 
 
