@@ -25,6 +25,10 @@ const buttonEventOptions = [
         value: "SAVE"
     },
     {
+        label: "发起",
+        value: "START"
+    },
+    {
         label: "提交",
         value: "SUBMIT"
     },
@@ -51,6 +55,10 @@ const buttonEventOptions = [
     {
         label: "延期",
         value: "POSTPONED"
+    },
+    {
+        label: "催办",
+        value: "URGE"
     },
     {
         label: "自定义",

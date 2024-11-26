@@ -4,6 +4,8 @@ public enum FlowButtonType {
 
     // 保存
     SAVE,
+    // 发起
+    START,
     // 提交
     SUBMIT,
     // 预提交
@@ -18,6 +20,8 @@ public enum FlowButtonType {
     RECALL,
     // 延期
     POSTPONED,
+    // 催办
+    URGE,
     // 自定义
     CUSTOM,
 }

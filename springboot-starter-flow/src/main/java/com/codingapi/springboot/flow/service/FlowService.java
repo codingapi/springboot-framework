@@ -77,6 +77,17 @@ public class FlowService {
     /**
      * 流程详情
      *
+     * @param workCode 流程编号
+     * @return 流程详情
+     */
+    public FlowDetail detail(String workCode, IFlowOperator currentOperator) {
+        return this.detail(0, workCode, currentOperator);
+    }
+
+
+    /**
+     * 流程详情
+     *
      * @param recordId 流程记录id
      * @return 流程详情
      */
