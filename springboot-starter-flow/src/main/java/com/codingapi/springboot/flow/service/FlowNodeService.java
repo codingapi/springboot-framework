@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * 流程节点服务
  */
-class FlowNodeService {
+public class FlowNodeService {
 
     @Getter
     private FlowNode nextNode;

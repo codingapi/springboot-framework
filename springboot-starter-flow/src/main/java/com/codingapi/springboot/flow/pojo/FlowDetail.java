@@ -44,12 +44,12 @@ public class FlowDetail {
     private final List<? extends IFlowOperator> operators;
 
     /**
-     * 创建者
+     * 流程创建者
      */
     private final IFlowOperator flowCreator;
 
     /**
-     * 创建时间
+     * 流程创建时间
      */
     private final long flowCreateTime;
 
@@ -75,6 +75,19 @@ public class FlowDetail {
         this.flowNode = flowWork.getNodeByCode(flowRecord.getNodeCode());
     }
 
+    public FlowDetail(FlowWork flowWork,
+                      FlowNode flowNode,
+                      List<? extends IFlowOperator> operators) {
+        this.flowWork = flowWork;
+        this.flowNode = flowNode;
+        this.operators = operators;
+        this.flowCreateTime = 0;
+        this.flowRecord = null;
+        this.historyRecords = null;
+        this.bindData = null;
+        this.opinions = null;
+        this.flowCreator = null;
+    }
 
     @Getter
     public final class FlowOpinion {

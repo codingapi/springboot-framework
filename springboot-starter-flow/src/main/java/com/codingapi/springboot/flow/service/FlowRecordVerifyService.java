@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * 流程记录服务（流程内部服务）
  */
-class FlowRecordVerifyService {
+public class FlowRecordVerifyService {
 
     // constructor params
     private final long recordId;

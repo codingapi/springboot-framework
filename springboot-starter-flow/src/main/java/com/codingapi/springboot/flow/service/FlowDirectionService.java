@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * 流程方向服务
  */
-class FlowDirectionService {
+public class FlowDirectionService {
 
     private final FlowWork flowWork;
     private final FlowNode flowNode;

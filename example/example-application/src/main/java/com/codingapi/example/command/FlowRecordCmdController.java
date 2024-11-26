@@ -49,9 +49,9 @@ public class FlowRecordCmdController {
     }
 
     @PostMapping("/custom")
-    public SingleResponse<String> customFlow(@RequestBody FlowCmd.CustomFlow request) {
+    public SingleResponse<String> customFlowEvent(@RequestBody FlowCmd.CustomFlow request) {
         User current = userRepository.getUserByUsername(request.getUserName());
-        return SingleResponse.of(flowService.customFlow(request.getRecordId(), current, request.getButtonId(), request.getBindData(), request.getOpinion()));
+        return SingleResponse.of(flowService.customFlowEvent(request.getRecordId(), current, request.getButtonId(), request.getBindData(), request.getOpinion()));
     }
 
 
