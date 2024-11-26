@@ -3,7 +3,7 @@ package com.codingapi.springboot.flow.service;
 import com.codingapi.springboot.flow.bind.IBindData;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.pojo.FlowDetail;
-import com.codingapi.springboot.flow.pojo.FlowNodeResult;
+import com.codingapi.springboot.flow.pojo.FlowSubmitResult;
 import com.codingapi.springboot.flow.pojo.FlowResult;
 import com.codingapi.springboot.flow.repository.*;
 import com.codingapi.springboot.flow.service.impl.*;
@@ -41,7 +41,7 @@ public class FlowService {
         this.flowSubmitService = new FlowSubmitService(flowRecordRepository, flowBindDataRepository, flowOperatorRepository, flowProcessRepository);
         this.flowCustomEventService = new FlowCustomEventService(flowRecordRepository, flowProcessRepository);
         this.flowRecallService = new FlowRecallService(flowRecordRepository, flowProcessRepository);
-        this.flowTrySubmitService = new FlowTrySubmitService(flowRecordRepository, flowBindDataRepository, flowOperatorRepository, flowProcessRepository);
+        this.flowTrySubmitService = new FlowTrySubmitService(flowRecordRepository, flowBindDataRepository, flowOperatorRepository, flowProcessRepository, flowWorkRepository, flowBackupRepository);
         this.flowSaveService = new FlowSaveService(flowRecordRepository, flowBindDataRepository, flowProcessRepository);
         this.flowTransferService = new FlowTransferService(flowRecordRepository, flowBindDataRepository, flowProcessRepository);
         this.flowPostponedService = new FlowPostponedService(flowRecordRepository, flowProcessRepository);
@@ -158,20 +158,33 @@ public class FlowService {
      * @param advice   审批意见
      */
     public FlowResult startFlow(String workCode, IFlowOperator operator, IBindData bindData, String advice) {
-         return flowStartService.startFlow(workCode, operator, bindData, advice);
+        return flowStartService.startFlow(workCode, operator, bindData, advice);
     }
 
 
     /**
-     * 尝试提交流程
+     * 尝试提交流程 (流程过程中)
      *
      * @param recordId        流程记录id
      * @param currentOperator 当前操作者
      * @param bindData        绑定数据
      * @param opinion         审批意见
      */
-    public FlowNodeResult trySubmitFlow(long recordId, IFlowOperator currentOperator, IBindData bindData, Opinion opinion) {
+    public FlowSubmitResult trySubmitFlow(long recordId, IFlowOperator currentOperator, IBindData bindData, Opinion opinion) {
         return flowTrySubmitService.trySubmitFlow(recordId, currentOperator, bindData, opinion);
+    }
+
+
+    /**
+     * 尝试提交流程 (发起流程)
+     *
+     * @param workCode        流程编码
+     * @param currentOperator 当前操作者
+     * @param bindData        绑定数据
+     * @param opinion         审批意见
+     */
+    public FlowSubmitResult trySubmitFlow(String workCode, IFlowOperator currentOperator, IBindData bindData, Opinion opinion) {
+        return flowTrySubmitService.trySubmitFlow(workCode, currentOperator, bindData, opinion);
     }
 
 
@@ -198,7 +211,7 @@ public class FlowService {
      * @param opinion         审批意见
      */
     public String customFlowEvent(long recordId, IFlowOperator currentOperator, String buttonId, IBindData bindData, Opinion opinion) {
-       return flowCustomEventService.customFlowEvent(recordId, currentOperator, buttonId, bindData, opinion);
+        return flowCustomEventService.customFlowEvent(recordId, currentOperator, buttonId, bindData, opinion);
     }
 
 

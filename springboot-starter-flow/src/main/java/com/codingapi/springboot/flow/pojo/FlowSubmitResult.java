@@ -8,13 +8,13 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class FlowNodeResult {
+public class FlowSubmitResult {
 
     private final FlowWork flowWork;
     private final FlowNode flowNode;
     private final List<? extends IFlowOperator> operators;
 
-    public FlowNodeResult(FlowWork flowWork, FlowNode flowNode, List<? extends IFlowOperator> operators) {
+    public FlowSubmitResult(FlowWork flowWork, FlowNode flowNode, List<? extends IFlowOperator> operators) {
         this.flowWork = flowWork;
         this.flowNode = flowNode;
         this.operators = operators;

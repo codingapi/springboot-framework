@@ -3,7 +3,7 @@ package com.codingapi.example.command;
 import com.codingapi.example.domain.User;
 import com.codingapi.example.pojo.cmd.FlowCmd;
 import com.codingapi.example.repository.UserRepository;
-import com.codingapi.springboot.flow.pojo.FlowNodeResult;
+import com.codingapi.springboot.flow.pojo.FlowSubmitResult;
 import com.codingapi.springboot.flow.pojo.FlowResult;
 import com.codingapi.springboot.flow.service.FlowService;
 import com.codingapi.springboot.framework.dto.response.Response;
@@ -32,9 +32,13 @@ public class FlowRecordCmdController {
 
 
     @PostMapping("/trySubmitFlow")
-    public SingleResponse<FlowNodeResult> trySubmitFlow(@RequestBody FlowCmd.SubmitFlow request) {
+    public SingleResponse<FlowSubmitResult> trySubmitFlow(@RequestBody FlowCmd.SubmitFlow request) {
         User current = userRepository.getUserByUsername(request.getUserName());
-        return SingleResponse.of(flowService.trySubmitFlow(request.getRecordId(), current, request.getBindData(), request.getOpinion()));
+        if(request.getRecordId()>0) {
+            return SingleResponse.of(flowService.trySubmitFlow(request.getRecordId(), current, request.getBindData(), request.getOpinion()));
+        }else {
+            return SingleResponse.of(flowService.trySubmitFlow(request.getWorkCode(), current, request.getBindData(), request.getOpinion()));
+        }
     }
 
 

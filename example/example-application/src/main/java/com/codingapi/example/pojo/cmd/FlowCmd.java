@@ -60,6 +60,7 @@ public class FlowCmd {
     public static class SubmitFlow {
 
         private long recordId;
+        private String workCode;
         private String advice;
         private boolean success;
         private JSONObject formData;

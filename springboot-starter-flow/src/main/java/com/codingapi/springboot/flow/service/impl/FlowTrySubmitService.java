@@ -6,7 +6,9 @@ import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.em.FlowSourceDirection;
-import com.codingapi.springboot.flow.pojo.FlowNodeResult;
+import com.codingapi.springboot.flow.pojo.FlowSubmitResult;
+import com.codingapi.springboot.flow.record.FlowBackup;
+import com.codingapi.springboot.flow.record.FlowProcess;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.*;
 import com.codingapi.springboot.flow.service.FlowDirectionService;
@@ -27,17 +29,19 @@ public class FlowTrySubmitService {
     private final FlowBindDataRepository flowBindDataRepository;
     private final FlowOperatorRepository flowOperatorRepository;
     private final FlowProcessRepository flowProcessRepository;
+    private final FlowWorkRepository flowWorkRepository;
+    private final FlowBackupRepository flowBackupRepository;
 
 
     /**
-     * 尝试提交流程
+     * 尝试提交流程 （流程过程中）
      *
      * @param recordId        流程记录id
      * @param currentOperator 当前操作者
      * @param bindData        绑定数据
      * @param opinion         审批意见
      */
-    public FlowNodeResult trySubmitFlow(long recordId, IFlowOperator currentOperator, IBindData bindData, Opinion opinion) {
+    public FlowSubmitResult trySubmitFlow(long recordId, IFlowOperator currentOperator, IBindData bindData, Opinion opinion) {
 
         FlowRecordVerifyService flowRecordVerifyService = new FlowRecordVerifyService(flowRecordRepository, flowProcessRepository, recordId, currentOperator);
 
@@ -59,6 +63,22 @@ public class FlowTrySubmitService {
         FlowNode flowNode = flowRecordVerifyService.getFlowNode();
         FlowWork flowWork = flowRecordVerifyService.getFlowWork();
 
+        return trySubmitFlow(flowWork, flowNode, flowRecord, currentOperator, bindData, opinion);
+    }
+
+
+    /**
+     * 预提交流程数据查询
+     *
+     * @param flowWork        流程设计
+     * @param flowNode        流程节点
+     * @param flowRecord      流程记录
+     * @param currentOperator 当前操作者
+     * @param bindData        绑定数据
+     * @param opinion         审批意见
+     * @return FlowSubmitResult
+     */
+    private FlowSubmitResult trySubmitFlow(FlowWork flowWork, FlowNode flowNode, FlowRecord flowRecord, IFlowOperator currentOperator, IBindData bindData, Opinion opinion) {
 
         // 保存流程表单快照数据
         BindDataSnapshot snapshot = null;
@@ -69,7 +89,7 @@ public class FlowTrySubmitService {
         }
 
         // 审批方向判断服务
-        FlowDirectionService flowDirectionService = new FlowDirectionService(flowRecordVerifyService.getFlowNode(), flowRecordVerifyService.getFlowWork(), opinion);
+        FlowDirectionService flowDirectionService = new FlowDirectionService(flowNode, flowWork, opinion);
 
         // 加载流程审批方向
         flowDirectionService.loadFlowSourceDirection();
@@ -95,7 +115,7 @@ public class FlowTrySubmitService {
             boolean next = flowDirectionService.hasCurrentFlowNodeIsDone();
             if (next) {
                 List<FlowRecord> todoRecords = historyRecords.stream().filter(FlowRecord::isTodo).toList();
-                return new FlowNodeResult(flowWork, flowNode, todoRecords.stream().map(FlowRecord::getCurrentOperator).toList());
+                return new FlowSubmitResult(flowWork, flowNode, todoRecords.stream().map(FlowRecord::getCurrentOperator).toList());
             }
         }
 
@@ -142,6 +162,86 @@ public class FlowTrySubmitService {
         FlowNode nextNode = flowNodeService.getNextNode();
 
         List<? extends IFlowOperator> operators = flowNodeService.loadNextNodeOperators();
-        return new FlowNodeResult(flowWork, nextNode, operators);
+        return new FlowSubmitResult(flowWork, nextNode, operators);
+    }
+
+
+    /**
+     * 尝试提交流程 （发起流程）
+     *
+     * @param workCode        流程编码
+     * @param currentOperator 当前操作者
+     * @param bindData        绑定数据
+     * @param opinion         审批意见
+     */
+    public FlowSubmitResult trySubmitFlow(String workCode, IFlowOperator currentOperator, IBindData bindData, Opinion opinion) {
+        // 检测流程是否存在
+        FlowWork flowWork = flowWorkRepository.getFlowWorkByCode(workCode);
+        if (flowWork == null) {
+            throw new IllegalArgumentException("flow work not found");
+        }
+        flowWork.verify();
+        flowWork.enableValidate();
+
+        // 流程数据备份
+        FlowBackup flowBackup = flowBackupRepository.getFlowBackupByWorkIdAndVersion(flowWork.getId(), flowWork.getUpdateTime());
+        if (flowBackup == null) {
+            flowBackup = flowBackupRepository.backup(flowWork);
+        }
+
+        // 保存流程
+        FlowProcess flowProcess = new FlowProcess(flowBackup.getId(), currentOperator);
+
+        // 保存绑定数据
+        BindDataSnapshot snapshot = new BindDataSnapshot(bindData);
+
+        // 创建流程id
+        String processId = flowProcess.getProcessId();
+
+        // 获取开始节点
+        FlowNode start = flowWork.getStartNode();
+        if (start == null) {
+            throw new IllegalArgumentException("start node not found");
+        }
+        // 设置开始流程的上一个流程id
+        long preId = 0;
+
+        List<FlowRecord> historyRecords = new ArrayList<>();
+
+        FlowNodeService flowNodeService = new FlowNodeService(flowOperatorRepository,
+                flowRecordRepository,
+                snapshot,
+                opinion,
+                currentOperator,
+                currentOperator,
+                historyRecords,
+                flowWork,
+                processId,
+                preId);
+
+        flowNodeService.setNextNode(start);
+
+        FlowRecord startRecord = null;
+
+        // 创建待办记录
+        List<FlowRecord> records = flowNodeService.createRecord();
+        if (records.isEmpty()) {
+            throw new IllegalArgumentException("flow record not found");
+        } else {
+            for (FlowRecord record : records) {
+                record.updateOpinion(opinion);
+                startRecord = record;
+            }
+        }
+
+        // 检测流程是否结束
+        if (flowNodeService.nextNodeIsOver()) {
+            for (FlowRecord record : records) {
+                record.submitRecord(currentOperator, snapshot, opinion, FlowSourceDirection.PASS);
+                record.finish();
+                startRecord = record;
+            }
+        }
+        return this.trySubmitFlow(flowWork, start, startRecord, currentOperator, bindData, opinion);
     }
 }

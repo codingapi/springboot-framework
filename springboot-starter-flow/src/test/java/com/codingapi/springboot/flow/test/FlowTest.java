@@ -8,7 +8,7 @@ import com.codingapi.springboot.flow.em.ApprovalType;
 import com.codingapi.springboot.flow.flow.Leave;
 import com.codingapi.springboot.flow.matcher.OperatorMatcher;
 import com.codingapi.springboot.flow.pojo.FlowDetail;
-import com.codingapi.springboot.flow.pojo.FlowNodeResult;
+import com.codingapi.springboot.flow.pojo.FlowSubmitResult;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.*;
 import com.codingapi.springboot.flow.service.FlowService;
@@ -767,10 +767,10 @@ public class FlowTest {
         // 提交流程
         FlowRecord userTodo = userTodos.get(0);
 
-        FlowNodeResult flowNodeResult =  flowService.trySubmitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
-        assertEquals(flowNodeResult.getOperators().size(), 2);
-        assertTrue(flowNodeResult.getOperators().stream().map(IFlowOperator::getUserId).toList().contains(dept.getUserId()));
-        assertTrue(flowNodeResult.getOperators().stream().map(IFlowOperator::getUserId).toList().contains(lorne.getUserId()));
+        FlowSubmitResult flowSubmitResult =  flowService.trySubmitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
+        assertEquals(flowSubmitResult.getOperators().size(), 2);
+        assertTrue(flowSubmitResult.getOperators().stream().map(IFlowOperator::getUserId).toList().contains(dept.getUserId()));
+        assertTrue(flowSubmitResult.getOperators().stream().map(IFlowOperator::getUserId).toList().contains(lorne.getUserId()));
 
         flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意").specify(dept.getUserId()));
 
