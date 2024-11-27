@@ -17,5 +17,11 @@ public interface IBindData {
     }
 
 
-    String getClazzName();
+    /**
+     * 获取类名称
+     * @return 类名称
+     */
+    default String getClazzName() {
+        return this.getClass().getName();
+    }
 }

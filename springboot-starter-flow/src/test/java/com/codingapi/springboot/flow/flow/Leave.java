@@ -21,8 +21,4 @@ public class Leave implements IBindData {
         this.days = days;
     }
 
-    @Override
-    public String getClazzName() {
-        return this.getClass().getName();
-    }
 }

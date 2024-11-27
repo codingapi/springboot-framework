@@ -97,12 +97,6 @@ const LeavePage = () => {
                     />
 
                     <ProFormText
-                        name={"clazzName"}
-                        initialValue={"com.codingapi.example.domain.Leave"}
-                        hidden={true}
-                    />
-
-                    <ProFormText
                         name={"flowName"}
                         label={"流程名称"}
                         disabled={true}
