@@ -67,7 +67,8 @@ export const StartView: React.FC<StartProps> = (props) => {
 
 class StartModel extends HtmlNodeModel {
     setAttributes() {
-        this.width = 200;
+        this.minWidth = 200;
+        this.width = 250;
         this.height = 45;
         this.text.editable = false;
         this.menu = [];

@@ -1,0 +1,93 @@
+import React from "react";
+import {FormInstance} from "antd/es/form/hooks/useForm";
+
+// 表单视图属性
+export interface FlowFormViewProps {
+    // 表单数据
+    data: FlowFormParams;
+    // 表单实例
+    form: FormInstance<any>;
+    // 展示状态
+    visible: boolean;
+    // 是否编辑
+    editable: boolean;
+    // 是否对比
+    compare: boolean;
+    // 审批意见
+    opinions?: any;
+}
+
+
+// 表单视图
+export interface FlowFormView {
+    [key: string]: React.ComponentType<FlowFormViewProps>;
+}
+
+// 表单参数
+export interface FlowFormParams {
+    clazzName: string;
+
+    [key: string]: any;
+}
+
+export const PostponedFormViewKey = 'PostponedFormView';
+
+// 延期表单 【拓展视图】
+export interface PostponedFormProps {
+    visible: boolean;
+    setVisible: (visible: boolean) => void;
+    onFinish: (values: any) => void;
+}
+
+export const ResultFormViewKey = 'ResultFormView';
+
+
+export interface FlowResultMessage {
+    title: string,
+    items: FlowResultItem[]
+}
+
+export interface FlowResultItem {
+    title: {
+        label: string,
+        value: string
+    },
+    message: {
+        label: string,
+        value: string
+    },
+}
+
+// 结果表单 【拓展视图】
+export interface ResultFormProps {
+    visible: boolean;
+    setVisible: (visible: boolean) => void;
+    // 是否关闭流程框
+    flowCloseable: boolean;
+    closeFlow: () => void;
+
+    result: FlowResultMessage | null;
+}
+
+export const UserSelectViewKey = 'UserSelectView';
+
+export type UserSelectMode = 'single' | 'multiple';
+
+export interface FlowUser {
+    id: string;
+    name: string;
+
+    [key: string]: any;
+}
+
+// 选人表单 【拓展视图】
+export interface UserSelectProps {
+    visible: boolean;
+    setVisible: (visible: boolean) => void;
+    onFinish: (values: FlowUser[]) => void;
+    mode: UserSelectMode;
+    // 指定人员范围
+    specifyUserIds: number[];
+    // 选人类型
+    userSelectType: string;
+}

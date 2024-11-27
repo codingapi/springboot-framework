@@ -15,4 +15,7 @@ public interface IBindData {
     default String toJsonSnapshot() {
         return JSONObject.toJSONString(this);
     }
+
+
+    String getClazzName();
 }

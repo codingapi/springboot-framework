@@ -67,7 +67,8 @@ export const CirculateView: React.FC<CirculateProps> = (props) => {
 
 class CirculateModel extends HtmlNodeModel {
     setAttributes() {
-        this.width = 200;
+        this.minWidth = 200;
+        this.width = 250;
         this.height = 45;
         this.text.editable = false;
         this.menu = [];

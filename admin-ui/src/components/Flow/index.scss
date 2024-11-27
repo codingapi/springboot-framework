@@ -13,7 +13,7 @@
   .flow-panel {
     position: absolute;
     left: 35px;
-    width: 180px;
+    min-width: 180px;
     margin-top: 10px;
     background-color: white;
     box-shadow: 0 0 10px 1px rgb(228, 224, 219);
@@ -30,7 +30,6 @@
     z-index: 101;
   }
 }
-
 .lf-mini-map {
   border: none !important;
   box-shadow: 3px 0 10px 1px rgb(228, 224, 219);

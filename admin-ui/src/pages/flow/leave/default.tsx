@@ -1,13 +1,9 @@
 import React, {useEffect} from "react";
 import {ProForm, ProFormDigit, ProFormText, ProFormTextArea} from "@ant-design/pro-components";
+import {FlowFormViewProps} from "@/components/Flow/flow/types";
 
 
-interface DefaultFlowViewProps {
-    data?: any;
-    form?: any;
-}
-
-const DefaultFlowView: React.FC<DefaultFlowViewProps> = (props) => {
+const DefaultFlowView: React.FC<FlowFormViewProps> = (props) => {
 
     useEffect(() => {
         props.form.setFieldsValue(props.data);

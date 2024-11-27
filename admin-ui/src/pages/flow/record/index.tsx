@@ -1,19 +1,19 @@
 import React, {useEffect} from "react";
-import {ActionType, ModalForm, PageContainer, ProFormDigit, ProFormText, ProTable} from "@ant-design/pro-components";
+import {ActionType, PageContainer, ProTable} from "@ant-design/pro-components";
 import {
     findDoneByOperatorId,
     findInitiatedByOperatorId,
     findPostponedTodoByOperatorId,
     findTimeoutTodoByOperatorId,
     findTodoByOperatorId,
-    flowRecordList, saveFlow, urge
+    flowRecordList,
+    urge
 } from "@/api/flow";
 import moment from "moment";
-import {message, Modal, Tabs} from "antd";
-import FlowView from "@/components/Flow/view/FlowView";
+import {message, Tabs} from "antd";
 import DefaultFlowView from "@/pages/flow/leave/default";
 import "./index.scss";
-
+import FlowView from "@/components/Flow/flow";
 
 const FlowRecordPage = () => {
 

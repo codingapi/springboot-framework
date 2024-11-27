@@ -68,7 +68,8 @@ export const NodeView: React.FC<NodeProps> = (props) => {
 
 class NodeModel extends HtmlNodeModel {
     setAttributes() {
-        this.width = 200;
+        this.minWidth = 200;
+        this.width = 250;
         this.height = 45;
         this.text.editable = false;
         this.menu = [];
