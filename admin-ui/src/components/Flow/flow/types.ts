@@ -48,14 +48,8 @@ export interface FlowResultMessage {
 }
 
 export interface FlowResultItem {
-    title: {
-        label: string,
-        value: string
-    },
-    message: {
-        label: string,
-        value: string
-    },
+    label: string,
+    value: string
 }
 
 // 结果表单 【拓展视图】

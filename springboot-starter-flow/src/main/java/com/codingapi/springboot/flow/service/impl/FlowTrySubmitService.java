@@ -144,6 +144,7 @@ public class FlowTrySubmitService {
                 currentOperator,
                 historyRecords,
                 flowWork,
+                flowRecord,
                 flowRecord.getProcessId(),
                 flowRecord.getId()
         );
@@ -216,6 +217,7 @@ public class FlowTrySubmitService {
                 currentOperator,
                 historyRecords,
                 flowWork,
+                null,
                 processId,
                 preId);
 

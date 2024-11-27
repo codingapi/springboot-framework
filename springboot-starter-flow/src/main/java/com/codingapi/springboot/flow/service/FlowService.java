@@ -6,6 +6,7 @@ import com.codingapi.springboot.flow.pojo.FlowDetail;
 import com.codingapi.springboot.flow.pojo.FlowSubmitResult;
 import com.codingapi.springboot.flow.pojo.FlowResult;
 import com.codingapi.springboot.flow.repository.*;
+import com.codingapi.springboot.flow.result.MessageResult;
 import com.codingapi.springboot.flow.service.impl.*;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import org.springframework.transaction.annotation.Transactional;
@@ -221,7 +222,7 @@ public class FlowService {
      * @param bindData        绑定数据
      * @param opinion         审批意见
      */
-    public String customFlowEvent(long recordId, IFlowOperator currentOperator, String buttonId, IBindData bindData, Opinion opinion) {
+    public MessageResult customFlowEvent(long recordId, IFlowOperator currentOperator, String buttonId, IBindData bindData, Opinion opinion) {
         return flowCustomEventService.customFlowEvent(recordId, currentOperator, buttonId, bindData, opinion);
     }
 

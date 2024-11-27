@@ -13,6 +13,8 @@ import {
 import {list, startLeave} from "@/api/leave";
 import {Button, message} from "antd";
 import FlowSelect from "@/pages/flow/work/select";
+import FlowView from "@/components/Flow/flow";
+import LeaveForm from "@/pages/flow/leave/LeaveForm";
 
 
 const LeavePage = () => {
@@ -74,79 +76,15 @@ const LeavePage = () => {
                     }}
                 />
 
-                <ModalForm
-                    form={form}
-                    title={"发起请假"}
-                    open={visible}
-                    modalProps={{
-                        onCancel: () => {
-                            setVisible(false);
-                        },
-                        onClose: () => {
-                            setVisible(false);
-                        },
+                <FlowView
+                    visible={visible}
+                    setVisible={setVisible}
+                    view={LeaveForm}
+                    workCode={"leave"}
+                    formParams={{
+                        clazzName: 'com.codingapi.example.domain.Leave',
                     }}
-                    onFinish={async (values) => {
-                        await handleStartFlow(values);
-                    }}
-                >
-
-                    <ProFormText
-                        name={"flowCode"}
-                        hidden={true}
-                    />
-
-                    <ProFormText
-                        name={"flowName"}
-                        label={"流程名称"}
-                        disabled={true}
-                        rules={[
-                            {
-                                required: true,
-                                message: "请选择流程"
-                            }
-                        ]}
-                        fieldProps={{
-                            addonAfter: <a onClick={() => {
-                                setFlowSelectVisible(true);
-                            }
-                            }>选择流程</a>
-                        }}
-                    />
-
-                    <ProFormDigit
-                        name={"days"}
-                        label={"请假天数"}
-                        fieldProps={{
-                            step: 1
-                        }}
-                        rules={[
-                            {
-                                required: true,
-                                message: "请输入请假天数"
-                            }
-                        ]}
-                    />
-
-                    <ProFormTextArea
-                        name={"desc"}
-                        label={"请假原因"}
-                        rules={[
-                            {
-                                required: true,
-                                message: "请输入请假原因"
-                            }
-                        ]}
-                    />
-
-                </ModalForm>
-
-                <FlowSelect visible={flowSelectVisible} setVisible={setFlowSelectVisible} onSelect={(flow) => {
-
-                    form.setFieldValue('flowCode', flow.code);
-                    form.setFieldValue('flowName', flow.title);
-
-                }}/>
+                />
 
             </Page>
         </PageContainer>

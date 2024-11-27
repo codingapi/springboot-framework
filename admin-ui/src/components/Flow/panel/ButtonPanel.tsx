@@ -253,7 +253,7 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
                                 <EyeOutlined
                                     onClick={() => {
                                         groovyForm.resetFields();
-                                        const script = form.getFieldValue('groovy') || 'def run(content){\n    // 你的代码\n  \n}';
+                                        const script = form.getFieldValue('groovy') || 'def run(content){\n  //你的代码 \n  return content.createMessageResult(\'我是自定义标题\');\n}';
                                         groovyForm.setFieldsValue({
                                             'script': script
                                         });

@@ -90,7 +90,9 @@ public class FlowDetailService {
         // 获取开始节点
         FlowNode flowNode = flowWork.getStartNode();
 
-        FlowSession flowSession = new FlowSession(flowWork,
+        FlowSession flowSession = new FlowSession(
+                null,
+                flowWork,
                 flowNode,
                 currentOperator,
                 currentOperator,

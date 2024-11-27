@@ -28,7 +28,40 @@ export class FlowWorkData {
 }
 
 
-export class FlowSubmitResultBuilder extends FlowWorkData {
+export class FlowSubmitResultBuilder {
+
+    private readonly data: any;
+
+    constructor(data: any) {
+        this.data = data;
+    }
+
+    builder() {
+        const operators = this.data.operators;
+        const usernames = operators.map((item: any) => {
+            return item.name;
+        });
+        const flowResult = {
+            title: '下级节点提示',
+            items: [
+                {
+                    label: '下级审批节点',
+                    value: this.data.flowNode.name
+                },
+                {
+                    label: '下级审批人',
+                    value: usernames.join(',')
+                }
+            ]
+        }
+
+        return flowResult as FlowResultMessage;
+    }
+
+}
+
+
+export class FlowTrySubmitResultBuilder extends FlowWorkData {
 
     constructor(data: any) {
         super(data);
@@ -39,17 +72,15 @@ export class FlowSubmitResultBuilder extends FlowWorkData {
         const resultItems = [];
         for (const record of records) {
             const node = this.getNode(record.nodeCode);
-            const resultItem = {
-                title: {
-                    label: '下级审批节点',
-                    value: node.name
-                },
-                message: {
-                    label: '下级审批人',
-                    value: record.currentOperator.name
-                }
-            }
-            resultItems.push(resultItem);
+            resultItems.push({
+                label: '下级审批节点',
+                value: node.name
+            });
+
+            resultItems.push({
+                label: '下级审批人',
+                value: record.currentOperator.name
+            });
         }
         return {
             title: '流程审批完成',

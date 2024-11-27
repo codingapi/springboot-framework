@@ -48,18 +48,10 @@ const ResultFormView: React.FC<ResultFormProps> = (props) => {
                         >
                             <ProDescriptions.Item
                                 span={2}
-                                label={item.title.label}
+                                label={item.label}
                                 valueType="text"
                             >
-                                {item.title.value}
-                            </ProDescriptions.Item>
-
-                            <ProDescriptions.Item
-                                span={1}
-                                label={item.message.label}
-                                valueType="text"
-                            >
-                                {item.message.value}
+                                {item.value}
                             </ProDescriptions.Item>
                         </ProDescriptions>
                     )

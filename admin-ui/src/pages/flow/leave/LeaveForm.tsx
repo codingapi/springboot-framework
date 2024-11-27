@@ -3,7 +3,7 @@ import {ProForm, ProFormDigit, ProFormText, ProFormTextArea} from "@ant-design/p
 import {FlowFormViewProps} from "@/components/Flow/flow/types";
 
 
-const DefaultFlowView: React.FC<FlowFormViewProps> = (props) => {
+const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
 
     useEffect(() => {
         props.form.setFieldsValue(props.data);
@@ -49,4 +49,4 @@ const DefaultFlowView: React.FC<FlowFormViewProps> = (props) => {
     )
 }
 
-export default DefaultFlowView;
+export default LeaveForm;

@@ -36,6 +36,7 @@ public class FlowNodeService {
     private final long preId;
 
     private final FlowWork flowWork;
+    private final FlowRecord flowRecord;
     private final Opinion opinion;
     private final IFlowOperator currentOperator;
     private final BindDataSnapshot snapshot;
@@ -51,6 +52,7 @@ public class FlowNodeService {
                            IFlowOperator currentOperator,
                            List<FlowRecord> historyRecords,
                            FlowWork flowWork,
+                           FlowRecord flowRecord,
                            String processId,
                            long preId) {
 
@@ -62,6 +64,7 @@ public class FlowNodeService {
         this.currentOperator = currentOperator;
         this.historyRecords = historyRecords;
         this.flowWork = flowWork;
+        this.flowRecord = flowRecord;
         this.processId = processId;
         this.preId = preId;
     }
@@ -151,7 +154,7 @@ public class FlowNodeService {
         if (relations.isEmpty()) {
             throw new IllegalArgumentException("relation not found");
         }
-        FlowSession flowSession = new FlowSession(flowWork, flowNode, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
+        FlowSession flowSession = new FlowSession(flowRecord, flowWork, flowNode, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
         List<FlowNode> flowNodes = new ArrayList<>();
         for (FlowRelation flowRelation : relations) {
             FlowNode node = flowRelation.trigger(flowSession);
@@ -203,10 +206,11 @@ public class FlowNodeService {
 
     /**
      * 加载下一节点的操作者
+     *
      * @return 操作者
      */
     public List<? extends IFlowOperator> loadNextNodeOperators() {
-        FlowSession flowSession = new FlowSession(flowWork, nextNode, createOperator, nextOperator, snapshot.toBindData(), opinion, historyRecords);
+        FlowSession flowSession = new FlowSession(flowRecord, flowWork, nextNode, createOperator, nextOperator, snapshot.toBindData(), opinion, historyRecords);
         List<? extends IFlowOperator> operators = nextNode.loadFlowNodeOperator(flowSession, flowOperatorRepository);
         if (operators.isEmpty()) {
             if (nextNode.hasErrTrigger()) {
@@ -225,7 +229,7 @@ public class FlowNodeService {
 
 
     private List<FlowRecord> createNextRecord() {
-        FlowSession flowSession = new FlowSession(flowWork,
+        FlowSession flowSession = new FlowSession(flowRecord, flowWork,
                 nextNode,
                 createOperator,
                 nextOperator,
@@ -235,10 +239,10 @@ public class FlowNodeService {
 
         long workId = flowWork.getId();
         List<? extends IFlowOperator> operators = nextNode.loadFlowNodeOperator(flowSession, flowOperatorRepository);
-        List<Long> customOperatorIds =  opinion.getOperatorIds();
-        if(customOperatorIds!=null && !customOperatorIds.isEmpty()) {
+        List<Long> customOperatorIds = opinion.getOperatorIds();
+        if (customOperatorIds != null && !customOperatorIds.isEmpty()) {
             operators = operators.stream().filter(operator -> customOperatorIds.contains(operator.getUserId())).toList();
-            if(operators.size() != customOperatorIds.size()){
+            if (operators.size() != customOperatorIds.size()) {
                 throw new IllegalArgumentException("operator not match.");
             }
         }
@@ -268,7 +272,7 @@ public class FlowNodeService {
      */
     private List<FlowRecord> errMatcher(FlowNode currentNode, IFlowOperator currentOperator) {
         if (currentNode.hasErrTrigger()) {
-            FlowSession flowSession = new FlowSession(flowWork, currentNode, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
+            FlowSession flowSession = new FlowSession(flowRecord, flowWork, currentNode, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
             ErrorResult errorResult = currentNode.errMatcher(flowSession);
             if (errorResult == null) {
                 throw new IllegalArgumentException("errMatcher match error.");
@@ -280,7 +284,7 @@ public class FlowNodeService {
                 List<Long> operatorIds = ((OperatorResult) errorResult).getOperatorIds();
                 List<? extends IFlowOperator> operators = flowOperatorRepository.findByIds(operatorIds);
                 for (IFlowOperator operator : operators) {
-                    FlowSession content = new FlowSession(flowWork, currentNode, createOperator, operator, snapshot.toBindData(), opinion, historyRecords);
+                    FlowSession content = new FlowSession(flowRecord, flowWork, currentNode, createOperator, operator, snapshot.toBindData(), opinion, historyRecords);
                     String recordTitle = currentNode.generateTitle(content);
                     FlowRecord record = currentNode.createRecord(flowWork.getId(), flowWork.getCode(), processId, preId, recordTitle, createOperator, operator, snapshot);
                     recordList.add(record);
@@ -295,7 +299,7 @@ public class FlowNodeService {
                     throw new IllegalArgumentException("node not found.");
                 }
                 List<FlowRecord> recordList = new ArrayList<>();
-                FlowSession content = new FlowSession(flowWork, node, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
+                FlowSession content = new FlowSession(flowRecord, flowWork, node, createOperator, currentOperator, snapshot.toBindData(), opinion, historyRecords);
                 List<? extends IFlowOperator> matcherOperators = node.loadFlowNodeOperator(content, flowOperatorRepository);
                 if (!matcherOperators.isEmpty()) {
                     for (IFlowOperator matcherOperator : matcherOperators) {

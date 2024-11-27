@@ -11,9 +11,9 @@ import {
 } from "@/api/flow";
 import moment from "moment";
 import {message, Tabs} from "antd";
-import DefaultFlowView from "@/pages/flow/leave/default";
 import "./index.scss";
 import FlowView from "@/components/Flow/flow";
+import LeaveForm from "@/pages/flow/leave/LeaveForm";
 
 const FlowRecordPage = () => {
 
@@ -316,7 +316,7 @@ const FlowRecordPage = () => {
                 review={reviewVisible}
                 setVisible={setFlowViewVisible}
                 view={{
-                    'default': DefaultFlowView
+                    'default': LeaveForm
                 }}
             />
 

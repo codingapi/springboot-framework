@@ -7,7 +7,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {
     clearUserSelect,
     FlowReduxState,
-    setUserSelectModal, showPostponed,
+    setUserSelectModal,
+    showPostponed,
     showResult
 } from "@/components/Flow/store/FlowSlice";
 import {FlowUser} from "@/components/Flow/flow/types";
@@ -29,7 +30,7 @@ export const registerEvents = (id: string,
 
     const dispatch = useDispatch();
 
-    const recordId = id;
+    let recordId = id;
     // 保存流程
     const handlerSaveFlow = () => {
         const advice = adviceForm.getFieldValue('advice');
@@ -54,7 +55,7 @@ export const registerEvents = (id: string,
     }
 
     // 发起流程
-    const handlerStartFlow = (callback: () => void) => {
+    const handlerStartFlow = (callback: (recordId: string) => void) => {
         const formData = form.getFieldsValue();
         const advice = adviceForm.getFieldValue('advice');
         const flowData = data.getFlowData();
@@ -70,8 +71,9 @@ export const registerEvents = (id: string,
         setRequestLoading(true)
         startFlow(body).then(res => {
             if (res.success) {
-                setId(res.data.records[0].id);
-                callback();
+                const newRecordId = res.data.records[0].id;
+                setId(newRecordId);
+                callback(newRecordId);
             }
         }).finally(() => {
             setRequestLoading(false)
@@ -170,7 +172,11 @@ export const registerEvents = (id: string,
         }
         custom(body).then(res => {
             if (res.success) {
-                message.success(res.data).then();
+                const flowResult = res.data;
+                dispatch(showResult({
+                    closeFlow: flowResult.closeable,
+                    result: flowResult
+                }));
             }
         })
     }
@@ -327,7 +333,7 @@ export const registerEvents = (id: string,
                     handleSubmitFlow(true, (res) => {
                         const flowSubmitResultBuilder = new FlowSubmitResultBuilder(res.data);
                         dispatch(showResult({
-                            closeFlow:true,
+                            closeFlow: true,
                             result: flowSubmitResultBuilder.builder()
                         }));
                     });
@@ -335,7 +341,7 @@ export const registerEvents = (id: string,
                     handlerStartAndSubmitFlow((res) => {
                         const flowSubmitResultBuilder = new FlowSubmitResultBuilder(res.data);
                         dispatch(showResult({
-                            closeFlow:true,
+                            closeFlow: true,
                             result: flowSubmitResultBuilder.builder()
                         }));
                     });
@@ -346,7 +352,7 @@ export const registerEvents = (id: string,
                 handleSubmitFlow(false, (res) => {
                     const flowSubmitResultBuilder = new FlowSubmitResultBuilder(res.data);
                     dispatch(showResult({
-                        closeFlow:true,
+                        closeFlow: true,
                         result: flowSubmitResultBuilder.builder()
                     }));
                 });
@@ -354,28 +360,10 @@ export const registerEvents = (id: string,
             }
             case 'TRY_SUBMIT': {
                 handleTrySubmitFlow((res) => {
-                    const operators = res.data.operators;
-                    const usernames = operators.map((item: any) => {
-                        return item.name;
-                    });
-                    const flowResult = {
-                        title: '下级节点提示',
-                        items: [
-                            {
-                                title: {
-                                    label: '下级审批节点',
-                                    value: res.data.flowNode.name
-                                },
-                                message: {
-                                    label: '下级审批人',
-                                    value: usernames.join(',')
-                                }
-                            }
-                        ]
-                    }
+                    const flowSubmitResultBuilder = new FlowSubmitResultBuilder(res.data);
                     dispatch(showResult({
-                        closeFlow:false,
-                        result: flowResult
+                        closeFlow: false,
+                        result: flowSubmitResultBuilder.builder()
                     }));
                 });
                 break;
@@ -402,7 +390,14 @@ export const registerEvents = (id: string,
                 break;
             }
             case 'CUSTOM': {
-                handleCustomFlow(button.id);
+                if (recordId) {
+                    handleCustomFlow(button.id);
+                } else {
+                    handlerStartFlow((id) => {
+                        recordId = id;
+                        handleCustomFlow(button.id);
+                    });
+                }
                 break;
             }
         }

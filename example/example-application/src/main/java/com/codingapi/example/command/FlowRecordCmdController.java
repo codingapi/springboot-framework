@@ -5,6 +5,7 @@ import com.codingapi.example.pojo.cmd.FlowCmd;
 import com.codingapi.example.repository.UserRepository;
 import com.codingapi.springboot.flow.pojo.FlowSubmitResult;
 import com.codingapi.springboot.flow.pojo.FlowResult;
+import com.codingapi.springboot.flow.result.MessageResult;
 import com.codingapi.springboot.flow.service.FlowService;
 import com.codingapi.springboot.framework.dto.response.Response;
 import com.codingapi.springboot.framework.dto.response.SingleResponse;
@@ -53,7 +54,7 @@ public class FlowRecordCmdController {
     }
 
     @PostMapping("/custom")
-    public SingleResponse<String> customFlowEvent(@RequestBody FlowCmd.CustomFlow request) {
+    public SingleResponse<MessageResult> customFlowEvent(@RequestBody FlowCmd.CustomFlow request) {
         User current = userRepository.getUserByUsername(request.getUserName());
         return SingleResponse.of(flowService.customFlowEvent(request.getRecordId(), current, request.getButtonId(), request.getBindData(), request.getOpinion()));
     }

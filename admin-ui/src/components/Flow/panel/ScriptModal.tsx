@@ -40,6 +40,10 @@ const ScriptModal:React.FC<ScriptModalProps> = (props)=>{
                 hidden={true}
             />
 
+            <a onClick={() => {
+                setShow(!show);
+            }}><EyeOutlined/> 查看帮助</a>
+
             {show && (
                 <div>
                 <pre>
@@ -84,7 +88,47 @@ def run(content){
                        `
 def run(content){
     // 你的代码
-    return return content.getCreateOperator().getName() + '-' + content.getFlowWork().getTitle() + '-' + content.getFlowNode().getName();}
+    return content.getCreateOperator().getName() + '-' + content.getFlowWork().getTitle() + '-' + content.getFlowNode().getName();
+}
+`
+                   }
+                </code>
+               在自定义按钮事件时，返回createMessageResult函数：
+                <code>
+                   {
+                       `
+def run(content){
+    // 你的代码
+    // 自定义返回标题
+    // return content.createMessageResult('我是自定义标题');
+    // 自定义返回标题并且关闭流程
+    // return content.createMessageResult('我是自定义标题', true);
+    // 自定义返回标题并添加现实内容
+    return content.createMessageResult('我是自定义标题', true).addMessage('我是标题1','我是内容2').addMessage('我是标题2','我是内容2');
+}
+`
+                   }
+                </code>
+              在自定义按钮事件时，操作流程：
+                <code>
+                   {
+                       `
+def run(content){
+    // 你的代码
+    // 自定义返回标题
+    // return content.createMessageResult('我是自定义标题');
+    // 自定义返回标题并且关闭流程
+    // return content.createMessageResult('我是自定义标题', true);
+    // 提交流程
+    // content.submitFlow();
+    // 催办流程
+    // content.urgeFlow();
+    // 保存流程
+    // content.saveFlow();
+    // 撤回流程
+    // content.recallFlow();
+    // 自定义返回标题并添加现实内容
+    return content.createMessageResult('我是自定义标题', true).addMessage('我是标题1','我是内容2').addMessage('我是标题2','我是内容2');
 }
 `
                    }
@@ -94,10 +138,6 @@ def run(content){
             </pre>
                 </div>
             )}
-
-            <a onClick={()=>{
-                setShow(!show);
-            }}><EyeOutlined/> 查看帮助</a>
 
 
             <ProFormCode

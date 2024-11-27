@@ -6,7 +6,9 @@ import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.record.FlowRecord;
-import com.codingapi.springboot.flow.repository.*;
+import com.codingapi.springboot.flow.repository.FlowProcessRepository;
+import com.codingapi.springboot.flow.repository.FlowRecordRepository;
+import com.codingapi.springboot.flow.result.MessageResult;
 import com.codingapi.springboot.flow.service.FlowRecordVerifyService;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import lombok.AllArgsConstructor;
@@ -31,7 +33,7 @@ public class FlowCustomEventService {
      * @param bindData        绑定数据
      * @param opinion         审批意见
      */
-    public String customFlowEvent(long recordId, IFlowOperator currentOperator, String buttonId, IBindData bindData, Opinion opinion) {
+    public MessageResult customFlowEvent(long recordId, IFlowOperator currentOperator, String buttonId, IBindData bindData, Opinion opinion) {
         FlowRecordVerifyService flowRecordVerifyService = new FlowRecordVerifyService(flowRecordRepository, flowProcessRepository, recordId, currentOperator);
 
         // 加载流程
@@ -69,6 +71,6 @@ public class FlowCustomEventService {
         if (!flowButton.isGroovy()) {
             throw new IllegalArgumentException("flow button not groovy");
         }
-        return flowButton.run(flowNode, flowWork, createOperator, currentOperator, bindData, opinion, historyRecords);
+        return flowButton.run(flowRecord, flowNode, flowWork, createOperator, currentOperator, bindData, opinion, historyRecords);
     }
 }

@@ -127,6 +127,7 @@ public class FlowSubmitService {
                 currentOperator,
                 historyRecords,
                 flowWork,
+                flowRecord,
                 flowRecord.getProcessId(),
                 flowRecord.getId()
         );

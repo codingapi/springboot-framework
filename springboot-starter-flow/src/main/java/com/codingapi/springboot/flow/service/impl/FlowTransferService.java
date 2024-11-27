@@ -80,7 +80,7 @@ public class FlowTransferService {
         }
 
         // 创建新的待办标题
-        FlowSession content = new FlowSession(flowWork, flowNode, createOperator, targetOperator, snapshot.toBindData(), opinion, historyRecords);
+        FlowSession content = new FlowSession(flowRecord,flowWork, flowNode, createOperator, targetOperator, snapshot.toBindData(), opinion, historyRecords);
         String generateTitle = flowNode.generateTitle(content);
 
         // 创建转办记录
