@@ -1,8 +1,8 @@
 import React from "react";
 import {ModalForm, ProFormText} from "@ant-design/pro-components";
 import ProFormCode from "@/components/Form/ProFormCode";
-import "./ScriptModal.scss";
 import {EyeOutlined} from "@ant-design/icons";
+import "./ScriptModal.scss";
 
 interface ScriptModalProps {
     form: any;
@@ -104,7 +104,7 @@ def run(content){
     // 自定义返回标题并且关闭流程
     // return content.createMessageResult('我是自定义标题', true);
     // 自定义返回标题并添加现实内容
-    return content.createMessageResult('我是自定义标题', true).addMessage('我是标题1','我是内容2').addMessage('我是标题2','我是内容2');
+    return content.createMessageResult('我是自定义标题', true).addItem('我是标题1','我是内容2').addItem('我是标题2','我是内容2');
 }
 `
                    }
@@ -121,14 +121,18 @@ def run(content){
     // return content.createMessageResult('我是自定义标题', true);
     // 提交流程
     // content.submitFlow();
+    // 驳回流程
+    // content.rejectFlow();
     // 催办流程
     // content.urgeFlow();
     // 保存流程
     // content.saveFlow();
     // 撤回流程
     // content.recallFlow();
+    // 预提交流程
+    // content.trySubmitFlow();
     // 自定义返回标题并添加现实内容
-    return content.createMessageResult('我是自定义标题', true).addMessage('我是标题1','我是内容2').addMessage('我是标题2','我是内容2');
+    return content.createMessageResult('我是自定义标题', true).addMessage('我是标题1','我是内容2').addMessage('我是标题2','我是内容2').closeable(false);
 }
 `
                    }

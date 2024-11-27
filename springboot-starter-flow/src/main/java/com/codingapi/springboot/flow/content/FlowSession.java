@@ -6,6 +6,8 @@ import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.error.NodeResult;
 import com.codingapi.springboot.flow.error.OperatorResult;
+import com.codingapi.springboot.flow.pojo.FlowResult;
+import com.codingapi.springboot.flow.pojo.FlowSubmitResult;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.result.MessageResult;
 import com.codingapi.springboot.flow.service.FlowService;
@@ -95,6 +97,7 @@ public class FlowSession {
 
     /**
      * 创建流程提醒
+     *
      * @param title 提醒标题
      * @return 提醒对象
      */
@@ -104,7 +107,8 @@ public class FlowSession {
 
     /**
      * 创建流程提醒
-     * @param title 提醒标题
+     *
+     * @param title     提醒标题
      * @param closeable 是否可关闭流程
      * @return 提醒对象
      */
@@ -115,8 +119,9 @@ public class FlowSession {
 
     /**
      * 创建流程提醒
-     * @param title 提醒标题
-     * @param items 提醒内容
+     *
+     * @param title     提醒标题
+     * @param items     提醒内容
      * @param closeable 是否可关闭流程
      * @return 提醒对象
      */
@@ -127,19 +132,45 @@ public class FlowSession {
     /**
      * 提交流程
      */
-    public void submitFlsubmitFlowow() {
-        if(flowRecord==null){
+    public MessageResult submitFlow() {
+        if (flowRecord == null) {
             throw new IllegalArgumentException("flow record is null");
         }
         FlowService flowService = loadFlowService();
-        flowService.submitFlow(flowRecord.getId(), currentOperator, bindData, opinion);
+        FlowResult result = flowService.submitFlow(flowRecord.getId(), currentOperator, bindData, Opinion.pass(opinion.getAdvice()));
+        return MessageResult.create(result);
+    }
+
+    /**
+     * 驳回流程
+     */
+    public MessageResult rejectFlow() {
+        if (flowRecord == null) {
+            throw new IllegalArgumentException("flow record is null");
+        }
+        FlowService flowService = loadFlowService();
+        FlowResult result = flowService.submitFlow(flowRecord.getId(), currentOperator, bindData, Opinion.reject(opinion.getAdvice()));
+        return MessageResult.create(result);
+    }
+
+
+    /**
+     * 预提交流程
+     */
+    public MessageResult trySubmitFlow() {
+        if (flowRecord == null) {
+            throw new IllegalArgumentException("flow record is null");
+        }
+        FlowService flowService = loadFlowService();
+        FlowSubmitResult result = flowService.trySubmitFlow(flowRecord.getId(), currentOperator, bindData, Opinion.pass(opinion.getAdvice()));
+        return MessageResult.create(result);
     }
 
     /**
      * 保存流程
      */
     public void saveFlow() {
-        if(flowRecord==null){
+        if (flowRecord == null) {
             throw new IllegalArgumentException("flow record is null");
         }
         FlowService flowService = loadFlowService();
@@ -151,7 +182,7 @@ public class FlowSession {
      * 催办流程
      */
     public void urgeFlow() {
-        if(flowRecord==null){
+        if (flowRecord == null) {
             throw new IllegalArgumentException("flow record is null");
         }
         FlowService flowService = loadFlowService();
@@ -162,7 +193,7 @@ public class FlowSession {
      * 撤回流程
      */
     public void recallFlow() {
-        if(flowRecord==null){
+        if (flowRecord == null) {
             throw new IllegalArgumentException("flow record is null");
         }
         FlowService flowService = loadFlowService();

@@ -36,7 +36,6 @@ public class FlowCmd {
         private long recordId;
         private String buttonId;
         private String advice;
-        private boolean success;
         private JSONObject formData;
 
         @SneakyThrows
@@ -50,7 +49,7 @@ public class FlowCmd {
         }
 
         public Opinion getOpinion() {
-            return new Opinion(advice, success ? Opinion.RESULT_PASS : Opinion.RESULT_REJECT, Opinion.TYPE_DEFAULT);
+            return new Opinion(advice, Opinion.RESULT_SAVE, Opinion.TYPE_DEFAULT);
         }
     }
 

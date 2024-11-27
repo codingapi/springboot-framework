@@ -1,6 +1,6 @@
 import {useEffect} from "react";
 import {FormInstance} from "antd/es/form/hooks/useForm";
-import {FlowData, FlowSubmitResultBuilder} from "@/components/Flow/flow/data";
+import {FlowData, FlowSubmitResultBuilder, FlowTrySubmitResultBuilder} from "@/components/Flow/flow/data";
 import {custom, postponed, recall, saveFlow, startFlow, submitFlow, transfer, trySubmitFlow, urge} from "@/api/flow";
 import {message} from "antd";
 import {useDispatch, useSelector} from "react-redux";
@@ -360,7 +360,7 @@ export const registerEvents = (id: string,
             }
             case 'TRY_SUBMIT': {
                 handleTrySubmitFlow((res) => {
-                    const flowSubmitResultBuilder = new FlowSubmitResultBuilder(res.data);
+                    const flowSubmitResultBuilder = new FlowTrySubmitResultBuilder(res.data);
                     dispatch(showResult({
                         closeFlow: false,
                         result: flowSubmitResultBuilder.builder()
