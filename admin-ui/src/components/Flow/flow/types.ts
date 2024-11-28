@@ -1,5 +1,5 @@
 import React from "react";
-import {FormInstance} from "antd/es/form/hooks/useForm";
+import { FormInstance } from "antd/es/form/hooks/useForm";
 
 // 表单视图属性
 export interface FlowFormViewProps {

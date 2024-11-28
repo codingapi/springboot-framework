@@ -36,6 +36,7 @@ interface FlowViewProps {
     workCode?: string;
     // 是否显示
     visible: boolean;
+    // 设置显示
     setVisible: (visible: boolean) => void;
 
     // 预览模式
