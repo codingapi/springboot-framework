@@ -21,8 +21,6 @@ const FlowChart: React.FC<FlowChartProps> = (props) => {
     const container = useRef<HTMLDivElement>(null);
     const lfRef = useRef<LogicFlow>(null);
 
-    console.log(flowData.getFlowSchema());
-
     useEffect(() => {
         const SilentConfig = {
             isSilentMode: true,

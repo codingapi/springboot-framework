@@ -27,7 +27,7 @@ const FlowDetail: React.FC<FlowDetailProps> = (props) => {
                             data={flowData.getFlowData()}
                             form={props.form}
                             visible={props.visible}
-                            editable={flowData.getFlowNodeEditable()}
+                            editable={!flowData.isDone() && flowData.getFlowNodeEditable()}
                             compare={!flowData.isStartFlow()}
                         />
                     </div>
@@ -42,7 +42,7 @@ const FlowDetail: React.FC<FlowDetailProps> = (props) => {
                 )}
 
                 {/*仅当非发起流程时再展示审批意见框*/}
-                {FlowFormView && !flowData.isStartFlow() && (
+                {FlowFormView && !flowData.isDone() && !flowData.isStartFlow() && (
                     <div className="opinionForm">
                         <div>
                             <Divider>

@@ -5,7 +5,7 @@ import {custom, postponed, recall, saveFlow, startFlow, submitFlow, transfer, tr
 import {message} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import {
-    clearUserSelect,
+    clearUserSelect, closeUserSelect,
     FlowReduxState,
     setUserSelectModal,
     showPostponed,
@@ -126,7 +126,7 @@ export const registerEvents = (id: string,
     }
 
     // 提交流程
-    const handleSubmitFlow = (flowState: boolean, callback: (res: any) => void) => {
+    const handleSubmitFlow = (flowState: boolean, callback: (res: any) => void,operatorIds?:any[]) => {
         const advice = adviceForm.getFieldValue('advice');
         setRequestLoading(true);
 
@@ -135,6 +135,7 @@ export const registerEvents = (id: string,
             const body = {
                 recordId,
                 advice: advice,
+                operatorIds:operatorIds,
                 success: flowState,
                 formData: {
                     ...flowData,
@@ -290,6 +291,19 @@ export const registerEvents = (id: string,
             const currentUser = selectUsers[0];
             handlerTransferFlow(currentUser);
         }
+
+        if(selectUserType === 'flow' && selectUsers && selectUsers.length > 0){
+            handleSubmitFlow(true,(res)=>{
+                const flowSubmitResultBuilder = new FlowSubmitResultBuilder(res.data);
+                dispatch(closeUserSelect());
+                dispatch(showResult({
+                    closeFlow: true,
+                    result: flowSubmitResultBuilder.builder()
+                }));
+            },selectUsers.map((item:FlowUser)=> {
+                return item.id;
+            }));
+        }
     }, [selectUsers]);
 
 
@@ -301,7 +315,7 @@ export const registerEvents = (id: string,
                     handlerSaveFlow();
                 } else {
                     handlerStartFlow(() => {
-                        message.success('流程已保存至个人待办').then();
+                        message.success('流程已保存').then();
                     });
                 }
                 break;
@@ -314,18 +328,29 @@ export const registerEvents = (id: string,
                 break;
             }
             case 'SPECIFY_SUBMIT': {
-                handleTrySubmitFlow((res) => {
-                    const operators = res.data.operators;
-                    const userIds = operators.map((item: any) => {
-                        return item.userId;
+                const _trySubmitFlow = () => {
+                    handleTrySubmitFlow((res) => {
+                        const operators = res.data.operators;
+                        const userIds = operators.map((item: any) => {
+                            return item.userId;
+                        });
+                        const approvalType = res.data.flowNode.approvalType;
+                        dispatch(setUserSelectModal({
+                            mode: approvalType==='SIGN'?'single':'multiple',
+                            type: 'flow',
+                            visible: true,
+                            specifyUserIds: userIds
+                        }));
                     });
-                    dispatch(setUserSelectModal({
-                        mode: 'single',
-                        type: 'flow',
-                        visible: true,
-                        specifyUserIds: userIds
-                    }));
-                });
+                }
+                if(recordId){
+                    _trySubmitFlow();
+                }else{
+                    handlerStartFlow((id) => {
+                        recordId = id;
+                        _trySubmitFlow();
+                    });
+                }
                 break;
             }
             case 'SUBMIT': {

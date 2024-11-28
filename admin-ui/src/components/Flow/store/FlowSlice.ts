@@ -43,7 +43,8 @@ export type FlowStoreAction = {
         type: string,
         specifyUserIds: number[]
     }>) => void;
-    setSelectUsers: (state: FlowStore, action: PayloadAction<any[]>) => void;
+    setSelectUsers: (state: FlowStore, action: PayloadAction<FlowUser[]>) => void;
+    closeUserSelect: (state: FlowStore) => void;
     clearUserSelect: (state: FlowStore) => void;
 }
 
@@ -94,8 +95,11 @@ export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
 
         setSelectUsers: (state, action) => {
             state.userSelectVisible = false;
-            state.userSelectMode = 'single';
             state.currentUsers = action.payload;
+        },
+
+        closeUserSelect: (state) => {
+            state.userSelectVisible = false;
         },
 
         clearUserSelect: (state) => {
@@ -117,6 +121,7 @@ export const {
     clearResult,
     clearUserSelect,
     setUserSelectModal,
+    closeUserSelect,
     setSelectUsers
 } = flowSlice.actions;
 export const flowStore = configureStore({

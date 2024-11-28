@@ -97,6 +97,10 @@ export class FlowData extends FlowWorkData {
         this.formParams = formParams;
     }
 
+    canHandle = () => {
+        return this.data.canHandle;
+    }
+
     isStartFlow = () => {
         if (this.data) {
             return this.data.flowNode.startNode;
@@ -148,7 +152,7 @@ export class FlowData extends FlowWorkData {
     }
 
 
-    getNodeState = (code:string)=>{
+    getNodeState = (code: string) => {
         const historyRecords = this.data.historyRecords || [];
 
         const historyNodeCodes = historyRecords.map((record: any) => {
@@ -156,11 +160,18 @@ export class FlowData extends FlowWorkData {
         });
 
         const currentNodeCode = this.data.flowNode.code;
-        if(currentNodeCode === code) {
+        if (currentNodeCode === code) {
+            if (this.isFinished()) {
+                return "done";
+            }
             return "current";
         }
 
-        if(historyNodeCodes.indexOf(code) !== -1) {
+        if (historyNodeCodes.indexOf(code) !== -1) {
+            return "done";
+        }
+
+        if (this.isFinished()) {
             return "done";
         }
 
@@ -169,10 +180,10 @@ export class FlowData extends FlowWorkData {
 
     getFlowSchema = () => {
 
-        if(this.data.flowWork.schema) {
-            const schema =  JSON.parse(this.data.flowWork.schema);
+        if (this.data.flowWork.schema) {
+            const schema = JSON.parse(this.data.flowWork.schema);
 
-            for(const node of schema.nodes) {
+            for (const node of schema.nodes) {
                 node.properties.settingVisible = false;
                 node.properties.state = this.getNodeState(node.properties.code);
             }
@@ -193,5 +204,18 @@ export class FlowData extends FlowWorkData {
         return this.data.historyRecords;
     }
 
+    isDone() {
+        if (this.data.flowRecord) {
+            return this.data.flowRecord.flowStatus === 'FINISH' || this.data.flowRecord.flowType === 'DONE';
+        }
+        return false;
+    }
+
+    private isFinished() {
+        if (this.data.flowRecord) {
+            return this.data.flowRecord.flowStatus === 'FINISH';
+        }
+        return false;
+    }
 }
 

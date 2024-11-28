@@ -21,7 +21,7 @@ import {Provider, useDispatch, useSelector} from "react-redux";
 import {
     clearPostponed,
     clearResult,
-    clearUserSelect,
+    clearUserSelect, closeUserSelect,
     FlowReduxState,
     flowStore,
     setSelectUsers,
@@ -208,7 +208,7 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
                 <UserSelectView
                     visible={userSelectVisible}
                     setVisible={() => {
-                        dispatch(clearUserSelect());
+                        dispatch(closeUserSelect());
                     }}
                     onFinish={(values) => {
                         dispatch(setSelectUsers(values));

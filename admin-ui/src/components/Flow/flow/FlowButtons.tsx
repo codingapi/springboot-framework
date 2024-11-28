@@ -13,7 +13,11 @@ interface FlowButtonsProps {
 const FlowButtons: React.FC<FlowButtonsProps> = (props) => {
     const flowData = props.flowData;
 
-    if (!flowData) {
+    if (!flowData ) {
+        return null;
+    }
+
+    if(flowData.hasData() && flowData.isDone()){
         return null;
     }
 

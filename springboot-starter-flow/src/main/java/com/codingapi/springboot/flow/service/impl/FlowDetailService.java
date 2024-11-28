@@ -64,7 +64,7 @@ public class FlowDetailService {
             }
         }
 
-        return new FlowDetail(flowRecord, snapshot, flowWork, flowRecords, operators);
+        return new FlowDetail(flowRecord, snapshot, flowWork, flowRecords, operators, currentOperator != null && flowRecord.isOperator(currentOperator));
     }
 
 
@@ -107,7 +107,7 @@ public class FlowDetailService {
             throw new IllegalArgumentException("current operator is not flow operator");
         }
 
-        return new FlowDetail(flowWork, flowNode, operators);
+        return new FlowDetail(flowWork, flowNode, operators,true);
     }
 
 }
