@@ -220,7 +220,7 @@ export class FlowData extends FlowWorkData {
     }
 
     showOpinion() {
-        return this.canHandle();
+        return this.canHandle() && !this.isStartFlow();
     }
 }
 
