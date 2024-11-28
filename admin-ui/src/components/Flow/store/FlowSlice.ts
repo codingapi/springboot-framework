@@ -1,5 +1,5 @@
 import {configureStore, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {FlowResultMessage, FlowUser, UserSelectMode} from "@/components/Flow/flow/types";
+import {FlowResultMessage, FlowUser, UserSelectMode, UserSelectType} from "@/components/Flow/flow/types";
 
 export interface FlowStore {
     // 延期时间窗口
@@ -15,7 +15,7 @@ export interface FlowStore {
     resultCloseFlow: boolean;
 
     // 选人类型
-    userSelectType: string;
+    userSelectType: UserSelectType | null;
     // 选人窗口
     userSelectVisible: boolean;
     // 选人模式
@@ -40,7 +40,7 @@ export type FlowStoreAction = {
     setUserSelectModal: (state: FlowStore, action: PayloadAction<{
         mode: UserSelectMode,
         visible: boolean,
-        type: string,
+        type: UserSelectType,
         specifyUserIds: number[]
     }>) => void;
     setSelectUsers: (state: FlowStore, action: PayloadAction<FlowUser[]>) => void;
@@ -57,7 +57,7 @@ export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
         resultVisible: false,
         userSelectVisible: false,
         userSelectMode: 'single',
-        userSelectType: '',
+        userSelectType: null,
         resultCloseFlow: false,
         currentUsers: [],
         specifyUserIds: [],
@@ -107,7 +107,7 @@ export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
             state.userSelectMode = 'single';
             state.currentUsers = [];
             state.specifyUserIds = [];
-            state.userSelectType = '';
+            state.userSelectType = null;
         }
     },
 });

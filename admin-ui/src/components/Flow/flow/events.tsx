@@ -292,7 +292,7 @@ export const registerEvents = (id: string,
             handlerTransferFlow(currentUser);
         }
 
-        if(selectUserType === 'flow' && selectUsers && selectUsers.length > 0){
+        if(selectUserType === 'nextNodeUser' && selectUsers && selectUsers.length > 0){
             handleSubmitFlow(true,(res)=>{
                 const flowSubmitResultBuilder = new FlowSubmitResultBuilder(res.data);
                 dispatch(closeUserSelect());
@@ -337,7 +337,7 @@ export const registerEvents = (id: string,
                         const approvalType = res.data.flowNode.approvalType;
                         dispatch(setUserSelectModal({
                             mode: approvalType==='SIGN'?'single':'multiple',
-                            type: 'flow',
+                            type: 'nextNodeUser',
                             visible: true,
                             specifyUserIds: userIds
                         }));

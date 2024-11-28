@@ -1,4 +1,4 @@
-import {page, post} from "@/api/index";
+import {page, post,get} from "@/api/index";
 
 export async function list(
     params: any,
@@ -10,6 +10,10 @@ export async function list(
     }[]
 ) {
     return page('/api/query/user/list', params, sort, filter, match);
+}
+
+export async function users() {
+    return get('/api/query/user/list', {current:1,pageSize:999999});
 }
 
 

@@ -1,9 +1,11 @@
 import React from "react";
-import {Divider} from "antd";
+import {Button, Divider, Space} from "antd";
 import {ProForm, ProFormDigit, ProFormSelect, ProFormSwitch, ProFormText} from "@ant-design/pro-components";
-import {EyeOutlined} from "@ant-design/icons";
+import {EyeOutlined, SettingOutlined} from "@ant-design/icons";
 import GroovyScript from "@/components/Flow/utils/script";
 import ScriptModal from "@/components/Flow/panel/ScriptModal";
+import {getComponent} from "@/framework/ComponentBus";
+import {UserSelectProps, UserSelectViewKey} from "@/components/Flow/flow/types";
 
 interface NodePanelProps {
     id?: string,
@@ -18,6 +20,14 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
     const [form] = ProForm.useForm();
 
     const [visible, setVisible] = React.useState(false);
+
+    const [userSelectVisible, setUserSelectVisible] = React.useState(false);
+
+    const [operatorMatcherType, setOperatorMatcherType] = React.useState(props.data?.operatorMatcherType);
+
+    // 用户选人视图
+    const UserSelectView = getComponent(UserSelectViewKey) as React.ComponentType<UserSelectProps>;
+
 
     return (
         <>
@@ -123,18 +133,33 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                         },
                     ]}
                     onChange={(value) => {
+                        setOperatorMatcherType(value as string);
                         props.form.setFieldsValue({
                             operatorMatcher: GroovyScript.operatorMatcher(value as string)
                         })
                     }}
                     addonAfter={(
-                        <EyeOutlined
-                            onClick={() => {
-                                const value = props.form.getFieldValue("operatorMatcher");
-                                form.setFieldValue("type", "operatorMatcher");
-                                form.setFieldValue("script", value);
-                                setVisible(true);
-                            }}/>
+                        <Space>
+                            {operatorMatcherType==='custom' && (
+                                <Button
+                                    icon={<SettingOutlined/>}
+                                    onClick={() => {
+                                        setUserSelectVisible(true);
+                                    }}
+                                >
+                                    选择人员
+                                </Button>
+                            )}
+
+                            <EyeOutlined
+                                onClick={() => {
+                                    const value = props.form.getFieldValue("operatorMatcher");
+                                    form.setFieldValue("type", "operatorMatcher");
+                                    form.setFieldValue("script", value);
+                                    setVisible(true);
+                                }}/>
+
+                        </Space>
                     )}
                 />
 
@@ -248,6 +273,25 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                 form={form}
                 setVisible={setVisible}
                 visible={visible}/>
+
+            {UserSelectView && (
+                <UserSelectView
+                    visible={userSelectVisible}
+                    setVisible={setUserSelectVisible}
+                    userSelectType={"users"}
+                    specifyUserIds={[]}
+                    mode={"multiple"}
+                    onFinish={(values)=>{
+                        const operatorMatcher = props.form.getFieldValue("operatorMatcher");
+                        const script = operatorMatcher.replaceAll("%s", values.map((item:any)=>item.id).join(","));
+                        console.log(script);
+                        props.form.setFieldsValue({
+                            operatorMatcher: script
+                        });
+                    }}
+                />
+            )}
+
         </>
     )
 }
