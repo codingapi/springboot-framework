@@ -20,7 +20,7 @@ public class FlowRecordQueryImpl implements FlowRecordQuery {
 
     @Override
     public Page<FlowRecord> findAll(PageRequest pageRequest) {
-        Page<FlowRecordEntity> page = flowRecordEntityRepository.findAll(pageRequest);
+        Page<FlowRecordEntity> page = flowRecordEntityRepository.findAllFlowRecords(pageRequest);
         return page.map(item->FlowRecordConvertor.convert(item,userRepository));
     }
 

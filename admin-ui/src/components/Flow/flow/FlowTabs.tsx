@@ -38,7 +38,7 @@ const FlowTabs: React.FC<FlowTabsProps> = (props) => {
                     },
                     {
                         key: 'history',
-                        label: '流程历史',
+                        label: '流程记录',
                         children: (
                             <Skeleton loading={true}>
                                 <></>
@@ -73,9 +73,9 @@ const FlowTabs: React.FC<FlowTabsProps> = (props) => {
                     view={props.view}/>
             ),
         },
-        !flowData.isStartFlow() && {
+        flowData.showHistory() && {
             key: 'history',
-            label: '流程历史',
+            label: '流程记录',
             children: <FlowHistory flowData={flowData}/>,
         },
         {

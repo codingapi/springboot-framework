@@ -155,24 +155,18 @@ export class FlowData extends FlowWorkData {
     getNodeState = (code: string) => {
         const historyRecords = this.data.historyRecords || [];
 
-        const historyNodeCodes = historyRecords.map((record: any) => {
-            return record.nodeCode;
-        });
-
-        const currentNodeCode = this.data.flowNode.code;
-        if (currentNodeCode === code) {
-            if (this.isFinished()) {
-                return "done";
-            }
-            return "current";
-        }
-
-        if (historyNodeCodes.indexOf(code) !== -1) {
-            return "done";
-        }
 
         if (this.isFinished()) {
             return "done";
+        }
+
+        for(const record of historyRecords){
+            if(record.nodeCode === code){
+                if(record.flowType==='TODO'){
+                    return "wait";
+                }
+                return "done";
+            }
         }
 
         return "wait";
@@ -216,6 +210,17 @@ export class FlowData extends FlowWorkData {
             return this.data.flowRecord.flowStatus === 'FINISH';
         }
         return false;
+    }
+
+    showHistory() {
+        if(this.isDone()){
+            return true;
+        }
+        return !this.isStartFlow();
+    }
+
+    showOpinion() {
+        return this.canHandle();
     }
 }
 

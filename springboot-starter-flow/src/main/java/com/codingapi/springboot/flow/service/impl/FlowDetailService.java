@@ -64,7 +64,7 @@ public class FlowDetailService {
             }
         }
 
-        return new FlowDetail(flowRecord, snapshot, flowWork, flowRecords, operators, currentOperator != null && flowRecord.isOperator(currentOperator));
+        return new FlowDetail(flowRecord, snapshot, flowWork, flowRecords, operators, currentOperator != null && flowRecord.isTodo() && flowRecord.isOperator(currentOperator));
     }
 
 

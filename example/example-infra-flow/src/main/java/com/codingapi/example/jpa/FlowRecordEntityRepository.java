@@ -33,16 +33,16 @@ public interface FlowRecordEntityRepository extends FastRepository<FlowRecordEnt
     @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1  and r.workCode = ?2 and r.read = false and r.flowStatus = 'RUNNING' order by r.id desc")
     Page<FlowRecordEntity> findUnReadByOperatorIdAndWorkCode(long operatorId, String workCode, PageRequest pageRequest);
 
-    @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.flowType = 'DONE' order by r.id desc")
+    @Query(value = "select d from FlowRecordEntity  d where d.id in (select max(r.id) from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.flowType = 'DONE' group by r.processId ) order by d.id desc")
     Page<FlowRecordEntity> findDoneByOperatorId(long operatorId, PageRequest pageRequest);
 
-    @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.workCode = ?2 and r.flowType = 'DONE' order by r.id desc")
+    @Query(value = "select d from FlowRecordEntity  d where d.id in (select max(r.id) from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.workCode = ?2 and r.flowType = 'DONE' group by r.processId)  order by d.id desc")
     Page<FlowRecordEntity> findDoneByOperatorIdAndworkCode(long operatorId, String workCode, PageRequest pageRequest);
 
-    @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.preId = 0 and r.nodeCode = 'start' order by r.id desc")
+    @Query(value = "select d from FlowRecordEntity  d where d.id in (select max(r.id) from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.preId = 0 and r.nodeCode = 'start'  group by r.processId) order by d.id desc")
     Page<FlowRecordEntity> findInitiatedByOperatorId(long operatorId, PageRequest pageRequest);
 
-    @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1  and r.workCode = ?2 and r.preId = 0 and r.nodeCode = 'start' order by r.id desc")
+    @Query(value = "select d from FlowRecordEntity  d where d.id in (select max(r.id) from FlowRecordEntity  r where r.currentOperatorId = ?1  and r.workCode = ?2 and r.preId = 0 and r.nodeCode = 'start'  group by r.processId) order by d.id desc")
     Page<FlowRecordEntity> findInitiatedByOperatorIdAndWorkCode(long operatorId, String workCode, PageRequest pageRequest);
 
     @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.flowType = 'TODO' and r.flowStatus = 'RUNNING' and r.timeoutTime >0 and r.timeoutTime < ?2 order by r.id desc")
@@ -56,5 +56,9 @@ public interface FlowRecordEntityRepository extends FastRepository<FlowRecordEnt
 
     @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.workCode =?2 and r.flowType = 'TODO' and r.flowStatus = 'RUNNING' and r.postponedCount > 0 order by r.id desc")
     Page<FlowRecordEntity> findPostponedTodoByOperatorIdAndWorkCode(long operatorId, String workCode, PageRequest pageRequest);
+
+
+    @Query(value = "select d from FlowRecordEntity  d where d.id in (select max(r.id) from FlowRecordEntity  r group by r.processId ) order by d.id desc")
+    Page<FlowRecordEntity> findAllFlowRecords(PageRequest pageRequest);
 
 }

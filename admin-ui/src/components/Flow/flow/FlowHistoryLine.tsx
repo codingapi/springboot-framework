@@ -1,6 +1,6 @@
 import React from "react";
 import {UserOutlined} from "@ant-design/icons";
-import {Timeline} from "antd";
+import {Tag, Timeline} from "antd";
 import moment from "moment";
 import {FlowData} from "@/components/Flow/flow/data";
 
@@ -12,11 +12,35 @@ const FlowHistoryLine: React.FC<FlowHistoryLineProps> = (props) => {
     const flowData = props.flowData;
     const timelineData = flowData.getHistoryRecords();
     const items = timelineData.map((item: any, index: any) => {
+
+        const flowType = item.flowType;
+
+        const flowTypeLabel = ()=>{
+            if(flowType === "DONE"){
+                return (
+                    <Tag color="success">已审批</Tag>
+                );
+            }else if(flowType === "TODO"){
+                return (
+                    <Tag color="processing">待审批</Tag>
+                );
+            }else if(flowType === "CIRCULATE"){
+                return (
+                    <Tag color="cyan">已抄送</Tag>
+                )
+            }else if(flowType === "TRANSFER"){
+                return (
+                    <Tag color="blue">已转办</Tag>
+                )
+            }
+        }
+
         return {
             dot: <UserOutlined className="UserOutlined" />,
             children: (
                 <div>
-                    <div className="title">{flowData.getNode(item.nodeCode).name}</div>
+                    <div className="title">{flowData.getNode(item.nodeCode).name} </div>
+                    <div><span>状态：</span> <span>{flowTypeLabel()}</span></div>
                     <div>
                         <span>创建人：</span> <span>{item.currentOperator.name}</span>
                         {item.opinion && (
