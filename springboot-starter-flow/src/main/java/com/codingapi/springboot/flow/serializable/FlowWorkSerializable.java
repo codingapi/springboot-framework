@@ -75,6 +75,11 @@ public class FlowWorkSerializable implements Serializable {
     private int postponedMax;
 
     /**
+     * 流程的schema
+     */
+    private String schema;
+
+    /**
      * 流程的节点(发起节点)
      */
     private List<FlowNodeSerializable> nodes;
@@ -137,7 +142,7 @@ public class FlowWorkSerializable implements Serializable {
                 postponedMax,
                 flowNodes,
                 relations.stream().map((item) -> item.toFlowRelation(flowNodes)).toList(),
-                null
+                schema
         );
     }
 

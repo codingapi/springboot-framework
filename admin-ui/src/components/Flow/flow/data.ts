@@ -147,8 +147,50 @@ export class FlowData extends FlowWorkData {
         }
     }
 
+
+    getNodeState = (code:string)=>{
+        const historyRecords = this.data.historyRecords || [];
+
+        const historyNodeCodes = historyRecords.map((record: any) => {
+            return record.nodeCode;
+        });
+
+        const currentNodeCode = this.data.flowNode.code;
+        if(currentNodeCode === code) {
+            return "current";
+        }
+
+        if(historyNodeCodes.indexOf(code) !== -1) {
+            return "done";
+        }
+
+        return "wait";
+    }
+
+    getFlowSchema = () => {
+
+        if(this.data.flowWork.schema) {
+            const schema =  JSON.parse(this.data.flowWork.schema);
+
+            for(const node of schema.nodes) {
+                node.properties.settingVisible = false;
+                node.properties.state = this.getNodeState(node.properties.code);
+            }
+            return schema;
+        }
+        return null;
+    }
+
     hasData() {
         return !!this.data;
+    }
+
+    getCurrentFlowRecord = () => {
+        return this.data.flowRecord;
+    }
+
+    getHistoryRecords = () => {
+        return this.data.historyRecords;
     }
 
 }

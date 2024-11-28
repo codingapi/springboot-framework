@@ -4,20 +4,24 @@ import ReactDOM from "react-dom/client";
 import "./index.scss";
 import {PlusCircleFilled, SettingFilled} from "@ant-design/icons";
 import NodeSettingPanel from "@/components/Flow/panel/node";
-import FlowUtils from "@/components/Flow/utils";
+import {NodeState} from "@/components/Flow/nodes/states";
+import {Tag} from "antd";
+import StateLabel from "@/components/Flow/nodes/StateLabel";
 
 type NodeProperties = {
-    id:string;
+    id: string;
     name: string;
     code: string;
-    type:string;
+    type: string;
     view: string;
-    operatorMatcher:string;
-    editable:boolean;
-    titleGenerator:string;
-    errTrigger:string;
-    approvalType:string;
-    timeout:number;
+    operatorMatcher: string;
+    editable: boolean;
+    titleGenerator: string;
+    errTrigger: string;
+    approvalType: string;
+    timeout: number;
+    settingVisible?: boolean;
+    state?: NodeState;
 }
 
 interface NodeProps {
@@ -26,10 +30,13 @@ interface NodeProps {
     update?: (values: any) => void;
     settingVisible?: boolean;
     properties?: NodeProperties;
+    state?: NodeState;
 }
 
 export const NodeView: React.FC<NodeProps> = (props) => {
     const [visible, setVisible] = React.useState(false);
+
+    const state = props.properties?.state;
 
     return (
         <div className="node-node">
@@ -54,6 +61,13 @@ export const NodeView: React.FC<NodeProps> = (props) => {
                 />
             )}
 
+            {state && (
+                <div className={"state"}>
+                    <StateLabel
+                        state={state}/>
+                </div>
+            )}
+
             <NodeSettingPanel
                 visible={visible}
                 setVisible={setVisible}
@@ -68,7 +82,6 @@ export const NodeView: React.FC<NodeProps> = (props) => {
 
 class NodeModel extends HtmlNodeModel {
     setAttributes() {
-        this.minWidth = 200;
         this.width = 250;
         this.height = 45;
         this.text.editable = false;
@@ -89,12 +102,15 @@ class NodeNode extends HtmlNode {
     setHtml(rootEl: SVGForeignObjectElement) {
         const {properties} = this.props.model as HtmlNodeModel<NodeProperties>;
         const div = document.createElement('div');
+
+        const settingVisible = properties.settingVisible !== false;
+
         ReactDOM.createRoot(div).render(
             <NodeView
                 name={properties.name}
                 code={properties.code}
                 properties={properties}
-                settingVisible={true}
+                settingVisible={settingVisible}
                 update={async (values) => {
                     this.props.model.setProperties(values);
                 }}/>,
