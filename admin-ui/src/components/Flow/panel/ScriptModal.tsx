@@ -118,6 +118,8 @@ def run(content){
     // 你的代码
     // 自定义返回标题
     // return content.createMessageResult('我是自定义标题');
+    // 自定义返回标题，并且设置返回状态 SUCCESS、INFO、WARNING 三种状态
+    // return content.createMessageResult('我是自定义标题').resultState('SUCCESS');
     // 自定义返回标题并且关闭流程
     // return content.createMessageResult('我是自定义标题', true);
     // 提交流程

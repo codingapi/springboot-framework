@@ -20,10 +20,17 @@ public class MessageResult {
      * 展示的标题
      */
     private String title;
+
+    /**
+     * 展示状态
+     */
+    private ResultState resultState;
+
     /**
      * 展示的内容
      */
     private List<Message> items;
+
     /**
      * 是否可关闭流程
      */
@@ -55,6 +62,18 @@ public class MessageResult {
         return this;
     }
 
+    /**
+     * 展示状态
+     *
+     * @param resultState 展示状态
+     * @return this
+     */
+    public MessageResult resultState(ResultState resultState) {
+        this.resultState = resultState;
+        return this;
+    }
+
+
     @Setter
     @Getter
     @AllArgsConstructor
@@ -63,11 +82,33 @@ public class MessageResult {
         private String value;
     }
 
+    /**
+     * 状态数据
+     */
+    public enum ResultState {
+        SUCCESS,
+        INFO,
+        WARNING;
+
+
+        public static ResultState parser(String state) {
+            if ("SUCCESS".equalsIgnoreCase(state)) {
+                return SUCCESS;
+            } else if ("INFO".equalsIgnoreCase(state)) {
+                return INFO;
+            } else if ("WARNING".equalsIgnoreCase(state)) {
+                return WARNING;
+            } else {
+                return SUCCESS;
+            }
+        }
+    }
 
     public static MessageResult create(FlowSubmitResult result) {
         List<? extends IFlowOperator> operators = result.getOperators();
         FlowNode flowNode = result.getFlowNode();
         MessageResult messageResult = new MessageResult();
+        messageResult.setResultState(ResultState.SUCCESS);
         messageResult.setTitle("下级节点提示");
         messageResult.addItem("下级审批节点", flowNode.getName());
         StringBuilder usernames = new StringBuilder();
@@ -82,6 +123,7 @@ public class MessageResult {
         List<FlowRecord> records = result.getRecords();
         FlowWork flowWork = result.getFlowWork();
         MessageResult messageResult = new MessageResult();
+        messageResult.setResultState(ResultState.SUCCESS);
         messageResult.setTitle("流程审批完成");
         for (FlowRecord record : records) {
             FlowNode flowNode = flowWork.getNodeByCode(record.getNodeCode());
@@ -91,19 +133,25 @@ public class MessageResult {
         return messageResult;
     }
 
+
     public static MessageResult create(String title) {
-        return create(title, null, false);
+        return create(title, "SUCCESS", null, false);
+    }
+
+    public static MessageResult create(String title, String resultState) {
+        return create(title, resultState, null, false);
     }
 
 
-    public static MessageResult create(String title, boolean closeable) {
-        return create(title, null, closeable);
+    public static MessageResult create(String title, String resultState, boolean closeable) {
+        return create(title, resultState, null, closeable);
     }
 
-    public static MessageResult create(String title, List<Message> items, boolean closeable) {
+    public static MessageResult create(String title, String resultState, List<Message> items, boolean closeable) {
         MessageResult messageResult = new MessageResult();
         messageResult.setTitle(title);
         messageResult.setItems(items);
+        messageResult.setResultState(ResultState.parser(resultState));
         messageResult.setCloseable(closeable);
         return messageResult;
     }

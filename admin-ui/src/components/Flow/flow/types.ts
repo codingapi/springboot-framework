@@ -44,6 +44,7 @@ export const ResultFormViewKey = 'ResultFormView';
 
 export interface FlowResultMessage {
     title: string,
+    resultState:string,
     items: FlowResultItem[]
 }
 

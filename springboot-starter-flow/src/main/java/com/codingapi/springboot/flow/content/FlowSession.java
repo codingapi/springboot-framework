@@ -101,6 +101,17 @@ public class FlowSession {
      * @param title 提醒标题
      * @return 提醒对象
      */
+    public MessageResult createMessageResult(String title, String resultState) {
+        return MessageResult.create(title, resultState);
+    }
+
+
+    /**
+     * 创建流程提醒
+     *
+     * @param title 提醒标题
+     * @return 提醒对象
+     */
     public MessageResult createMessageResult(String title) {
         return MessageResult.create(title);
     }
@@ -112,8 +123,8 @@ public class FlowSession {
      * @param closeable 是否可关闭流程
      * @return 提醒对象
      */
-    public MessageResult createMessageResult(String title, boolean closeable) {
-        return MessageResult.create(title, closeable);
+    public MessageResult createMessageResult(String title, String resultState, boolean closeable) {
+        return MessageResult.create(title, resultState, closeable);
     }
 
 
@@ -125,8 +136,8 @@ public class FlowSession {
      * @param closeable 是否可关闭流程
      * @return 提醒对象
      */
-    public MessageResult createMessageResult(String title, List<MessageResult.Message> items, boolean closeable) {
-        return MessageResult.create(title, items, closeable);
+    public MessageResult createMessageResult(String title, String resultState, List<MessageResult.Message> items, boolean closeable) {
+        return MessageResult.create(title, resultState, items, closeable);
     }
 
     /**

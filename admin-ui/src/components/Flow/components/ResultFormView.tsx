@@ -10,6 +10,19 @@ const ResultFormView: React.FC<ResultFormProps> = (props) => {
     if (!result) {
         return null;
     }
+
+    const resultStateTag = ()=>{
+        const resultState = result.resultState;
+        if(resultState === "SUCCESS") {
+            return "success"
+        }
+        if(resultState === "WARNING") {
+            return "warning"
+        }
+        return "info";
+    };
+
+
     return (
         <Modal
             width={"40%"}
@@ -17,19 +30,19 @@ const ResultFormView: React.FC<ResultFormProps> = (props) => {
             open={props.visible}
             onCancel={() => {
                 props.setVisible(false);
-                if(props.flowCloseable){
+                if (props.flowCloseable) {
                     props.closeFlow();
                 }
             }}
             onClose={() => {
                 props.setVisible(false);
-                if(props.flowCloseable){
+                if (props.flowCloseable) {
                     props.closeFlow();
                 }
             }}
             onOk={() => {
                 props.setVisible(false);
-                if(props.flowCloseable){
+                if (props.flowCloseable) {
                     props.closeFlow();
                 }
             }}
@@ -37,10 +50,9 @@ const ResultFormView: React.FC<ResultFormProps> = (props) => {
         >
 
             <Result
-                status="success"
+                status={resultStateTag()}
                 title={result.title}
             >
-
                 {result.items && result.items.map((item: FlowResultItem, index: number) => {
                     return (
                         <ProDescriptions

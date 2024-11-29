@@ -158,6 +158,9 @@ public class FlowSubmitService {
                             flowWork,
                             snapshot.toBindData()),
                     true);
+            if(!records.isEmpty()) {
+                return new FlowResult(flowWork, records.get(0));
+            }
             return new FlowResult(flowWork, flowRecord);
         }
 

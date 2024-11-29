@@ -21,6 +21,11 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
                 hidden={true}
             />
 
+            <ProFormText
+                name={"username"}
+                hidden={true}
+            />
+
             <ProFormDigit
                 name={"days"}
                 label={"请假天数"}
