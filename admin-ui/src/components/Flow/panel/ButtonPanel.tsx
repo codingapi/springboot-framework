@@ -14,6 +14,7 @@ import {Button, ColorPicker, Popconfirm, Space} from "antd";
 import FlowUtils from "@/components/Flow/utils";
 import ScriptModal from "@/components/Flow/panel/ScriptModal";
 import {EyeOutlined, ReloadOutlined} from "@ant-design/icons";
+import {CustomButtonType} from "@/components/Flow/flow/types";
 
 interface ButtonPanelProps {
     id: string;
@@ -61,10 +62,17 @@ const buttonEventOptions = [
         value: "URGE"
     },
     {
-        label: "自定义",
+        label: "自定义接口",
         value: "CUSTOM"
     },
-]
+    {
+        label: "自定义事件",
+        value: "VIEW"
+    },
+] as {
+    label: string;
+    value: CustomButtonType;
+}[];
 
 
 const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
@@ -224,7 +232,7 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
                         </Space>
                     )}
                     normalize={(value) => {
-                        if(value) {
+                        if (value) {
                             return {
                                 background: value.toHexString()
                             };

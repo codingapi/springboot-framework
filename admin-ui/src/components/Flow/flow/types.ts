@@ -1,5 +1,9 @@
 import React from "react";
-import { FormInstance } from "antd/es/form/hooks/useForm";
+import {FormInstance} from "antd/es/form/hooks/useForm";
+import {FlowData} from "@/components/Flow/flow/data";
+
+// 自定义按钮类型
+export type CustomButtonType = 'SAVE' | 'START' | 'SUBMIT' | 'TRY_SUBMIT' | 'SPECIFY_SUBMIT' | 'REJECT' | 'TRANSFER' | 'RECALL' | 'POSTPONED' | 'URGE' | 'CUSTOM' | 'VIEW';
 
 // 表单视图属性
 export interface FlowFormViewProps {
@@ -15,8 +19,20 @@ export interface FlowFormViewProps {
     compare: boolean;
     // 审批意见
     opinions?: any;
-}
+    // 流程详情数据信息
+    flowData?: FlowData;
+    // 流程交互操作
+    handlerClick?: (item: {
+        type: CustomButtonType;
+        id?: string;
+    }) => void;
 
+    // 自定义前端点击事件触发
+    triggerClickVisible?: boolean;
+
+    // 关闭自定义前端点击事件触发
+    clearTriggerClick?: () => void;
+}
 
 // 表单视图
 export interface FlowFormView {
@@ -44,7 +60,7 @@ export const ResultFormViewKey = 'ResultFormView';
 
 export interface FlowResultMessage {
     title: string,
-    resultState:string,
+    resultState: string,
     items: FlowResultItem[]
 }
 

@@ -1,6 +1,7 @@
 import React, {useEffect} from "react";
 import {ProForm, ProFormDigit, ProFormText, ProFormTextArea} from "@ant-design/pro-components";
 import {FlowFormViewProps} from "@/components/Flow/flow/types";
+import {Button} from "antd";
 
 
 const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
@@ -8,6 +9,8 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
     useEffect(() => {
         props.form.setFieldsValue(props.data);
     }, []);
+
+    const triggerClickVisible = props.triggerClickVisible;
 
 
     return (
@@ -50,6 +53,15 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
                     }
                 ]}
             />
+
+            {triggerClickVisible && (
+                <Button
+                    onClick={()=>{
+                        props.clearTriggerClick && props.clearTriggerClick();
+                    }}
+                >点击了自定义事件</Button>
+            )}
+
         </ProForm>
     )
 }

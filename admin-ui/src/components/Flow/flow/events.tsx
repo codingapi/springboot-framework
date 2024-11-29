@@ -5,11 +5,14 @@ import {custom, postponed, recall, saveFlow, startFlow, submitFlow, transfer, tr
 import {message} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import {
-    clearUserSelect, closeUserSelect,
+    clearTriggerClick,
+    clearUserSelect,
+    closeUserSelect,
     FlowReduxState,
     setUserSelectModal,
     showPostponed,
-    showResult
+    showResult,
+    triggerClick
 } from "@/components/Flow/store/FlowSlice";
 import {FlowUser} from "@/components/Flow/flow/types";
 
@@ -27,6 +30,8 @@ export const registerEvents = (id: string,
     const selectUsers = useSelector((state: FlowReduxState) => state.flow.currentUsers);
 
     const selectUserType = useSelector((state: FlowReduxState) => state.flow.userSelectType);
+
+    const triggerClickVisible = useSelector((state: FlowReduxState) => state.flow.triggerClickVisible);
 
     const dispatch = useDispatch();
 
@@ -126,7 +131,7 @@ export const registerEvents = (id: string,
     }
 
     // 提交流程
-    const handleSubmitFlow = (flowState: boolean, callback: (res: any) => void,operatorIds?:any[]) => {
+    const handleSubmitFlow = (flowState: boolean, callback: (res: any) => void, operatorIds?: any[]) => {
         const advice = adviceForm.getFieldValue('advice');
         setRequestLoading(true);
 
@@ -135,7 +140,7 @@ export const registerEvents = (id: string,
             const body = {
                 recordId,
                 advice: advice,
-                operatorIds:operatorIds,
+                operatorIds: operatorIds,
                 success: flowState,
                 formData: {
                     ...flowData,
@@ -292,22 +297,25 @@ export const registerEvents = (id: string,
             handlerTransferFlow(currentUser);
         }
 
-        if(selectUserType === 'nextNodeUser' && selectUsers && selectUsers.length > 0){
-            handleSubmitFlow(true,(res)=>{
+        if (selectUserType === 'nextNodeUser' && selectUsers && selectUsers.length > 0) {
+            handleSubmitFlow(true, (res) => {
                 const flowSubmitResultBuilder = new FlowSubmitResultBuilder(res.data);
                 dispatch(closeUserSelect());
                 dispatch(showResult({
                     closeFlow: true,
                     result: flowSubmitResultBuilder.builder()
                 }));
-            },selectUsers.map((item:FlowUser)=> {
+            }, selectUsers.map((item: FlowUser) => {
                 return item.id;
             }));
         }
     }, [selectUsers]);
 
 
-    return (button: any) => {
+    return (button: {
+        type: string,
+        id?: string
+    }) => {
         switch (button.type) {
             case 'SAVE': {
                 // 保存流程，如果没有创建流程先创建，若已经创建则保存
@@ -336,16 +344,16 @@ export const registerEvents = (id: string,
                         });
                         const approvalType = res.data.flowNode.approvalType;
                         dispatch(setUserSelectModal({
-                            mode: approvalType==='SIGN'?'single':'multiple',
+                            mode: approvalType === 'SIGN' ? 'single' : 'multiple',
                             type: 'nextNodeUser',
                             visible: true,
                             specifyUserIds: userIds
                         }));
                     });
                 }
-                if(recordId){
+                if (recordId) {
                     _trySubmitFlow();
-                }else{
+                } else {
                     handlerStartFlow((id) => {
                         recordId = id;
                         _trySubmitFlow();
@@ -415,13 +423,24 @@ export const registerEvents = (id: string,
                 break;
             }
             case 'CUSTOM': {
-                if (recordId) {
-                    handleCustomFlow(button.id);
+                if (button.id) {
+                    const buttonId = button.id;
+                    if (recordId) {
+                        handleCustomFlow(buttonId);
+                    } else {
+                        handlerStartFlow((id) => {
+                            recordId = id;
+                            handleCustomFlow(buttonId);
+                        });
+                    }
+                }
+                break;
+            }
+            case 'VIEW': {
+                if (triggerClickVisible) {
+                    dispatch(clearTriggerClick());
                 } else {
-                    handlerStartFlow((id) => {
-                        recordId = id;
-                        handleCustomFlow(button.id);
-                    });
+                    dispatch(triggerClick());
                 }
                 break;
             }

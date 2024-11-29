@@ -24,4 +24,6 @@ public enum FlowButtonType {
     URGE,
     // 自定义
     CUSTOM,
+    // 前端
+    VIEW,
 }

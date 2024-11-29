@@ -1,7 +1,7 @@
 import React from "react";
 import {FlowData} from "@/components/Flow/flow/data";
 import {Skeleton, Tabs} from "antd";
-import {FlowFormView, FlowFormViewProps} from "@/components/Flow/flow/types";
+import {CustomButtonType, FlowFormView, FlowFormViewProps} from "@/components/Flow/flow/types";
 import {FormInstance} from "antd/es/form/hooks/useForm";
 import FlowHistory from "@/components/Flow/flow/FlowHistory";
 import FlowChart from "@/components/Flow/flow/FlowChart";
@@ -16,6 +16,12 @@ interface FlowTabsProps {
     adviceForm: FormInstance<any>;
     // 预览模式
     review?: boolean;
+
+    // 流程交互操作
+    handlerClick: (data: {
+        type: CustomButtonType;
+        id?: string;
+    }) => void;
 }
 
 const FlowTabs: React.FC<FlowTabsProps> = (props) => {
@@ -66,6 +72,7 @@ const FlowTabs: React.FC<FlowTabsProps> = (props) => {
             label: '流程详情',
             children: (
                 <FlowDetail
+                    handlerClick={props.handlerClick}
                     flowData={flowData}
                     adviceForm={props.adviceForm}
                     form={props.form}

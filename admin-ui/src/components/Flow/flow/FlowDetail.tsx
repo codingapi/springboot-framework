@@ -1,8 +1,10 @@
 import React from "react";
 import { Divider, Result } from "antd";
 import { ProForm, ProFormTextArea } from "@ant-design/pro-components";
-import { FlowFormView, FlowFormViewProps } from "@/components/Flow/flow/types";
+import {CustomButtonType, FlowFormView, FlowFormViewProps} from "@/components/Flow/flow/types";
 import { FlowData } from "@/components/Flow/flow/data";
+import {useDispatch, useSelector} from "react-redux";
+import {clearTriggerClick, FlowReduxState} from "@/components/Flow/store/FlowSlice";
 
 interface FlowDetailProps {
     view: React.ComponentType<FlowFormViewProps> | FlowFormView;
@@ -11,6 +13,11 @@ interface FlowDetailProps {
     adviceForm: any;
     review?: boolean;
     flowData: FlowData;
+    // 流程交互操作
+    handlerClick: (data: {
+        type: CustomButtonType;
+        id?: string;
+    }) => void;
 }
 
 const FlowDetail: React.FC<FlowDetailProps> = (props) => {
@@ -18,17 +25,29 @@ const FlowDetail: React.FC<FlowDetailProps> = (props) => {
 
     const FlowFormView = flowData.getFlowFormView(props.view) as React.ComponentType<FlowFormViewProps>;
 
+    // 触发点击事件
+    const triggerClickVisible = useSelector((state: FlowReduxState) => state.flow.triggerClickVisible);
+
+    // flow store redux
+    const dispatch = useDispatch();
+
     return (
         <>
             <div className="flowApprovalViewBox">
                 {FlowFormView && (
                     <div className="flowViewDetail" style={{ height: !FlowFormView || flowData.isStartFlow() ? '85vh' : '68vh' }}>
                         <FlowFormView
+                            handlerClick={props.handlerClick}
                             data={flowData.getFlowData()}
                             form={props.form}
+                            flowData={flowData}
                             visible={props.visible}
                             editable={!flowData.isDone() && flowData.getFlowNodeEditable()}
                             compare={!flowData.isStartFlow()}
+                            triggerClickVisible={triggerClickVisible}
+                            clearTriggerClick={() => {
+                                dispatch(clearTriggerClick());
+                            }}
                         />
                     </div>
                 )}

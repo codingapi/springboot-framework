@@ -24,6 +24,9 @@ export interface FlowStore {
     currentUsers: FlowUser[];
     // 指定人员
     specifyUserIds: number[];
+
+    // 自定义前端点击事件触发
+    triggerClickVisible: boolean;
 }
 
 export type FlowStoreAction = {
@@ -46,6 +49,9 @@ export type FlowStoreAction = {
     setSelectUsers: (state: FlowStore, action: PayloadAction<FlowUser[]>) => void;
     closeUserSelect: (state: FlowStore) => void;
     clearUserSelect: (state: FlowStore) => void;
+
+    triggerClick: (state: FlowStore) => void;
+    clearTriggerClick: (state: FlowStore) => void;
 }
 
 export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
@@ -61,6 +67,7 @@ export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
         resultCloseFlow: false,
         currentUsers: [],
         specifyUserIds: [],
+        triggerClickVisible: false
     },
     reducers: {
         showPostponed: (state) => {
@@ -108,6 +115,14 @@ export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
             state.currentUsers = [];
             state.specifyUserIds = [];
             state.userSelectType = null;
+        },
+
+        triggerClick: (state) => {
+            state.triggerClickVisible = true;
+        },
+
+        clearTriggerClick: (state) => {
+            state.triggerClickVisible = false;
         }
     },
 });
@@ -122,7 +137,9 @@ export const {
     clearUserSelect,
     setUserSelectModal,
     closeUserSelect,
-    setSelectUsers
+    setSelectUsers,
+    triggerClick,
+    clearTriggerClick
 } = flowSlice.actions;
 export const flowStore = configureStore({
     reducer: {

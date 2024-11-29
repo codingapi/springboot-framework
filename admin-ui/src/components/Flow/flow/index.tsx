@@ -169,6 +169,7 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
             }
         >
             <FlowTabs
+                handlerClick={handlerClicks}
                 flowData={new FlowData(data, props.formParams)}
                 view={props.view}
                 visible={props.visible}
