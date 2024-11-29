@@ -68,8 +68,8 @@ public class MessageResult {
      * @param resultState 展示状态
      * @return this
      */
-    public MessageResult resultState(ResultState resultState) {
-        this.resultState = resultState;
+    public MessageResult resultState(String resultState) {
+        this.resultState = ResultState.parser(resultState);
         return this;
     }
 
@@ -82,27 +82,7 @@ public class MessageResult {
         private String value;
     }
 
-    /**
-     * 状态数据
-     */
-    public enum ResultState {
-        SUCCESS,
-        INFO,
-        WARNING;
 
-
-        public static ResultState parser(String state) {
-            if ("SUCCESS".equalsIgnoreCase(state)) {
-                return SUCCESS;
-            } else if ("INFO".equalsIgnoreCase(state)) {
-                return INFO;
-            } else if ("WARNING".equalsIgnoreCase(state)) {
-                return WARNING;
-            } else {
-                return SUCCESS;
-            }
-        }
-    }
 
     public static MessageResult create(FlowSubmitResult result) {
         List<? extends IFlowOperator> operators = result.getOperators();
