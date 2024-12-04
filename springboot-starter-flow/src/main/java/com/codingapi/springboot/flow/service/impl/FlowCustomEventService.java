@@ -68,7 +68,7 @@ public class FlowCustomEventService {
         if (flowButton == null) {
             throw new IllegalArgumentException("flow button not found");
         }
-        if (!flowButton.isGroovy()) {
+        if (!flowButton.hasGroovy()) {
             throw new IllegalArgumentException("flow button not groovy");
         }
         return flowButton.run(flowRecord, flowNode, flowWork, createOperator, currentOperator, bindData, opinion, historyRecords);

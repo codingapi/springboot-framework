@@ -16,6 +16,12 @@ export const menus = [
         page: 'welcome',
     },
     {
+        path: '/portal',
+        name: '门户',
+        icon: "SmileOutlined",
+        page: 'portal',
+    },
+    {
         path: '/user',
         name: '用户列表',
         icon: "UserOutlined",

@@ -44,7 +44,7 @@ public class FlowButton {
      */
     private int order;
 
-    public boolean isGroovy() {
+    public boolean hasGroovy() {
         return groovy != null;
     }
 
