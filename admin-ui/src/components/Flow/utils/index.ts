@@ -2,6 +2,91 @@ import GroovyScript from "@/components/Flow/utils/script";
 
 const FlowUtils = {
 
+    generateUUID (){
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            const r = (Math.random() * 16) | 0;
+            const v = c === 'x' ? r : (r & 0x3) | 0x8;
+            return v.toString(16);
+        });
+    },
+
+    getNode(nodeId:string){
+        //@ts-ignore
+        const data = window.lfRef?.current.getGraphData();
+        const nodes = data.nodes;
+
+        const getNode = (nodeId: String) => {
+            for (const node of nodes) {
+                if (node.id === nodeId) {
+                    return node;
+                }
+            }
+        }
+        return getNode(nodeId);
+    },
+
+    getButtons(nodeId:string){
+        const node = FlowUtils.getNode(nodeId);
+        const buttons =  node.properties.buttons || [];
+        buttons.sort((a:any,b:any)=>{
+            return a.order - b.order;
+        })
+        return buttons;
+    },
+
+
+    updateButton(nodeId:string,button:any){
+        //@ts-ignore
+        const data = window.lfRef?.current.getGraphData();
+        const nodes = data.nodes;
+        const getNode = (nodeId: String) => {
+            for (const node of nodes) {
+                if (node.id === nodeId) {
+                    return node;
+                }
+            }
+        }
+        const node = getNode(nodeId);
+        const buttons =  node.properties.buttons || [];
+
+        let update = false;
+
+        for(const item of buttons){
+            if(item.id == button.id){
+                item.name = button.name;
+                item.style = button.style;
+                item.type = button.type;
+                item.order = button.order;
+                item.groovy = button.groovy;
+
+                update = true;
+            }
+        }
+        if(!update){
+            button.id = FlowUtils.generateUUID();
+            node.properties.buttons = [...buttons,button];
+        }
+        this.render(data);
+    },
+
+
+    deleteButton(nodeId:string,buttonId:string){
+        //@ts-ignore
+        const data = window.lfRef?.current.getGraphData();
+        const nodes = data.nodes;
+        const getNode = (nodeId: String) => {
+            for (const node of nodes) {
+                if (node.id === nodeId) {
+                    return node;
+                }
+            }
+        }
+        const node = getNode(nodeId);
+        const buttons =  node.properties.buttons || [];
+        node.properties.buttons = buttons.filter((item:any)=>item.id !== buttonId);
+        this.render(data);
+    },
+
     getEdges(nodeId: String) {
         //@ts-ignore
         const data = window.lfRef?.current.getGraphData();

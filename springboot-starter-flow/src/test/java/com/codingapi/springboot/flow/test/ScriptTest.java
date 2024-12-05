@@ -52,7 +52,7 @@ class ScriptTest {
         long now = System.currentTimeMillis();
         Leave leave = new Leave("我要请假");
 
-        FlowSession flowSession = new FlowSession(flowWork, flowWork.getNodeByCode("start"), user, user, leave, Opinion.pass("同意"),new ArrayList<>());
+        FlowSession flowSession = new FlowSession(null,flowWork, flowWork.getNodeByCode("start"), user, user, leave, Opinion.pass("同意"),new ArrayList<>());
 
         List<Long> ids = matcher.matcher(flowSession);
         assertTrue(ids.contains(user.getUserId()));

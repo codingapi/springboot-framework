@@ -93,6 +93,11 @@ public class FlowNode {
     @Setter
     private ErrTrigger errTrigger;
 
+    /**
+     * 流程节点按钮
+     */
+    private List<FlowButton> buttons;
+
 
     public void verify(){
         if (this.titleGenerator == null) {
@@ -132,7 +137,8 @@ public class FlowNode {
                 this.createTime,
                 this.updateTime,
                 this.timeout,
-                this.errTrigger == null ? null : this.errTrigger.getScript()
+                this.errTrigger == null ? null : this.errTrigger.getScript(),
+                this.buttons
         );
     }
 
@@ -147,7 +153,8 @@ public class FlowNode {
                     OperatorMatcher operatorMatcher,
                     long timeout,
                     ErrTrigger errTrigger,
-                    boolean editable) {
+                    boolean editable,
+                    List<FlowButton> buttons) {
         this.id = id;
         this.code = code;
         this.name = name;
@@ -161,6 +168,7 @@ public class FlowNode {
         this.errTrigger = errTrigger;
         this.timeout = timeout;
         this.editable = editable;
+        this.buttons = buttons;
     }
 
 
@@ -179,6 +187,7 @@ public class FlowNode {
      * 创建流程记录
      *
      * @param workId          流程设计id
+     * @param workCode        流程设计编码
      * @param processId       流程id
      * @param preId           上一条流程记录id
      * @param title           流程标题
@@ -188,6 +197,7 @@ public class FlowNode {
      * @return 流程记录
      */
     public FlowRecord createRecord(long workId,
+                                   String workCode,
                                    String processId,
                                    long preId,
                                    String title,
@@ -207,6 +217,7 @@ public class FlowNode {
         record.setNodeCode(this.code);
         record.setCreateTime(System.currentTimeMillis());
         record.setWorkId(workId);
+        record.setWorkCode(workCode);
         record.setFlowStatus(FlowStatus.RUNNING);
         record.setPostponedCount(0);
         record.setCreateOperator(createOperator);
@@ -299,5 +310,22 @@ public class FlowNode {
      */
     public boolean isStartNode() {
         return CODE_START.equals(this.code);
+    }
+
+    /**
+     * 是否传阅节点
+     */
+    public boolean isCirculate() {
+        return approvalType == ApprovalType.CIRCULATE;
+    }
+
+
+    public FlowButton getButton(String buttonId) {
+        for (FlowButton button : buttons) {
+            if (button.getId().equals(buttonId)) {
+                return button;
+            }
+        }
+        return null;
     }
 }

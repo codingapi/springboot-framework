@@ -29,15 +29,19 @@ public class FlowRecordQueryController {
     @GetMapping("/list")
     public MultiResponse<FlowRecordEntity> list(SearchRequest searchRequest) {
         PageRequest pageRequest = PageRequest.of(searchRequest.getCurrent(), searchRequest.getPageSize(), Sort.by("id").descending());
-        return MultiResponse.of(flowRecordQuery.findAll(pageRequest));
+        return MultiResponse.of(flowRecordQuery.findAllFlowRecords(pageRequest));
     }
 
 
     @GetMapping("/detail")
     public SingleResponse<FlowDetail> detail(SearchRequest searchRequest) {
-        long id = Long.parseLong(searchRequest.getParameter("id"));
+        long id = 0;
+        if (searchRequest.getParameter("id") != null) {
+            id = Long.parseLong(searchRequest.getParameter("id"));
+        }
+        String workCode = searchRequest.getParameter("workCode");
         User user = userRepository.getUserByUsername(TokenContext.current().getUsername());
-        return SingleResponse.of(flowService.detail(id,user));
+        return SingleResponse.of(flowService.detail(id, workCode, user));
     }
 
 

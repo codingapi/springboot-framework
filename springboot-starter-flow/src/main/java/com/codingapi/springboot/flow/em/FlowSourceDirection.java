@@ -15,9 +15,13 @@ public enum FlowSourceDirection {
      */
     REJECT,
     /**
-     *
+     * 转办
      */
-    TRANSFER;
+    TRANSFER,
+    /**
+     * 传阅
+     */
+    CIRCULATE;
 
     public static FlowSourceDirection parser(String type){
         for(FlowSourceDirection flowSourceDirection :values()){

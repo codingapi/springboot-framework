@@ -5,6 +5,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 审批意见
  */
@@ -28,6 +31,8 @@ public class Opinion {
     public static final int RESULT_PASS = 2;
     // 审批结果 驳回
     public static final int RESULT_REJECT = 3;
+    // 审批结果 抄送
+    public static final int RESULT_CIRCULATE = 4;
 
     /**
      * 审批意见
@@ -42,10 +47,29 @@ public class Opinion {
      */
     private int type;
 
+    /**
+     *  指定流程的操作者
+     *  operatorIds 为空时，表示不指定操作者，由流程配置的操作者匹配器决定
+     */
+    private List<Long> operatorIds;
+
     public Opinion(String advice, int result, int type) {
         this.advice = advice;
         this.result = result;
         this.type = type;
+    }
+
+    public Opinion specify(List<Long> operatorIds) {
+        this.operatorIds = operatorIds;
+        return this;
+    }
+
+    public Opinion specify(long... operatorIds) {
+        List<Long> operatorIdList = new ArrayList<>();
+        for (long operatorId : operatorIds) {
+            operatorIdList.add(operatorId);
+        }
+        return specify(operatorIdList);
     }
 
     public static Opinion save(String advice) {
@@ -66,6 +90,14 @@ public class Opinion {
 
     public static Opinion unSignAutoSuccess() {
         return new Opinion("非会签自动审批", RESULT_PASS, TYPE_AUTO);
+    }
+
+    public static Opinion circulate() {
+        return new Opinion("", RESULT_CIRCULATE, TYPE_AUTO);
+    }
+
+    public boolean isCirculate() {
+        return result == RESULT_CIRCULATE;
     }
 
     public boolean isSuccess() {

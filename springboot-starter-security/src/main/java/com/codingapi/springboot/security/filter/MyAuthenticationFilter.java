@@ -53,19 +53,25 @@ public class MyAuthenticationFilter extends BasicAuthenticationFilter {
                     return;
                 }
 
-                Token token = tokenGateway.parser(sign);
-                if (token == null) {
-                    writeResponse(response, Response.buildFailure("token.expire", "token expire."));
-                    return;
-                }
-                if (token.canRestToken()) {
-                    Token newSign = tokenGateway.create(token.getUsername(), token.decodeIv(), token.getAuthorities(), token.getExtra());
-                    log.info("reset token ");
-                    response.setHeader(TOKEN_KEY, newSign.getToken());
-                }
+                Token token = null;
                 try {
-                    token.verify();
-                } catch (TokenExpiredException e) {
+                    token = tokenGateway.parser(sign);
+                    if (token == null) {
+                        writeResponse(response, Response.buildFailure("token.expire", "token expire."));
+                        return;
+                    }
+                    if (token.canRestToken()) {
+                        Token newSign = tokenGateway.create(token.getUsername(), token.decodeIv(), token.getAuthorities(), token.getExtra());
+                        log.info("reset token ");
+                        response.setHeader(TOKEN_KEY, newSign.getToken());
+                    }
+                    try {
+                        token.verify();
+                    } catch (TokenExpiredException e) {
+                        writeResponse(response, Response.buildFailure("token.expire", "token expire."));
+                        return;
+                    }
+                }catch (Exception e){
                     writeResponse(response, Response.buildFailure("token.expire", "token expire."));
                     return;
                 }

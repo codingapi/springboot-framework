@@ -16,6 +16,12 @@ export const menus = [
         page: 'welcome',
     },
     {
+        path: '/portal',
+        name: '门户',
+        icon: "SmileOutlined",
+        page: 'portal',
+    },
+    {
         path: '/user',
         name: '用户列表',
         icon: "UserOutlined",
@@ -26,6 +32,12 @@ export const menus = [
         name: '权限',
         icon: "SmileOutlined",
         page: 'jar',
+    },
+    {
+        path: '/form',
+        name: '表单',
+        icon: "SmileOutlined",
+        page: 'form',
     },
     {
         path: '/flow',

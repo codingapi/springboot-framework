@@ -3,13 +3,8 @@ import {Button, Drawer, Space, Tabs} from "antd";
 import EdgePanel from "@/components/Flow/panel/EdgePanel";
 import NodePanel from "@/components/Flow/panel/NodePanel";
 import {ProForm} from "@ant-design/pro-components";
-
-interface SettingPanelProps {
-    visible: boolean;
-    setVisible: (visible: boolean) => void;
-    properties: any;
-    onSettingChange: (values: any) => void;
-}
+import {SettingPanelProps} from "@/components/Flow/panel/panel.types";
+import ButtonPanel from "@/components/Flow/panel/ButtonPanel";
 
 const StartSettingPanel: React.FC<SettingPanelProps> = (props) => {
 
@@ -56,6 +51,14 @@ const StartSettingPanel: React.FC<SettingPanelProps> = (props) => {
                                 data={props.properties}
                                 onFinish={props.onSettingChange}
                             />
+                        )
+                    },
+                    {
+                        label: "节点按钮",
+                        key: "buttons",
+                        children: (
+                            <ButtonPanel
+                                id={props.properties?.id}/>
                         )
                     },
                     {

@@ -6,7 +6,7 @@ import java.util.List;
 
 
 /**
- *  流转记录数据仓库
+ * 流转记录数据仓库
  */
 public interface FlowRecordRepository {
 
@@ -43,6 +43,7 @@ public interface FlowRecordRepository {
 
     /**
      * 根据流程id查询流程记录
+     *
      * @param processId 流程id
      */
     List<FlowRecord> findFlowRecordByProcessId(String processId);
@@ -50,6 +51,7 @@ public interface FlowRecordRepository {
 
     /**
      * 查询所有未完成的流程记录
+     *
      * @param processId 流程id
      * @return List of FlowRecord
      */
@@ -64,7 +66,9 @@ public interface FlowRecordRepository {
 
     /**
      * 删除流程记录
+     *
      * @param childrenRecords 流程记录
      */
     void delete(List<FlowRecord> childrenRecords);
+
 }

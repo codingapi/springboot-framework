@@ -42,6 +42,7 @@ public class FlowRecordConvertor {
 
         entity.setCurrentOperatorName(flowRecord.getCurrentOperator().getName());
         entity.setCreateOperatorName(flowRecord.getCreateOperator().getName());
+        entity.setWorkCode(flowRecord.getWorkCode());
 
         entity.setFlowStatus(flowRecord.getFlowStatus().name());
         entity.setErrMessage(flowRecord.getErrMessage());
@@ -92,6 +93,7 @@ public class FlowRecordConvertor {
         if(entity.getInterferedOperatorId()!=null) {
             flowRecord.setInterferedOperator(userRepository.getUserById(entity.getInterferedOperatorId()));
         }
+        flowRecord.setWorkCode(entity.getWorkCode());
         flowRecord.setReadTime(entity.getReadTime());
         return flowRecord;
     }

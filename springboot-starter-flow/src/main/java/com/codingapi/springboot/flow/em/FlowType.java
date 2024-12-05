@@ -14,6 +14,10 @@ public enum FlowType {
      */
     DONE,
     /**
+     * 传阅
+     */
+    CIRCULATE,
+    /**
      * 转办
      */
     TRANSFER;

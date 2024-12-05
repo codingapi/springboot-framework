@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * 流程记录服务（流程内部服务）
  */
-class FlowRecordService {
+public class FlowRecordVerifyService {
 
     // constructor params
     private final long recordId;
@@ -32,10 +32,10 @@ class FlowRecordService {
     @Getter
     private FlowRecord flowRecord;
 
-    public FlowRecordService(FlowRecordRepository flowRecordRepository,
-                             FlowProcessRepository flowProcessRepository,
-                             long recordId,
-                             IFlowOperator currentOperator) {
+    public FlowRecordVerifyService(FlowRecordRepository flowRecordRepository,
+                                   FlowProcessRepository flowProcessRepository,
+                                   long recordId,
+                                   IFlowOperator currentOperator) {
         this.flowRecordRepository = flowRecordRepository;
         this.flowProcessRepository = flowProcessRepository;
 
@@ -87,7 +87,9 @@ class FlowRecordService {
      */
     public void verifyFlowRecordNotTodo() {
         if (flowRecord.isTodo()) {
-            throw new IllegalArgumentException("flow record is todo");
+            if(!flowRecord.isStartRecord()) {
+                throw new IllegalArgumentException("flow record is todo");
+            }
         }
     }
 

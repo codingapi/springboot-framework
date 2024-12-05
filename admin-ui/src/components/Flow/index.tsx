@@ -8,10 +8,12 @@ import {DndPanel, Menu, MiniMap, Snapshot} from "@logicflow/extension";
 import Start from "@/components/Flow/nodes/Start";
 import Node from "@/components/Flow/nodes/Node";
 import Over from "@/components/Flow/nodes/Over";
+import Circulate from "@/components/Flow/nodes/Circulate";
 import ControlPanel from "@/components/Flow/layout/ControlPanel";
 import NodePanel from "@/components/Flow/layout/NodePanel";
 import {message} from "antd";
 import {copy} from "@/components/Flow/panel/shortcuts";
+import FlowUtils from "@/components/Flow/utils";
 
 export interface FlowActionType {
     getData: () => any;
@@ -79,6 +81,7 @@ const Flow: React.FC<FlowProps> = (props) => {
         lfRef.current.register(Start);
         lfRef.current.register(Node);
         lfRef.current.register(Over);
+        lfRef.current.register(Circulate);
 
         lfRef.current.render(data);
 
@@ -121,7 +124,7 @@ const Flow: React.FC<FlowProps> = (props) => {
                 className={"flow-panel"}
                 onDrag={async (type, properties) => {
                     if (await nodeVerify(type)) {
-                        const UUID = crypto.randomUUID();
+                        const UUID = FlowUtils.generateUUID();
                         lfRef.current?.dnd.startDrag({
                             id: UUID,
                             type: type,

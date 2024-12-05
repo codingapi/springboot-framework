@@ -4,7 +4,7 @@ $color: #ea3f21;
 .over-node {
   display: flex;
   align-items: center;
-  max-width: 200px;
+  min-width: 200px;
   max-height: 40px;
   border: 1px solid $color;
   border-radius: 12px;
@@ -37,6 +37,13 @@ $color: #ea3f21;
     font-size: 14px;
     position: absolute;
     color: $color;
+    right: 0;
+  }
+
+  .state {
+    margin-right: 10px;
+    font-size: 14px;
+    position: absolute;
     right: 0;
   }
 

@@ -14,6 +14,10 @@ public class JPAQuery {
 
     private final EntityManager entityManager;
 
+    public List<?> listQuery(SQLBuilder builder) {
+        return listQuery(builder.getClazz(),builder.getSQL(),builder.getParams());
+    }
+
     public List<?> listQuery(Class<?> clazz, String sql, Object... params) {
         TypedQuery<?> query = entityManager.createQuery(sql, clazz);
         if (params != null) {
@@ -22,6 +26,10 @@ public class JPAQuery {
             }
         }
         return query.getResultList();
+    }
+
+    public Page<?> pageQuery(SQLBuilder builder,PageRequest pageRequest) {
+        return pageQuery(builder.getClazz(), builder.getSQL(), builder.getCountSQL(),pageRequest,builder.getParams());
     }
 
 

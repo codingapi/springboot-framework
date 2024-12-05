@@ -55,7 +55,7 @@ public class MultiRelationFlowTest {
                 .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(dept.getUserId()))
                 .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
-                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.creatorOperatorMatcher())
+                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .relations()
                 .relation("部门领导审批", "start", "dept")
                 .relation("总经理审批", "dept", "over",new OutTrigger("def run(content){content.getBindData().getDays()<=5}"),1,false)
@@ -91,23 +91,20 @@ public class MultiRelationFlowTest {
 
         // 查看所有流程
         List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
-        assertEquals(3, records.size());
+        assertEquals(2, records.size());
 
         // 最终用户确认
         userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
-        assertEquals(1, userTodos.size());
+        assertEquals(0, userTodos.size());
 
-        // 提交流程
-        userTodo = userTodos.get(0);
-        flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
 
         records = flowRecordRepository.findAll(pageRequest).getContent();
-        assertEquals(3, records.size());
+        assertEquals(2, records.size());
         // 查看所有流程是否都已经结束
         assertTrue(records.stream().allMatch(FlowRecord::isFinish));
 
         List<BindDataSnapshot> snapshots = flowBindDataRepository.findAll();
-        assertEquals(4, snapshots.size());
+        assertEquals(3, snapshots.size());
     }
 
 
@@ -138,7 +135,7 @@ public class MultiRelationFlowTest {
                 .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(dept.getUserId()))
                 .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
-                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.creatorOperatorMatcher())
+                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .relations()
                 .relation("部门领导审批", "start", "dept")
                 .relation("总经理审批", "dept", "over",new OutTrigger("def run(content){content.getBindData().getDays()<=5}"),1,false)
@@ -183,24 +180,21 @@ public class MultiRelationFlowTest {
 
         // 查看所有流程
         List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
-        assertEquals(4, records.size());
+        assertEquals(3, records.size());
 
         // 最终用户确认
         userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
-        assertEquals(1, userTodos.size());
+        assertEquals(0, userTodos.size());
 
-        // 提交流程
-        userTodo = userTodos.get(0);
-        flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
 
         records = flowRecordRepository.findAll(pageRequest).getContent();
-        assertEquals(4, records.size());
+        assertEquals(3, records.size());
 
         // 查看所有流程是否都已经结束
         assertTrue(records.stream().allMatch(FlowRecord::isFinish));
 
         List<BindDataSnapshot> snapshots = flowBindDataRepository.findAll();
-        assertEquals(5, snapshots.size());
+        assertEquals(4, snapshots.size());
     }
 
 
@@ -229,7 +223,7 @@ public class MultiRelationFlowTest {
                 .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(dept.getUserId()))
                 .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
-                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.creatorOperatorMatcher())
+                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .relations()
                 .relation("部门领导审批", "start", "dept")
                 .relation("总经理审批", "dept", "over",new OutTrigger("def run(content){content.getBindData().getDays()<=5}"),1,false)
@@ -299,16 +293,12 @@ public class MultiRelationFlowTest {
 
         // 用户修改确认
         userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
-        assertEquals(1, userTodos.size());
-
-        // 提交流程
-        userTodo = userTodos.get(0);
-        flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
+        assertEquals(0, userTodos.size());
 
         // 查看所有流程是否都已经结束
         assertTrue(records.stream().allMatch(FlowRecord::isFinish));
 
         List<BindDataSnapshot> snapshots = flowBindDataRepository.findAll();
-        assertEquals(7, snapshots.size());
+        assertEquals(6, snapshots.size());
     }
 }

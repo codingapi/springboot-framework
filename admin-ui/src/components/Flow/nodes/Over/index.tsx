@@ -5,6 +5,9 @@ import "./index.scss";
 import {CheckCircleFilled, SettingFilled} from "@ant-design/icons";
 import OverSettingPanel from "@/components/Flow/panel/over";
 import FlowUtils from "@/components/Flow/utils";
+import {NodeState} from "@/components/Flow/nodes/states";
+import {Tag} from "antd";
+import StateLabel from "@/components/Flow/nodes/StateLabel";
 
 type OverProperties = {
     id:string;
@@ -18,6 +21,8 @@ type OverProperties = {
     errTrigger:string;
     approvalType:string;
     timeout:number;
+    settingVisible?: boolean;
+    state?: NodeState;
 }
 
 interface OverProps {
@@ -30,6 +35,8 @@ interface OverProps {
 
 export const OverView: React.FC<OverProps> = (props) => {
     const [visible, setVisible] = React.useState(false);
+
+    const state = props.properties?.state;
 
     return (
         <div className="over-node">
@@ -53,6 +60,13 @@ export const OverView: React.FC<OverProps> = (props) => {
                 />
             )}
 
+            {state && (
+                <div className={"state"}>
+                    <StateLabel
+                        state={state}/>
+                </div>
+            )}
+
             <OverSettingPanel
                 visible={visible}
                 setVisible={setVisible}
@@ -67,7 +81,7 @@ export const OverView: React.FC<OverProps> = (props) => {
 
 class OverModel extends HtmlNodeModel {
     setAttributes() {
-        this.width = 200;
+        this.width = 250;
         this.height = 45;
         this.text.editable = false;
         this.menu = [];
@@ -101,12 +115,15 @@ class OverNode extends HtmlNode {
     setHtml(rootEl: SVGForeignObjectElement) {
         const {properties} = this.props.model as HtmlNodeModel<OverProperties>;
         const div = document.createElement('div');
+
+        const settingVisible = properties.settingVisible !== false;
+
         ReactDOM.createRoot(div).render(
             <OverView
                 name={properties.name}
                 code={properties.code}
                 properties={properties}
-                settingVisible={true}
+                settingVisible={settingVisible}
                 update={async (values) => {
                     this.props.model.setProperties(values);
                 }}/>,

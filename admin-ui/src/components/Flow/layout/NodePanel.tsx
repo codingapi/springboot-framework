@@ -4,6 +4,7 @@ import {StartView} from "@/components/Flow/nodes/Start";
 import {NodeView} from "@/components/Flow/nodes/Node";
 import {OverView} from "@/components/Flow/nodes/Over";
 import GroovyScript from "@/components/Flow/utils/script";
+import {CirculateView} from "@/components/Flow/nodes/Circulate";
 
 interface NodePanelProps {
     className: string,
@@ -80,6 +81,28 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                     }}
                 >
                     <OverView name={"结束节点"}/>
+                </div>
+
+                <div
+                    className={"node-item"}
+                    onMouseDown={() => {
+                        props.onDrag('circulate-node',
+                            {
+                                name: '抄送节点',
+                                code: 'circulate',
+                                type: 'CIRCULATE',
+                                view: 'default',
+                                operatorMatcher: GroovyScript.creatorOperatorMatcher,
+                                editable: true,
+                                titleGenerator: GroovyScript.defaultTitleGenerator,
+                                errTrigger: '',
+                                approvalType: 'CIRCULATE',
+                                timeout: 0
+                            }
+                        );
+                    }}
+                >
+                    <CirculateView name={"抄送节点"}/>
                 </div>
             </div>
         </div>

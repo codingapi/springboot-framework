@@ -29,12 +29,37 @@ public class FlowCmd {
         }
     }
 
+    @Setter
+    @Getter
+    public static class CustomFlow {
+
+        private long recordId;
+        private String buttonId;
+        private String advice;
+        private JSONObject formData;
+
+        @SneakyThrows
+        public IBindData getBindData() {
+            String clazzName = formData.getString("clazzName");
+            return (IBindData)formData.toJavaObject(Class.forName(clazzName));
+        }
+
+        public String getUserName() {
+            return TokenContext.current().getUsername();
+        }
+
+        public Opinion getOpinion() {
+            return new Opinion(advice, Opinion.RESULT_SAVE, Opinion.TYPE_DEFAULT);
+        }
+    }
+
 
     @Setter
     @Getter
     public static class SubmitFlow {
 
         private long recordId;
+        private String workCode;
         private String advice;
         private boolean success;
         private JSONObject formData;

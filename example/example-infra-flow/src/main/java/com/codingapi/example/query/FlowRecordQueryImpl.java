@@ -18,10 +18,9 @@ public class FlowRecordQueryImpl implements FlowRecordQuery {
     private final FlowRecordEntityRepository flowRecordEntityRepository;
     private final UserRepository userRepository;
 
-
     @Override
     public Page<FlowRecord> findAll(PageRequest pageRequest) {
-        Page<FlowRecordEntity> page = flowRecordEntityRepository.findAll(pageRequest);
+        Page<FlowRecordEntity> page = flowRecordEntityRepository.findAllFlowRecords(pageRequest);
         return page.map(item->FlowRecordConvertor.convert(item,userRepository));
     }
 
@@ -31,9 +30,35 @@ public class FlowRecordQueryImpl implements FlowRecordQuery {
         return page.map(item->FlowRecordConvertor.convert(item,userRepository));
     }
 
+
+    @Override
+    public Page<FlowRecord> findTodoByOperatorId(long operatorId, String workCode, PageRequest pageRequest) {
+        Page<FlowRecordEntity> page = flowRecordEntityRepository.findTodoByOperatorIdAndWorkCode(operatorId,workCode,pageRequest);
+        return page.map(item->FlowRecordConvertor.convert(item,userRepository));
+    }
+
+    @Override
+    public Page<FlowRecord> findUnReadByOperatorId(long operatorId, PageRequest pageRequest) {
+        Page<FlowRecordEntity> page = flowRecordEntityRepository.findUnReadByOperatorId(operatorId,pageRequest);
+        return page.map(item->FlowRecordConvertor.convert(item,userRepository));
+    }
+
+    @Override
+    public Page<FlowRecord> findUnReadByOperatorId(long operatorId, String workCode, PageRequest pageRequest) {
+        Page<FlowRecordEntity> page = flowRecordEntityRepository.findUnReadByOperatorIdAndWorkCode(operatorId,workCode,pageRequest);
+        return page.map(item->FlowRecordConvertor.convert(item,userRepository));
+    }
+
+
     @Override
     public Page<FlowRecord> findDoneByOperatorId(long operatorId, PageRequest pageRequest) {
         Page<FlowRecordEntity> page = flowRecordEntityRepository.findDoneByOperatorId(operatorId,pageRequest);
+        return page.map(item->FlowRecordConvertor.convert(item,userRepository));
+    }
+
+    @Override
+    public Page<FlowRecord> findDoneByOperatorId(long operatorId, String workCode, PageRequest pageRequest) {
+        Page<FlowRecordEntity> page = flowRecordEntityRepository.findDoneByOperatorIdAndworkCode(operatorId,workCode,pageRequest);
         return page.map(item->FlowRecordConvertor.convert(item,userRepository));
     }
 
@@ -44,14 +69,34 @@ public class FlowRecordQueryImpl implements FlowRecordQuery {
     }
 
     @Override
+    public Page<FlowRecord> findInitiatedByOperatorId(long operatorId, String workCode, PageRequest pageRequest) {
+        Page<FlowRecordEntity> page = flowRecordEntityRepository.findInitiatedByOperatorIdAndWorkCode(operatorId,workCode,pageRequest);
+        return page.map(item->FlowRecordConvertor.convert(item,userRepository));
+    }
+
+    @Override
     public Page<FlowRecord> findTimeoutTodoByOperatorId(long operatorId, PageRequest pageRequest) {
         Page<FlowRecordEntity> page = flowRecordEntityRepository.findTimeoutTodoByOperatorId(operatorId,System.currentTimeMillis(), pageRequest);
+        return page.map(item->FlowRecordConvertor.convert(item,userRepository));
+    }
+
+
+    @Override
+    public Page<FlowRecord> findTimeoutTodoByOperatorId(long operatorId, String workCode, PageRequest pageRequest) {
+        Page<FlowRecordEntity> page = flowRecordEntityRepository.findTimeoutTodoByOperatorIdAndWorkCode(operatorId,workCode,System.currentTimeMillis(), pageRequest);
         return page.map(item->FlowRecordConvertor.convert(item,userRepository));
     }
 
     @Override
     public Page<FlowRecord> findPostponedTodoByOperatorId(long operatorId, PageRequest pageRequest) {
         Page<FlowRecordEntity> page = flowRecordEntityRepository.findPostponedTodoByOperatorId(operatorId,pageRequest);
+        return page.map(item->FlowRecordConvertor.convert(item,userRepository));
+    }
+
+
+    @Override
+    public Page<FlowRecord> findPostponedTodoByOperatorId(long operatorId, String workCode, PageRequest pageRequest) {
+        Page<FlowRecordEntity> page = flowRecordEntityRepository.findPostponedTodoByOperatorIdAndWorkCode(operatorId,workCode,pageRequest);
         return page.map(item->FlowRecordConvertor.convert(item,userRepository));
     }
 }

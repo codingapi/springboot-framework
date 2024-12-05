@@ -14,5 +14,4 @@ public class Leave implements IBindData {
     private String username;
     private long createTime;
 
-
 }

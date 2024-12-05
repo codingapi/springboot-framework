@@ -1,19 +1,19 @@
 import React, {useEffect} from "react";
-import {ActionType, ModalForm, PageContainer, ProFormDigit, ProFormText, ProTable} from "@ant-design/pro-components";
+import {ActionType, PageContainer, ProTable} from "@ant-design/pro-components";
 import {
     findDoneByOperatorId,
     findInitiatedByOperatorId,
     findPostponedTodoByOperatorId,
     findTimeoutTodoByOperatorId,
     findTodoByOperatorId,
-    flowRecordList, saveFlow, urge
+    flowRecordList,
+    urge
 } from "@/api/flow";
 import moment from "moment";
 import {message, Tabs} from "antd";
-import FlowView from "@/components/Flow/view/FlowView";
-import DefaultFlowView from "@/pages/flow/leave/default";
 import "./index.scss";
-
+import FlowView from "@/components/Flow/flow";
+import LeaveForm from "@/pages/flow/leave/LeaveForm";
 
 const FlowRecordPage = () => {
 
@@ -61,6 +61,11 @@ const FlowRecordPage = () => {
         {
             title: '标题',
             dataIndex: 'title',
+            render:(value:any,record:any)=>{
+                return (
+                    <div dangerouslySetInnerHTML={{ __html: value }}></div>
+                );
+            }
         },
         {
             title: '创建时间',
@@ -102,24 +107,15 @@ const FlowRecordPage = () => {
                 if (text === 'TRANSFER') {
                     return '已转办';
                 }
+                if (text === 'CIRCULATE') {
+                    return '抄送';
+                }
                 return text;
             }
         },
         {
             title: '办理意见',
-            dataIndex: 'flowSourceDirection',
-            render: (text: any) => {
-                if (text === 'PASS') {
-                    return '同意';
-                }
-                if (text === 'REJECT') {
-                    return '拒绝';
-                }
-                if (text === 'TRANSFER') {
-                    return '已转办';
-                }
-                return text;
-            }
+            dataIndex: 'opinionAdvice',
         },
         {
             title: '流程状态',
@@ -320,7 +316,7 @@ const FlowRecordPage = () => {
                 review={reviewVisible}
                 setVisible={setFlowViewVisible}
                 view={{
-                    'default': DefaultFlowView
+                    'default': LeaveForm
                 }}
             />
 
