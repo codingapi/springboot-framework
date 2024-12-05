@@ -98,13 +98,10 @@ public class FlowTest2 {
         flowService.submitFlow(deptTodo.getId(), lorne, leave, Opinion.pass("转交给领导审批通过"));
 
         bossTodos = flowRecordRepository.findTodoByOperatorId(lorne.getUserId(), pageRequest).getContent();
-        assertEquals(1, bossTodos.size());
-
-        bossTodo = bossTodos.get(0);
-        flowService.submitFlow(bossTodo.getId(), lorne, leave, Opinion.pass("领导审批通过"));
+        assertEquals(0, bossTodos.size());
 
         List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
-        assertEquals(6, records.size());
+        assertEquals(5, records.size());
 
         // 查看所有流程是否都已经结束
         assertTrue(records.stream().allMatch(FlowRecord::isFinish));

@@ -1,5 +1,6 @@
 package com.codingapi.springboot.flow.build;
 
+import com.codingapi.springboot.flow.domain.FlowButton;
 import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.FlowRelation;
 import com.codingapi.springboot.flow.domain.FlowWork;
@@ -11,6 +12,8 @@ import com.codingapi.springboot.flow.matcher.OperatorMatcher;
 import com.codingapi.springboot.flow.trigger.OutTrigger;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import com.codingapi.springboot.framework.utils.RandomGenerator;
+
+import java.util.List;
 
 /**
  * 流程工作构建器
@@ -65,25 +68,43 @@ public class FlowWorkBuilder {
 
     public class Nodes {
 
-        public Nodes node(String id,String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, long timeout, TitleGenerator titleGenerator, ErrTrigger errTrigger, boolean editable) {
-            FlowNode node = new FlowNode(id, name, code, view, NodeType.parser(code), approvalType, titleGenerator, operatorMatcher, timeout, errTrigger, editable);
+        public Nodes node(String id, String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, long timeout, TitleGenerator titleGenerator, ErrTrigger errTrigger, boolean editable, List<FlowButton> buttons) {
+            FlowNode node = new FlowNode(id, name, code, view, NodeType.parser(code), approvalType, titleGenerator, operatorMatcher, timeout, errTrigger, editable, buttons);
             work.addNode(node);
             return this;
         }
 
-        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher,long timeout, boolean editable) {
-            return node(RandomGenerator.generateUUID(),name, code, view, approvalType, operatorMatcher, timeout, TitleGenerator.defaultTitleGenerator(), null, editable);
+        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, long timeout, boolean editable) {
+            return node(RandomGenerator.generateUUID(), name, code, view, approvalType, operatorMatcher, timeout, TitleGenerator.defaultTitleGenerator(), null, editable, null);
         }
+
+        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, long timeout, boolean editable, List<FlowButton> buttons) {
+            return node(RandomGenerator.generateUUID(), name, code, view, approvalType, operatorMatcher, timeout, TitleGenerator.defaultTitleGenerator(), null, editable, buttons);
+        }
+
+
         public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, boolean editable) {
-            return node(RandomGenerator.generateUUID(),name, code, view, approvalType, operatorMatcher, 0, TitleGenerator.defaultTitleGenerator(), null, editable);
+            return node(RandomGenerator.generateUUID(), name, code, view, approvalType, operatorMatcher, 0, TitleGenerator.defaultTitleGenerator(), null, editable, null);
+        }
+
+        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, boolean editable, List<FlowButton> buttons) {
+            return node(RandomGenerator.generateUUID(), name, code, view, approvalType, operatorMatcher, 0, TitleGenerator.defaultTitleGenerator(), null, editable, buttons);
+        }
+
+        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, List<FlowButton> buttons) {
+            return node(name, code, view, approvalType, operatorMatcher, true, buttons);
         }
 
         public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher) {
-            return node(name, code, view, approvalType, operatorMatcher, true);
+            return node(name, code, view, approvalType, operatorMatcher, true, null);
         }
 
-        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher,  ErrTrigger errTrigger, boolean editable) {
-            return node(RandomGenerator.generateUUID(),name, code, view, approvalType, operatorMatcher, 0, TitleGenerator.defaultTitleGenerator(), errTrigger, editable);
+        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, ErrTrigger errTrigger, boolean editable, List<FlowButton> buttons) {
+            return node(RandomGenerator.generateUUID(), name, code, view, approvalType, operatorMatcher, 0, TitleGenerator.defaultTitleGenerator(), errTrigger, editable, buttons);
+        }
+
+        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, ErrTrigger errTrigger, boolean editable) {
+            return node(RandomGenerator.generateUUID(), name, code, view, approvalType, operatorMatcher, 0, TitleGenerator.defaultTitleGenerator(), errTrigger, editable, null);
         }
 
 
@@ -102,13 +123,13 @@ public class FlowWorkBuilder {
     public class Relations {
 
         public Relations relation(String name, String source, String target) {
-            return relation(name,source,target,OutTrigger.defaultOutTrigger(),1,false);
+            return relation(name, source, target, OutTrigger.defaultOutTrigger(), 1, false);
         }
 
-        public Relations relation(String name, String source, String target, OutTrigger outTrigger,int order, boolean back) {
+        public Relations relation(String name, String source, String target, OutTrigger outTrigger, int order, boolean back) {
             FlowNode from = work.getNodeByCode(source);
             FlowNode to = work.getNodeByCode(target);
-            FlowRelation relation = new FlowRelation(RandomGenerator.generateUUID(), name, from, to, outTrigger,order, back);
+            FlowRelation relation = new FlowRelation(RandomGenerator.generateUUID(), name, from, to, outTrigger, order, back);
             work.addRelation(relation);
             return this;
         }

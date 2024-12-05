@@ -14,6 +14,10 @@ public enum NodeType {
      */
     APPROVAL,
     /**
+     * 传阅
+     */
+    CIRCULATE,
+    /**
      * 结束
      */
     OVER;

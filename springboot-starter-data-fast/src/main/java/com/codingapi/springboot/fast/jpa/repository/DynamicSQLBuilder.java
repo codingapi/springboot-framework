@@ -45,7 +45,7 @@ class DynamicSQLBuilder {
         Sort sort = request.getSort();
         if (sort.isSorted()) {
             hql.append(" ORDER BY ");
-            List<Sort.Order> orders = sort.toList();
+            List<Sort.Order> orders = sort.collect(Collectors.toList());
             for (int i = 0; i < orders.size(); i++) {
                 Sort.Order order = orders.get(i);
                 hql.append(order.getProperty()).append(" ").append(order.getDirection().name());

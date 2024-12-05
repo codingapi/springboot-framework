@@ -15,4 +15,13 @@ public interface IBindData {
     default String toJsonSnapshot() {
         return JSONObject.toJSONString(this);
     }
+
+
+    /**
+     * 获取类名称
+     * @return 类名称
+     */
+    default String getClazzName() {
+        return this.getClass().getName();
+    }
 }

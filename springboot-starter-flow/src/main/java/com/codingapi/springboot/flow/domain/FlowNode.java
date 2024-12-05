@@ -2,7 +2,10 @@ package com.codingapi.springboot.flow.domain;
 
 import com.codingapi.springboot.flow.bind.BindDataSnapshot;
 import com.codingapi.springboot.flow.content.FlowSession;
-import com.codingapi.springboot.flow.em.*;
+import com.codingapi.springboot.flow.em.ApprovalType;
+import com.codingapi.springboot.flow.em.FlowStatus;
+import com.codingapi.springboot.flow.em.FlowType;
+import com.codingapi.springboot.flow.em.NodeType;
 import com.codingapi.springboot.flow.error.ErrTrigger;
 import com.codingapi.springboot.flow.error.ErrorResult;
 import com.codingapi.springboot.flow.generator.TitleGenerator;
@@ -93,6 +96,11 @@ public class FlowNode {
     @Setter
     private ErrTrigger errTrigger;
 
+    /**
+     * 流程节点按钮
+     */
+    private List<FlowButton> buttons;
+
 
     public void verify(){
         if (this.titleGenerator == null) {
@@ -132,7 +140,8 @@ public class FlowNode {
                 this.createTime,
                 this.updateTime,
                 this.timeout,
-                this.errTrigger == null ? null : this.errTrigger.getScript()
+                this.errTrigger == null ? null : this.errTrigger.getScript(),
+                this.buttons
         );
     }
 
@@ -147,7 +156,8 @@ public class FlowNode {
                     OperatorMatcher operatorMatcher,
                     long timeout,
                     ErrTrigger errTrigger,
-                    boolean editable) {
+                    boolean editable,
+                    List<FlowButton> buttons) {
         this.id = id;
         this.code = code;
         this.name = name;
@@ -161,6 +171,7 @@ public class FlowNode {
         this.errTrigger = errTrigger;
         this.timeout = timeout;
         this.editable = editable;
+        this.buttons = buttons;
     }
 
 
@@ -302,5 +313,22 @@ public class FlowNode {
      */
     public boolean isStartNode() {
         return CODE_START.equals(this.code);
+    }
+
+    /**
+     * 是否传阅节点
+     */
+    public boolean isCirculate() {
+        return approvalType == ApprovalType.CIRCULATE;
+    }
+
+
+    public FlowButton getButton(String buttonId) {
+        for (FlowButton button : buttons) {
+            if (button.getId().equals(buttonId)) {
+                return button;
+            }
+        }
+        return null;
     }
 }

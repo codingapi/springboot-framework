@@ -1,8 +1,10 @@
 package com.codingapi.springboot.flow.serializable;
 
+import com.codingapi.springboot.flow.domain.FlowButton;
 import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.em.ApprovalType;
+import com.codingapi.springboot.flow.em.FlowButtonType;
 import com.codingapi.springboot.flow.em.NodeType;
 import com.codingapi.springboot.flow.repository.FlowOperatorRepository;
 import com.esotericsoftware.kryo.Kryo;
@@ -74,6 +76,11 @@ public class FlowWorkSerializable implements Serializable {
     private int postponedMax;
 
     /**
+     * 流程的schema
+     */
+    private String schema;
+
+    /**
      * 流程的节点(发起节点)
      */
     private List<FlowNodeSerializable> nodes;
@@ -97,6 +104,8 @@ public class FlowWorkSerializable implements Serializable {
         kryo.register(FlowWorkSerializable.class);
         kryo.register(ApprovalType.class);
         kryo.register(NodeType.class);
+        kryo.register(FlowButton.class);
+        kryo.register(FlowButtonType.class);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Output output = new Output(outputStream);
@@ -114,6 +123,8 @@ public class FlowWorkSerializable implements Serializable {
         kryo.register(FlowWorkSerializable.class);
         kryo.register(ApprovalType.class);
         kryo.register(NodeType.class);
+        kryo.register(FlowButton.class);
+        kryo.register(FlowButtonType.class);
         return kryo.readObject(new Input(bytes), FlowWorkSerializable.class);
     }
 
@@ -132,7 +143,7 @@ public class FlowWorkSerializable implements Serializable {
                 postponedMax,
                 flowNodes,
                 relations.stream().map((item) -> item.toFlowRelation(flowNodes)).collect(Collectors.toList()),
-                null
+                schema
         );
     }
 

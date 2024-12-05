@@ -12,6 +12,25 @@ public interface FlowRecordQuery {
 
     Page<FlowRecord> findAll(PageRequest pageRequest);
 
+
+    /**
+     * 查看个人的未读与待办数据
+     *
+     * @param operatorId 操作人
+     * @return 流程记录
+     */
+    Page<FlowRecord> findUnReadByOperatorId(long operatorId, PageRequest pageRequest);
+
+
+    /**
+     * 查看个人的未读与待办数据(指定流程)
+     *
+     * @param operatorId 操作人
+     * @param workCode 流程编码
+     * @return 流程记录
+     */
+    Page<FlowRecord> findUnReadByOperatorId(long operatorId,String workCode, PageRequest pageRequest);
+
     /**
      * 查看个人的待办数据
      *

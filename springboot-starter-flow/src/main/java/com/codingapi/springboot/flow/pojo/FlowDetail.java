@@ -45,12 +45,12 @@ public class FlowDetail {
     private final List<? extends IFlowOperator> operators;
 
     /**
-     * 创建者
+     * 流程创建者
      */
     private final IFlowOperator flowCreator;
 
     /**
-     * 创建时间
+     * 流程创建时间
      */
     private final long flowCreateTime;
 
@@ -59,12 +59,18 @@ public class FlowDetail {
      */
     private final List<FlowOpinion> opinions;
 
+    /**
+     * 是否可以办理
+     */
+    private final boolean canHandle;
+
 
     public FlowDetail(FlowRecord flowRecord,
                       BindDataSnapshot snapshot,
                       FlowWork flowWork,
                       List<FlowRecord> historyRecords,
-                      List<? extends IFlowOperator> operators) {
+                      List<? extends IFlowOperator> operators,
+                      boolean canHandle) {
         this.operators = operators;
         this.flowRecord = flowRecord;
         this.flowWork = flowWork;
@@ -74,8 +80,24 @@ public class FlowDetail {
         this.flowCreator = flowRecord.getCreateOperator();
         this.flowCreateTime = flowRecord.getCreateTime();
         this.flowNode = flowWork.getNodeByCode(flowRecord.getNodeCode());
+        this.canHandle = canHandle;
     }
 
+    public FlowDetail(FlowWork flowWork,
+                      FlowNode flowNode,
+                      List<? extends IFlowOperator> operators,
+                        boolean canHandle) {
+        this.flowWork = flowWork;
+        this.flowNode = flowNode;
+        this.operators = operators;
+        this.flowCreateTime = 0;
+        this.flowRecord = null;
+        this.historyRecords = null;
+        this.bindData = null;
+        this.opinions = null;
+        this.flowCreator = null;
+        this.canHandle = canHandle;
+    }
 
     @Getter
     public final class FlowOpinion {

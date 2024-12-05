@@ -88,7 +88,6 @@ public class OperatorMatcher {
     /**
      * 创建者操作者匹配器
      *
-     * @param userIds 用户ids
      * @return 操作者匹配器
      */
     public static OperatorMatcher creatorOperatorMatcher() {

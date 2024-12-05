@@ -12,7 +12,11 @@ public enum ApprovalType {
     /**
      * 非会签
      */
-    UN_SIGN;
+    UN_SIGN,
+    /**
+     * 传阅
+     */
+    CIRCULATE;
 
 
     public static ApprovalType parser(String approvalType) {

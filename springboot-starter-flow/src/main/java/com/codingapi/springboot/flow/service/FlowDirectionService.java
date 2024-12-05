@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * 流程方向服务
  */
-class FlowDirectionService {
+public class FlowDirectionService {
 
     private final FlowWork flowWork;
     private final FlowNode flowNode;
@@ -112,7 +112,7 @@ class FlowDirectionService {
     /**
      * 判断当前流程是否为通过流程
      */
-    public boolean isPassBackRecord() {
+    public boolean isPassRecord() {
         return flowSourceDirection == FlowSourceDirection.PASS;
     }
 

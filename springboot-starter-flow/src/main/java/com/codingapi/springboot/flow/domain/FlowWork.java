@@ -227,6 +227,7 @@ public class FlowWork {
                 updateTime,
                 enable,
                 postponedMax,
+                schema,
                 nodes.stream().map(FlowNode::toSerializable).collect(Collectors.toCollection(ArrayList::new)),
                 relations.stream().map(FlowRelation::toSerializable).collect(Collectors.toCollection(ArrayList::new)));
     }

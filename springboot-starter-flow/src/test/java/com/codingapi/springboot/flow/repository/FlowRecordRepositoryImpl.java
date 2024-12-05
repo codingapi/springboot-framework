@@ -43,8 +43,6 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository, FlowRecor
         return cache.stream().filter(record -> record.getPreId() == preId).collect(Collectors.toList());
     }
 
-
-
     @Override
     public List<FlowRecord> findFlowRecordByProcessId(String processId) {
         return cache.stream().filter(record -> record.getProcessId().equals(processId))
@@ -61,10 +59,21 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository, FlowRecor
         return new PageImpl<>(cache);
     }
 
+    @Override
+    public Page<FlowRecord> findDoneByOperatorId(long operatorId, PageRequest pageRequest) {
+        List<FlowRecord> flowRecords = cache.stream().filter(record -> record.isDone() && record.getCurrentOperator().getUserId() == operatorId).collect(Collectors.toList());
+        return new PageImpl<>(flowRecords);
+    }
 
     @Override
-    public Page<FlowRecord> findDoneByOperatorId(long operatorId,PageRequest pageRequest) {
-        List<FlowRecord> flowRecords = cache.stream().filter(record -> record.isDone() && record.getCurrentOperator().getUserId() == operatorId).collect(Collectors.toList());
+    public Page<FlowRecord> findUnReadByOperatorId(long operatorId, PageRequest pageRequest) {
+        List<FlowRecord> flowRecords = cache.stream().filter(record -> record.isUnRead() && record.getCurrentOperator().getUserId() == operatorId).collect(Collectors.toList());
+        return new PageImpl<>(flowRecords);
+    }
+
+    @Override
+    public Page<FlowRecord> findUnReadByOperatorId(long operatorId, String workCode, PageRequest pageRequest) {
+        List<FlowRecord> flowRecords = cache.stream().filter(record -> record.isUnRead() && record.getWorkCode().equals(workCode) && record.getCurrentOperator().getUserId() == operatorId).collect(Collectors.toList());
         return new PageImpl<>(flowRecords);
     }
 
@@ -78,7 +87,7 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository, FlowRecor
     }
 
     @Override
-    public Page<FlowRecord> findInitiatedByOperatorId(long operatorId,PageRequest pageRequest) {
+    public Page<FlowRecord> findInitiatedByOperatorId(long operatorId, PageRequest pageRequest) {
         List<FlowRecord> flowRecords = cache.stream().filter(record -> record.isInitiated() && record.getCreateOperator().getUserId() == operatorId).collect(Collectors.toList());
         return new PageImpl<>(flowRecords);
     }
@@ -96,7 +105,7 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository, FlowRecor
 
 
     @Override
-    public Page<FlowRecord> findTodoByOperatorId(long operatorId,PageRequest pageRequest) {
+    public Page<FlowRecord> findTodoByOperatorId(long operatorId, PageRequest pageRequest) {
         List<FlowRecord> flowRecords = cache.stream().filter(record -> record.isTodo() && record.getCurrentOperator().getUserId() == operatorId).collect(Collectors.toList());
         return new PageImpl<>(flowRecords);
     }
@@ -108,11 +117,10 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository, FlowRecor
     }
 
     @Override
-    public Page<FlowRecord> findTimeoutTodoByOperatorId(long operatorId,PageRequest pageRequest) {
+    public Page<FlowRecord> findTimeoutTodoByOperatorId(long operatorId, PageRequest pageRequest) {
         List<FlowRecord> flowRecords = cache.stream().filter(record -> record.isTimeout() && record.isTodo() && record.getCurrentOperator().getUserId() == operatorId).collect(Collectors.toList());
         return new PageImpl<>(flowRecords);
     }
-
 
 
     @Override
@@ -127,7 +135,7 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository, FlowRecor
 
 
     @Override
-    public Page<FlowRecord> findPostponedTodoByOperatorId(long operatorId,PageRequest pageRequest) {
+    public Page<FlowRecord> findPostponedTodoByOperatorId(long operatorId, PageRequest pageRequest) {
         List<FlowRecord> flowRecords = cache.stream().filter(record -> record.isPostponed() && record.isTodo() && record.getCurrentOperator().getUserId() == operatorId).collect(Collectors.toList());
         return new PageImpl<>(flowRecords);
     }

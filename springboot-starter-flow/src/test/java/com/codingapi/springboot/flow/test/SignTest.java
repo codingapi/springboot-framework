@@ -61,7 +61,7 @@ public class SignTest {
                 .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN,
                         OperatorMatcher.specifyOperatorMatcher(dept.getUserId(),caocao.getUserId(),lvBu.getUserId(),zhaoYun.getUserId()))
                 .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
-                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.creatorOperatorMatcher())
+                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .relations()
                 .relation("部门领导审批", "start", "dept")
                 .relation("总经理审批", "dept", "manager")
@@ -104,21 +104,18 @@ public class SignTest {
 
         // 查看所有流程
         List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();;
-        assertEquals(7, records.size());
+        assertEquals(6, records.size());
 
         userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
-        assertEquals(1, userTodos.size());
-
-        userTodo = userTodos.get(0);
-        flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
+        assertEquals(0, userTodos.size());
 
         records = flowRecordRepository.findAll(pageRequest).getContent();
-        assertEquals(7, records.size());
+        assertEquals(6, records.size());
         // 查看所有流程是否都已经结束
         assertTrue(records.stream().allMatch(FlowRecord::isFinish));
 
         List<BindDataSnapshot> snapshots = flowBindDataRepository.findAll();
-        assertEquals(5, snapshots.size());
+        assertEquals(4, snapshots.size());
 
     }
 
@@ -154,7 +151,7 @@ public class SignTest {
                 .node("部门领导审批", "dept", "default", ApprovalType.SIGN,
                         OperatorMatcher.specifyOperatorMatcher(dept.getUserId(),caocao.getUserId(),lvBu.getUserId(),zhaoYun.getUserId()))
                 .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
-                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.creatorOperatorMatcher())
+                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .relations()
                 .relation("部门领导审批", "start", "dept")
                 .relation("总经理审批", "dept", "manager")
@@ -226,21 +223,18 @@ public class SignTest {
 
         // 查看所有流程
         List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
-        assertEquals(7, records.size());
+        assertEquals(6, records.size());
 
         userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
-        assertEquals(1, userTodos.size());
-
-        userTodo = userTodos.get(0);
-        flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
+        assertEquals(0, userTodos.size());
 
         records = flowRecordRepository.findAll(pageRequest).getContent();
-        assertEquals(7, records.size());
+        assertEquals(6, records.size());
         // 查看所有流程是否都已经结束
         assertTrue(records.stream().allMatch(FlowRecord::isFinish));
 
         List<BindDataSnapshot> snapshots = flowBindDataRepository.findAll();
-        assertEquals(8, snapshots.size());
+        assertEquals(7, snapshots.size());
 
     }
 
@@ -283,7 +277,7 @@ public class SignTest {
                                 zhaoYun.getUserId()
                         ))
                 .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
-                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.creatorOperatorMatcher())
+                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .relations()
                 .relation("部门领导审批", "start", "dept")
                 .relation("总经理审批", "dept", "manager")
@@ -395,21 +389,18 @@ public class SignTest {
 
         // 查看所有流程
         List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();;
-        assertEquals(12, records.size());
+        assertEquals(11, records.size());
 
         userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
-        assertEquals(1, userTodos.size());
-
-        userTodo = userTodos.get(0);
-        flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
+        assertEquals(0, userTodos.size());
 
         records = flowRecordRepository.findAll(pageRequest).getContent();
-        assertEquals(12, records.size());
+        assertEquals(11, records.size());
         // 查看所有流程是否都已经结束
         assertTrue(records.stream().allMatch(FlowRecord::isFinish));
 
         List<BindDataSnapshot> snapshots = flowBindDataRepository.findAll();
-        assertEquals(13, snapshots.size());
+        assertEquals(12, snapshots.size());
 
     }
 }
