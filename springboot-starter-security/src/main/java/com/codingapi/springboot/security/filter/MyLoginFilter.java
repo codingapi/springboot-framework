@@ -73,7 +73,7 @@ public class MyLoginFilter extends UsernamePasswordAuthenticationFilter {
         LoginRequest loginRequest = LoginRequestContext.getInstance().get();
 
         Token token = tokenGateway.create(user.getUsername(), loginRequest.getPassword(),
-                user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.collect(Collectors.toList())),
+                user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()),
                 TokenContext.getExtra());
 
         LoginResponse loginResponse = loginHandler.postHandle(request, response, loginRequest, user, token);
