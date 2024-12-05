@@ -62,9 +62,9 @@ const FlowPage = () => {
             id: current.id,
             schema: json
         });
-        setVisible(false);
         if (res.success) {
             message.success("保存成功");
+            setVisible(false);
         }
         actionRef.current?.reload();
     }
