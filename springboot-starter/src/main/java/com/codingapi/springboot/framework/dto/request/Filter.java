@@ -48,6 +48,10 @@ public class Filter {
         return relation == Relation.EQUAL;
     }
 
+    public boolean isNotEqual() {
+        return relation == Relation.NOT_EQUAL;
+    }
+
     public boolean isLike() {
         return relation == Relation.LIKE;
     }

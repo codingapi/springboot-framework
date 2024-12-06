@@ -56,6 +56,25 @@ public class DemoRepositoryTest {
         assertEquals(1, page.getTotalElements());
     }
 
+    @Test
+    void pageRequestNotEqual() {
+        demoRepository.deleteAll();
+        Demo demo1 = new Demo();
+        demo1.setName("123");
+        demo1 = demoRepository.save(demo1);
+
+        Demo demo2 = new Demo();
+        demo2.setName("456");
+        demoRepository.save(demo2);
+
+        PageRequest request = new PageRequest();
+        request.setCurrent(1);
+        request.setPageSize(10);
+        request.addFilter("id", Relation.NOT_EQUAL, demo1.getId());
+
+        Page<Demo> page = demoRepository.pageRequest(request);
+        assertEquals(1, page.getTotalElements());
+    }
 
     @Test
     void pageRequest() {

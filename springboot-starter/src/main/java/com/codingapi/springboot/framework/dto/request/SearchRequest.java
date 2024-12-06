@@ -224,11 +224,13 @@ public class SearchRequest {
             if (JSON.isValid(filter)) {
                 removeKeys.add("filter");
                 JSONObject jsonObject = JSON.parseObject(filter);
-                for (String key : jsonObject.keySet()) {
-                    JSONArray value = jsonObject.getJSONArray(key);
-                    if (value != null && !value.isEmpty()) {
-                        List<String> values = value.stream().map(Object::toString).collect(Collectors.toList());
-                        content.addFilter(key, values);
+                if(jsonObject!=null) {
+                    for (String key : jsonObject.keySet()) {
+                        JSONArray value = jsonObject.getJSONArray(key);
+                        if (value != null && !value.isEmpty()) {
+                            List<String> values = value.stream().map(Object::toString).collect(Collectors.toList());
+                            content.addFilter(key, values);
+                        }
                     }
                 }
             }

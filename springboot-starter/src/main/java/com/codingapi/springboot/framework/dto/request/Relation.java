@@ -2,6 +2,7 @@ package com.codingapi.springboot.framework.dto.request;
 
 public enum Relation {
 
+    NOT_EQUAL,
     EQUAL,
     LIKE,
     LEFT_LIKE,

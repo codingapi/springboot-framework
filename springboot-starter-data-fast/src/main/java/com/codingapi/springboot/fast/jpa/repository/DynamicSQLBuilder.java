@@ -98,6 +98,13 @@ class DynamicSQLBuilder {
             params.add(filter.getValue()[0]);
             paramIndex++;
         }
+
+        if (filter.isNotEqual()) {
+            hql.append(filter.getKey()).append(" != ?").append(paramIndex);
+            params.add(filter.getValue()[0]);
+            paramIndex++;
+        }
+
         if (filter.isLike()) {
             hql.append(filter.getKey()).append(" LIKE ?").append(paramIndex);
             params.add("%" + filter.getValue()[0] + "%");
