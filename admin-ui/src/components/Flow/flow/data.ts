@@ -121,7 +121,13 @@ export class FlowData extends FlowWorkData {
     // 获取当前节点的按钮
     getNodeButtons = () => {
         if (this.data) {
-            return this.data.flowNode.buttons;
+            const buttons = this.data.flowNode.buttons;
+            if(buttons){
+                return buttons.sort((item1:any, item2:any) => {
+                    return item1.order - item2.order;
+                })
+            }
+            return [];
         }
         return null;
     }
