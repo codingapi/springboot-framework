@@ -2,16 +2,22 @@ import React, {useEffect} from "react";
 import {ProForm, ProFormDigit, ProFormText, ProFormTextArea} from "@ant-design/pro-components";
 import {FlowFormViewProps} from "@/components/Flow/flow/types";
 import {Button} from "antd";
+import {useSelector} from "react-redux";
+import {FlowReduxState} from "@/components/Flow/store/FlowSlice";
 
 
 const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
 
+    // 审批意见输入框展示状态
+    const opinionEditorVisible = useSelector((state: FlowReduxState) => state.flow.opinionEditorVisible);
+
     useEffect(() => {
         props.form.setFieldsValue(props.data);
+        // 关闭意见输入框
+        props.opinionEditorVisible && props.opinionEditorVisible(false);
     }, []);
 
     const triggerClickVisible = props.triggerClickVisible;
-
 
     return (
         <ProForm
@@ -53,6 +59,15 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
                     }
                 ]}
             />
+
+            <Button
+                onClick={()=>{
+                    props.opinionEditorVisible && props.opinionEditorVisible(!opinionEditorVisible);
+                }}
+            >
+                意见输入框
+            </Button>
+
 
             {triggerClickVisible && (
                 <Button

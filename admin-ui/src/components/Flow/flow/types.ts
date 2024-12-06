@@ -32,6 +32,9 @@ export interface FlowFormViewProps {
 
     // 关闭自定义前端点击事件触发
     clearTriggerClick?: () => void;
+
+    // 审批意见输入框
+    opinionEditorVisible?: (visible: boolean) => void;
 }
 
 // 表单视图

@@ -1,10 +1,15 @@
 import React from "react";
-import { Divider, Result } from "antd";
-import { ProForm, ProFormTextArea } from "@ant-design/pro-components";
+import {Divider, Result} from "antd";
+import {ProForm, ProFormTextArea} from "@ant-design/pro-components";
 import {CustomButtonType, FlowFormView, FlowFormViewProps} from "@/components/Flow/flow/types";
-import { FlowData } from "@/components/Flow/flow/data";
+import {FlowData} from "@/components/Flow/flow/data";
 import {useDispatch, useSelector} from "react-redux";
-import {clearTriggerClick, FlowReduxState} from "@/components/Flow/store/FlowSlice";
+import {
+    clearTriggerClick,
+    FlowReduxState,
+    hideOpinionEditor,
+    showOpinionEditor
+} from "@/components/Flow/store/FlowSlice";
 
 interface FlowDetailProps {
     view: React.ComponentType<FlowFormViewProps> | FlowFormView;
@@ -28,6 +33,9 @@ const FlowDetail: React.FC<FlowDetailProps> = (props) => {
     // 触发点击事件
     const triggerClickVisible = useSelector((state: FlowReduxState) => state.flow.triggerClickVisible);
 
+    // 审批意见输入框
+    const opinionEditorVisible = useSelector((state: FlowReduxState) => state.flow.opinionEditorVisible);
+
     // flow store redux
     const dispatch = useDispatch();
 
@@ -35,7 +43,8 @@ const FlowDetail: React.FC<FlowDetailProps> = (props) => {
         <>
             <div className="flowApprovalViewBox">
                 {FlowFormView && (
-                    <div className="flowViewDetail" style={{ height: !FlowFormView || flowData.isStartFlow() ? '85vh' : '68vh' }}>
+                    <div className="flowViewDetail"
+                         style={{height: !FlowFormView || flowData.isStartFlow() ? '85vh' : '68vh'}}>
                         <FlowFormView
                             handlerClick={props.handlerClick}
                             data={flowData.getFlowData()}
@@ -45,6 +54,13 @@ const FlowDetail: React.FC<FlowDetailProps> = (props) => {
                             editable={!flowData.isDone() && flowData.getFlowNodeEditable()}
                             compare={!flowData.isStartFlow()}
                             triggerClickVisible={triggerClickVisible}
+                            opinionEditorVisible={(visible) => {
+                                if (visible) {
+                                    dispatch(showOpinionEditor());
+                                } else {
+                                    dispatch(hideOpinionEditor());
+                                }
+                            }}
                             clearTriggerClick={() => {
                                 dispatch(clearTriggerClick());
                             }}
@@ -61,7 +77,7 @@ const FlowDetail: React.FC<FlowDetailProps> = (props) => {
                 )}
 
                 {/*仅当非发起流程时再展示审批意见框*/}
-                {FlowFormView && flowData.showOpinion() && (
+                {FlowFormView && flowData.showOpinion() && opinionEditorVisible && (
                     <div className="opinionForm">
                         <div>
                             <Divider>

@@ -27,6 +27,9 @@ export interface FlowStore {
 
     // 自定义前端点击事件触发
     triggerClickVisible: boolean;
+
+    // 审批意见输入框
+    opinionEditorVisible: boolean;
 }
 
 export type FlowStoreAction = {
@@ -52,6 +55,9 @@ export type FlowStoreAction = {
 
     triggerClick: (state: FlowStore) => void;
     clearTriggerClick: (state: FlowStore) => void;
+
+    showOpinionEditor: (state: FlowStore) => void;
+    hideOpinionEditor: (state: FlowStore) => void;
 }
 
 export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
@@ -67,7 +73,8 @@ export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
         resultCloseFlow: false,
         currentUsers: [],
         specifyUserIds: [],
-        triggerClickVisible: false
+        triggerClickVisible: false,
+        opinionEditorVisible: true
     },
     reducers: {
         showPostponed: (state) => {
@@ -123,6 +130,14 @@ export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
 
         clearTriggerClick: (state) => {
             state.triggerClickVisible = false;
+        },
+
+        showOpinionEditor: (state) => {
+            state.opinionEditorVisible = true;
+        },
+
+        hideOpinionEditor: (state) => {
+            state.opinionEditorVisible = false;
         }
     },
 });
@@ -139,7 +154,9 @@ export const {
     closeUserSelect,
     setSelectUsers,
     triggerClick,
-    clearTriggerClick
+    clearTriggerClick,
+    hideOpinionEditor,
+    showOpinionEditor
 } = flowSlice.actions;
 export const flowStore = configureStore({
     reducer: {
