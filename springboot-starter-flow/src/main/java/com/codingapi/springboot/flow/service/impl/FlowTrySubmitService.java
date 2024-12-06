@@ -107,13 +107,19 @@ public class FlowTrySubmitService {
         } else {
             // copy 流程数据防止影响原有数据
             historyRecords = flowRecordRepository.findFlowRecordByPreId(flowRecord.getPreId()).stream().map(FlowRecord::copy).toList();
+            // 更新当前流程记录, 由于try测试过程中没有对数据落库，所以这里需要手动更新
+            for(FlowRecord record : historyRecords){
+                if(record.getId() == flowRecord.getId()){
+                    record.submitRecord(currentOperator, snapshot, opinion, flowSourceDirection);
+                }
+            }
         }
         flowDirectionService.bindHistoryRecords(historyRecords);
 
         // 判断流程是否结束（会签时需要所有人都通过）
         if (flowNode.isSign()) {
-            boolean next = flowDirectionService.hasCurrentFlowNodeIsDone();
-            if (next) {
+            boolean isDone = flowDirectionService.hasCurrentFlowNodeIsDone();
+            if (!isDone) {
                 List<FlowRecord> todoRecords = historyRecords.stream().filter(FlowRecord::isTodo).toList();
                 return new FlowSubmitResult(flowWork, flowNode, todoRecords.stream().map(FlowRecord::getCurrentOperator).toList());
             }

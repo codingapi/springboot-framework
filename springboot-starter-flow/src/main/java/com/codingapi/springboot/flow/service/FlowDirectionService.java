@@ -81,12 +81,7 @@ public class FlowDirectionService {
      */
     public boolean hasCurrentFlowNodeIsDone() {
         // 会签下所有人尚未提交时，不执行下一节点
-        boolean allDone = historyRecords.stream().filter(item -> !item.isTransfer()).allMatch(FlowRecord::isDone);
-        if (!allDone) {
-            // 流程尚未审批结束直接退出
-            return true;
-        }
-        return false;
+        return historyRecords.stream().filter(item -> !item.isTransfer()).allMatch(FlowRecord::isDone);
     }
 
 

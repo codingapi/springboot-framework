@@ -85,6 +85,18 @@ public class OperatorMatcher {
         return new OperatorMatcher("def run(content) {return [" + userIdsStr + "];}", STATE_SPECIFY);
     }
 
+
+    /**
+     * 指定操作者匹配器
+     *
+     * @param userIds 用户ids
+     * @return 操作者匹配器
+     */
+    public static OperatorMatcher specifyOperatorMatcher(List<Long> userIds) {
+        String userIdsStr = userIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+        return new OperatorMatcher("def run(content) {return [" + userIdsStr + "];}", STATE_SPECIFY);
+    }
+
     /**
      * 创建者操作者匹配器
      *
