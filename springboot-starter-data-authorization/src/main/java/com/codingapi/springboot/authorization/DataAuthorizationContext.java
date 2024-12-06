@@ -2,13 +2,15 @@ package com.codingapi.springboot.authorization;
 
 import com.codingapi.springboot.authorization.filter.DataAuthorizationFilter;
 import com.codingapi.springboot.authorization.handler.Condition;
+import com.codingapi.springboot.authorization.interceptor.SQLInterceptState;
 import lombok.Getter;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *  数据权限上下文
+ * 数据权限上下文
  */
 public class DataAuthorizationContext {
 
@@ -25,19 +27,27 @@ public class DataAuthorizationContext {
         this.filters.add(filter);
     }
 
-    public <T> T columnAuthorization(String tableName, String columnName, T value) {
-        for (DataAuthorizationFilter filter : filters) {
-            if (filter.supportColumnAuthorization(tableName, columnName, value)) {
-                return filter.columnAuthorization(tableName, columnName, value);
+    public void clearDataAuthorizationFilters(){
+        this.filters.clear();
+    }
+
+    public <T> T columnAuthorization(SQLInterceptState interceptState, String tableName, String columnName, T value) {
+        if (interceptState != null && interceptState.hasIntercept() && StringUtils.hasText(tableName)) {
+            for (DataAuthorizationFilter filter : filters) {
+                if (filter.supportColumnAuthorization(tableName, columnName, value)) {
+                    return filter.columnAuthorization(tableName, columnName, value);
+                }
             }
         }
         return value;
     }
 
     public Condition rowAuthorization(String tableName, String tableAlias) {
-        for (DataAuthorizationFilter filter : filters) {
-            if (filter.supportRowAuthorization(tableName, tableAlias)) {
-                return filter.rowAuthorization(tableName, tableAlias);
+        if(StringUtils.hasText(tableName) && StringUtils.hasText(tableAlias)) {
+            for (DataAuthorizationFilter filter : filters) {
+                if (filter.supportRowAuthorization(tableName, tableAlias)) {
+                    return filter.rowAuthorization(tableName, tableAlias);
+                }
             }
         }
         return null;

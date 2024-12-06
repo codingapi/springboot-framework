@@ -1,6 +1,7 @@
 package com.codingapi.springboot.authorization.jdbc.proxy;
 
 import com.codingapi.springboot.authorization.handler.ColumnHandlerContext;
+import com.codingapi.springboot.authorization.interceptor.SQLInterceptState;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.InputStream;
@@ -17,12 +18,14 @@ public class ResultSetProxy implements ResultSet {
 
     private final ResultSet resultSet;
     private final ResultSetMetaData metaData;
+    private final SQLInterceptState interceptState;
 
     private final Map<String,Integer> columnLabelMap = new HashMap<>();
 
-    public ResultSetProxy(ResultSet resultSet) throws SQLException {
+    public ResultSetProxy(ResultSet resultSet, SQLInterceptState interceptState) throws SQLException {
         this.resultSet = resultSet;
         this.metaData = resultSet.getMetaData();
+        this.interceptState = interceptState;
         int columnCount = metaData.getColumnCount();
         for(int i = 1; i <= columnCount; i++){
             columnLabelMap.put(metaData.getColumnLabel(i),i);
@@ -48,56 +51,56 @@ public class ResultSetProxy implements ResultSet {
     public String getString(int columnIndex) throws SQLException {
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getString(columnIndex, tableName, columnName, resultSet.getString(columnIndex));
+        return ColumnHandlerContext.getInstance().getString(interceptState,columnIndex, tableName, columnName, resultSet.getString(columnIndex));
     }
 
     @Override
     public boolean getBoolean(int columnIndex) throws SQLException {
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getBoolean(columnIndex, tableName, columnName, resultSet.getBoolean(columnIndex));
+        return ColumnHandlerContext.getInstance().getBoolean(interceptState,columnIndex, tableName, columnName, resultSet.getBoolean(columnIndex));
     }
 
     @Override
     public byte getByte(int columnIndex) throws SQLException {
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getByte(columnIndex, tableName, columnName, resultSet.getByte(columnIndex));
+        return ColumnHandlerContext.getInstance().getByte(interceptState,columnIndex, tableName, columnName, resultSet.getByte(columnIndex));
     }
 
     @Override
     public short getShort(int columnIndex) throws SQLException {
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getShort(columnIndex, tableName, columnName, resultSet.getShort(columnIndex));
+        return ColumnHandlerContext.getInstance().getShort(interceptState,columnIndex, tableName, columnName, resultSet.getShort(columnIndex));
     }
 
     @Override
     public int getInt(int columnIndex) throws SQLException {
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getInt(columnIndex, tableName, columnName, resultSet.getInt(columnIndex));
+        return ColumnHandlerContext.getInstance().getInt(interceptState,columnIndex, tableName, columnName, resultSet.getInt(columnIndex));
     }
 
     @Override
     public long getLong(int columnIndex) throws SQLException {
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getLong(columnIndex, tableName, columnName, resultSet.getLong(columnIndex));
+        return ColumnHandlerContext.getInstance().getLong(interceptState,columnIndex, tableName, columnName, resultSet.getLong(columnIndex));
     }
 
     @Override
     public float getFloat(int columnIndex) throws SQLException {
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getFloat(columnIndex, tableName, columnName, resultSet.getFloat(columnIndex));
+        return ColumnHandlerContext.getInstance().getFloat(interceptState,columnIndex, tableName, columnName, resultSet.getFloat(columnIndex));
     }
 
     @Override
     public double getDouble(int columnIndex) throws SQLException {
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getDouble(columnIndex, tableName, columnName, resultSet.getDouble(columnIndex));
+        return ColumnHandlerContext.getInstance().getDouble(interceptState,columnIndex, tableName, columnName, resultSet.getDouble(columnIndex));
     }
 
     @Deprecated(since = "1.2")
@@ -105,42 +108,42 @@ public class ResultSetProxy implements ResultSet {
     public BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException {
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getBigDecimal(columnIndex, tableName, columnName, resultSet.getBigDecimal(columnIndex, scale));
+        return ColumnHandlerContext.getInstance().getBigDecimal(interceptState,columnIndex, tableName, columnName, resultSet.getBigDecimal(columnIndex, scale));
     }
 
     @Override
     public byte[] getBytes(int columnIndex) throws SQLException {
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getBytes(columnIndex, tableName, columnName, resultSet.getBytes(columnIndex));
+        return ColumnHandlerContext.getInstance().getBytes(interceptState,columnIndex, tableName, columnName, resultSet.getBytes(columnIndex));
     }
 
     @Override
     public Date getDate(int columnIndex) throws SQLException {
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getDate(columnIndex, tableName, columnName, resultSet.getDate(columnIndex));
+        return ColumnHandlerContext.getInstance().getDate(interceptState,columnIndex, tableName, columnName, resultSet.getDate(columnIndex));
     }
 
     @Override
     public Time getTime(int columnIndex) throws SQLException {
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getTime(columnIndex, tableName, columnName, resultSet.getTime(columnIndex));
+        return ColumnHandlerContext.getInstance().getTime(interceptState,columnIndex, tableName, columnName, resultSet.getTime(columnIndex));
     }
 
     @Override
     public Timestamp getTimestamp(int columnIndex) throws SQLException {
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getTimestamp(columnIndex, tableName, columnName, resultSet.getTimestamp(columnIndex));
+        return ColumnHandlerContext.getInstance().getTimestamp(interceptState,columnIndex, tableName, columnName, resultSet.getTimestamp(columnIndex));
     }
 
     @Override
     public InputStream getAsciiStream(int columnIndex) throws SQLException {
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getAsciiStream(columnIndex, tableName, columnName, resultSet.getAsciiStream(columnIndex));
+        return ColumnHandlerContext.getInstance().getAsciiStream(interceptState,columnIndex, tableName, columnName, resultSet.getAsciiStream(columnIndex));
     }
 
     @Deprecated(since = "1.2")
@@ -148,14 +151,14 @@ public class ResultSetProxy implements ResultSet {
     public InputStream getUnicodeStream(int columnIndex) throws SQLException {
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getUnicodeStream(columnIndex, tableName, columnName, resultSet.getUnicodeStream(columnIndex));
+        return ColumnHandlerContext.getInstance().getUnicodeStream(interceptState,columnIndex, tableName, columnName, resultSet.getUnicodeStream(columnIndex));
     }
 
     @Override
     public InputStream getBinaryStream(int columnIndex) throws SQLException {
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getBinaryStream(columnIndex, tableName, columnName, resultSet.getBinaryStream(columnIndex));
+        return ColumnHandlerContext.getInstance().getBinaryStream(interceptState,columnIndex, tableName, columnName, resultSet.getBinaryStream(columnIndex));
     }
 
     @Override
@@ -163,7 +166,7 @@ public class ResultSetProxy implements ResultSet {
         int columnIndex = columnLabelMap.get(columnLabel);
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getString(columnIndex, tableName, columnName, resultSet.getString(columnIndex));
+        return ColumnHandlerContext.getInstance().getString(interceptState,columnIndex, tableName, columnName, resultSet.getString(columnIndex));
     }
 
     @Override
@@ -171,7 +174,7 @@ public class ResultSetProxy implements ResultSet {
         int columnIndex = columnLabelMap.get(columnLabel);
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getBoolean(columnIndex, tableName, columnName, resultSet.getBoolean(columnIndex));
+        return ColumnHandlerContext.getInstance().getBoolean(interceptState,columnIndex, tableName, columnName, resultSet.getBoolean(columnIndex));
     }
 
     @Override
@@ -179,7 +182,7 @@ public class ResultSetProxy implements ResultSet {
         int columnIndex = columnLabelMap.get(columnLabel);
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getByte(columnIndex, tableName, columnName, resultSet.getByte(columnIndex));
+        return ColumnHandlerContext.getInstance().getByte(interceptState,columnIndex, tableName, columnName, resultSet.getByte(columnIndex));
     }
 
     @Override
@@ -187,7 +190,7 @@ public class ResultSetProxy implements ResultSet {
         int columnIndex = columnLabelMap.get(columnLabel);
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getShort(columnIndex, tableName, columnName, resultSet.getShort(columnIndex));
+        return ColumnHandlerContext.getInstance().getShort(interceptState,columnIndex, tableName, columnName, resultSet.getShort(columnIndex));
     }
 
     @Override
@@ -195,7 +198,7 @@ public class ResultSetProxy implements ResultSet {
         int columnIndex = columnLabelMap.get(columnLabel);
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getInt(columnIndex, tableName, columnName, resultSet.getInt(columnIndex));
+        return ColumnHandlerContext.getInstance().getInt(interceptState,columnIndex, tableName, columnName, resultSet.getInt(columnIndex));
     }
 
     @Override
@@ -203,7 +206,7 @@ public class ResultSetProxy implements ResultSet {
         int columnIndex = columnLabelMap.get(columnLabel);
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getLong(columnIndex, tableName, columnName, resultSet.getLong(columnIndex));
+        return ColumnHandlerContext.getInstance().getLong(interceptState,columnIndex, tableName, columnName, resultSet.getLong(columnIndex));
     }
 
     @Override
@@ -211,7 +214,7 @@ public class ResultSetProxy implements ResultSet {
         int columnIndex = columnLabelMap.get(columnLabel);
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getFloat(columnIndex, tableName, columnName, resultSet.getFloat(columnIndex));
+        return ColumnHandlerContext.getInstance().getFloat(interceptState,columnIndex, tableName, columnName, resultSet.getFloat(columnIndex));
     }
 
     @Override
@@ -219,7 +222,7 @@ public class ResultSetProxy implements ResultSet {
         int columnIndex = columnLabelMap.get(columnLabel);
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getDouble(columnIndex, tableName, columnName, resultSet.getDouble(columnIndex));
+        return ColumnHandlerContext.getInstance().getDouble(interceptState,columnIndex, tableName, columnName, resultSet.getDouble(columnIndex));
     }
 
     @Deprecated(since = "1.2")
@@ -228,7 +231,7 @@ public class ResultSetProxy implements ResultSet {
         int columnIndex = columnLabelMap.get(columnLabel);
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getBigDecimal(columnIndex, tableName, columnName, resultSet.getBigDecimal(columnIndex, scale));
+        return ColumnHandlerContext.getInstance().getBigDecimal(interceptState,columnIndex, tableName, columnName, resultSet.getBigDecimal(columnIndex, scale));
     }
 
     @Override
@@ -236,7 +239,7 @@ public class ResultSetProxy implements ResultSet {
         int columnIndex = columnLabelMap.get(columnLabel);
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getBytes(columnIndex, tableName, columnName, resultSet.getBytes(columnIndex));
+        return ColumnHandlerContext.getInstance().getBytes(interceptState,columnIndex, tableName, columnName, resultSet.getBytes(columnIndex));
     }
 
     @Override
@@ -244,7 +247,7 @@ public class ResultSetProxy implements ResultSet {
         int columnIndex = columnLabelMap.get(columnLabel);
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getDate(columnIndex, tableName, columnName, resultSet.getDate(columnIndex));
+        return ColumnHandlerContext.getInstance().getDate(interceptState,columnIndex, tableName, columnName, resultSet.getDate(columnIndex));
     }
 
     @Override
@@ -252,7 +255,7 @@ public class ResultSetProxy implements ResultSet {
         int columnIndex = columnLabelMap.get(columnLabel);
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getTime(columnIndex, tableName, columnName, resultSet.getTime(columnIndex));
+        return ColumnHandlerContext.getInstance().getTime(interceptState,columnIndex, tableName, columnName, resultSet.getTime(columnIndex));
     }
 
     @Override
@@ -260,7 +263,7 @@ public class ResultSetProxy implements ResultSet {
         int columnIndex = columnLabelMap.get(columnLabel);
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getTimestamp(columnIndex, tableName, columnName, resultSet.getTimestamp(columnIndex));
+        return ColumnHandlerContext.getInstance().getTimestamp(interceptState,columnIndex, tableName, columnName, resultSet.getTimestamp(columnIndex));
     }
 
     @Override
@@ -268,7 +271,7 @@ public class ResultSetProxy implements ResultSet {
         int columnIndex = columnLabelMap.get(columnLabel);
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getAsciiStream(columnIndex, tableName, columnName, resultSet.getAsciiStream(columnIndex));
+        return ColumnHandlerContext.getInstance().getAsciiStream(interceptState,columnIndex, tableName, columnName, resultSet.getAsciiStream(columnIndex));
     }
 
     @Deprecated(since = "1.2")
@@ -277,7 +280,7 @@ public class ResultSetProxy implements ResultSet {
         int columnIndex = columnLabelMap.get(columnLabel);
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getUnicodeStream(columnIndex, tableName, columnName, resultSet.getUnicodeStream(columnIndex));
+        return ColumnHandlerContext.getInstance().getUnicodeStream(interceptState,columnIndex, tableName, columnName, resultSet.getUnicodeStream(columnIndex));
     }
 
     @Override
@@ -285,7 +288,7 @@ public class ResultSetProxy implements ResultSet {
         int columnIndex = columnLabelMap.get(columnLabel);
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getBinaryStream(columnIndex, tableName, columnName, resultSet.getBinaryStream(columnIndex));
+        return ColumnHandlerContext.getInstance().getBinaryStream(interceptState,columnIndex, tableName, columnName, resultSet.getBinaryStream(columnIndex));
     }
 
     @Override
@@ -312,7 +315,7 @@ public class ResultSetProxy implements ResultSet {
     public Object getObject(int columnIndex) throws SQLException {
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getObject(columnIndex, tableName, columnName, resultSet.getObject(columnIndex));
+        return ColumnHandlerContext.getInstance().getObject(interceptState,columnIndex, tableName, columnName, resultSet.getObject(columnIndex));
     }
 
     @Override
@@ -320,7 +323,7 @@ public class ResultSetProxy implements ResultSet {
         int columnIndex = columnLabelMap.get(columnLabel);
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getObject(columnIndex, tableName, columnName, resultSet.getObject(columnIndex));
+        return ColumnHandlerContext.getInstance().getObject(interceptState,columnIndex, tableName, columnName, resultSet.getObject(columnIndex));
     }
 
     @Override
@@ -332,7 +335,7 @@ public class ResultSetProxy implements ResultSet {
     public Reader getCharacterStream(int columnIndex) throws SQLException {
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getCharacterStream(columnIndex, tableName, columnName, resultSet.getCharacterStream(columnIndex));
+        return ColumnHandlerContext.getInstance().getCharacterStream(interceptState,columnIndex, tableName, columnName, resultSet.getCharacterStream(columnIndex));
     }
 
     @Override
@@ -340,14 +343,14 @@ public class ResultSetProxy implements ResultSet {
         int columnIndex = columnLabelMap.get(columnLabel);
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getCharacterStream(columnIndex, tableName, columnName, resultSet.getCharacterStream(columnIndex));
+        return ColumnHandlerContext.getInstance().getCharacterStream(interceptState,columnIndex, tableName, columnName, resultSet.getCharacterStream(columnIndex));
     }
 
     @Override
     public BigDecimal getBigDecimal(int columnIndex) throws SQLException {
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getBigDecimal(columnIndex, tableName, columnName, resultSet.getBigDecimal(columnIndex));
+        return ColumnHandlerContext.getInstance().getBigDecimal(interceptState,columnIndex, tableName, columnName, resultSet.getBigDecimal(columnIndex));
     }
 
     @Override
@@ -355,7 +358,7 @@ public class ResultSetProxy implements ResultSet {
         int columnIndex = columnLabelMap.get(columnLabel);
         String tableName = metaData.getTableName(columnIndex);
         String columnName = metaData.getColumnName(columnIndex);
-        return ColumnHandlerContext.getInstance().getBigDecimal(columnIndex, tableName, columnName, resultSet.getBigDecimal(columnIndex));
+        return ColumnHandlerContext.getInstance().getBigDecimal(interceptState,columnIndex, tableName, columnName, resultSet.getBigDecimal(columnIndex));
     }
 
     @Override

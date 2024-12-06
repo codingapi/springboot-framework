@@ -1,36 +1,44 @@
 package com.codingapi.springboot.authorization.jdbc.proxy;
 
+import com.codingapi.springboot.authorization.interceptor.SQLInterceptState;
 import com.codingapi.springboot.authorization.interceptor.SQLRunningContext;
-import lombok.AllArgsConstructor;
 
 import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-@AllArgsConstructor
 public class ConnectionProxy implements Connection {
 
     private final Connection connection;
 
+    public ConnectionProxy(Connection connection) {
+        this.connection = connection;
+    }
+
+    private SQLInterceptState interceptState;
+
     @Override
     public Statement createStatement() throws SQLException {
-        return new StatementProxy(connection.createStatement());
+        return new StatementProxy(connection.createStatement(), interceptState);
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql) throws SQLException {
-        return new PreparedStatementProxy(connection.prepareStatement(SQLRunningContext.getInstance().intercept(sql)));
+        this.interceptState = SQLRunningContext.getInstance().intercept(sql);
+        return new PreparedStatementProxy(connection.prepareStatement(interceptState.getSql()),interceptState);
     }
 
     @Override
     public CallableStatement prepareCall(String sql) throws SQLException {
-        return new CallableStatementProxy(connection.prepareCall(SQLRunningContext.getInstance().intercept(sql)));
+        this.interceptState = SQLRunningContext.getInstance().intercept(sql);
+        return new CallableStatementProxy(connection.prepareCall(interceptState.getSql()), interceptState);
     }
 
     @Override
     public String nativeSQL(String sql) throws SQLException {
-        return connection.nativeSQL(SQLRunningContext.getInstance().intercept(sql));
+        this.interceptState = SQLRunningContext.getInstance().intercept(sql);
+        return connection.nativeSQL(interceptState.getSql());
     }
 
     @Override
@@ -110,17 +118,19 @@ public class ConnectionProxy implements Connection {
 
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
-        return new StatementProxy(connection.createStatement(resultSetType, resultSetConcurrency));
+        return new StatementProxy(connection.createStatement(resultSetType, resultSetConcurrency),this.interceptState);
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
-        return new PreparedStatementProxy(connection.prepareStatement(SQLRunningContext.getInstance().intercept(sql), resultSetType, resultSetConcurrency));
+        this.interceptState = SQLRunningContext.getInstance().intercept(sql);
+        return new PreparedStatementProxy(connection.prepareStatement(interceptState.getSql(), resultSetType, resultSetConcurrency),interceptState);
     }
 
     @Override
     public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
-        return new CallableStatementProxy(connection.prepareCall(SQLRunningContext.getInstance().intercept(sql), resultSetType, resultSetConcurrency));
+        this.interceptState = SQLRunningContext.getInstance().intercept(sql);
+        return new CallableStatementProxy(connection.prepareCall(interceptState.getSql(), resultSetType, resultSetConcurrency),interceptState);
     }
 
     @Override
@@ -165,32 +175,37 @@ public class ConnectionProxy implements Connection {
 
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
-        return new StatementProxy(connection.createStatement(resultSetType, resultSetConcurrency, resultSetHoldability));
+        return new StatementProxy(connection.createStatement(resultSetType, resultSetConcurrency, resultSetHoldability),interceptState);
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
-        return new PreparedStatementProxy(connection.prepareStatement(SQLRunningContext.getInstance().intercept(sql), resultSetType, resultSetConcurrency, resultSetHoldability));
+        this.interceptState = SQLRunningContext.getInstance().intercept(sql);
+        return new PreparedStatementProxy(connection.prepareStatement(interceptState.getSql(), resultSetType, resultSetConcurrency, resultSetHoldability),interceptState);
     }
 
     @Override
     public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
-        return new CallableStatementProxy(connection.prepareCall(SQLRunningContext.getInstance().intercept(sql), resultSetType, resultSetConcurrency, resultSetHoldability));
+        this.interceptState = SQLRunningContext.getInstance().intercept(sql);
+        return new CallableStatementProxy(connection.prepareCall(interceptState.getSql(), resultSetType, resultSetConcurrency, resultSetHoldability),interceptState);
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException {
-        return new PreparedStatementProxy(connection.prepareStatement(SQLRunningContext.getInstance().intercept(sql), autoGeneratedKeys));
+        this.interceptState = SQLRunningContext.getInstance().intercept(sql);
+        return new PreparedStatementProxy(connection.prepareStatement(interceptState.getSql(), autoGeneratedKeys),interceptState);
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException {
-        return new PreparedStatementProxy(connection.prepareStatement(SQLRunningContext.getInstance().intercept(sql), columnIndexes));
+        this.interceptState = SQLRunningContext.getInstance().intercept(sql);
+        return new PreparedStatementProxy(connection.prepareStatement(interceptState.getSql(), columnIndexes),interceptState);
     }
 
     @Override
     public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException {
-        return new PreparedStatementProxy(connection.prepareStatement(SQLRunningContext.getInstance().intercept(sql), columnNames));
+        this.interceptState = SQLRunningContext.getInstance().intercept(sql);
+        return new PreparedStatementProxy(connection.prepareStatement(interceptState.getSql(), columnNames),interceptState);
     }
 
     @Override

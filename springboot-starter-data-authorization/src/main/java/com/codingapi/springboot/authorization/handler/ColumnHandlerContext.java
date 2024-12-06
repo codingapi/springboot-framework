@@ -1,5 +1,6 @@
 package com.codingapi.springboot.authorization.handler;
 
+import com.codingapi.springboot.authorization.interceptor.SQLInterceptState;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,75 +27,75 @@ public class ColumnHandlerContext {
     private ColumnHandler columnHandler;
 
 
-    public String getString(int columnIndex, String tableName, String columnName, String value) {
-        return columnHandler.getString(columnIndex, tableName, columnName, value);
+    public String getString(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, String value) {
+        return columnHandler.getString(interceptState,columnIndex, tableName, columnName, value);
     }
 
-    public short getShort(int columnIndex, String tableName, String columnName, short value) {
-        return columnHandler.getShort(columnIndex, tableName, columnName, value);
+    public short getShort(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, short value) {
+        return columnHandler.getShort(interceptState,columnIndex, tableName, columnName, value);
     }
 
-    public boolean getBoolean(int columnIndex, String tableName, String columnName, boolean value) {
-        return columnHandler.getBoolean(columnIndex, tableName, columnName, value);
+    public boolean getBoolean(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, boolean value) {
+        return columnHandler.getBoolean(interceptState,columnIndex, tableName, columnName, value);
     }
 
-    public byte getByte(int columnIndex, String tableName, String columnName, byte value) {
-        return columnHandler.getByte(columnIndex, tableName, columnName, value);
+    public byte getByte(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, byte value) {
+        return columnHandler.getByte(interceptState,columnIndex, tableName, columnName, value);
     }
 
-    public int getInt(int columnIndex, String tableName, String columnName, int value) {
-        return columnHandler.getInt(columnIndex, tableName, columnName, value);
+    public int getInt(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, int value) {
+        return columnHandler.getInt(interceptState,columnIndex, tableName, columnName, value);
     }
 
-    public long getLong(int columnIndex, String tableName, String columnName, long value) {
-        return columnHandler.getLong(columnIndex, tableName, columnName, value);
+    public long getLong(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, long value) {
+        return columnHandler.getLong(interceptState,columnIndex, tableName, columnName, value);
     }
 
-    public float getFloat(int columnIndex, String tableName, String columnName, float value) {
-        return columnHandler.getFloat(columnIndex, tableName, columnName, value);
+    public float getFloat(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, float value) {
+        return columnHandler.getFloat(interceptState,columnIndex, tableName, columnName, value);
     }
 
-    public double getDouble(int columnIndex, String tableName, String columnName, double value) {
-        return columnHandler.getDouble(columnIndex, tableName, columnName, value);
+    public double getDouble(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, double value) {
+        return columnHandler.getDouble(interceptState,columnIndex, tableName, columnName, value);
     }
 
-    public BigDecimal getBigDecimal(int columnIndex, String tableName, String columnName, BigDecimal value) {
-        return columnHandler.getBigDecimal(columnIndex, tableName, columnName, value);
+    public BigDecimal getBigDecimal(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, BigDecimal value) {
+        return columnHandler.getBigDecimal(interceptState,columnIndex, tableName, columnName, value);
     }
 
-    public byte[] getBytes(int columnIndex, String tableName, String columnName, byte[] value) {
-        return columnHandler.getBytes(columnIndex, tableName, columnName, value);
+    public byte[] getBytes(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, byte[] value) {
+        return columnHandler.getBytes(interceptState,columnIndex, tableName, columnName, value);
     }
 
-    public Timestamp getTimestamp(int columnIndex, String tableName, String columnName, Timestamp value) {
-        return columnHandler.getTimestamp(columnIndex, tableName, columnName, value);
+    public Timestamp getTimestamp(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, Timestamp value) {
+        return columnHandler.getTimestamp(interceptState,columnIndex, tableName, columnName, value);
     }
 
-    public Time getTime(int columnIndex, String tableName, String columnName, Time value) {
-        return columnHandler.getTime(columnIndex, tableName, columnName, value);
+    public Time getTime(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, Time value) {
+        return columnHandler.getTime(interceptState,columnIndex, tableName, columnName, value);
     }
 
-    public Date getDate(int columnIndex, String tableName, String columnName, Date value) {
-        return columnHandler.getDate(columnIndex, tableName, columnName, value);
+    public Date getDate(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, Date value) {
+        return columnHandler.getDate(interceptState,columnIndex, tableName, columnName, value);
     }
 
-    public InputStream getAsciiStream(int columnIndex, String tableName, String columnName, InputStream value) {
-        return columnHandler.getAsciiStream(columnIndex, tableName, columnName, value);
+    public InputStream getAsciiStream(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, InputStream value) {
+        return columnHandler.getAsciiStream(interceptState,columnIndex, tableName, columnName, value);
     }
 
-    public InputStream getUnicodeStream(int columnIndex, String tableName, String columnName, InputStream value) {
-        return columnHandler.getUnicodeStream(columnIndex, tableName, columnName, value);
+    public InputStream getUnicodeStream(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, InputStream value) {
+        return columnHandler.getUnicodeStream(interceptState,columnIndex, tableName, columnName, value);
     }
 
-    public InputStream getBinaryStream(int columnIndex, String tableName, String columnName, InputStream value) {
-        return columnHandler.getBinaryStream(columnIndex, tableName, columnName, value);
+    public InputStream getBinaryStream(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, InputStream value) {
+        return columnHandler.getBinaryStream(interceptState,columnIndex, tableName, columnName, value);
     }
 
-    public Object getObject(int columnIndex, String tableName, String columnName, Object value) {
-        return columnHandler.getObject(columnIndex, tableName, columnName, value);
+    public Object getObject(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, Object value) {
+        return columnHandler.getObject(interceptState,columnIndex, tableName, columnName, value);
     }
 
-    public Reader getCharacterStream(int columnIndex, String tableName, String columnName, Reader value) {
-        return columnHandler.getCharacterStream(columnIndex, tableName, columnName, value);
+    public Reader getCharacterStream(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, Reader value) {
+        return columnHandler.getCharacterStream(interceptState,columnIndex, tableName, columnName, value);
     }
 }

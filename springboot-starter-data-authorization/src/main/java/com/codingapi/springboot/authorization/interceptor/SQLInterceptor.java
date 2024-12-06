@@ -27,7 +27,12 @@ public interface SQLInterceptor {
     String postHandler(String sql) throws SQLException;
 
 
-
+    /**
+     * 后置处理
+     * @param sql sql
+     * @param newSql newSql
+     * @param exception exception
+     */
     void afterHandler(String sql, String newSql, SQLException exception);
 
 

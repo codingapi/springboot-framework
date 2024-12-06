@@ -15,18 +15,18 @@ public class SQLRunningContext {
     private SQLRunningContext() {
     }
 
-    public String intercept(String sql) throws SQLException {
+    public SQLInterceptState intercept(String sql) throws SQLException {
         SQLInterceptor sqlInterceptor = SQLInterceptorContext.getInstance().getSqlInterceptor();
         if (sqlInterceptor.beforeHandler(sql)) {
             try {
                 String newSql = sqlInterceptor.postHandler(sql);
                 sqlInterceptor.afterHandler(sql, newSql, null);
-                return newSql;
+                return SQLInterceptState.intercept(sql, newSql);
             } catch (SQLException exception) {
                 sqlInterceptor.afterHandler(sql, null, exception);
                 throw exception;
             }
         }
-        return sql;
+        return SQLInterceptState.unIntercept(sql);
     }
 }

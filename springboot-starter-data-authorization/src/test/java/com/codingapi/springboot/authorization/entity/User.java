@@ -33,11 +33,17 @@ public class User {
 
     private String phone;
 
-    public User(String name, LocalDate birthDate, String address, String idCard, String phone) {
+    private long unitId;
+
+    private long departId;
+
+    public User(String name, LocalDate birthDate, String address, String idCard, String phone,Depart depart) {
         this.name = name;
         this.birthDate = birthDate;
         this.address = address;
         this.idCard = idCard;
         this.phone = phone;
+        this.unitId = depart.getUnitId();
+        this.departId = depart.getId();
     }
 }
