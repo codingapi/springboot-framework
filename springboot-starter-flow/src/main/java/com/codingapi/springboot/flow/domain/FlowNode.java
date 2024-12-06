@@ -19,7 +19,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.util.StringUtils;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 流程节点
@@ -101,21 +103,30 @@ public class FlowNode {
      */
     private List<FlowButton> buttons;
 
+    /**
+     * 按钮顺序
+     */
+    public List<FlowButton> getButtons() {
+        if (buttons != null) {
+            return buttons.stream().sorted(Comparator.comparingInt(FlowButton::getOrder)).collect(Collectors.toList());
+        }
+        return null;
+    }
 
-    public void verify(){
+    public void verify() {
         if (this.titleGenerator == null) {
             throw new IllegalArgumentException("titleGenerator is null");
         }
         if (this.operatorMatcher == null) {
             throw new IllegalArgumentException("operatorMatcher is null");
         }
-        if(timeout<0){
+        if (timeout < 0) {
             throw new IllegalArgumentException("timeout is less than 0");
         }
-        if(!StringUtils.hasLength(id)){
+        if (!StringUtils.hasLength(id)) {
             throw new IllegalArgumentException("id is empty");
         }
-        if(!StringUtils.hasLength(code)){
+        if (!StringUtils.hasLength(code)) {
             throw new IllegalArgumentException("code is empty");
         }
     }
@@ -206,8 +217,7 @@ public class FlowNode {
                                    String title,
                                    IFlowOperator createOperator,
                                    IFlowOperator currentOperator,
-                                   BindDataSnapshot snapshot
-                                   ) {
+                                   BindDataSnapshot snapshot) {
 
         // 当前操作者存在委托人时，才需要寻找委托人
         IFlowOperator flowOperator = currentOperator;
