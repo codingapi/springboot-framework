@@ -97,10 +97,12 @@ export class FlowData extends FlowWorkData {
         this.formParams = formParams;
     }
 
+    // 是否可以审批
     canHandle = () => {
         return this.data.canHandle;
     }
 
+    // 是否是开始节点
     isStartFlow = () => {
         if (this.data) {
             return this.data.flowNode.startNode;
@@ -108,6 +110,15 @@ export class FlowData extends FlowWorkData {
         return false;
     }
 
+    // 获取当前节点的code
+    getNodeCode = () => {
+        if (this.data) {
+            return this.data.flowNode.code;
+        }
+        return null;
+    }
+
+    // 获取当前节点的按钮
     getNodeButtons = () => {
         if (this.data) {
             return this.data.flowNode.buttons;
@@ -115,6 +126,7 @@ export class FlowData extends FlowWorkData {
         return null;
     }
 
+    // 获取当前节点的标题
     getCurrentNodeTitle = () => {
         if (this.data) {
             const node = this.data.flowNode;
@@ -125,6 +137,7 @@ export class FlowData extends FlowWorkData {
         return null;
     }
 
+    // 获取当前节点的视图 （内部使用）
     getFlowFormView(view: React.ComponentType<FlowFormViewProps> | FlowFormView) {
         if (typeof view === 'object') {
             const nodeView = this.data.flowNode.view;
@@ -133,7 +146,7 @@ export class FlowData extends FlowWorkData {
         return view;
     }
 
-
+    // 获取当前节点是否可编辑
     getFlowNodeEditable = () => {
         if (this.data) {
             const node = this.data.flowNode;
@@ -144,6 +157,7 @@ export class FlowData extends FlowWorkData {
         return false
     }
 
+    // 获取当前节点的表单数据
     getFlowData = () => {
         return {
             ...this.data.bindData,
@@ -151,7 +165,7 @@ export class FlowData extends FlowWorkData {
         }
     }
 
-
+    // 获取当前节点的表单数据 （内部使用）
     getNodeState = (code: string) => {
         const historyRecords = this.data.historyRecords || [];
 
@@ -160,9 +174,9 @@ export class FlowData extends FlowWorkData {
             return "done";
         }
 
-        for(const record of historyRecords){
-            if(record.nodeCode === code){
-                if(record.flowType==='TODO'){
+        for (const record of historyRecords) {
+            if (record.nodeCode === code) {
+                if (record.flowType === 'TODO') {
                     return "wait";
                 }
                 return "done";
@@ -172,6 +186,7 @@ export class FlowData extends FlowWorkData {
         return "wait";
     }
 
+    // 获取当前节点的流程图
     getFlowSchema = () => {
 
         if (this.data.flowWork.schema) {
@@ -186,18 +201,22 @@ export class FlowData extends FlowWorkData {
         return null;
     }
 
+    // 是否存在数据
     hasData() {
         return !!this.data;
     }
 
+    // 获取当前的详情的记录数据
     getCurrentFlowRecord = () => {
         return this.data.flowRecord;
     }
 
+    // 获取历史记录
     getHistoryRecords = () => {
         return this.data.historyRecords;
     }
 
+    // 是否是审批完成
     isDone() {
         if (this.data.flowRecord) {
             return this.data.flowRecord.flowStatus === 'FINISH' || this.data.flowRecord.flowType === 'DONE';
@@ -205,6 +224,7 @@ export class FlowData extends FlowWorkData {
         return false;
     }
 
+    // 是否是结束节点
     private isFinished() {
         if (this.data.flowRecord) {
             return this.data.flowRecord.flowStatus === 'FINISH';
@@ -212,13 +232,15 @@ export class FlowData extends FlowWorkData {
         return false;
     }
 
+    // 是否需要展示流转记录 （内部使用）
     showHistory() {
-        if(this.isDone()){
+        if (this.isDone()) {
             return true;
         }
         return !this.isStartFlow();
     }
 
+    // 是否展示审批意见 （内部使用）
     showOpinion() {
         return this.canHandle() && !this.isStartFlow();
     }

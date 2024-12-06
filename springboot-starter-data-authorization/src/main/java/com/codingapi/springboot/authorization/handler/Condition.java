@@ -2,6 +2,9 @@ package com.codingapi.springboot.authorization.handler;
 
 import lombok.Getter;
 
+/**
+ *  查询条件
+ */
 @Getter
 public class Condition {
 
