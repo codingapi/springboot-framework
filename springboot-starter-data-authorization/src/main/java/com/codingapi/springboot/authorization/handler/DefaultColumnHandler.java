@@ -6,9 +6,8 @@ import com.codingapi.springboot.authorization.interceptor.SQLInterceptState;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.net.URL;
+import java.sql.*;
 
 /**
  *  默认ResultSet 拦截器
@@ -102,6 +101,61 @@ public class DefaultColumnHandler implements ColumnHandler {
 
     @Override
     public Reader getCharacterStream(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, Reader value) {
+        return DataAuthorizationContext.getInstance().columnAuthorization(interceptState,tableName, columnName, value);
+    }
+
+    @Override
+    public Ref getRef(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, Ref value) {
+        return DataAuthorizationContext.getInstance().columnAuthorization(interceptState,tableName, columnName, value);
+    }
+
+    @Override
+    public Blob getBlob(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, Blob value) {
+        return DataAuthorizationContext.getInstance().columnAuthorization(interceptState,tableName, columnName, value);
+    }
+
+    @Override
+    public Clob getClob(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, Clob value) {
+        return DataAuthorizationContext.getInstance().columnAuthorization(interceptState,tableName, columnName, value);
+    }
+
+    @Override
+    public Array getArray(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, Array value) {
+        return DataAuthorizationContext.getInstance().columnAuthorization(interceptState,tableName, columnName, value);
+    }
+
+    @Override
+    public URL getURL(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, URL value) {
+        return DataAuthorizationContext.getInstance().columnAuthorization(interceptState,tableName, columnName, value);
+    }
+
+    @Override
+    public NClob getNClob(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, NClob value) {
+        return DataAuthorizationContext.getInstance().columnAuthorization(interceptState,tableName, columnName, value);
+    }
+
+    @Override
+    public SQLXML getSQLXML(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, SQLXML value) {
+        return DataAuthorizationContext.getInstance().columnAuthorization(interceptState,tableName, columnName, value);
+    }
+
+    @Override
+    public String getNString(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, String value) {
+        return DataAuthorizationContext.getInstance().columnAuthorization(interceptState,tableName, columnName, value);
+    }
+
+    @Override
+    public Reader getNCharacterStream(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, Reader value) {
+        return DataAuthorizationContext.getInstance().columnAuthorization(interceptState,tableName, columnName, value);
+    }
+
+    @Override
+    public RowId getRowId(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, RowId value) {
+        return DataAuthorizationContext.getInstance().columnAuthorization(interceptState,tableName, columnName, value);
+    }
+
+    @Override
+    public <T> T getObject(SQLInterceptState interceptState, int columnIndex, String tableName, String columnName, T value, Class<T> type) {
         return DataAuthorizationContext.getInstance().columnAuthorization(interceptState,tableName, columnName, value);
     }
 }
