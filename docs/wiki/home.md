@@ -18,6 +18,12 @@ maven install
         <version>${last.version}</version>
     </dependency>
     
+     <!-- 数据权限框架 -->
+     <dependency>
+        <groupId>com.codingapi.springboot</groupId>
+        <artifactId>springboot-starter-data-authorization</artifactId>
+        <version>${last.version}</version>
+     </dependency>
     
      <!-- security&jwt权限框架 -->
      <dependency>
@@ -31,4 +37,4 @@ maven install
 [springboot-starter](./springboot-starter)  
 [springboot-starter-security](./springboot-starter-security)  
 [springboot-starter-data-fast](./springboot-starter-data-fast.md)   
- 
+[springboot-starter-data-authorization](./springboot-starter-data-authorization.md)   
