@@ -103,10 +103,14 @@ public class FlowDetail {
     public final class FlowOpinion {
         private final long recordId;
         private final Opinion opinion;
+        private final String nodeCode;
+        private final String nodeName;
         private final IFlowOperator operator;
         private final long createTime;
 
         public FlowOpinion(FlowRecord flowRecord) {
+            this.nodeCode = flowRecord.getNodeCode();
+            this.nodeName = flowWork.getNodeByCode(nodeCode).getName();
             this.recordId = flowRecord.getId();
             this.opinion = flowRecord.getOpinion();
             this.operator = flowRecord.getCurrentOperator();
