@@ -217,6 +217,22 @@ export class FlowData extends FlowWorkData {
         return this.data.flowRecord;
     }
 
+    // 获取审批意见
+    getOpinionAdvice = () => {
+        if(this.data.flowRecord){
+            if(this.data.flowRecord.opinion){
+                return this.data.flowRecord.opinion.advice;
+            }
+        }
+        return null;
+    }
+
+
+    // 获取历史审批意见
+    getOpinions() {
+        return this.data.opinions;
+    }
+
     // 获取历史记录
     getHistoryRecords = () => {
         return this.data.historyRecords;
@@ -250,5 +266,6 @@ export class FlowData extends FlowWorkData {
     showOpinion() {
         return this.canHandle() && !this.isStartFlow();
     }
+
 }
 

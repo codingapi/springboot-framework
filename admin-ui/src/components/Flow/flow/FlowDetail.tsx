@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Divider, Result} from "antd";
 import {ProForm, ProFormTextArea} from "@ant-design/pro-components";
 import {CustomButtonType, FlowFormView, FlowFormViewProps} from "@/components/Flow/flow/types";
@@ -10,12 +10,13 @@ import {
     hideOpinionEditor,
     showOpinionEditor
 } from "@/components/Flow/store/FlowSlice";
+import {FormInstance} from "antd/es/form/hooks/useForm";
 
 interface FlowDetailProps {
     view: React.ComponentType<FlowFormViewProps> | FlowFormView;
     visible: boolean;
     form: any;
-    adviceForm: any;
+    adviceForm: FormInstance<any>;
     review?: boolean;
     flowData: FlowData;
     // 流程交互操作
@@ -39,6 +40,15 @@ const FlowDetail: React.FC<FlowDetailProps> = (props) => {
     // flow store redux
     const dispatch = useDispatch();
 
+    useEffect(() => {
+        if(props.visible){
+            const advice = flowData.getOpinionAdvice();
+            props.adviceForm.setFieldsValue({
+                advice: advice
+            });
+        }
+    }, [props.visible]);
+
     return (
         <>
             <div className="flowApprovalViewBox">
@@ -51,6 +61,7 @@ const FlowDetail: React.FC<FlowDetailProps> = (props) => {
                             form={props.form}
                             flowData={flowData}
                             visible={props.visible}
+                            opinions={flowData.getOpinions()}
                             editable={!flowData.isDone() && flowData.getFlowNodeEditable()}
                             compare={!flowData.isStartFlow()}
                             triggerClickVisible={triggerClickVisible}
@@ -90,7 +101,6 @@ const FlowDetail: React.FC<FlowDetailProps> = (props) => {
                             >
                                 <ProFormTextArea
                                     disabled={props.review}
-                                    label={""}
                                     placeholder={'请输入审批意见'}
                                     name={"advice"}
                                 />

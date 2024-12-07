@@ -90,6 +90,7 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
         if (props.id) {
             detail(props.id, null).then(res => {
                 if (res.success) {
+                    adviceForm.resetFields();
                     setData(res.data);
                 }
             });
@@ -97,6 +98,7 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
         if (props.workCode) {
             detail(null, props.workCode).then(res => {
                 if (res.success) {
+                    adviceForm.resetFields();
                     setData(res.data);
                 }
             });

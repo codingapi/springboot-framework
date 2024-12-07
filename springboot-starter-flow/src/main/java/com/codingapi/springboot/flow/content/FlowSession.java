@@ -65,6 +65,18 @@ public class FlowSession {
         return provider.getBean(beanName);
     }
 
+
+    /**
+     *  获取审批意见
+     */
+    public String getAdvice() {
+        if (opinion != null) {
+            return opinion.getAdvice();
+        } else {
+            return null;
+        }
+    }
+
     /**
      * 创建节点结果
      *
