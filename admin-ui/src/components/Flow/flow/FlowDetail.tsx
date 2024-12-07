@@ -88,7 +88,7 @@ const FlowDetail: React.FC<FlowDetailProps> = (props) => {
                 )}
 
                 {/*仅当非发起流程时再展示审批意见框*/}
-                {FlowFormView && flowData.showOpinion() && opinionEditorVisible && (
+                {FlowFormView && opinionEditorVisible && (
                     <div className="opinionForm">
                         <div>
                             <Divider>
