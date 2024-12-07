@@ -175,18 +175,21 @@ export class FlowData extends FlowWorkData {
     getNodeState = (code: string) => {
         const historyRecords = this.data.historyRecords || [];
 
-
-        if (this.isFinished()) {
+        if (code==='over' && this.isFinished()) {
             return "done";
         }
 
         for (const record of historyRecords) {
             if (record.nodeCode === code) {
                 if (record.flowType === 'TODO') {
-                    return "wait";
+                    return "current";
                 }
                 return "done";
             }
+        }
+
+        if(this.isFinished()){
+            return "undone";
         }
 
         return "wait";
@@ -231,9 +234,14 @@ export class FlowData extends FlowWorkData {
     // 获取历史审批意见
     getOpinions() {
         if(this.data.opinions){
-            return this.data.opinions.filter((item:any)=>item.opinion.result!==0);
+            return this.data.opinions.filter((item:any)=>{
+                if(!item.opinion){
+                    return false;
+                }
+                return item.opinion.result!==0;
+            });
         }
-        return this.data.opinions;
+        return [];
     }
 
     // 获取历史记录
