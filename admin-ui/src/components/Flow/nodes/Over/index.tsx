@@ -46,7 +46,7 @@ export const OverView: React.FC<OverProps> = (props) => {
             <div>
                 <span className={"code"}>
                     {props.code && (
-                        <> ({props.code})</>
+                        <>({props.code})</>
                     )}
                 </span>
                 <span className={"title"}>{props.name}</span>
@@ -80,8 +80,10 @@ export const OverView: React.FC<OverProps> = (props) => {
 }
 
 class OverModel extends HtmlNodeModel {
+
     setAttributes() {
-        this.width = 250;
+        const name = this.properties.name as string;
+        this.width = 200 + name.length * 10;
         this.height = 45;
         this.text.editable = false;
         this.menu = [];
