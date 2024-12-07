@@ -230,6 +230,9 @@ export class FlowData extends FlowWorkData {
 
     // 获取历史审批意见
     getOpinions() {
+        if(this.data.opinions){
+            return this.data.opinions.filter((item:any)=>item.opinion.result!==0);
+        }
         return this.data.opinions;
     }
 
