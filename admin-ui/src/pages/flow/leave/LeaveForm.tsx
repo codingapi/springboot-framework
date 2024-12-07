@@ -13,8 +13,13 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
 
     useEffect(() => {
         props.form.setFieldsValue(props.data);
-        // 关闭意见输入框
-        props.opinionEditorVisible && props.opinionEditorVisible(false);
+
+        // 关闭意见输入框,仅当在开始节点关闭
+        if (props.flowData?.getNodeCode() === 'start') {
+            props.opinionEditorVisible && props.opinionEditorVisible(false);
+        } else {
+            props.opinionEditorVisible && props.opinionEditorVisible(true);
+        }
     }, []);
 
     const triggerClickVisible = props.triggerClickVisible;
@@ -61,7 +66,7 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
             />
 
             <Button
-                onClick={()=>{
+                onClick={() => {
                     props.opinionEditorVisible && props.opinionEditorVisible(!opinionEditorVisible);
                 }}
             >
@@ -71,7 +76,7 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
 
             {triggerClickVisible && (
                 <Button
-                    onClick={()=>{
+                    onClick={() => {
                         props.clearTriggerClick && props.clearTriggerClick();
                     }}
                 >点击了自定义事件</Button>
