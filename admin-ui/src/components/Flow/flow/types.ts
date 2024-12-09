@@ -1,6 +1,7 @@
 import React from "react";
 import {FormInstance} from "antd/es/form/hooks/useForm";
 import {FlowData} from "@/components/Flow/flow/data";
+import {clearTriggerEventClick} from "@/components/Flow/store/FlowSlice";
 
 // 自定义按钮类型
 export type CustomButtonType = 'SAVE' | 'START' | 'SUBMIT' | 'TRY_SUBMIT' | 'SPECIFY_SUBMIT' | 'REJECT' | 'TRANSFER' | 'RECALL' | 'POSTPONED' | 'URGE' | 'CUSTOM' | 'VIEW';
@@ -27,11 +28,13 @@ export interface FlowFormViewProps {
         id?: string;
     }) => void;
 
-    // 自定义前端点击事件触发
-    triggerClickVisible?: boolean;
+    // 请求数据加载
+    requestLoading?: boolean;
+    // 设置请求数据加载状态
+    setRequestLoading?: (loading: boolean) => void;
 
-    // 关闭自定义前端点击事件触发
-    clearTriggerClick?: () => void;
+    // 自定义前端点击事件触发事件
+    eventKey?: string;
 
     // 审批意见输入框
     opinionEditorVisible?: (visible: boolean) => void;

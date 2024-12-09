@@ -5,14 +5,14 @@ import {custom, postponed, recall, saveFlow, startFlow, submitFlow, transfer, tr
 import {message} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import {
-    clearTriggerClick,
+    clearTriggerEventClick,
     clearUserSelect,
     closeUserSelect,
     FlowReduxState,
     setUserSelectModal,
     showPostponed,
     showResult,
-    triggerClick
+    triggerEventClick
 } from "@/components/Flow/store/FlowSlice";
 import {FlowUser} from "@/components/Flow/flow/types";
 
@@ -30,8 +30,6 @@ export const registerEvents = (id: string,
     const selectUsers = useSelector((state: FlowReduxState) => state.flow.currentUsers);
 
     const selectUserType = useSelector((state: FlowReduxState) => state.flow.userSelectType);
-
-    const triggerClickVisible = useSelector((state: FlowReduxState) => state.flow.triggerClickVisible);
 
     const dispatch = useDispatch();
 
@@ -437,10 +435,13 @@ export const registerEvents = (id: string,
                 break;
             }
             case 'VIEW': {
-                if (triggerClickVisible) {
-                    dispatch(clearTriggerClick());
-                } else {
-                    dispatch(triggerClick());
+                if (button.id) {
+                    const buttonId = button.id;
+                    const customButton = data.getNodeButton(buttonId);
+                    dispatch(triggerEventClick(customButton.eventKey));
+                    setTimeout(()=>{
+                        dispatch(clearTriggerEventClick());
+                    },300);
                 }
                 break;
             }

@@ -12,17 +12,30 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
     const opinionEditorVisible = useSelector((state: FlowReduxState) => state.flow.opinionEditorVisible);
 
     useEffect(() => {
-        props.form.setFieldsValue(props.data);
+        if(props.visible) {
+            console.log('init props.visible ');
+            props.form.resetFields();
+            props.form.setFieldsValue(props.data);
 
-        // 关闭意见输入框,仅当在开始节点关闭
-        if (props.flowData?.getNodeCode() === 'start') {
-            props.opinionEditorVisible && props.opinionEditorVisible(false);
-        } else {
-            props.opinionEditorVisible && props.opinionEditorVisible(true);
+            // 关闭意见输入框,仅当在开始节点关闭
+            if (props.flowData?.getNodeCode() === 'start') {
+                props.opinionEditorVisible && props.opinionEditorVisible(false);
+            } else {
+                props.opinionEditorVisible && props.opinionEditorVisible(true);
+            }
         }
-    }, []);
+    }, [props.visible]);
 
-    const triggerClickVisible = props.triggerClickVisible;
+    const eventKey = props.eventKey;
+
+    const [visible, setVisible] = React.useState(false);
+
+    useEffect(() => {
+        if (eventKey) {
+            console.log("点击了自定义事件", eventKey);
+            setVisible(true);
+        }
+    }, [eventKey]);
 
     return (
         <ProForm
@@ -73,11 +86,14 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
                 意见输入框
             </Button>
 
-
-            {triggerClickVisible && (
+            {visible && (
                 <Button
                     onClick={() => {
-                        props.clearTriggerClick && props.clearTriggerClick();
+                        props.setRequestLoading && props.setRequestLoading(true);
+                        setTimeout(() => {
+                            setVisible(false);
+                            props.setRequestLoading && props.setRequestLoading(false);
+                        }, 1000)
                     }}
                 >点击了自定义事件</Button>
             )}

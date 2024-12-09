@@ -4,21 +4,19 @@ import {ProForm, ProFormTextArea} from "@ant-design/pro-components";
 import {CustomButtonType, FlowFormView, FlowFormViewProps} from "@/components/Flow/flow/types";
 import {FlowData} from "@/components/Flow/flow/data";
 import {useDispatch, useSelector} from "react-redux";
-import {
-    clearTriggerClick,
-    FlowReduxState,
-    hideOpinionEditor,
-    showOpinionEditor
-} from "@/components/Flow/store/FlowSlice";
+import {FlowReduxState, hideOpinionEditor, showOpinionEditor} from "@/components/Flow/store/FlowSlice";
 import {FormInstance} from "antd/es/form/hooks/useForm";
 
 interface FlowDetailProps {
     view: React.ComponentType<FlowFormViewProps> | FlowFormView;
-    visible: boolean;
-    form: any;
+    form: FormInstance<any>;
     adviceForm: FormInstance<any>;
     review?: boolean;
     flowData: FlowData;
+    // 请求数据加载
+    requestLoading: boolean;
+    // 设置请求数据加载状态
+    setRequestLoading: (loading: boolean) => void;
     // 流程交互操作
     handlerClick: (data: {
         type: CustomButtonType;
@@ -31,23 +29,26 @@ const FlowDetail: React.FC<FlowDetailProps> = (props) => {
 
     const FlowFormView = flowData.getFlowFormView(props.view) as React.ComponentType<FlowFormViewProps>;
 
-    // 触发点击事件
-    const triggerClickVisible = useSelector((state: FlowReduxState) => state.flow.triggerClickVisible);
+    // 触发点击事件Key
+    const eventKey = useSelector((state: FlowReduxState) => state.flow.eventKey);
 
     // 审批意见输入框
     const opinionEditorVisible = useSelector((state: FlowReduxState) => state.flow.opinionEditorVisible);
+
+    // 流程视图内容
+    const flowViewVisible = useSelector((state: FlowReduxState) => state.flow.flowViewVisible);
 
     // flow store redux
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if(props.visible){
+        if (flowViewVisible) {
             const advice = flowData.getOpinionAdvice();
             props.adviceForm.setFieldsValue({
                 advice: advice
             });
         }
-    }, [props.visible]);
+    }, [flowViewVisible]);
 
     return (
         <>
@@ -60,20 +61,19 @@ const FlowDetail: React.FC<FlowDetailProps> = (props) => {
                             data={flowData.getFlowData()}
                             form={props.form}
                             flowData={flowData}
-                            visible={props.visible}
+                            visible={flowViewVisible}
                             opinions={flowData.getOpinions()}
                             editable={!flowData.isDone() && flowData.getFlowNodeEditable()}
                             compare={!flowData.isStartFlow()}
-                            triggerClickVisible={triggerClickVisible}
+                            eventKey={eventKey}
+                            requestLoading={props.requestLoading}
+                            setRequestLoading={props.setRequestLoading}
                             opinionEditorVisible={(visible) => {
                                 if (visible) {
                                     dispatch(showOpinionEditor());
                                 } else {
                                     dispatch(hideOpinionEditor());
                                 }
-                            }}
-                            clearTriggerClick={() => {
-                                dispatch(clearTriggerClick());
                             }}
                         />
                     </div>

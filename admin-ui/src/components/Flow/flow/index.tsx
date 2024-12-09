@@ -23,9 +23,9 @@ import {
     clearResult,
     closeUserSelect,
     FlowReduxState,
-    flowStore,
+    flowStore, hideFlowView,
     setSelectUsers,
-    setTimeOut
+    setTimeOut, showFlowView
 } from "@/components/Flow/store/FlowSlice";
 import "./index.scss";
 
@@ -80,7 +80,8 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
     const userSelectMode = useSelector((state: FlowReduxState) => state.flow.userSelectMode);
     // 选人类型
     const userSelectType = useSelector((state: FlowReduxState) => state.flow.userSelectType);
-
+    // 流程视图内容
+    const flowViewVisible = useSelector((state: FlowReduxState) => state.flow.flowViewVisible);
 
     // flow store redux
     const dispatch = useDispatch();
@@ -110,9 +111,20 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
         setData(null);
         setRecordId(props.id);
         if (props.visible) {
+            dispatch(showFlowView());
             loadFlowDetail();
+        }else{
+            dispatch(hideFlowView());
         }
     }, [props.visible]);
+
+
+    // 关闭视图时回掉父级关闭对象
+    useEffect(() => {
+        if(!flowViewVisible){
+            props.setVisible(false);
+        }
+    }, [flowViewVisible]);
 
 
     // 注册事件
@@ -160,7 +172,6 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
             closable={false}
             title={
                 <FlowTitle
-                    setVisible={props.setVisible}
                     flowData={new FlowData(data, props.formParams)}
                     requestLoading={requestLoading}
                     setRequestLoading={setRequestLoading}
@@ -174,7 +185,8 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
                 handlerClick={handlerClicks}
                 flowData={new FlowData(data, props.formParams)}
                 view={props.view}
-                visible={props.visible}
+                requestLoading={requestLoading}
+                setRequestLoading={setRequestLoading}
                 form={viewForm}
                 adviceForm={adviceForm}
                 review={props.review}

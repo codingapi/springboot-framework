@@ -58,6 +58,7 @@ const FlowUtils = {
                 item.type = button.type;
                 item.order = button.order;
                 item.groovy = button.groovy;
+                item.eventKey = button.eventKey;
 
                 update = true;
             }

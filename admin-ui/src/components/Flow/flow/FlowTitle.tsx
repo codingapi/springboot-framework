@@ -2,9 +2,10 @@ import React from "react";
 import {Button, Space} from "antd";
 import {FlowData} from "@/components/Flow/flow/data";
 import FlowButtons from "@/components/Flow/flow/FlowButtons";
+import {useDispatch} from "react-redux";
+import {hideFlowView} from "@/components/Flow/store/FlowSlice";
 
 interface FlowTitleProps {
-    setVisible: (visible: boolean) => void;
     flowData: FlowData;
     requestLoading: boolean;
     setRequestLoading: (loading: boolean) => void;
@@ -16,6 +17,9 @@ const FlowTitle: React.FC<FlowTitleProps> = (props) => {
     const flowData = props.flowData;
 
     const title = flowData.getCurrentNodeTitle();
+
+    // flow store redux
+    const dispatch = useDispatch();
 
     return (
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
@@ -31,7 +35,7 @@ const FlowTitle: React.FC<FlowTitleProps> = (props) => {
 
                 <Button
                     onClick={() => {
-                        props.setVisible(false);
+                        dispatch(hideFlowView());
                     }}
                 >
                     关闭

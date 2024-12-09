@@ -6,16 +6,21 @@ import {FormInstance} from "antd/es/form/hooks/useForm";
 import FlowHistory from "@/components/Flow/flow/FlowHistory";
 import FlowChart from "@/components/Flow/flow/FlowChart";
 import FlowDetail from "@/components/Flow/flow/FlowDetail";
+import {useSelector} from "react-redux";
+import {FlowReduxState} from "@/components/Flow/store/FlowSlice";
 
 
 interface FlowTabsProps {
     flowData: FlowData;
     view: React.ComponentType<FlowFormViewProps> | FlowFormView;
-    visible: boolean;
     form: FormInstance<any>;
     adviceForm: FormInstance<any>;
     // 预览模式
     review?: boolean;
+    // 请求数据加载
+    requestLoading: boolean;
+    // 设置请求数据加载状态
+    setRequestLoading: (loading: boolean) => void;
 
     // 流程交互操作
     handlerClick: (data: {
@@ -76,7 +81,8 @@ const FlowTabs: React.FC<FlowTabsProps> = (props) => {
                     flowData={flowData}
                     adviceForm={props.adviceForm}
                     form={props.form}
-                    visible={props.visible}
+                    requestLoading={props.requestLoading}
+                    setRequestLoading={props.setRequestLoading}
                     view={props.view}/>
             ),
         },
