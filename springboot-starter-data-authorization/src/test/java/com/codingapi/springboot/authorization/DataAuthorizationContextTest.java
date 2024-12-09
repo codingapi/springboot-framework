@@ -6,7 +6,7 @@ import com.codingapi.springboot.authorization.entity.Unit;
 import com.codingapi.springboot.authorization.entity.User;
 import com.codingapi.springboot.authorization.filter.DefaultDataAuthorizationFilter;
 import com.codingapi.springboot.authorization.handler.Condition;
-import com.codingapi.springboot.authorization.jdbc.proxy.SQLRunningContext;
+import com.codingapi.springboot.authorization.interceptor.SQLRunningContext;
 import com.codingapi.springboot.authorization.mask.ColumnMaskContext;
 import com.codingapi.springboot.authorization.mask.impl.BankCardMask;
 import com.codingapi.springboot.authorization.mask.impl.IDCardMask;
@@ -75,7 +75,8 @@ public class DataAuthorizationContextTest {
                     long departId = CurrentUser.getInstance().getUser().getDepartId();
                     String conditionTemplate = "%s.id = " + departId;
 
-                    List<Depart> departs =  SQLRunningContext.getInstance().run(() -> departRepository.findAll());
+                    // 在条件处理的过程中，执行的查询都将不会被拦截
+                    List<Depart> departs =  departRepository.findAll();
                     log.info("departs:{}", departs);
 
                     return Condition.formatCondition(conditionTemplate, tableAlias);
