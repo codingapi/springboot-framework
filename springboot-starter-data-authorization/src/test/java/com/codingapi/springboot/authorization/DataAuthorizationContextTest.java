@@ -6,6 +6,7 @@ import com.codingapi.springboot.authorization.entity.Unit;
 import com.codingapi.springboot.authorization.entity.User;
 import com.codingapi.springboot.authorization.filter.DefaultDataAuthorizationFilter;
 import com.codingapi.springboot.authorization.handler.Condition;
+import com.codingapi.springboot.authorization.jdbc.proxy.SQLRunningContext;
 import com.codingapi.springboot.authorization.mask.ColumnMaskContext;
 import com.codingapi.springboot.authorization.mask.impl.BankCardMask;
 import com.codingapi.springboot.authorization.mask.impl.IDCardMask;
@@ -25,6 +26,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.Rollback;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -72,6 +74,10 @@ public class DataAuthorizationContextTest {
                 if (tableName.equalsIgnoreCase("t_depart")) {
                     long departId = CurrentUser.getInstance().getUser().getDepartId();
                     String conditionTemplate = "%s.id = " + departId;
+
+                    List<Depart> departs =  SQLRunningContext.getInstance().run(() -> departRepository.findAll());
+                    log.info("departs:{}", departs);
+
                     return Condition.formatCondition(conditionTemplate, tableAlias);
                 }
                 if (tableName.equalsIgnoreCase("t_user")) {
