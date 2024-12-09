@@ -6,7 +6,6 @@ import com.codingapi.springboot.authorization.entity.Unit;
 import com.codingapi.springboot.authorization.entity.User;
 import com.codingapi.springboot.authorization.filter.DefaultDataAuthorizationFilter;
 import com.codingapi.springboot.authorization.handler.Condition;
-import com.codingapi.springboot.authorization.interceptor.SQLRunningContext;
 import com.codingapi.springboot.authorization.mask.ColumnMaskContext;
 import com.codingapi.springboot.authorization.mask.impl.BankCardMask;
 import com.codingapi.springboot.authorization.mask.impl.IDCardMask;
@@ -76,8 +75,9 @@ public class DataAuthorizationContextTest {
                     String conditionTemplate = "%s.id = " + departId;
 
                     // 在条件处理的过程中，执行的查询都将不会被拦截
-                    List<Depart> departs =  departRepository.findAll();
+                    List<Depart> departs = departRepository.findAll();
                     log.info("departs:{}", departs);
+                    assertEquals(2, departs.size());
 
                     return Condition.formatCondition(conditionTemplate, tableAlias);
                 }
@@ -187,7 +187,7 @@ public class DataAuthorizationContextTest {
 
         PageRequest request = PageRequest.of(0, 100);
         Page<User> users = userRepository.findAll(request);
-        assertTrue( users.getTotalElements()>=3);
+        assertTrue(users.getTotalElements() >= 3);
 
         for (User user : users) {
             assertEquals("138****5678", user.getPhone());
@@ -196,7 +196,7 @@ public class DataAuthorizationContextTest {
         CurrentUser.getInstance().setUser(lorne);
 
         users = userRepository.findAll(request);
-        assertTrue( users.getTotalElements()>=3);
+        assertTrue(users.getTotalElements() >= 3);
 
         for (User user : users) {
             assertEquals("13812345678", user.getPhone());
