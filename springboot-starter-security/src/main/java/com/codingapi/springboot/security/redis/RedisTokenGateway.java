@@ -38,10 +38,26 @@ public class RedisTokenGateway {
         return JSONObject.parseObject(json, Token.class);
     }
 
+    /**
+     * 删除token
+     * @param token token
+     */
     public void removeToken(String token) {
         redisTemplate.delete(token);
     }
 
+    /**
+     * 重置token
+     * @param token token
+     */
+    public void resetToken(Token token){
+        redisTemplate.opsForValue().set(token.getToken(), token.toJson(), validTime, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * 删除用户
+     * @param username 用户名
+     */
     public void removeUsername(String username) {
         Set<String> keys = redisTemplate.keys(username + ":*");
         if (keys != null && !keys.isEmpty()) {
@@ -49,6 +65,11 @@ public class RedisTokenGateway {
         }
     }
 
+    /**
+     * 自定义删除用户
+     * @param username 用户名
+     * @param predicate 条件
+     */
     public void removeUsername(String username, Predicate<Token> predicate) {
         Set<String> keys = redisTemplate.keys(username + ":*");
         if (keys != null && !keys.isEmpty()) {
