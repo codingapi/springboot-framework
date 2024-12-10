@@ -1,10 +1,12 @@
 import React from "react";
 import {FormInstance} from "antd/es/form/hooks/useForm";
 import {FlowData} from "@/components/Flow/flow/data";
-import {clearTriggerEventClick} from "@/components/Flow/store/FlowSlice";
 
 // 自定义按钮类型
 export type CustomButtonType = 'SAVE' | 'START' | 'SUBMIT' | 'TRY_SUBMIT' | 'SPECIFY_SUBMIT' | 'REJECT' | 'TRANSFER' | 'RECALL' | 'POSTPONED' | 'URGE' | 'CUSTOM' | 'VIEW';
+
+// 流程图中线的类型
+export type EdgeType = 'line' | 'polyline' | 'bezier';
 
 // 表单视图属性
 export interface FlowFormViewProps {

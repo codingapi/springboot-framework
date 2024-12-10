@@ -14,6 +14,7 @@ import NodePanel from "@/components/Flow/layout/NodePanel";
 import {message} from "antd";
 import {copy} from "@/components/Flow/panel/shortcuts";
 import FlowUtils from "@/components/Flow/utils";
+import {EdgeType} from "@/components/Flow/flow/types";
 
 export interface FlowActionType {
     getData: () => any;
@@ -21,12 +22,14 @@ export interface FlowActionType {
 
 interface FlowProps {
     data?: LogicFlow.GraphConfigData;
-    actionRef?: React.Ref<any>
+    actionRef?: React.Ref<any>;
+    edgeType?: EdgeType;
 }
 
 const Flow: React.FC<FlowProps> = (props) => {
     const container = useRef<HTMLDivElement>(null);
     const lfRef = useRef<LogicFlow>(null);
+    const edgeType = props.edgeType || 'polyline';
     const [mapVisible, setMapVisible] = React.useState(false);
 
     if (props.actionRef) {
@@ -69,11 +72,19 @@ const Flow: React.FC<FlowProps> = (props) => {
                     }
                 ]
             },
-            edgeType: 'bezier',
+            edgeType: edgeType,
         });
 
         lfRef.current.setTheme({
             bezier: {
+                stroke: '#8f94e3',
+                strokeWidth: 1,
+            },
+            polyline: {
+                stroke: '#8f94e3',
+                strokeWidth: 1,
+            },
+            line: {
                 stroke: '#8f94e3',
                 strokeWidth: 1,
             },
