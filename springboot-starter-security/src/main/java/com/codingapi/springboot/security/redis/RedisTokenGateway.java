@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.codingapi.springboot.security.gateway.Token;
 import org.springframework.data.redis.core.RedisTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -30,8 +31,14 @@ public class RedisTokenGateway {
         return token;
     }
 
-    public Token parser(String sign) {
-        String json = redisTemplate.opsForValue().get(sign);
+    /**
+     * 根据token获取用户信息
+     *
+     * @param token token
+     * @return 用户信息
+     */
+    public Token getToken(String token) {
+        String json = redisTemplate.opsForValue().get(token);
         if (json == null) {
             return null;
         }
@@ -40,6 +47,7 @@ public class RedisTokenGateway {
 
     /**
      * 删除token
+     *
      * @param token token
      */
     public void removeToken(String token) {
@@ -48,33 +56,49 @@ public class RedisTokenGateway {
 
     /**
      * 重置token
+     *
      * @param token token
      */
-    public void resetToken(Token token){
+    public void resetToken(Token token) {
         redisTemplate.opsForValue().set(token.getToken(), token.toJson(), validTime, TimeUnit.MILLISECONDS);
     }
 
     /**
      * 删除用户
+     *
      * @param username 用户名
      */
     public void removeUsername(String username) {
         Set<String> keys = redisTemplate.keys(username + ":*");
-        if (keys != null && !keys.isEmpty()) {
+        if (!keys.isEmpty()) {
             redisTemplate.delete(keys);
         }
     }
 
+
+    /**
+     * 获取用户的所有token
+     *
+     * @param username 用户名
+     * @return token列表
+     */
+    public List<String> getTokensByUsername(String username) {
+        Set<String> keys = redisTemplate.keys(username + ":*");
+        return new ArrayList<>(keys);
+    }
+
+
     /**
      * 自定义删除用户
-     * @param username 用户名
+     *
+     * @param username  用户名
      * @param predicate 条件
      */
     public void removeUsername(String username, Predicate<Token> predicate) {
         Set<String> keys = redisTemplate.keys(username + ":*");
-        if (keys != null && !keys.isEmpty()) {
+        if (!keys.isEmpty()) {
             for (String key : keys) {
-                Token token = parser(key);
+                Token token = getToken(key);
                 if (token != null && predicate.test(token)) {
                     redisTemplate.delete(key);
                 }
