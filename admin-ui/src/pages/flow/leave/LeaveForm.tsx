@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {ProForm, ProFormDigit, ProFormText, ProFormTextArea} from "@ant-design/pro-components";
-import {FlowFormViewProps} from "@/components/Flow/flow/types";
+import {EVENT_CLOSE_RESULT_VIEW, EVENT_RELOAD_DARA, FlowFormViewProps} from "@/components/Flow/flow/types";
 import {Button} from "antd";
 import {useSelector} from "react-redux";
 import {FlowReduxState} from "@/components/Flow/store/FlowSlice";
@@ -12,7 +12,7 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
     const opinionEditorVisible = useSelector((state: FlowReduxState) => state.flow.opinionEditorVisible);
 
     useEffect(() => {
-        if(props.visible) {
+        if (props.visible) {
             console.log('init props.visible ');
             props.form.resetFields();
             props.form.setFieldsValue(props.data);
@@ -31,11 +31,24 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
     const [visible, setVisible] = React.useState(false);
 
     useEffect(() => {
-        if (eventKey) {
+        if (eventKey ==='test') {
             console.log("点击了自定义事件", eventKey);
             setVisible(true);
         }
+
+        // 当流程审批反馈结果关闭时，重新加载数据
+        if (eventKey==EVENT_CLOSE_RESULT_VIEW && props.flowData?.getNodeCode() ==='start') {
+            // 重新加载数据
+            console.log("重新加载数据");
+            props.handlerClick && props.handlerClick({type: "RELOAD"});
+        }
+
+        if (eventKey==EVENT_RELOAD_DARA) {
+            props.form.resetFields();
+            props.form.setFieldsValue(props.data);
+        }
     }, [eventKey]);
+
 
     return (
         <ProForm

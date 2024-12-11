@@ -23,6 +23,7 @@ export const registerEvents = (id: string,
                                form: FormInstance<any>,
                                adviceForm: FormInstance<any>,
                                setRequestLoading: (loading: boolean) => void,
+                               reload: () => void,
                                closeFlow: () => void) => {
 
     const timeOut = useSelector((state: FlowReduxState) => state.flow.timeOut);
@@ -315,6 +316,11 @@ export const registerEvents = (id: string,
         id?: string
     }) => {
         switch (button.type) {
+            case 'RELOAD': {
+                reload();
+                break;
+            }
+
             case 'SAVE': {
                 // 保存流程，如果没有创建流程先创建，若已经创建则保存
                 if (recordId) {
@@ -439,9 +445,9 @@ export const registerEvents = (id: string,
                     const buttonId = button.id;
                     const customButton = data.getNodeButton(buttonId);
                     dispatch(triggerEventClick(customButton.eventKey));
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         dispatch(clearTriggerEventClick());
-                    },300);
+                    }, 300);
                 }
                 break;
             }

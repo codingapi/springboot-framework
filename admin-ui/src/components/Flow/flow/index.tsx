@@ -5,6 +5,7 @@ import FlowTitle from "@/components/Flow/flow/FlowTitle";
 import {FlowData} from "@/components/Flow/flow/data";
 import FlowTabs from "@/components/Flow/flow/FlowTabs";
 import {
+    EVENT_CLOSE_RESULT_VIEW, EVENT_RELOAD_DARA,
     FlowFormParams,
     FlowFormView,
     FlowFormViewProps,
@@ -21,11 +22,15 @@ import {Provider, useDispatch, useSelector} from "react-redux";
 import {
     clearPostponed,
     clearResult,
+    clearTriggerEventClick,
     closeUserSelect,
     FlowReduxState,
-    flowStore, hideFlowView,
+    flowStore,
+    hideFlowView,
     setSelectUsers,
-    setTimeOut, showFlowView
+    setTimeOut,
+    showFlowView,
+    triggerEventClick
 } from "@/components/Flow/store/FlowSlice";
 import "./index.scss";
 
@@ -106,6 +111,21 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
         }
     }
 
+    // 重新加载数据
+    const reload = () => {
+        detail(recordId, null).then(res => {
+            if (res.success) {
+                setData(res.data);
+                setTimeout(() => {
+                    dispatch(triggerEventClick(EVENT_RELOAD_DARA));
+                    setTimeout(() => {
+                        dispatch(clearTriggerEventClick());
+                    }, 300);
+                }, 300);
+            }
+        });
+    }
+
     // 注册事件
     useEffect(() => {
         setData(null);
@@ -113,15 +133,26 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
         if (props.visible) {
             dispatch(showFlowView());
             loadFlowDetail();
-        }else{
+        } else {
             dispatch(hideFlowView());
         }
     }, [props.visible]);
 
 
+    // 关闭结果视图时的事件回掉
+    useEffect(() => {
+        if (!resultVisible) {
+            dispatch(triggerEventClick(EVENT_CLOSE_RESULT_VIEW));
+            setTimeout(() => {
+                dispatch(clearTriggerEventClick());
+            }, 300);
+        }
+    }, [resultVisible]);
+
+
     // 关闭视图时回掉父级关闭对象
     useEffect(() => {
-        if(!flowViewVisible){
+        if (!flowViewVisible) {
             props.setVisible(false);
         }
     }, [flowViewVisible]);
@@ -135,6 +166,7 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
         viewForm,
         adviceForm,
         setRequestLoading,
+        reload,
         () => {
             props.setVisible(false)
         }
@@ -152,6 +184,9 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
 
     // 用户选人视图
     const UserSelectView = getComponent(UserSelectViewKey) as React.ComponentType<UserSelectProps>;
+
+    // 流程数据
+    const flowData = new FlowData(data, props.formParams);
 
     return (
         <Modal
@@ -172,7 +207,7 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
             closable={false}
             title={
                 <FlowTitle
-                    flowData={new FlowData(data, props.formParams)}
+                    flowData={flowData}
                     requestLoading={requestLoading}
                     setRequestLoading={setRequestLoading}
                     handlerClick={(item: any) => {
@@ -183,7 +218,7 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
         >
             <FlowTabs
                 handlerClick={handlerClicks}
-                flowData={new FlowData(data, props.formParams)}
+                flowData={flowData}
                 view={props.view}
                 requestLoading={requestLoading}
                 setRequestLoading={setRequestLoading}
@@ -219,7 +254,7 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
                 />
             )}
 
-            {UserSelectView && userSelectType &&  (
+            {UserSelectView && userSelectType && (
                 <UserSelectView
                     visible={userSelectVisible}
                     setVisible={() => {
