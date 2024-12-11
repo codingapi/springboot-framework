@@ -52,4 +52,22 @@ class SelectSQLAnalyzerTest {
         System.out.println(builder.getNewSQL());
         assertEquals("SELECT e1_0.id, e1_0.address, e1_0.birth_date, e1_0.depart_id, e1_0.id_card, e1_0.name, e1_0.phone, e1_0.post_id, e1_0.work_id FROM t_employee e1_0 WHERE e1_0.id > 100 LIMIT ?, ?", builder.getNewSQL());
     }
+
+
+    @Test
+    void test3() throws SQLException {
+        String sql = "select aue1_0.ba_org_code from ba03_administrative_unit aue1_0 where aue1_0.ba_org_code like (?||'__') order by aue1_0.ba_org_code desc";
+
+        RowHandler rowHandler = (subSql, tableName, tableAlias) -> {
+            if (tableName.equalsIgnoreCase("ba03_administrative_unit")) {
+                String conditionTemplate = "%s.id > 100 ";
+                return Condition.formatCondition(conditionTemplate, tableAlias);
+            }
+            return null;
+        };
+
+        SelectSQLAnalyzer builder = new SelectSQLAnalyzer(sql, rowHandler);
+        System.out.println(builder.getNewSQL());
+        assertEquals("SELECT aue1_0.ba_org_code FROM ba03_administrative_unit aue1_0 WHERE aue1_0.id > 100 AND aue1_0.ba_org_code LIKE (? || '__') ORDER BY aue1_0.ba_org_code DESC", builder.getNewSQL());
+    }
 }

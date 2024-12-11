@@ -20,7 +20,8 @@ public class SelectSQLAnalyzer {
     private final RowHandler rowHandler;
 
     public SelectSQLAnalyzer(String sql, RowHandler rowHandler) {
-        this.sql = sql;
+        // 如何sql中存在? 则在?后面添加空格
+        this.sql = sql.replaceAll("\\?", " ? ");
         this.rowHandler = rowHandler;
     }
 
