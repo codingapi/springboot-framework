@@ -188,23 +188,30 @@ export const registerEvents = (id: string,
 
     // 预提交
     const handleTrySubmitFlow = (callback: (res: any) => void) => {
-        const advice = adviceForm.getFieldValue('advice');
-        const formData = form.getFieldsValue();
-        const flowData = data.getFlowData();
-        const body = {
-            recordId,
-            advice: advice,
-            success: true,
-            formData: {
-                ...flowData,
-                ...formData,
+        setRequestLoading(true);
+        form.validateFields().then((formData) => {
+            const advice = adviceForm.getFieldValue('advice');
+            const flowData = data.getFlowData();
+            const body = {
+                recordId,
+                advice: advice,
+                success: true,
+                formData: {
+                    ...flowData,
+                    ...formData,
+                }
             }
-        }
-        trySubmitFlow(body).then(res => {
-            if (res.success) {
-                callback && callback(res);
-            }
-        })
+            trySubmitFlow(body).then(res => {
+                if (res.success) {
+                    callback && callback(res);
+                }
+            }).finally(() => {
+                setRequestLoading(false);
+            });
+        }).catch(e => {
+            console.log(e);
+            setRequestLoading(false);
+        });
     }
 
     // 撤回流程
