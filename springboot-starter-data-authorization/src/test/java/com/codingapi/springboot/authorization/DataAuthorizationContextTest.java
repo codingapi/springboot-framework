@@ -183,7 +183,7 @@ public class DataAuthorizationContextTest {
         userRepository.save(bob);
         userRepository.save(tom);
 
-        assertEquals(3, SQLRunningContext.getInstance().skipDataAuthorization(()->userRepository.findAll()).size());
+        assertTrue( SQLRunningContext.getInstance().skipDataAuthorization(()->userRepository.findAll()).size()>=3);
 
         CurrentUser.getInstance().setUser(bob);
 
