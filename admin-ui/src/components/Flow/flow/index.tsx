@@ -5,7 +5,7 @@ import FlowTitle from "@/components/Flow/flow/FlowTitle";
 import {FlowData} from "@/components/Flow/flow/data";
 import FlowTabs from "@/components/Flow/flow/FlowTabs";
 import {
-    EVENT_CLOSE_RESULT_VIEW, EVENT_RELOAD_DARA,
+    EVENT_CLOSE_RESULT_VIEW, EVENT_RELOAD_DATA,
     FlowFormParams,
     FlowFormView,
     FlowFormViewProps,
@@ -117,7 +117,7 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
             if (res.success) {
                 setData(res.data);
                 setTimeout(() => {
-                    dispatch(triggerEventClick(EVENT_RELOAD_DARA));
+                    dispatch(triggerEventClick(EVENT_RELOAD_DATA));
                     setTimeout(() => {
                         dispatch(clearTriggerEventClick());
                     }, 300);
