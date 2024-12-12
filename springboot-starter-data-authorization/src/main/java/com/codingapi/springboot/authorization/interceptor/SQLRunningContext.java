@@ -14,7 +14,8 @@ public class SQLRunningContext {
 
     private final ThreadLocal<Boolean> skipInterceptor = ThreadLocal.withInitial(() -> false);
 
-    private SQLRunningContext() {}
+    private SQLRunningContext() {
+    }
 
     /**
      * 拦截SQL
@@ -40,7 +41,7 @@ public class SQLRunningContext {
             } catch (SQLException exception) {
                 sqlInterceptor.afterHandler(sql, null, exception);
                 throw exception;
-            }finally {
+            } finally {
                 // 重置拦截器状态
                 skipInterceptor.set(false);
             }
@@ -49,6 +50,19 @@ public class SQLRunningContext {
     }
 
 
-
+    /**
+     * 跳过数据权限拦截
+     * @param supplier 业务逻辑
+     * @return T
+     * @param <T> T
+     */
+    public <T> T skipDataAuthorization(java.util.function.Supplier<T> supplier) {
+        try {
+            skipInterceptor.set(true);
+            return (T) supplier.get();
+        } finally {
+            skipInterceptor.set(false);
+        }
+    }
 
 }

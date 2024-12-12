@@ -6,6 +6,7 @@ import com.codingapi.springboot.authorization.entity.Unit;
 import com.codingapi.springboot.authorization.entity.User;
 import com.codingapi.springboot.authorization.filter.DefaultDataAuthorizationFilter;
 import com.codingapi.springboot.authorization.handler.Condition;
+import com.codingapi.springboot.authorization.interceptor.SQLRunningContext;
 import com.codingapi.springboot.authorization.mask.ColumnMaskContext;
 import com.codingapi.springboot.authorization.mask.impl.BankCardMask;
 import com.codingapi.springboot.authorization.mask.impl.IDCardMask;
@@ -182,6 +183,7 @@ public class DataAuthorizationContextTest {
         userRepository.save(bob);
         userRepository.save(tom);
 
+        assertEquals(3, SQLRunningContext.getInstance().skipDataAuthorization(()->userRepository.findAll()).size());
 
         CurrentUser.getInstance().setUser(bob);
 
