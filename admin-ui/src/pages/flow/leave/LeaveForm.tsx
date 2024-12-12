@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {ProForm, ProFormDigit, ProFormText, ProFormTextArea} from "@ant-design/pro-components";
-import {EVENT_CLOSE_RESULT_VIEW, EVENT_RELOAD_DARA, FlowFormViewProps} from "@/components/Flow/flow/types";
+import {EVENT_CLOSE_RESULT_VIEW, EVENT_RELOAD_DATA, FlowFormViewProps} from "@/components/Flow/flow/types";
 import {Button} from "antd";
 import {useSelector} from "react-redux";
 import {FlowReduxState} from "@/components/Flow/store/FlowSlice";
@@ -43,7 +43,7 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
             props.handlerClick && props.handlerClick({type: "RELOAD"});
         }
 
-        if (eventKey==EVENT_RELOAD_DARA) {
+        if (eventKey==EVENT_RELOAD_DATA) {
             props.form.resetFields();
             props.form.setFieldsValue(props.data);
         }

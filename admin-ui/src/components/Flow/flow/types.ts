@@ -70,7 +70,7 @@ export interface FlowFormParams {
 // 关闭结果视图事件
 export const EVENT_CLOSE_RESULT_VIEW = 'EVENT_CLOSE_RESULT_VIEW';
 // 重新加载数据事件
-export const EVENT_RELOAD_DARA = 'EVENT_RELOAD_DARA';
+export const EVENT_RELOAD_DATA = 'EVENT_RELOAD_DATA';
 
 export const PostponedFormViewKey = 'PostponedFormView';
 
