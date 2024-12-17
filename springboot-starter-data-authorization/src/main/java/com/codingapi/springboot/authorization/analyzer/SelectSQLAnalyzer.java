@@ -70,7 +70,7 @@ public class SelectSQLAnalyzer {
             if (fromItem instanceof Table) {
                 Table table = (Table) fromItem;
                 String tableName = table.getName();
-                String aliaName = table.getAlias() != null ? table.getAlias().getName() : null;
+                String aliaName = table.getAlias() != null ? table.getAlias().getName() : tableName;
                 Condition condition = rowHandler.handler(selectBody.toString(), tableName, aliaName);
                 if (condition != null) {
                     // 添加自定义条件
