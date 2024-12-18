@@ -3,6 +3,7 @@ package com.codingapi.springboot.authorization.analyzer;
 import com.codingapi.springboot.authorization.enhancer.DataPermissionSQLEnhancer;
 import com.codingapi.springboot.authorization.handler.Condition;
 import com.codingapi.springboot.authorization.handler.RowHandler;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
@@ -141,6 +142,22 @@ class SelectSQLAnalyzerTest {
             return null;
         };
 
+        DataPermissionSQLEnhancer builder = new DataPermissionSQLEnhancer(sql, rowHandler);
+        System.out.println(builder.getNewSQL());
+        System.out.println(builder.getTableAlias());;
+    }
+
+    @Test
+    @Order(5)
+    void test5() throws Exception{
+        String sql = "SELECT next_val AS id_val FROM t_league_seq FOR UPDATE";
+        RowHandler rowHandler = (subSql, tableName, tableAlias) -> {
+            if (tableName.equalsIgnoreCase("t_league")) {
+                String conditionTemplate = "%s.id < 100 ";
+                return Condition.formatCondition(conditionTemplate, tableAlias);
+            }
+            return null;
+        };
         DataPermissionSQLEnhancer builder = new DataPermissionSQLEnhancer(sql, rowHandler);
         System.out.println(builder.getNewSQL());
         System.out.println(builder.getTableAlias());;

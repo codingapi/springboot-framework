@@ -42,14 +42,15 @@ public class TableColumnAliasHolder {
         // FROM 项是表
         if (fromItem instanceof Table) {
             this.appendTableAlias(fromItem);
-            this.appendColumnAlias(parent, plainSelect.getSelectItems());
+            Table table = (Table) fromItem;
+            this.appendColumnAlias(parent, table.getName(), plainSelect.getSelectItems());
         }
 
 
         // FROM是子查询
         if (fromItem instanceof Select) {
             PlainSelect subPlainSelect = ((Select) fromItem).getPlainSelect();
-            this.appendColumnAlias(parent, plainSelect.getSelectItems());
+            this.appendColumnAlias(parent, null, plainSelect.getSelectItems());
             parent = fromItem.getAlias().getName();
             this.searchSubSelect(parent, subPlainSelect);
         }
@@ -60,14 +61,15 @@ public class TableColumnAliasHolder {
                 if (join.getRightItem() instanceof Select) {
                     FromItem currentItem = join.getRightItem();
                     PlainSelect subPlainSelect = ((Select) currentItem).getPlainSelect();
-                    this.appendColumnAlias(parent, plainSelect.getSelectItems());
+                    this.appendColumnAlias(parent, null, plainSelect.getSelectItems());
                     parent = currentItem.getAlias().getName();
                     this.searchSubSelect(parent, subPlainSelect);
                 }
                 if (join.getRightItem() instanceof Table) {
                     FromItem currentItem = join.getRightItem();
                     this.appendTableAlias(currentItem);
-                    this.appendColumnAlias(parent, plainSelect.getSelectItems());
+                    Table table = (Table) currentItem;
+                    this.appendColumnAlias(parent, table.getName(), plainSelect.getSelectItems());
                 }
             }
         }
@@ -82,7 +84,7 @@ public class TableColumnAliasHolder {
     private void appendTableAlias(FromItem fromItem) {
         Table table = (Table) fromItem;
         Alias alias = table.getAlias();
-        String aliasName = alias!=null?alias.getName():table.getName();
+        String aliasName = alias != null ? alias.getName() : table.getName();
         aliasContext.addTable(aliasName, table.getName());
     }
 
@@ -93,12 +95,14 @@ public class TableColumnAliasHolder {
      * @param parent      父表别名
      * @param selectItems 列
      */
-    private void appendColumnAlias(String parent, List<SelectItem<?>> selectItems) {
+    private void appendColumnAlias(String parent, String tableName, List<SelectItem<?>> selectItems) {
         if (selectItems != null) {
             for (SelectItem<?> selectItem : selectItems) {
                 if (selectItem.getExpression() instanceof Column) {
                     Column column = (Column) selectItem.getExpression();
-                    String tableName = column.getTable().getName();
+                    if (column.getTable() != null) {
+                        tableName = column.getTable().getName();
+                    }
                     String columnName = column.getColumnName();
                     Alias columnAlias = selectItem.getAlias();
                     String aliasName = columnAlias != null ? selectItem.getAlias().getName() : columnName;
