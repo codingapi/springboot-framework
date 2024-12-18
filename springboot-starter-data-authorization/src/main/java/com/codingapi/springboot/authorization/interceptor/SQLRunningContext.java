@@ -30,21 +30,19 @@ public class SQLRunningContext {
         if (skipInterceptor.get()) {
             return SQLInterceptState.unIntercept(sql);
         }
-
-        if (sqlInterceptor.beforeHandler(sql)) {
-            // 在拦截器中执行的查询操作将不会被拦截
-            skipInterceptor.set(true);
-            try {
+        try {
+            if (sqlInterceptor.beforeHandler(sql)) {
+                // 在拦截器中执行的查询操作将不会被拦截
+                skipInterceptor.set(true);
                 DataPermissionSQL dataPermissionSQL = sqlInterceptor.postHandler(sql);
                 sqlInterceptor.afterHandler(sql, dataPermissionSQL.getNewSql(), null);
                 return SQLInterceptState.intercept(sql, dataPermissionSQL.getNewSql(), dataPermissionSQL.getAliasContext());
-            } catch (SQLException exception) {
-                sqlInterceptor.afterHandler(sql, null, exception);
-                throw exception;
-            } finally {
-                // 重置拦截器状态
-                skipInterceptor.set(false);
             }
+        } catch (SQLException exception) {
+            sqlInterceptor.afterHandler(sql, null, exception);
+        } finally {
+            // 重置拦截器状态
+            skipInterceptor.set(false);
         }
         return SQLInterceptState.unIntercept(sql);
     }
