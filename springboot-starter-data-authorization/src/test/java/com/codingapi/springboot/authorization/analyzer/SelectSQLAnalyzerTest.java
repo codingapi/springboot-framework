@@ -70,4 +70,72 @@ class SelectSQLAnalyzerTest {
         System.out.println(builder.getNewSQL());
         assertEquals("SELECT aue1_0.ba_org_code FROM ba03_administrative_unit aue1_0 WHERE aue1_0.id > 100 AND aue1_0.ba_org_code LIKE (? || '__') ORDER BY aue1_0.ba_org_code DESC", builder.getNewSQL());
     }
+
+    @Test
+    void test4() throws SQLException{
+        String sql = "SELECT\n" +
+                "\tUNYiV.id AS '历史工作经历编号',\n" +
+                "\tUNYiV.company_name AS '历史工作单位',\n" +
+                "\tUNYiV.depart_name AS '历史工作部门',\n" +
+                "\tUNYiV.post_name AS '历史工作岗位',\n" +
+                "\tUNYiV.start_date AS '开始时间',\n" +
+                "\tUNYiV.end_date AS '结束时间',\n" +
+                "\towasH.员工编号 AS '员工编号',\n" +
+                "\towasH.员工姓名 AS '员工姓名',\n" +
+                "\towasH.员工生日 AS '员工生日',\n" +
+                "\towasH.员工地址 AS '员工地址',\n" +
+                "\towasH.身份证号码 AS '身份证号码',\n" +
+                "\towasH.手机号 AS '手机号',\n" +
+                "\towasH.部门编号 AS '部门编号',\n" +
+                "\towasH.岗位编号 AS '岗位编号',\n" +
+                "\towasH.任现职编号 AS '任现职编号',\n" +
+                "\towasH.社团编号 AS '社团编号',\n" +
+                "\towasH.社团名称 AS '社团名称',\n" +
+                "\towasH.创建时间 AS '创建时间' \n" +
+                "FROM\n" +
+                "\tt_work AS pehMS,\n" +
+                "\tt_employee AS OGwG7,\n" +
+                "\tt_work_history AS UNYiV,\n" +
+                "\t(\n" +
+                "\t\tSELECT\n" +
+                "\t\t\tWXJj8.id AS '员工编号',\n" +
+                "\t\t\tWXJj8.NAME AS '员工姓名',\n" +
+                "\t\t\tWXJj8.birth_date AS '员工生日',\n" +
+                "\t\t\tWXJj8.address AS '员工地址',\n" +
+                "\t\t\tWXJj8.id_card AS '身份证号码',\n" +
+                "\t\t\tWXJj8.phone AS '手机号',\n" +
+                "\t\t\tWXJj8.depart_id AS '部门编号',\n" +
+                "\t\t\tWXJj8.post_id AS '岗位编号',\n" +
+                "\t\t\tWXJj8.work_id AS '任现职编号',\n" +
+                "\t\t\trnGD4.id AS '社团编号',\n" +
+                "\t\t\trnGD4.NAME AS '社团名称',\n" +
+                "\t\t\trnGD4.create_date AS '创建时间' \n" +
+                "\t\tFROM\n" +
+                "\t\t\tt_employee AS WXJj8,\n" +
+                "\t\t\tt_league_employee AS dEj96,\n" +
+                "\t\t\tt_league AS rnGD4 \n" +
+                "\t\tWHERE\n" +
+                "\t\t\tdEj96.employee_id = WXJj8.id \n" +
+                "\t\t\tAND dEj96.league_id = rnGD4.id \n" +
+                "\t\t\tAND 1 = 1 \n" +
+                "\t) AS owasH \n" +
+                "WHERE\n" +
+                "\tUNYiV.employee_id = OGwG7.id \n" +
+                "\tAND OGwG7.work_id = pehMS.id \n" +
+                "\tAND owasH.任现职编号 = pehMS.id \n" +
+                "\tAND 1 = 1";
+
+
+        RowHandler rowHandler = (subSql, tableName, tableAlias) -> {
+            if (tableName.equalsIgnoreCase("t_employee")) {
+                String conditionTemplate = "%s.id > 100 ";
+                return Condition.formatCondition(conditionTemplate, tableAlias);
+            }
+            return null;
+        };
+
+        SelectSQLAnalyzer builder = new SelectSQLAnalyzer(sql, rowHandler);
+        System.out.println(builder.getNewSQL());
+        System.out.println(builder.getTableAliasMap());;
+    }
 }

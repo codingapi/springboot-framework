@@ -2,6 +2,7 @@ package com.codingapi.springboot.authorization.analyzer;
 
 import com.codingapi.springboot.authorization.handler.Condition;
 import com.codingapi.springboot.authorization.handler.RowHandler;
+import lombok.Getter;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
@@ -13,16 +14,22 @@ import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SelectSQLAnalyzer {
 
     private final String sql;
     private final RowHandler rowHandler;
 
+    @Getter
+    private final Map<String, String> tableAliasMap;
+
     public SelectSQLAnalyzer(String sql, RowHandler rowHandler) {
         // 如何sql中存在? 则在?后面添加空格
         this.sql = sql.replaceAll("\\?", " ? ");
         this.rowHandler = rowHandler;
+        this.tableAliasMap = new HashMap<>();
     }
 
     public String getNewSQL() throws SQLException {
@@ -31,14 +38,19 @@ public class SelectSQLAnalyzer {
             if (statement instanceof Select) {
                 Select select = (Select) statement;
                 PlainSelect plainSelect = select.getPlainSelect();
+
                 this.processFromItems(plainSelect);
                 return statement.toString();
             }
+
+
         } catch (Exception e) {
             throw new SQLException(e);
         }
         return sql;
     }
+
+
 
     private void processFromItems(PlainSelect plainSelect) throws Exception {
         this.addConditionToSubSelect(plainSelect);
@@ -49,6 +61,7 @@ public class SelectSQLAnalyzer {
         if (fromItem instanceof Select) {
             this.addConditionToSubSelect((Select) fromItem);
         }
+        Expression where = plainSelect.getWhere();
 
         // 处理 JOIN 子查询
         if (plainSelect.getJoins() != null) {
@@ -56,8 +69,26 @@ public class SelectSQLAnalyzer {
                 if (join.getRightItem() instanceof Select) {
                     this.addConditionToSubSelect((Select) join.getRightItem());
                 }
+                if(join.getRightItem() instanceof Table){
+                    Table table = (Table) join.getRightItem();
+                    String tableName = table.getName();
+                    String aliaName = table.getAlias() != null ? table.getAlias().getName() : tableName;
+                    tableAliasMap.put(aliaName, tableName);
+                    Condition condition = rowHandler.handler(plainSelect.toString(), tableName, aliaName);
+                    if (condition != null) {
+                        // 添加自定义条件
+                        Expression customExpression = CCJSqlParserUtil.parseCondExpression(condition.getCondition());
+                        if (where != null) {
+                            plainSelect.setWhere(new AndExpression(customExpression, where));
+                        } else {
+                            plainSelect.setWhere(customExpression);
+                        }
+                    }
+                }
             }
         }
+
+
     }
 
 
@@ -71,6 +102,7 @@ public class SelectSQLAnalyzer {
                 Table table = (Table) fromItem;
                 String tableName = table.getName();
                 String aliaName = table.getAlias() != null ? table.getAlias().getName() : tableName;
+                tableAliasMap.put(aliaName, tableName);
                 Condition condition = rowHandler.handler(selectBody.toString(), tableName, aliaName);
                 if (condition != null) {
                     // 添加自定义条件
