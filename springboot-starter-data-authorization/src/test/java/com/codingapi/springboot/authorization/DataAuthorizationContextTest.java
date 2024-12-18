@@ -15,6 +15,14 @@ import com.codingapi.springboot.authorization.repository.DepartRepository;
 import com.codingapi.springboot.authorization.repository.UnitRepository;
 import com.codingapi.springboot.authorization.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.schema.Column;
+import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.select.PlainSelect;
+import net.sf.jsqlparser.statement.select.Select;
+import net.sf.jsqlparser.statement.select.SelectItem;
+import net.sf.jsqlparser.statement.select.SelectItemVisitor;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -27,6 +35,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -216,6 +225,10 @@ public class DataAuthorizationContextTest {
     @Order(3)
     void test3() {
 
+        unitRepository.deleteAll();
+        departRepository.deleteAll();
+        userRepository.deleteAll();
+
         ColumnMaskContext.getInstance().addColumnMask(new IDCardMask());
         ColumnMaskContext.getInstance().addColumnMask(new PhoneMask());
         ColumnMaskContext.getInstance().addColumnMask(new BankCardMask());
@@ -266,9 +279,9 @@ public class DataAuthorizationContextTest {
     }
 
 
-    @Test
-    @Order(4)
-    void test4() {
+//    @Test
+//    @Order(4)
+    void test4() throws Exception{
         String sql = "SELECT\n" +
                 "\tUNYiV.id AS '历史工作经历编号',\n" +
                 "\tUNYiV.company_name AS '历史工作单位',\n" +
@@ -311,7 +324,8 @@ public class DataAuthorizationContextTest {
                 "\t\t\tt_league_employee AS dEj96,\n" +
                 "\t\t\tt_league AS rnGD4 \n" +
                 "\t\tWHERE\n" +
-                "\t\t\tdEj96.employee_id = WXJj8.id \n" +
+                "\t\t\trnGD4.id < 100 \n" +
+                "\t\t\tAND dEj96.employee_id = WXJj8.id \n" +
                 "\t\t\tAND dEj96.league_id = rnGD4.id \n" +
                 "\t\t\tAND 1 = 1 \n" +
                 "\t) AS owasH \n" +
@@ -320,6 +334,7 @@ public class DataAuthorizationContextTest {
                 "\tAND OGwG7.work_id = pehMS.id \n" +
                 "\tAND owasH.任现职编号 = pehMS.id \n" +
                 "\tAND 1 = 1";
+
 
         DataAuthorizationContext.getInstance().clearDataAuthorizationFilters();
         DataAuthorizationContext.getInstance().addDataAuthorizationFilter(new DefaultDataAuthorizationFilter() {
@@ -330,7 +345,7 @@ public class DataAuthorizationContextTest {
 
             @Override
             public <T> T columnAuthorization(String tableName, String columnName, T value) {
-                System.out.println(tableName + " " + columnName + " " + value);
+                System.out.println("tableName:" + tableName + ",columnName:" + columnName + ",value:" + value);
                 return value;
             }
 

@@ -46,6 +46,7 @@ public class DataPermissionSQLEnhancer {
                 PlainSelect plainSelect = select.getPlainSelect();
 
                 this.enhanceDataPermissionInSelect(plainSelect);
+                System.out.println(tableAlias);
                 return statement.toString();
             }
         } catch (Exception e) {
@@ -54,27 +55,32 @@ public class DataPermissionSQLEnhancer {
         return sql;
     }
 
+
     // 增强 SELECT 语句
     private void enhanceDataPermissionInSelect(PlainSelect plainSelect) throws Exception {
-        this.applyDataPermissionToSubquery(plainSelect);
-
         FromItem fromItem = plainSelect.getFromItem();
 
-        // 处理主 FROM 项（如果是子查询）
-        if (fromItem instanceof Select) {
-            this.applyDataPermissionToSubquery((Select) fromItem);
+        // FROM 项是表
+        if (fromItem instanceof Table) {
+            Table table = (Table) fromItem;
+            this.injectDataPermissionCondition(plainSelect, table, plainSelect.getWhere());
         }
-        Expression where = plainSelect.getWhere();
+
+        // FROM是子查询
+        if (fromItem instanceof Select) {
+            PlainSelect subPlainSelect = ((Select) fromItem).getPlainSelect();
+            this.enhanceDataPermissionInSelect(subPlainSelect);
+        }
 
         // 处理JOIN或关联子查询
         if (plainSelect.getJoins() != null) {
             for (Join join : plainSelect.getJoins()) {
                 if (join.getRightItem() instanceof Select) {
-                    PlainSelect subPlainSelect =  ((Select) join.getRightItem()).getPlainSelect();
+                    PlainSelect subPlainSelect = ((Select) join.getRightItem()).getPlainSelect();
                     this.enhanceDataPermissionInSelect(subPlainSelect);
                 }
-                if(join.getRightItem() instanceof Table){
-                    injectDataPermissionCondition(plainSelect, (Table) join.getRightItem(), where);
+                if (join.getRightItem() instanceof Table) {
+                    injectDataPermissionCondition(plainSelect, (Table) join.getRightItem(), plainSelect.getWhere());
                 }
             }
         }
@@ -97,16 +103,4 @@ public class DataPermissionSQLEnhancer {
         }
     }
 
-    // 处理子查询
-    private void applyDataPermissionToSubquery(Select subSelect) throws Exception {
-        PlainSelect selectBody = subSelect.getPlainSelect();
-        if (selectBody != null) {
-            // 获取 WHERE 子句
-            Expression where = selectBody.getWhere();
-            FromItem fromItem = selectBody.getFromItem();
-            if (fromItem instanceof Table) {
-                injectDataPermissionCondition(selectBody, (Table) fromItem, where);
-            }
-        }
-    }
 }
