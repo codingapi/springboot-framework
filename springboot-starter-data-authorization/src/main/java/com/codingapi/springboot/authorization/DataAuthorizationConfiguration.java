@@ -5,7 +5,7 @@ import com.codingapi.springboot.authorization.filter.DataAuthorizationFilter;
 import com.codingapi.springboot.authorization.handler.ColumnHandler;
 import com.codingapi.springboot.authorization.handler.RowHandler;
 import com.codingapi.springboot.authorization.interceptor.SQLInterceptor;
-import com.codingapi.springboot.authorization.properties.DataAuthorizationProperty;
+import com.codingapi.springboot.authorization.properties.DataAuthorizationProperties;
 import com.codingapi.springboot.authorization.register.ConditionHandlerRegister;
 import com.codingapi.springboot.authorization.register.DataAuthorizationContextRegister;
 import com.codingapi.springboot.authorization.register.ResultSetHandlerRegister;
@@ -22,8 +22,8 @@ public class DataAuthorizationConfiguration {
 
     @Bean
     @ConfigurationProperties(prefix = "codingapi.data-authorization")
-    public DataAuthorizationProperty dataAuthorizationProperty(){
-        return new DataAuthorizationProperty();
+    public DataAuthorizationProperties dataAuthorizationProperties(){
+        return new DataAuthorizationProperties();
     }
 
     @Bean

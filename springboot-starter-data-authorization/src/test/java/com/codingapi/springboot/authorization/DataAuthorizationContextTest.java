@@ -23,10 +23,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -43,6 +45,8 @@ public class DataAuthorizationContextTest {
     private DepartRepository departRepository;
     @Autowired
     private UnitRepository unitRepository;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Test
     @Order(1)
@@ -157,7 +161,7 @@ public class DataAuthorizationContextTest {
             @Override
             public boolean supportColumnAuthorization(String tableName, String columnName, Object value) {
                 User user = CurrentUser.getInstance().getUser();
-                return user.getName().equalsIgnoreCase("bob");
+                return user != null && user.getName().equalsIgnoreCase("bob");
             }
 
         });
@@ -183,7 +187,7 @@ public class DataAuthorizationContextTest {
         userRepository.save(bob);
         userRepository.save(tom);
 
-        assertTrue( SQLRunningContext.getInstance().skipDataAuthorization(()->userRepository.findAll()).size()>=3);
+        assertTrue(SQLRunningContext.getInstance().skipDataAuthorization(() -> userRepository.findAll()).size() >= 3);
 
         CurrentUser.getInstance().setUser(bob);
 
@@ -205,5 +209,144 @@ public class DataAuthorizationContextTest {
         }
 
 
+    }
+
+
+    @Test
+    @Order(3)
+    void test3() {
+
+        ColumnMaskContext.getInstance().addColumnMask(new IDCardMask());
+        ColumnMaskContext.getInstance().addColumnMask(new PhoneMask());
+        ColumnMaskContext.getInstance().addColumnMask(new BankCardMask());
+
+        DataAuthorizationContext.getInstance().clearDataAuthorizationFilters();
+
+        DataAuthorizationContext.getInstance().addDataAuthorizationFilter(new DefaultDataAuthorizationFilter() {
+            @Override
+            public <T> T columnAuthorization(String tableName, String columnName, T value) {
+                return ColumnMaskContext.getInstance().mask(value);
+            }
+
+            @Override
+            public boolean supportColumnAuthorization(String tableName, String columnName, Object value) {
+                return true;
+            }
+
+        });
+
+        Unit rootUnit = new Unit("Coding总公司");
+        unitRepository.save(rootUnit);
+
+        Unit sdUnit = new Unit("Coding山东分公司", rootUnit.getId());
+        unitRepository.save(sdUnit);
+
+        Depart jgbDepart = new Depart("Coding架构部", rootUnit.getId());
+        departRepository.save(jgbDepart);
+
+        Depart xmbDepart = new Depart("Coding项目部", sdUnit.getId());
+        departRepository.save(xmbDepart);
+
+        User lorne = new User("lorne", LocalDate.parse("1991-01-01"), "beijing", "110105199003078999", "13812345678", jgbDepart);
+        User bob = new User("bob", LocalDate.parse("1991-01-01"), "beijing", "110105199003078999", "13812345678", xmbDepart);
+        User tom = new User("tom", LocalDate.parse("1991-01-01"), "beijing", "110105199003078999", "13812345678", xmbDepart);
+
+        userRepository.save(lorne);
+        userRepository.save(bob);
+        userRepository.save(tom);
+
+        List<Map<String, Object>> users = jdbcTemplate.queryForList("select * from t_user");
+        System.out.println(users);
+        assertEquals(3, users.size());
+
+        for (Map<String, Object> user : users) {
+            assertEquals("138****5678", user.get("phone"));
+        }
+
+    }
+
+
+    @Test
+    @Order(4)
+    void test4() {
+        String sql = "SELECT\n" +
+                "\tUNYiV.id AS '历史工作经历编号',\n" +
+                "\tUNYiV.company_name AS '历史工作单位',\n" +
+                "\tUNYiV.depart_name AS '历史工作部门',\n" +
+                "\tUNYiV.post_name AS '历史工作岗位',\n" +
+                "\tUNYiV.start_date AS '开始时间',\n" +
+                "\tUNYiV.end_date AS '结束时间',\n" +
+                "\towasH.员工编号 AS '员工编号',\n" +
+                "\towasH.员工姓名 AS '员工姓名',\n" +
+                "\towasH.员工生日 AS '员工生日',\n" +
+                "\towasH.员工地址 AS '员工地址',\n" +
+                "\towasH.身份证号码 AS '身份证号码',\n" +
+                "\towasH.手机号 AS '手机号',\n" +
+                "\towasH.部门编号 AS '部门编号',\n" +
+                "\towasH.岗位编号 AS '岗位编号',\n" +
+                "\towasH.任现职编号 AS '任现职编号',\n" +
+                "\towasH.社团编号 AS '社团编号',\n" +
+                "\towasH.社团名称 AS '社团名称',\n" +
+                "\towasH.创建时间 AS '创建时间' \n" +
+                "FROM\n" +
+                "\tt_work AS pehMS,\n" +
+                "\tt_employee AS OGwG7,\n" +
+                "\tt_work_history AS UNYiV,\n" +
+                "\t(\n" +
+                "\t\tSELECT\n" +
+                "\t\t\tWXJj8.id AS '员工编号',\n" +
+                "\t\t\tWXJj8.NAME AS '员工姓名',\n" +
+                "\t\t\tWXJj8.birth_date AS '员工生日',\n" +
+                "\t\t\tWXJj8.address AS '员工地址',\n" +
+                "\t\t\tWXJj8.id_card AS '身份证号码',\n" +
+                "\t\t\tWXJj8.phone AS '手机号',\n" +
+                "\t\t\tWXJj8.depart_id AS '部门编号',\n" +
+                "\t\t\tWXJj8.post_id AS '岗位编号',\n" +
+                "\t\t\tWXJj8.work_id AS '任现职编号',\n" +
+                "\t\t\trnGD4.id AS '社团编号',\n" +
+                "\t\t\trnGD4.NAME AS '社团名称',\n" +
+                "\t\t\trnGD4.create_date AS '创建时间' \n" +
+                "\t\tFROM\n" +
+                "\t\t\tt_employee AS WXJj8,\n" +
+                "\t\t\tt_league_employee AS dEj96,\n" +
+                "\t\t\tt_league AS rnGD4 \n" +
+                "\t\tWHERE\n" +
+                "\t\t\tdEj96.employee_id = WXJj8.id \n" +
+                "\t\t\tAND dEj96.league_id = rnGD4.id \n" +
+                "\t\t\tAND 1 = 1 \n" +
+                "\t) AS owasH \n" +
+                "WHERE\n" +
+                "\tUNYiV.employee_id = OGwG7.id \n" +
+                "\tAND OGwG7.work_id = pehMS.id \n" +
+                "\tAND owasH.任现职编号 = pehMS.id \n" +
+                "\tAND 1 = 1";
+
+        DataAuthorizationContext.getInstance().clearDataAuthorizationFilters();
+        DataAuthorizationContext.getInstance().addDataAuthorizationFilter(new DefaultDataAuthorizationFilter() {
+            @Override
+            public Condition rowAuthorization(String tableName, String tableAlias) {
+                return super.rowAuthorization(tableName, tableAlias);
+            }
+
+            @Override
+            public <T> T columnAuthorization(String tableName, String columnName, T value) {
+                System.out.println(tableName + " " + columnName + " " + value);
+                return value;
+            }
+
+            @Override
+            public boolean supportColumnAuthorization(String tableName, String columnName, Object value) {
+                return true;
+            }
+
+            @Override
+            public boolean supportRowAuthorization(String tableName, String tableAlias) {
+                return true;
+            }
+        });
+
+
+        List<Map<String, Object>> data = jdbcTemplate.queryForList(sql);
+        System.out.println(data);
     }
 }

@@ -128,8 +128,8 @@ class SelectSQLAnalyzerTest {
 
 
         RowHandler rowHandler = (subSql, tableName, tableAlias) -> {
-            if (tableName.equalsIgnoreCase("t_employee")) {
-                String conditionTemplate = "%s.id > 100 ";
+            if (tableName.equalsIgnoreCase("t_league")) {
+                String conditionTemplate = "%s.id < 100 ";
                 return Condition.formatCondition(conditionTemplate, tableAlias);
             }
             return null;

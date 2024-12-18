@@ -9,13 +9,16 @@ public class DataAuthorizationPropertyContext {
 
     private DataAuthorizationPropertyContext(){}
 
-    private DataAuthorizationProperty dataAuthorizationProperty;
+    private DataAuthorizationProperties dataAuthorizationProperties;
 
-    protected void setDataAuthorizationProperty(DataAuthorizationProperty dataAuthorizationProperty){
-        this.dataAuthorizationProperty = dataAuthorizationProperty;
+    protected void setDataAuthorizationProperties(DataAuthorizationProperties dataAuthorizationProperties){
+        this.dataAuthorizationProperties = dataAuthorizationProperties;
     }
 
     public boolean showSql(){
-        return dataAuthorizationProperty.isShowSql();
+        if(dataAuthorizationProperties!=null) {
+            return dataAuthorizationProperties.isShowSql();
+        }
+        return false;
     }
 }

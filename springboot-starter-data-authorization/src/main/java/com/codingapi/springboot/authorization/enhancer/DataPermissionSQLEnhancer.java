@@ -1,5 +1,6 @@
 package com.codingapi.springboot.authorization.enhancer;
 
+
 import com.codingapi.springboot.authorization.handler.Condition;
 import com.codingapi.springboot.authorization.handler.RowHandler;
 import lombok.Getter;
@@ -69,7 +70,8 @@ public class DataPermissionSQLEnhancer {
         if (plainSelect.getJoins() != null) {
             for (Join join : plainSelect.getJoins()) {
                 if (join.getRightItem() instanceof Select) {
-                    this.applyDataPermissionToSubquery((Select) join.getRightItem());
+                    PlainSelect subPlainSelect =  ((Select) join.getRightItem()).getPlainSelect();
+                    this.enhanceDataPermissionInSelect(subPlainSelect);
                 }
                 if(join.getRightItem() instanceof Table){
                     injectDataPermissionCondition(plainSelect, (Table) join.getRightItem(), where);
