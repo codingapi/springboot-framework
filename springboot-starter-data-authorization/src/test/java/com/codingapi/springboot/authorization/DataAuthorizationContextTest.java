@@ -279,8 +279,8 @@ public class DataAuthorizationContextTest {
     }
 
 
-//    @Test
-//    @Order(4)
+    @Test
+    @Order(4)
     void test4() throws Exception{
         String sql = "SELECT\n" +
                 "\tUNYiV.id AS '历史工作经历编号',\n" +
@@ -345,7 +345,7 @@ public class DataAuthorizationContextTest {
 
             @Override
             public <T> T columnAuthorization(String tableName, String columnName, T value) {
-                System.out.println("tableName:" + tableName + ",columnName:" + columnName + ",value:" + value);
+//                System.out.println("tableName:" + tableName + ",columnName:" + columnName + ",value:" + value);
                 return value;
             }
 
