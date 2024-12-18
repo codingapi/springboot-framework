@@ -35,9 +35,9 @@ public class SQLRunningContext {
             // 在拦截器中执行的查询操作将不会被拦截
             skipInterceptor.set(true);
             try {
-                String newSql = sqlInterceptor.postHandler(sql);
-                sqlInterceptor.afterHandler(sql, newSql, null);
-                return SQLInterceptState.intercept(sql, newSql);
+                DataPermissionSQL dataPermissionSQL = sqlInterceptor.postHandler(sql);
+                sqlInterceptor.afterHandler(sql, dataPermissionSQL.getNewSql(), null);
+                return SQLInterceptState.intercept(sql, dataPermissionSQL.getNewSql(),dataPermissionSQL.getTableAlias());
             } catch (SQLException exception) {
                 sqlInterceptor.afterHandler(sql, null, exception);
                 throw exception;

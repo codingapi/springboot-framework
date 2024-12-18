@@ -1,9 +1,10 @@
 package com.codingapi.springboot.authorization.interceptor;
 
 
-import com.codingapi.springboot.authorization.analyzer.SelectSQLAnalyzer;
+import com.codingapi.springboot.authorization.enhancer.DataPermissionSQLEnhancer;
 import com.codingapi.springboot.authorization.handler.RowHandler;
 import com.codingapi.springboot.authorization.handler.RowHandlerContext;
+import com.codingapi.springboot.authorization.properties.DataAuthorizationPropertyContext;
 import com.codingapi.springboot.authorization.utils.SQLUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,13 +21,15 @@ public class DefaultSQLInterceptor implements SQLInterceptor {
 
     @Override
     public void afterHandler(String sql, String newSql, SQLException exception) {
-        log.debug("newSql:{}", newSql);
+        if (DataAuthorizationPropertyContext.getInstance().showSql()) {
+            log.info("newSql:{}", newSql);
+        }
     }
 
     @Override
-    public String postHandler(String sql) throws SQLException {
+    public DataPermissionSQL postHandler(String sql) throws SQLException {
         RowHandler rowHandler = RowHandlerContext.getInstance().getRowHandler();
-        SelectSQLAnalyzer sqlAnalyzerInterceptor = new SelectSQLAnalyzer(sql, rowHandler);
-        return sqlAnalyzerInterceptor.getNewSQL();
+        DataPermissionSQLEnhancer sqlEnhancer = new DataPermissionSQLEnhancer(sql, rowHandler);
+        return new DataPermissionSQL(sql, sqlEnhancer.getNewSQL(), sqlEnhancer.getTableAlias());
     }
 }

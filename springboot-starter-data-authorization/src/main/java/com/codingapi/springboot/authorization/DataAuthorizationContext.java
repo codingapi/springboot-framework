@@ -27,15 +27,16 @@ public class DataAuthorizationContext {
         this.filters.add(filter);
     }
 
-    public void clearDataAuthorizationFilters(){
+    public void clearDataAuthorizationFilters() {
         this.filters.clear();
     }
 
     public <T> T columnAuthorization(SQLInterceptState interceptState, String tableName, String columnName, T value) {
-        if (interceptState != null && interceptState.hasIntercept() && StringUtils.hasText(tableName)) {
+        if (interceptState != null && interceptState.hasIntercept()) {
+            String realTableName = interceptState.getTableName(tableName);
             for (DataAuthorizationFilter filter : filters) {
-                if (filter.supportColumnAuthorization(tableName, columnName, value)) {
-                    return filter.columnAuthorization(tableName, columnName, value);
+                if (filter.supportColumnAuthorization(realTableName, columnName, value)) {
+                    return filter.columnAuthorization(realTableName, columnName, value);
                 }
             }
         }
@@ -43,7 +44,7 @@ public class DataAuthorizationContext {
     }
 
     public Condition rowAuthorization(String tableName, String tableAlias) {
-        if(StringUtils.hasText(tableName) && StringUtils.hasText(tableAlias)) {
+        if (StringUtils.hasText(tableName) && StringUtils.hasText(tableAlias)) {
             for (DataAuthorizationFilter filter : filters) {
                 if (filter.supportRowAuthorization(tableName, tableAlias)) {
                     return filter.rowAuthorization(tableName, tableAlias);

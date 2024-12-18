@@ -1,5 +1,6 @@
 package com.codingapi.springboot.authorization.analyzer;
 
+import com.codingapi.springboot.authorization.enhancer.DataPermissionSQLEnhancer;
 import com.codingapi.springboot.authorization.handler.Condition;
 import com.codingapi.springboot.authorization.handler.RowHandler;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ class SelectSQLAnalyzerTest {
             return null;
         };
 
-        SelectSQLAnalyzer builder = new SelectSQLAnalyzer(sql, rowHandler);
+        DataPermissionSQLEnhancer builder = new DataPermissionSQLEnhancer(sql, rowHandler);
         System.out.println(builder.getNewSQL());
         assertEquals(
                 "SELECT t1.*, t2.* FROM (SELECT * FROM t_employee AS a2 WHERE a2.id > 100 AND id = 100) t1," +
@@ -48,7 +49,7 @@ class SelectSQLAnalyzerTest {
             return null;
         };
 
-        SelectSQLAnalyzer builder = new SelectSQLAnalyzer(sql, rowHandler);
+        DataPermissionSQLEnhancer builder = new DataPermissionSQLEnhancer(sql, rowHandler);
         System.out.println(builder.getNewSQL());
         assertEquals("SELECT e1_0.id, e1_0.address, e1_0.birth_date, e1_0.depart_id, e1_0.id_card, e1_0.name, e1_0.phone, e1_0.post_id, e1_0.work_id FROM t_employee e1_0 WHERE e1_0.id > 100 LIMIT ?, ?", builder.getNewSQL());
     }
@@ -66,7 +67,7 @@ class SelectSQLAnalyzerTest {
             return null;
         };
 
-        SelectSQLAnalyzer builder = new SelectSQLAnalyzer(sql, rowHandler);
+        DataPermissionSQLEnhancer builder = new DataPermissionSQLEnhancer(sql, rowHandler);
         System.out.println(builder.getNewSQL());
         assertEquals("SELECT aue1_0.ba_org_code FROM ba03_administrative_unit aue1_0 WHERE aue1_0.id > 100 AND aue1_0.ba_org_code LIKE (? || '__') ORDER BY aue1_0.ba_org_code DESC", builder.getNewSQL());
     }
@@ -134,8 +135,8 @@ class SelectSQLAnalyzerTest {
             return null;
         };
 
-        SelectSQLAnalyzer builder = new SelectSQLAnalyzer(sql, rowHandler);
+        DataPermissionSQLEnhancer builder = new DataPermissionSQLEnhancer(sql, rowHandler);
         System.out.println(builder.getNewSQL());
-        System.out.println(builder.getTableAliasMap());;
+        System.out.println(builder.getTableAlias());;
     }
 }

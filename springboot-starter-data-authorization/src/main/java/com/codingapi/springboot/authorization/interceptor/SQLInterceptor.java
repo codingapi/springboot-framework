@@ -24,7 +24,7 @@ public interface SQLInterceptor {
      * @return 处理后的sql newSql
      * @throws SQLException
      */
-    String postHandler(String sql) throws SQLException;
+    DataPermissionSQL postHandler(String sql) throws SQLException;
 
 
     /**
