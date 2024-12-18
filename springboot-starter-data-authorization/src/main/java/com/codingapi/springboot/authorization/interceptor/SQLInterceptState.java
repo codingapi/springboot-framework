@@ -1,8 +1,6 @@
 package com.codingapi.springboot.authorization.interceptor;
 
-import org.springframework.util.StringUtils;
-
-import java.util.Map;
+import com.codingapi.springboot.authorization.enhancer.TableColumnAliasContext;
 
 /**
  * SQL拦截状态
@@ -15,40 +13,35 @@ public class SQLInterceptState {
 
     private final String newSql;
 
-    private final Map<String,String> tableAlias;
+    private final TableColumnAliasContext aliasContext;
 
-    private SQLInterceptState(boolean state, String sql, String newSql, Map<String, String> tableAlias) {
+    private SQLInterceptState(boolean state, String sql, String newSql, TableColumnAliasContext aliasContext) {
         this.state = state;
         this.sql = sql;
         this.newSql = newSql;
-        this.tableAlias = tableAlias;
+        this.aliasContext = aliasContext;
     }
 
     /**
      * 拦截
      */
-    public static SQLInterceptState intercept(String sql, String newSql,Map<String, String> tableAlias) {
-        return new SQLInterceptState(true, sql, newSql,tableAlias);
+    public static SQLInterceptState intercept(String sql, String newSql, TableColumnAliasContext aliasContext) {
+        return new SQLInterceptState(true, sql, newSql, aliasContext);
     }
 
     /**
      * 不拦截
      */
     public static SQLInterceptState unIntercept(String sql) {
-        return new SQLInterceptState(false, sql, sql,null);
+        return new SQLInterceptState(false, sql, sql, null);
     }
 
+    public String getTableName(String tableName) {
+        return aliasContext.getTableName(tableName);
+    }
 
-    public String getTableName(String tableName){
-        if(tableAlias!=null) {
-            String value = tableAlias.get(tableName);
-            if(StringUtils.hasText(value)){
-                return value;
-            }else {
-                return tableName;
-            }
-        }
-        return tableName;
+    public String getColumnName(String tableName, String columnName) {
+        return aliasContext.getColumnName(tableName, columnName);
     }
 
     public String getSql() {
@@ -62,5 +55,6 @@ public class SQLInterceptState {
     public boolean hasIntercept() {
         return state;
     }
+
 
 }

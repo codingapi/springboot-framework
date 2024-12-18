@@ -37,7 +37,7 @@ public class SQLRunningContext {
             try {
                 DataPermissionSQL dataPermissionSQL = sqlInterceptor.postHandler(sql);
                 sqlInterceptor.afterHandler(sql, dataPermissionSQL.getNewSql(), null);
-                return SQLInterceptState.intercept(sql, dataPermissionSQL.getNewSql(),dataPermissionSQL.getTableAlias());
+                return SQLInterceptState.intercept(sql, dataPermissionSQL.getNewSql(), dataPermissionSQL.getAliasContext());
             } catch (SQLException exception) {
                 sqlInterceptor.afterHandler(sql, null, exception);
                 throw exception;
@@ -52,9 +52,10 @@ public class SQLRunningContext {
 
     /**
      * 跳过数据权限拦截
+     *
      * @param supplier 业务逻辑
+     * @param <T>      T
      * @return T
-     * @param <T> T
      */
     public <T> T skipDataAuthorization(java.util.function.Supplier<T> supplier) {
         try {

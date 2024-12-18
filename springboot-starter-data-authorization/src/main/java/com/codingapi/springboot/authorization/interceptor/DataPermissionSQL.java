@@ -1,19 +1,18 @@
 package com.codingapi.springboot.authorization.interceptor;
 
+import com.codingapi.springboot.authorization.enhancer.TableColumnAliasContext;
 import lombok.Getter;
-
-import java.util.Map;
 
 @Getter
 public class DataPermissionSQL {
 
     private final String sql;
     private final String newSql;
-    private final Map<String,String> tableAlias;
+    private final TableColumnAliasContext aliasContext;
 
-    public DataPermissionSQL(String sql, String newSql, Map<String, String> tableAlias) {
+    public DataPermissionSQL(String sql, String newSql, TableColumnAliasContext aliasContext) {
         this.sql = sql;
         this.newSql = newSql;
-        this.tableAlias = tableAlias;
+        this.aliasContext = aliasContext;
     }
 }

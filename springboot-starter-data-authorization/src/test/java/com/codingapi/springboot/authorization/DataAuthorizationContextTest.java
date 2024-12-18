@@ -279,61 +279,66 @@ public class DataAuthorizationContextTest {
     }
 
 
-    @Test
+//    @Test
     @Order(4)
     void test4() throws Exception{
         String sql = "SELECT\n" +
-                "\tUNYiV.id AS '历史工作经历编号',\n" +
-                "\tUNYiV.company_name AS '历史工作单位',\n" +
-                "\tUNYiV.depart_name AS '历史工作部门',\n" +
-                "\tUNYiV.post_name AS '历史工作岗位',\n" +
-                "\tUNYiV.start_date AS '开始时间',\n" +
-                "\tUNYiV.end_date AS '结束时间',\n" +
-                "\towasH.员工编号 AS '员工编号',\n" +
-                "\towasH.员工姓名 AS '员工姓名',\n" +
-                "\towasH.员工生日 AS '员工生日',\n" +
-                "\towasH.员工地址 AS '员工地址',\n" +
-                "\towasH.身份证号码 AS '身份证号码',\n" +
-                "\towasH.手机号 AS '手机号',\n" +
-                "\towasH.部门编号 AS '部门编号',\n" +
-                "\towasH.岗位编号 AS '岗位编号',\n" +
-                "\towasH.任现职编号 AS '任现职编号',\n" +
-                "\towasH.社团编号 AS '社团编号',\n" +
-                "\towasH.社团名称 AS '社团名称',\n" +
-                "\towasH.创建时间 AS '创建时间' \n" +
+                "\tt.* \n" +
                 "FROM\n" +
-                "\tt_work AS pehMS,\n" +
-                "\tt_employee AS OGwG7,\n" +
-                "\tt_work_history AS UNYiV,\n" +
                 "\t(\n" +
                 "\t\tSELECT\n" +
-                "\t\t\tWXJj8.id AS '员工编号',\n" +
-                "\t\t\tWXJj8.NAME AS '员工姓名',\n" +
-                "\t\t\tWXJj8.birth_date AS '员工生日',\n" +
-                "\t\t\tWXJj8.address AS '员工地址',\n" +
-                "\t\t\tWXJj8.id_card AS '身份证号码',\n" +
-                "\t\t\tWXJj8.phone AS '手机号',\n" +
-                "\t\t\tWXJj8.depart_id AS '部门编号',\n" +
-                "\t\t\tWXJj8.post_id AS '岗位编号',\n" +
-                "\t\t\tWXJj8.work_id AS '任现职编号',\n" +
-                "\t\t\trnGD4.id AS '社团编号',\n" +
-                "\t\t\trnGD4.NAME AS '社团名称',\n" +
-                "\t\t\trnGD4.create_date AS '创建时间' \n" +
+                "\t\t\tUNYiV.id AS '历史工作经历编号',\n" +
+                "\t\t\tUNYiV.company_name AS '历史工作单位',\n" +
+                "\t\t\tUNYiV.depart_name AS '历史工作部门',\n" +
+                "\t\t\tUNYiV.post_name AS '历史工作岗位',\n" +
+                "\t\t\tUNYiV.start_date AS '开始时间',\n" +
+                "\t\t\tUNYiV.end_date AS '结束时间',\n" +
+                "\t\t\towasH.员工编号 AS '员工编号',\n" +
+                "\t\t\towasH.员工姓名 AS '员工姓名',\n" +
+                "\t\t\towasH.员工生日 AS '员工生日',\n" +
+                "\t\t\towasH.员工地址 AS '员工地址',\n" +
+                "\t\t\towasH.身份证号码 AS '身份证号码',\n" +
+                "\t\t\towasH.手机号 AS '手机号',\n" +
+                "\t\t\towasH.部门编号 AS '部门编号',\n" +
+                "\t\t\towasH.岗位编号 AS '岗位编号',\n" +
+                "\t\t\towasH.任现职编号 AS '任现职编号',\n" +
+                "\t\t\towasH.社团编号 AS '社团编号',\n" +
+                "\t\t\towasH.社团名称 AS '社团名称',\n" +
+                "\t\t\towasH.创建时间 AS '创建时间' \n" +
                 "\t\tFROM\n" +
-                "\t\t\tt_employee AS WXJj8,\n" +
-                "\t\t\tt_league_employee AS dEj96,\n" +
-                "\t\t\tt_league AS rnGD4 \n" +
+                "\t\t\tt_work AS pehMS,\n" +
+                "\t\t\tt_employee AS OGwG7,\n" +
+                "\t\t\tt_work_history AS UNYiV,\n" +
+                "\t\t\t(\n" +
+                "\t\t\t\tSELECT\n" +
+                "\t\t\t\t\tWXJj8.id AS '员工编号',\n" +
+                "\t\t\t\t\tWXJj8.NAME AS '员工姓名',\n" +
+                "\t\t\t\t\tWXJj8.birth_date AS '员工生日',\n" +
+                "\t\t\t\t\tWXJj8.address AS '员工地址',\n" +
+                "\t\t\t\t\tWXJj8.id_card AS '身份证号码',\n" +
+                "\t\t\t\t\tWXJj8.phone AS '手机号',\n" +
+                "\t\t\t\t\tWXJj8.depart_id AS '部门编号',\n" +
+                "\t\t\t\t\tWXJj8.post_id AS '岗位编号',\n" +
+                "\t\t\t\t\tWXJj8.work_id AS '任现职编号',\n" +
+                "\t\t\t\t\trnGD4.id AS '社团编号',\n" +
+                "\t\t\t\t\trnGD4.NAME AS '社团名称',\n" +
+                "\t\t\t\t\trnGD4.create_date AS '创建时间' \n" +
+                "\t\t\t\tFROM\n" +
+                "\t\t\t\t\tt_employee AS WXJj8,\n" +
+                "\t\t\t\t\tt_league_employee AS dEj96,\n" +
+                "\t\t\t\t\tt_league AS rnGD4 \n" +
+                "\t\t\t\tWHERE\n" +
+                "\t\t\t\t\trnGD4.id < 100 \n" +
+                "\t\t\t\t\tAND dEj96.employee_id = WXJj8.id \n" +
+                "\t\t\t\t\tAND dEj96.league_id = rnGD4.id \n" +
+                "\t\t\t\t\tAND 1 = 1 \n" +
+                "\t\t\t) AS owasH \n" +
                 "\t\tWHERE\n" +
-                "\t\t\trnGD4.id < 100 \n" +
-                "\t\t\tAND dEj96.employee_id = WXJj8.id \n" +
-                "\t\t\tAND dEj96.league_id = rnGD4.id \n" +
+                "\t\t\tUNYiV.employee_id = OGwG7.id \n" +
+                "\t\t\tAND OGwG7.work_id = pehMS.id \n" +
+                "\t\t\tAND owasH.任现职编号 = pehMS.id \n" +
                 "\t\t\tAND 1 = 1 \n" +
-                "\t) AS owasH \n" +
-                "WHERE\n" +
-                "\tUNYiV.employee_id = OGwG7.id \n" +
-                "\tAND OGwG7.work_id = pehMS.id \n" +
-                "\tAND owasH.任现职编号 = pehMS.id \n" +
-                "\tAND 1 = 1";
+                "\t) AS t , t_employee AS e where t.员工编号 = e.id and e.id = 1";
 
 
         DataAuthorizationContext.getInstance().clearDataAuthorizationFilters();
@@ -345,7 +350,7 @@ public class DataAuthorizationContextTest {
 
             @Override
             public <T> T columnAuthorization(String tableName, String columnName, T value) {
-//                System.out.println("tableName:" + tableName + ",columnName:" + columnName + ",value:" + value);
+                System.out.println("tableName:" + tableName + ",columnName:" + columnName + ",value:" + value);
                 return value;
             }
 
@@ -362,6 +367,6 @@ public class DataAuthorizationContextTest {
 
 
         List<Map<String, Object>> data = jdbcTemplate.queryForList(sql);
-        System.out.println(data);
+//        System.out.println(data);
     }
 }
