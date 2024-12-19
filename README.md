@@ -18,6 +18,7 @@ v.3.x 为springboot 3.x版本,使用jdk17版本
 
 * springboot-starter | Springboot领域驱动框架
 * springboot-starter-data-fast | 快速数据呈现框架
+* springboot-starter-data-authorization | 数据权限框架
 * springboot-starter-flow | 流程引擎框架
 * springboot-starter-security | security权限框架支持基于JWT的无状态权限认证与Redis的有状态权限认证
 
@@ -41,6 +42,13 @@ v.3.x 为springboot 3.x版本,使用jdk17版本
         <artifactId>springboot-starter-data-fast</artifactId>
         <version>${last.version}</version>
     </dependency>
+    
+     <!-- 数据权限框架 -->
+     <dependency>
+        <groupId>com.codingapi.springboot</groupId>
+        <artifactId>springboot-starter-data-authorization</artifactId>
+        <version>${last.version}</version>
+     </dependency>
     
      <!-- 流程引擎框架 -->
      <dependency>
