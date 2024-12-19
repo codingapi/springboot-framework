@@ -162,4 +162,37 @@ class SelectSQLAnalyzerTest {
         System.out.println(builder.getNewSQL());
         System.out.println(builder.getTableAlias());;
     }
+
+
+    @Test
+    @Order(6)
+    void test6() throws Exception{
+        String sql = "SELECT 1=1";
+        RowHandler rowHandler = (subSql, tableName, tableAlias) -> {
+            if (tableName.equalsIgnoreCase("t_league")) {
+                String conditionTemplate = "%s.id < 100 ";
+                return Condition.formatCondition(conditionTemplate, tableAlias);
+            }
+            return null;
+        };
+        DataPermissionSQLEnhancer builder = new DataPermissionSQLEnhancer(sql, rowHandler);
+        System.out.println(builder.getNewSQL());
+        System.out.println(builder.getTableAlias());;
+    }
+
+    @Test
+    @Order(7)
+    void test7() throws Exception{
+        String sql = "SELECT * from t_employee";
+        RowHandler rowHandler = (subSql, tableName, tableAlias) -> {
+            if (tableName.equalsIgnoreCase("t_employee")) {
+                String conditionTemplate = "%s.id < 100 ";
+                return Condition.formatCondition(conditionTemplate, tableAlias);
+            }
+            return null;
+        };
+        DataPermissionSQLEnhancer builder = new DataPermissionSQLEnhancer(sql, rowHandler);
+        System.out.println(builder.getNewSQL());
+        System.out.println(builder.getTableAlias());;
+    }
 }
