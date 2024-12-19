@@ -279,12 +279,11 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                     visible={userSelectVisible}
                     setVisible={setUserSelectVisible}
                     userSelectType={"users"}
-                    specifyUserIds={[]}
+                    specifyUserIds={GroovyScript.getOperatorUsers(props.form.getFieldValue("operatorMatcher"))}
                     mode={"multiple"}
-                    onFinish={(values)=>{
-                        const operatorMatcher = props.form.getFieldValue("operatorMatcher");
-                        const script = operatorMatcher.replaceAll("%s", values.map((item:any)=>item.id).join(","));
-                        console.log(script);
+                    onFinish={(values) => {
+                        setUserSelectVisible(false);
+                        const script = GroovyScript.specifyOperatorMatcher.replaceAll("%s", values.map((item: any) => item.id).join(","));
                         props.form.setFieldsValue({
                             operatorMatcher: script
                         });

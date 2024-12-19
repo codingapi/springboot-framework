@@ -5,14 +5,14 @@ import {custom, postponed, recall, saveFlow, startFlow, submitFlow, transfer, tr
 import {message} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import {
-    clearTriggerClick,
+    clearTriggerEventClick,
     clearUserSelect,
     closeUserSelect,
     FlowReduxState,
     setUserSelectModal,
     showPostponed,
     showResult,
-    triggerClick
+    triggerEventClick
 } from "@/components/Flow/store/FlowSlice";
 import {FlowUser} from "@/components/Flow/flow/types";
 
@@ -23,6 +23,7 @@ export const registerEvents = (id: string,
                                form: FormInstance<any>,
                                adviceForm: FormInstance<any>,
                                setRequestLoading: (loading: boolean) => void,
+                               reload: () => void,
                                closeFlow: () => void) => {
 
     const timeOut = useSelector((state: FlowReduxState) => state.flow.timeOut);
@@ -30,8 +31,6 @@ export const registerEvents = (id: string,
     const selectUsers = useSelector((state: FlowReduxState) => state.flow.currentUsers);
 
     const selectUserType = useSelector((state: FlowReduxState) => state.flow.userSelectType);
-
-    const triggerClickVisible = useSelector((state: FlowReduxState) => state.flow.triggerClickVisible);
 
     const dispatch = useDispatch();
 
@@ -189,23 +188,30 @@ export const registerEvents = (id: string,
 
     // 预提交
     const handleTrySubmitFlow = (callback: (res: any) => void) => {
-        const advice = adviceForm.getFieldValue('advice');
-        const formData = form.getFieldsValue();
-        const flowData = data.getFlowData();
-        const body = {
-            recordId,
-            advice: advice,
-            success: true,
-            formData: {
-                ...flowData,
-                ...formData,
+        setRequestLoading(true);
+        form.validateFields().then((formData) => {
+            const advice = adviceForm.getFieldValue('advice');
+            const flowData = data.getFlowData();
+            const body = {
+                recordId,
+                advice: advice,
+                success: true,
+                formData: {
+                    ...flowData,
+                    ...formData,
+                }
             }
-        }
-        trySubmitFlow(body).then(res => {
-            if (res.success) {
-                callback && callback(res);
-            }
-        })
+            trySubmitFlow(body).then(res => {
+                if (res.success) {
+                    callback && callback(res);
+                }
+            }).finally(() => {
+                setRequestLoading(false);
+            });
+        }).catch(e => {
+            console.log(e);
+            setRequestLoading(false);
+        });
     }
 
     // 撤回流程
@@ -317,6 +323,11 @@ export const registerEvents = (id: string,
         id?: string
     }) => {
         switch (button.type) {
+            case 'RELOAD': {
+                reload();
+                break;
+            }
+
             case 'SAVE': {
                 // 保存流程，如果没有创建流程先创建，若已经创建则保存
                 if (recordId) {
@@ -437,10 +448,13 @@ export const registerEvents = (id: string,
                 break;
             }
             case 'VIEW': {
-                if (triggerClickVisible) {
-                    dispatch(clearTriggerClick());
-                } else {
-                    dispatch(triggerClick());
+                if (button.id) {
+                    const buttonId = button.id;
+                    const customButton = data.getNodeButton(buttonId);
+                    dispatch(triggerEventClick(customButton.eventKey));
+                    setTimeout(() => {
+                        dispatch(clearTriggerEventClick());
+                    }, 300);
                 }
                 break;
             }

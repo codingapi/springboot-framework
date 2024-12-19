@@ -1,2 +1,2 @@
-export type NodeState =  "done" | "wait" | "current";
+export type NodeState = "done" | "wait" | "undone" | "current";
 

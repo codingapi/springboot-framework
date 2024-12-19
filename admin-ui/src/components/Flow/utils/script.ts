@@ -20,6 +20,19 @@ class GroovyScript {
         }
     }
 
+
+    static getOperatorUsers(script:string) {
+        if(script) {
+            const match = script.match(/\[([\d,\s]+)\]/);
+            if (match && match[1]) {
+                return match[1]
+                    .split(',')
+                    .map(num => parseInt(num.trim(), 10));
+            }
+        }
+        return [];
+    }
+
     static errTriggerType(errTrigger: string) {
         if (errTrigger === GroovyScript.defaultOutTrigger) {
             return "default";

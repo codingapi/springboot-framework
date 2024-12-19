@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.codingapi.springboot</groupId>
         <artifactId>springboot-parent</artifactId>
-        <version>3.3.30</version>
+        <version>3.3.45</version>
     </parent>
 
     <artifactId>springboot-starter-data-authorization</artifactId>
@@ -29,8 +29,20 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jdbc</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
             <scope>test</scope>
         </dependency>
 

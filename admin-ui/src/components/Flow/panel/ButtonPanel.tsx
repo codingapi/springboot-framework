@@ -284,6 +284,20 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
                     }}
                 />
 
+                {type === 'VIEW' && (
+                    <ProFormText
+                        name={"eventKey"}
+                        label={"事件Key"}
+                        tooltip={"事件Key用于流程Form的事件触发"}
+                        rules={[
+                            {
+                                required: true,
+                                message: '请输入事件Key'
+                            }
+                        ]}
+                    />
+                )}
+
                 <ProFormText
                     name={"groovy"}
                     hidden={true}

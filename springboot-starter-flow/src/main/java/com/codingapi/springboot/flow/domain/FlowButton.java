@@ -39,6 +39,12 @@ public class FlowButton {
      * 自定义事件内容 （后端脚本）
      */
     private String groovy;
+
+    /**
+     * 自定义事件内容 （前端脚本）
+     */
+    private String eventKey;
+
     /**
      * 排序
      */

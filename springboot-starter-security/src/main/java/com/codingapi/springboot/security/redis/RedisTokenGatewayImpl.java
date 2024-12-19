@@ -20,7 +20,7 @@ public class RedisTokenGatewayImpl implements TokenGateway {
 
     @Override
     public Token parser(String sign) {
-        return redisTokenGateway.parser(sign);
+        return redisTokenGateway.getToken(sign);
     }
 
 }

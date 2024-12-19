@@ -3,7 +3,23 @@ import {FormInstance} from "antd/es/form/hooks/useForm";
 import {FlowData} from "@/components/Flow/flow/data";
 
 // 自定义按钮类型
-export type CustomButtonType = 'SAVE' | 'START' | 'SUBMIT' | 'TRY_SUBMIT' | 'SPECIFY_SUBMIT' | 'REJECT' | 'TRANSFER' | 'RECALL' | 'POSTPONED' | 'URGE' | 'CUSTOM' | 'VIEW';
+export type CustomButtonType =
+    'RELOAD'
+    | 'SAVE'
+    | 'START'
+    | 'SUBMIT'
+    | 'TRY_SUBMIT'
+    | 'SPECIFY_SUBMIT'
+    | 'REJECT'
+    | 'TRANSFER'
+    | 'RECALL'
+    | 'POSTPONED'
+    | 'URGE'
+    | 'CUSTOM'
+    | 'VIEW';
+
+// 流程图中线的类型
+export type EdgeType = 'line' | 'polyline' | 'bezier';
 
 // 表单视图属性
 export interface FlowFormViewProps {
@@ -27,11 +43,16 @@ export interface FlowFormViewProps {
         id?: string;
     }) => void;
 
-    // 自定义前端点击事件触发
-    triggerClickVisible?: boolean;
+    // 请求数据加载
+    requestLoading?: boolean;
+    // 设置请求数据加载状态
+    setRequestLoading?: (loading: boolean) => void;
 
-    // 关闭自定义前端点击事件触发
-    clearTriggerClick?: () => void;
+    // 自定义前端点击事件触发事件
+    eventKey?: string;
+
+    // 审批意见输入框
+    opinionEditorVisible?: (visible: boolean) => void;
 }
 
 // 表单视图
@@ -45,6 +66,11 @@ export interface FlowFormParams {
 
     [key: string]: any;
 }
+
+// 关闭结果视图事件
+export const EVENT_CLOSE_RESULT_VIEW = 'EVENT_CLOSE_RESULT_VIEW';
+// 重新加载数据事件
+export const EVENT_RELOAD_DATA = 'EVENT_RELOAD_DATA';
 
 export const PostponedFormViewKey = 'PostponedFormView';
 
@@ -85,7 +111,7 @@ export const UserSelectViewKey = 'UserSelectView';
 export type UserSelectMode = 'single' | 'multiple';
 
 export type UserSelectType =
-    // 选择下级流程节点的人员，约定人员id范围
+// 选择下级流程节点的人员，约定人员id范围
     'nextNodeUser'
     // 选择转办人员，约定本单位下的人员
     | 'transfer'

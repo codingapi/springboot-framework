@@ -15,7 +15,7 @@
 
     <groupId>com.codingapi.springboot</groupId>
     <artifactId>springboot-parent</artifactId>
-    <version>3.3.30</version>
+    <version>3.3.45</version>
 
     <url>https://github.com/codingapi/springboot-framewrok</url>
     <name>springboot-parent</name>
@@ -278,6 +278,7 @@
             <modules>
                 <module>springboot-starter</module>
                 <module>springboot-starter-security</module>
+                <module>springboot-starter-data-authorization</module>
                 <module>springboot-starter-data-fast</module>
                 <module>springboot-starter-flow</module>
                 <module>example</module>
@@ -291,6 +292,7 @@
             <modules>
                 <module>springboot-starter</module>
                 <module>springboot-starter-security</module>
+                <module>springboot-starter-data-authorization</module>
                 <module>springboot-starter-data-fast</module>
                 <module>springboot-starter-flow</module>
             </modules>
@@ -341,6 +343,7 @@
             <modules>
                 <module>springboot-starter</module>
                 <module>springboot-starter-security</module>
+                <module>springboot-starter-data-authorization</module>
                 <module>springboot-starter-data-fast</module>
                 <module>springboot-starter-flow</module>
             </modules>

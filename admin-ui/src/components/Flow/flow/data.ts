@@ -121,7 +121,24 @@ export class FlowData extends FlowWorkData {
     // 获取当前节点的按钮
     getNodeButtons = () => {
         if (this.data) {
-            return this.data.flowNode.buttons;
+            const buttons = this.data.flowNode.buttons;
+            if(buttons){
+                return buttons.sort((item1:any, item2:any) => {
+                    return item1.order - item2.order;
+                })
+            }
+            return [];
+        }
+        return null;
+    }
+
+    // 获取当前节点的按钮
+    getNodeButton = (buttonId: string) => {
+        if (this.data) {
+            const buttons = this.data.flowNode.buttons;
+            if(buttons){
+                return buttons.find((item:any) => item.id === buttonId);
+            }
         }
         return null;
     }
@@ -169,18 +186,21 @@ export class FlowData extends FlowWorkData {
     getNodeState = (code: string) => {
         const historyRecords = this.data.historyRecords || [];
 
-
-        if (this.isFinished()) {
+        if (code==='over' && this.isFinished()) {
             return "done";
         }
 
         for (const record of historyRecords) {
             if (record.nodeCode === code) {
                 if (record.flowType === 'TODO') {
-                    return "wait";
+                    return "current";
                 }
                 return "done";
             }
+        }
+
+        if(this.isFinished()){
+            return "undone";
         }
 
         return "wait";
@@ -209,6 +229,30 @@ export class FlowData extends FlowWorkData {
     // 获取当前的详情的记录数据
     getCurrentFlowRecord = () => {
         return this.data.flowRecord;
+    }
+
+    // 获取审批意见
+    getOpinionAdvice = () => {
+        if(this.data.flowRecord){
+            if(this.data.flowRecord.opinion){
+                return this.data.flowRecord.opinion.advice;
+            }
+        }
+        return null;
+    }
+
+
+    // 获取历史审批意见
+    getOpinions() {
+        if(this.data.opinions){
+            return this.data.opinions.filter((item:any)=>{
+                if(!item.opinion){
+                    return false;
+                }
+                return item.opinion.result!==0;
+            });
+        }
+        return [];
     }
 
     // 获取历史记录
@@ -244,5 +288,6 @@ export class FlowData extends FlowWorkData {
     showOpinion() {
         return this.canHandle() && !this.isStartFlow();
     }
+
 }
 

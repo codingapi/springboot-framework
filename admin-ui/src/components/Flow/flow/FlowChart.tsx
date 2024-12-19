@@ -9,15 +9,17 @@ import Circulate from "@/components/Flow/nodes/Circulate";
 import '@logicflow/core/es/index.css';
 import '@logicflow/extension/lib/style/index.css';
 import "./FlowChart.scss";
+import {EdgeType} from "@/components/Flow/flow/types";
 
 interface FlowChartProps {
-    flowData: FlowData
+    flowData: FlowData;
+    edgeType?: EdgeType;
 }
 
 const FlowChart: React.FC<FlowChartProps> = (props) => {
 
     const flowData = props.flowData;
-
+    const edgeType = props.edgeType || 'polyline';
     const container = useRef<HTMLDivElement>(null);
     const lfRef = useRef<LogicFlow>(null);
 
@@ -40,11 +42,19 @@ const FlowChart: React.FC<FlowChartProps> = (props) => {
             },
             plugins: [Menu, DndPanel, MiniMap, Snapshot],
             grid: false,
-            edgeType: 'bezier',
+            edgeType: edgeType,
         });
 
         lfRef.current.setTheme({
             bezier: {
+                stroke: '#8f94e3',
+                strokeWidth: 1,
+            },
+            polyline: {
+                stroke: '#8f94e3',
+                strokeWidth: 1,
+            },
+            line: {
                 stroke: '#8f94e3',
                 strokeWidth: 1,
             },

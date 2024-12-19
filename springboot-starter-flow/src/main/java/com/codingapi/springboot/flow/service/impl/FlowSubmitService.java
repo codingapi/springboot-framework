@@ -94,8 +94,8 @@ public class FlowSubmitService {
 
         // 判断流程是否结束（会签时需要所有人都通过）
         if (flowNode.isSign()) {
-            boolean next = flowDirectionService.hasCurrentFlowNodeIsDone();
-            if (next) {
+            boolean isDone = flowDirectionService.hasCurrentFlowNodeIsDone();
+            if (!isDone) {
                 List<FlowRecord> todoRecords = historyRecords.stream().filter(FlowRecord::isTodo).toList();
                 return new FlowResult(flowWork, todoRecords);
             }

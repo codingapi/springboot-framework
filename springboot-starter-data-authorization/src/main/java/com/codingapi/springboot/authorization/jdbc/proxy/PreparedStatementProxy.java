@@ -1,7 +1,7 @@
 package com.codingapi.springboot.authorization.jdbc.proxy;
 
-import com.codingapi.springboot.authorization.interceptor.SQLRunningContext;
 import com.codingapi.springboot.authorization.interceptor.SQLInterceptState;
+import com.codingapi.springboot.authorization.interceptor.SQLRunningContext;
 import lombok.AllArgsConstructor;
 
 import java.io.InputStream;

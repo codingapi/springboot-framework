@@ -45,7 +45,7 @@ export const CirculateView: React.FC<CirculateProps> = (props) => {
             <div>
                 <span className={"code"}>
                     {props.code && (
-                        <> ({props.code})</>
+                        <>({props.code})</>
                     )}
                 </span>
                 <span className={"title"}>{props.name}</span>
@@ -81,7 +81,8 @@ export const CirculateView: React.FC<CirculateProps> = (props) => {
 
 class CirculateModel extends HtmlNodeModel {
     setAttributes() {
-        this.width = 250;
+        const name = this.properties.name as string;
+        this.width = 200 + name.length * 10;
         this.height = 45;
         this.text.editable = false;
         this.menu = [];
