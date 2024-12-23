@@ -86,7 +86,7 @@ export const registerEvents = (id: string,
 
 
     // 发起并提交流程
-    const handlerStartAndSubmitFlow = (callback: (res: any) => void) => {
+    const handlerStartAndSubmitFlow = (callback: (res: any) => void, operatorIds?: any[]) => {
         setRequestLoading(true);
         const advice = adviceForm.getFieldValue('advice');
         const flowData = data.getFlowData();
@@ -107,6 +107,7 @@ export const registerEvents = (id: string,
                     const submitBody = {
                         recordId: newRecordId,
                         advice: advice,
+                        operatorIds: operatorIds,
                         success: true,
                         formData: {
                             ...flowData,
@@ -320,7 +321,8 @@ export const registerEvents = (id: string,
 
     return (button: {
         type: string,
-        id?: string
+        id?: string,
+        params?:any
     }) => {
         switch (button.type) {
             case 'RELOAD': {
@@ -380,7 +382,7 @@ export const registerEvents = (id: string,
                             closeFlow: true,
                             result: flowSubmitResultBuilder.builder()
                         }));
-                    });
+                    }, button.params);
                 } else {
                     handlerStartAndSubmitFlow((res) => {
                         const flowSubmitResultBuilder = new FlowSubmitResultBuilder(res.data);
@@ -399,7 +401,7 @@ export const registerEvents = (id: string,
                         closeFlow: true,
                         result: flowSubmitResultBuilder.builder()
                     }));
-                });
+                }, button.params);
                 break;
             }
             case 'TRY_SUBMIT': {

@@ -39,8 +39,12 @@ export interface FlowFormViewProps {
     flowData?: FlowData;
     // 流程交互操作
     handlerClick?: (item: {
+        // 按钮类型
         type: CustomButtonType;
+        // 按钮的Id
         id?: string;
+        // 操作参数，对应提交时指定人员数组，例如[1,2,3]
+        params?: any;
     }) => void;
 
     // 请求数据加载
