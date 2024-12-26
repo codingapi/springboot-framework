@@ -171,6 +171,7 @@ const FlowPage = () => {
     return (
         <PageContainer>
             <ProTable
+                data-testid={"flow-table"}
                 actionRef={actionRef}
                 rowKey={"id"}
                 columns={columns}
