@@ -1,10 +1,7 @@
-import React, {useCallback, useMemo, useState} from 'react';
-import './index.scss';
-import Page from "@/components/Layout/Page";
-
 import {AgGridReact} from 'ag-grid-react';
 import {AllCommunityModule, ModuleRegistry, themeQuartz,} from "ag-grid-community";
 import {AG_GRID_LOCALE_CN} from '@ag-grid-community/locale';
+import {useCallback, useMemo, useState} from "react";
 
 const localeText = AG_GRID_LOCALE_CN;
 // Register all Community features
@@ -17,12 +14,11 @@ const myTheme = themeQuartz.withParams({
     accentColor: "red",
 
 });
-const Index = () => {
+const AGTable = () => {
     const [rowData, setRowData] = useState();
     const [columnDefs, setColumnDefs] = useState([
         {
             field: "athlete",
-            minWidth: 170,
             headerName: "运动员"
         },
         {
@@ -36,7 +32,7 @@ const Index = () => {
             children: [
                 {
                     field: "country",
-                    headerName: "国家"
+                    headerName: "国家",
                 },
                 {field: "name"},
                 {field: "code"}
@@ -48,7 +44,7 @@ const Index = () => {
         {field: "gold", headerName: "金牌"},
         {field: "silver", headerName: "银牌"},
         {field: "bronze", headerName: "铜牌"},
-        {field: "total", headerName: "总计",editable: false},
+        {field: "total", headerName: "总计", editable: false},
     ]);
     const theme = useMemo(() => {
         return myTheme;
@@ -67,43 +63,45 @@ const Index = () => {
     }, []);
 
 
+    const onChange = (row:any,updateRow:(row:any)=>void,refreshColumns:()=>void)=>{
+        const gold = row.gold;
+        const silver = row.silver;
+        const bronze = row.bronze;
+        const total = gold + silver + bronze;
+
+        updateRow({...row,total});
+
+        // update redux store message
+
+        refreshColumns()
+    }
+
     return (
-        <Page enablePageContainer={true}>
-            <div
-                // define a height because the Data Grid will fill the size of the parent container
-                style={{height: 500}}
-            >
-                <AgGridReact
-                    rowData={rowData}
-                    localeText={localeText}
-                    onRowDataUpdated={(params) => {
-                        console.log("Row Data Updated", params)
-                    }}
-                    onCellValueChanged={(event) => {
-                        console.log(`New Cell Value:`, event);
-                        // 当金牌，银牌，铜牌的值发生变化时，更新总计
-
-                        //@ts-ignore
-                        if (['gold', 'silver', 'bronze'].includes(event.colDef.field)) {
-                            const gold = event.data.gold;
-                            const silver = event.data.silver;
-                            const bronze = event.data.bronze;
-                            const total = gold + silver + bronze;
-                            event.data.total = total;
+        <div
+            // define a height because the Data Grid will fill the size of the parent container
+            style={{height: 900}}
+        >
+            <AgGridReact
+                rowData={rowData}
+                localeText={localeText}
+                onCellValueChanged={(event) => {
+                    //@ts-ignore
+                    if (['gold', 'silver', 'bronze'].includes(event.colDef.field)) {
+                        onChange( event.data,(data:any)=>{
+                            event.data.total = data.total;
+                        },()=>{
                             event.api.refreshCells({columns: ['total']});
-                        }
-                    }}
-
-                    columnDefs={columnDefs}
-                    theme={theme}
-                    pagination={true}
-                    defaultColDef={defaultColDef}
-                    onGridReady={onGridReady}
-
-                />
-            </div>
-        </Page>
+                        });
+                    }
+                }}
+                columnDefs={columnDefs}
+                theme={theme}
+                // pagination={true}
+                defaultColDef={defaultColDef}
+                onGridReady={onGridReady}
+            />
+        </div>
     );
 }
 
-export default Index;
+export default AGTable;
