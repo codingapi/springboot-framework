@@ -3,8 +3,8 @@ package com.codingapi.springboot.flow.service;
 import com.codingapi.springboot.flow.bind.IBindData;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.pojo.FlowDetail;
-import com.codingapi.springboot.flow.pojo.FlowSubmitResult;
 import com.codingapi.springboot.flow.pojo.FlowResult;
+import com.codingapi.springboot.flow.pojo.FlowSubmitResult;
 import com.codingapi.springboot.flow.repository.*;
 import com.codingapi.springboot.flow.result.MessageResult;
 import com.codingapi.springboot.flow.service.impl.*;
@@ -21,7 +21,6 @@ public class FlowService {
 
     private final FlowDetailService flowDetailService;
     private final FlowStartService flowStartService;
-    private final FlowSubmitService flowSubmitService;
     private final FlowCustomEventService flowCustomEventService;
     private final FlowRecallService flowRecallService;
     private final FlowTrySubmitService flowTrySubmitService;
@@ -30,6 +29,8 @@ public class FlowService {
     private final FlowPostponedService flowPostponedService;
     private final FlowUrgeService flowUrgeService;
 
+    private final FlowServiceRepositoryHolder flowServiceRepositoryHolder;
+
 
     public FlowService(FlowWorkRepository flowWorkRepository,
                        FlowRecordRepository flowRecordRepository,
@@ -37,9 +38,9 @@ public class FlowService {
                        FlowOperatorRepository flowOperatorRepository,
                        FlowProcessRepository flowProcessRepository,
                        FlowBackupRepository flowBackupRepository) {
+        this.flowServiceRepositoryHolder = new FlowServiceRepositoryHolder(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowOperatorRepository, flowProcessRepository, flowBackupRepository);
         this.flowDetailService = new FlowDetailService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowOperatorRepository, flowProcessRepository);
         this.flowStartService = new FlowStartService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowOperatorRepository, flowProcessRepository, flowBackupRepository);
-        this.flowSubmitService = new FlowSubmitService(flowRecordRepository, flowBindDataRepository, flowOperatorRepository, flowProcessRepository);
         this.flowCustomEventService = new FlowCustomEventService(flowRecordRepository, flowProcessRepository);
         this.flowRecallService = new FlowRecallService(flowRecordRepository, flowProcessRepository);
         this.flowTrySubmitService = new FlowTrySubmitService(flowRecordRepository, flowBindDataRepository, flowOperatorRepository, flowProcessRepository, flowWorkRepository, flowBackupRepository);
@@ -209,7 +210,8 @@ public class FlowService {
      * @param opinion         审批意见
      */
     public FlowResult submitFlow(long recordId, IFlowOperator currentOperator, IBindData bindData, Opinion opinion) {
-        return flowSubmitService.submitFlow(recordId, currentOperator, bindData, opinion);
+        FlowSubmitService flowSubmitService = new FlowSubmitService(recordId, currentOperator, bindData, opinion, flowServiceRepositoryHolder);
+        return flowSubmitService.submitFlow();
     }
 
 

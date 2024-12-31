@@ -27,7 +27,6 @@ public class FlowPostponedService {
                 flowProcessRepository,
                 recordId, currentOperator);
 
-        flowRecordVerifyService.loadFlowRecord();
         flowRecordVerifyService.verifyFlowRecordSubmitState();
         flowRecordVerifyService.verifyFlowRecordCurrentOperator();
         flowRecordVerifyService.loadFlowWork();

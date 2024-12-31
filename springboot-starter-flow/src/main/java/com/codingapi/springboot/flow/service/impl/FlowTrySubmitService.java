@@ -45,8 +45,6 @@ public class FlowTrySubmitService {
 
         FlowRecordVerifyService flowRecordVerifyService = new FlowRecordVerifyService(flowRecordRepository, flowProcessRepository, recordId, currentOperator);
 
-        // 加载流程
-        flowRecordVerifyService.loadFlowRecord();
         // 验证流程的提交状态
         flowRecordVerifyService.verifyFlowRecordSubmitState();
         // 验证当前操作者
@@ -181,7 +179,10 @@ public class FlowTrySubmitService {
      * @param bindData        绑定数据
      * @param opinion         审批意见
      */
-    public FlowSubmitResult trySubmitFlow(String workCode, IFlowOperator currentOperator, IBindData bindData, Opinion opinion) {
+    public FlowSubmitResult trySubmitFlow(String workCode,
+                                          IFlowOperator currentOperator,
+                                          IBindData bindData,
+                                          Opinion opinion) {
         // 检测流程是否存在
         FlowWork flowWork = flowWorkRepository.getFlowWorkByCode(workCode);
         if (flowWork == null) {

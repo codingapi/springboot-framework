@@ -42,7 +42,6 @@ public class FlowTransferService {
                 flowProcessRepository,
                 recordId, currentOperator);
 
-        flowRecordVerifyService.loadFlowRecord();
         flowRecordVerifyService.verifyFlowRecordSubmitState();
         flowRecordVerifyService.verifyFlowRecordCurrentOperator();
         flowRecordVerifyService.verifyTargetOperatorIsNotCurrentOperator(targetOperator);

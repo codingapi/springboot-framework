@@ -30,7 +30,6 @@ public class FlowUrgeService {
         FlowRecordVerifyService flowRecordVerifyService = new FlowRecordVerifyService(flowRecordRepository,
                 flowProcessRepository,
                 recordId, currentOperator);
-        flowRecordVerifyService.loadFlowRecord();
         flowRecordVerifyService.loadFlowWork();
         flowRecordVerifyService.verifyFlowRecordIsDone();
 

@@ -30,7 +30,6 @@ public class FlowRecallService {
                 flowProcessRepository,
                 recordId, currentOperator);
 
-        flowRecordVerifyService.loadFlowRecord();
         flowRecordVerifyService.verifyFlowRecordCurrentOperator();
         flowRecordVerifyService.loadFlowWork();
         flowRecordVerifyService.loadFlowNode();

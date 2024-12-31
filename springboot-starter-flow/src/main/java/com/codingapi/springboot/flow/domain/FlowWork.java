@@ -61,6 +61,12 @@ public class FlowWork {
     private boolean enable;
 
     /**
+     * 是否跳过相同审批人，默认为false
+     */
+    @Setter
+    private boolean skipIfSameApprover;
+
+    /**
      * 最大延期次数
      */
     @Setter
@@ -226,6 +232,7 @@ public class FlowWork {
                 createTime,
                 updateTime,
                 enable,
+                skipIfSameApprover,
                 postponedMax,
                 schema,
                 nodes.stream().map(FlowNode::toSerializable).collect(Collectors.toCollection(ArrayList::new)),

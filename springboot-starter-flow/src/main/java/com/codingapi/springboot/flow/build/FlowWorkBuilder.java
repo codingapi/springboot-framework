@@ -41,6 +41,11 @@ public class FlowWorkBuilder {
         return this;
     }
 
+    public FlowWorkBuilder skipIfSameApprover(boolean skipIfSameApprover) {
+        this.work.setSkipIfSameApprover(skipIfSameApprover);
+        return this;
+    }
+
     public FlowWorkBuilder title(String title) {
         this.work.setTitle(title);
         return this;

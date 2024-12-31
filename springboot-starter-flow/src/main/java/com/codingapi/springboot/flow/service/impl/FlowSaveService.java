@@ -30,7 +30,6 @@ public class FlowSaveService {
         FlowRecordVerifyService flowRecordVerifyService = new FlowRecordVerifyService(flowRecordRepository,
                 flowProcessRepository,
                 recordId, currentOperator);
-        flowRecordVerifyService.loadFlowRecord();
         flowRecordVerifyService.verifyFlowRecordSubmitState();
         flowRecordVerifyService.verifyFlowRecordCurrentOperator();
         flowRecordVerifyService.loadFlowWork();

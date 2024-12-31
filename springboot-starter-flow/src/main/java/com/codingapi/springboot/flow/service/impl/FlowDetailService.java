@@ -39,7 +39,6 @@ public class FlowDetailService {
                 flowProcessRepository,
                 recordId, currentOperator);
 
-        flowRecordVerifyService.loadFlowRecord();
         flowRecordVerifyService.setFlowRecordRead();
         flowRecordVerifyService.loadFlowWork();
 

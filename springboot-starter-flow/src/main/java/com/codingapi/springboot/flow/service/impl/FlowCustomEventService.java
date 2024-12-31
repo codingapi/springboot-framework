@@ -36,8 +36,6 @@ public class FlowCustomEventService {
     public MessageResult customFlowEvent(long recordId, IFlowOperator currentOperator, String buttonId, IBindData bindData, Opinion opinion) {
         FlowRecordVerifyService flowRecordVerifyService = new FlowRecordVerifyService(flowRecordRepository, flowProcessRepository, recordId, currentOperator);
 
-        // 加载流程
-        flowRecordVerifyService.loadFlowRecord();
         // 验证流程的提交状态
         flowRecordVerifyService.verifyFlowRecordSubmitState();
         // 验证当前操作者

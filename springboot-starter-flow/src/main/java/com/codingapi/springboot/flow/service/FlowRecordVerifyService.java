@@ -16,7 +16,6 @@ import java.util.List;
 public class FlowRecordVerifyService {
 
     // constructor params
-    private final long recordId;
     @Getter
     private final IFlowOperator currentOperator;
 
@@ -30,7 +29,7 @@ public class FlowRecordVerifyService {
     @Getter
     private FlowNode flowNode;
     @Getter
-    private FlowRecord flowRecord;
+    private final FlowRecord flowRecord;
 
     public FlowRecordVerifyService(FlowRecordRepository flowRecordRepository,
                                    FlowProcessRepository flowProcessRepository,
@@ -40,7 +39,11 @@ public class FlowRecordVerifyService {
         this.flowProcessRepository = flowProcessRepository;
 
         this.currentOperator = currentOperator;
-        this.recordId = recordId;
+        FlowRecord flowRecord = flowRecordRepository.getFlowRecordById(recordId);
+        if (flowRecord == null) {
+            throw new IllegalArgumentException("flow record not found");
+        }
+        this.flowRecord = flowRecord;
     }
 
 
@@ -132,16 +135,6 @@ public class FlowRecordVerifyService {
     }
 
 
-    /**
-     *  获取流程记录对象
-     */
-    public void loadFlowRecord() {
-        FlowRecord flowRecord = flowRecordRepository.getFlowRecordById(recordId);
-        if (flowRecord == null) {
-            throw new IllegalArgumentException("flow record not found");
-        }
-        this.flowRecord = flowRecord;
-    }
 
     /**
      *  获取流程设计对象
