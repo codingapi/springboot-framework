@@ -8,6 +8,7 @@ import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.em.FlowSourceDirection;
 import com.codingapi.springboot.flow.event.FlowApprovalEvent;
 import com.codingapi.springboot.flow.pojo.FlowResult;
+import com.codingapi.springboot.flow.pojo.FlowSubmitResult;
 import com.codingapi.springboot.flow.record.FlowBackup;
 import com.codingapi.springboot.flow.record.FlowProcess;
 import com.codingapi.springboot.flow.record.FlowRecord;
@@ -19,6 +20,7 @@ import com.codingapi.springboot.flow.service.FlowNodeService;
 import com.codingapi.springboot.flow.service.FlowServiceRepositoryHolder;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import com.codingapi.springboot.framework.event.EventPusher;
+import lombok.Getter;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -34,6 +36,7 @@ public class FlowStartService {
     private final FlowServiceRepositoryHolder flowServiceRepositoryHolder;
 
 
+    @Getter
     private FlowWork flowWork;
     private FlowNode flowNode;
     private FlowBackup flowBackup;
@@ -41,7 +44,11 @@ public class FlowStartService {
     private BindDataSnapshot snapshot;
     private FlowNodeService flowNodeService;
 
-    public FlowStartService(String workCode, IFlowOperator operator, IBindData bindData, String advice, FlowServiceRepositoryHolder flowServiceRepositoryHolder) {
+    public FlowStartService(String workCode,
+                            IFlowOperator operator,
+                            IBindData bindData,
+                            String advice,
+                            FlowServiceRepositoryHolder flowServiceRepositoryHolder) {
         this.workCode = workCode;
         this.operator = operator;
         this.bindData = bindData;
@@ -188,4 +195,42 @@ public class FlowStartService {
         return new FlowResult(flowWork, records);
     }
 
+
+    public FlowRecord tryStartFlow() {
+        // 检测流程是否存在
+        this.loadFlowWork();
+        // 流程数据备份
+        this.loadFlowBackup();
+
+        // 保存绑定数据
+        snapshot = new BindDataSnapshot(bindData);
+        // 保存流程
+        flowProcess = new FlowProcess(flowBackup.getId(), operator);
+
+        // 构建流程节点服务
+        this.buildFlowNodeService();
+
+        FlowRecord startRecord = null;
+
+        // 创建待办记录
+        List<FlowRecord> records = flowNodeService.createRecord();
+        if (records.isEmpty()) {
+            throw new IllegalArgumentException("flow record not found");
+        } else {
+            for (FlowRecord record : records) {
+                record.updateOpinion(opinion);
+                startRecord = record;
+            }
+        }
+
+        // 检测流程是否结束
+        if (flowNodeService.nextNodeIsOver()) {
+            for (FlowRecord record : records) {
+                record.submitRecord(operator, snapshot, opinion, FlowSourceDirection.PASS);
+                record.finish();
+                startRecord = record;
+            }
+        }
+        return startRecord;
+    }
 }

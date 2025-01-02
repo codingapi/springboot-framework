@@ -46,10 +46,21 @@ public class FlowRecordVerifyService {
         this.flowRecord = flowRecord;
     }
 
+    public FlowRecordVerifyService(FlowRecordRepository flowRecordRepository,
+                                   FlowProcessRepository flowProcessRepository,
+                                   FlowRecord flowRecord,
+                                   FlowWork flowWork,
+                                   IFlowOperator currentOperator) {
+        this.flowRecordRepository = flowRecordRepository;
+        this.flowProcessRepository = flowProcessRepository;
+        this.currentOperator = currentOperator;
+        this.flowRecord = flowRecord;
+        this.flowWork = flowWork;
+    }
 
 
     /**
-     *  校验流程记录是否已提交状态
+     * 校验流程记录是否已提交状态
      */
     public void verifyFlowRecordSubmitState() {
         flowRecord.submitStateVerify();
@@ -59,13 +70,13 @@ public class FlowRecordVerifyService {
      * 校验流程是否当前操作者可操作的
      */
     public void verifyFlowRecordCurrentOperator() {
-        if(!currentOperator.isFlowManager()) {
+        if (!currentOperator.isFlowManager()) {
             flowRecord.matcherOperator(currentOperator);
         }
     }
 
     /**
-     *  校验流程是否已审批
+     * 校验流程是否已审批
      */
     public void verifyFlowRecordNotDone() {
         if (flowRecord.isDone()) {
@@ -75,7 +86,7 @@ public class FlowRecordVerifyService {
 
 
     /**
-     *  校验流程是否已审批
+     * 校验流程是否已审批
      */
     public void verifyFlowRecordIsDone() {
         if (!flowRecord.isDone()) {
@@ -84,20 +95,19 @@ public class FlowRecordVerifyService {
     }
 
 
-
     /**
-     *  校验流程是否未审批
+     * 校验流程是否未审批
      */
     public void verifyFlowRecordNotTodo() {
         if (flowRecord.isTodo()) {
-            if(!flowRecord.isStartRecord()) {
+            if (!flowRecord.isStartRecord()) {
                 throw new IllegalArgumentException("flow record is todo");
             }
         }
     }
 
     /**
-     *  校验流程是未审批
+     * 校验流程是未审批
      */
     public void verifyFlowRecordIsTodo() {
         if (!flowRecord.isTodo()) {
@@ -106,7 +116,7 @@ public class FlowRecordVerifyService {
     }
 
     /**
-     *  校验流程是否已完成
+     * 校验流程是否已完成
      */
     public void verifyFlowRecordNotFinish() {
         if (flowRecord.isFinish()) {
@@ -115,7 +125,7 @@ public class FlowRecordVerifyService {
     }
 
     /**
-     *  校验流程节点是否可编辑
+     * 校验流程节点是否可编辑
      */
     public void verifyFlowNodeEditableState(boolean editable) {
         // 流程节点不可编辑时，不能保存
@@ -126,31 +136,32 @@ public class FlowRecordVerifyService {
 
 
     /**
-     *  校验转办人员不能是当前操作者
+     * 校验转办人员不能是当前操作者
      */
     public void verifyTargetOperatorIsNotCurrentOperator(IFlowOperator targetOperator) {
-        if(currentOperator.getUserId() == targetOperator.getUserId()){
+        if (currentOperator.getUserId() == targetOperator.getUserId()) {
             throw new IllegalArgumentException("current operator is target operator");
         }
     }
 
 
-
     /**
-     *  获取流程设计对象
+     * 获取流程设计对象
      */
     public void loadFlowWork() {
-        FlowWork flowWork = flowProcessRepository.getFlowWorkByProcessId(flowRecord.getProcessId());
-        if (flowWork == null) {
-            throw new IllegalArgumentException("flow work not found");
+        if(this.flowWork ==null) {
+            FlowWork flowWork = flowProcessRepository.getFlowWorkByProcessId(flowRecord.getProcessId());
+            if (flowWork == null) {
+                throw new IllegalArgumentException("flow work not found");
+            }
+            flowWork.enableValidate();
+            this.flowWork = flowWork;
         }
-        flowWork.enableValidate();
-        this.flowWork = flowWork;
     }
 
 
     /**
-     *  获取流程节点对象
+     * 获取流程节点对象
      */
     public void loadFlowNode() {
         FlowNode flowNode = flowWork.getNodeByCode(flowRecord.getNodeCode());
@@ -161,11 +172,11 @@ public class FlowRecordVerifyService {
     }
 
     /**
-     *  标记流程为已读状态
+     * 标记流程为已读状态
      */
     public void setFlowRecordRead() {
         if (currentOperator != null) {
-            if(flowRecord.isOperator(currentOperator)) {
+            if (flowRecord.isOperator(currentOperator)) {
                 if (!flowRecord.isRead()) {
                     flowRecord.read();
                     flowRecordRepository.update(flowRecord);
