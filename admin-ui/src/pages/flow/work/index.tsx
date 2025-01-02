@@ -178,6 +178,7 @@ const FlowPage = () => {
                 toolBarRender={() => {
                     return [
                         <Button
+                            data-testid={"flow-add-btn"}
                             type={"primary"}
                             onClick={() => {
                                 form.resetFields();
@@ -197,13 +198,19 @@ const FlowPage = () => {
             />
 
             <ModalForm
+                data-testid={"flow-editor"}
                 title="编辑流程"
                 form={form}
                 open={editorVisible}
                 modalProps={{
                     destroyOnClose: true,
                     onClose: () => setEditorVisible(false),
-                    onCancel: () => setEditorVisible(false)
+                    onCancel: () => setEditorVisible(false),
+                }}
+                submitter={{
+                    submitButtonProps:{
+                        "data-testid":"flow-editor-submit",
+                    },
                 }}
                 onFinish={handlerSave}
             >
