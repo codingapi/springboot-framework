@@ -128,6 +128,7 @@ public class FlowWork {
         flowWork.setTitle(this.getTitle());
         flowWork.setCode(RandomGenerator.randomString(8));
         flowWork.setPostponedMax(this.getPostponedMax());
+        flowWork.setSkipIfSameApprover(this.isSkipIfSameApprover());
         flowWork.schema(schema);
         return flowWork;
     }
