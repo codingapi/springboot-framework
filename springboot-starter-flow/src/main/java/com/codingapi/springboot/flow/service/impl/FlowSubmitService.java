@@ -218,7 +218,33 @@ public class FlowSubmitService {
         ), true);
     }
 
+
+    /**
+     * 提交流程 根据流程的是否跳过相同审批人来判断是否需要继续提交
+     * @return 流程结果
+     */
     public FlowResult submitFlow() {
+        FlowResult flowResult = this.submitCurrentFlow();
+        if (this.isSkipIfSameApprover()) {
+            List<FlowRecord> flowRecords = flowResult.matchRecordByOperator(currentOperator);
+            FlowResult result = flowResult;
+            if (!flowRecords.isEmpty()) {
+                for (FlowRecord flowRecord : flowRecords) {
+                    FlowSubmitService flowSubmitService = new FlowSubmitService(flowRecord.getId(), currentOperator, bindData, opinion, flowServiceRepositoryHolder);
+                    result = flowSubmitService.submitCurrentFlow();
+                }
+            }
+            return result;
+        } else {
+            return flowResult;
+        }
+    }
+
+    /**
+     * 提交当前流程
+     * @return 流程结果
+     */
+    private FlowResult submitCurrentFlow() {
         // 加载流程信息
         this.loadFlow(false);
 
@@ -339,5 +365,11 @@ public class FlowSubmitService {
 
         List<? extends IFlowOperator> operators = flowNodeService.loadNextNodeOperators();
         return new FlowSubmitResult(flowWork, nextNode, operators);
+    }
+
+
+    // 是否跳过相同审批人
+    public boolean isSkipIfSameApprover() {
+        return flowWork.isSkipIfSameApprover();
     }
 }
