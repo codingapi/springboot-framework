@@ -28,6 +28,12 @@ public class FlowWorkEntity {
 
     private Boolean enable;
 
+    /**
+     * 是否跳过相同审批人，默认为false
+     */
+    private Boolean skipIfSameApprover;
+
+
     private Integer postponedMax;
 
     @Lob

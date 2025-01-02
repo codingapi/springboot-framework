@@ -31,6 +31,9 @@ public class FlowProcessRepositoryImpl implements FlowProcessRepository {
             return null;
         }
         FlowBackup flowBackup = flowBackupRepository.getFlowBackupById(flowProcess.getBackupId());
-        return flowBackup.resume(flowOperatorRepository);
+        if(flowBackup!=null) {
+            return flowBackup.resume(flowOperatorRepository);
+        }
+        return null;
     }
 }

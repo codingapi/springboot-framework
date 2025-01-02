@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 public class FlowSaveService {
 
+    private final FlowWorkRepository flowWorkRepository;
     private final FlowRecordRepository flowRecordRepository;
     private final FlowBindDataRepository flowBindDataRepository;
     private final FlowProcessRepository flowProcessRepository;
@@ -27,10 +28,10 @@ public class FlowSaveService {
      * @param advice          审批意见
      */
     public void save(long recordId, IFlowOperator currentOperator, IBindData bindData, String advice) {
-        FlowRecordVerifyService flowRecordVerifyService = new FlowRecordVerifyService(flowRecordRepository,
+        FlowRecordVerifyService flowRecordVerifyService = new FlowRecordVerifyService(flowWorkRepository,
+                flowRecordRepository,
                 flowProcessRepository,
                 recordId, currentOperator);
-        flowRecordVerifyService.loadFlowRecord();
         flowRecordVerifyService.verifyFlowRecordSubmitState();
         flowRecordVerifyService.verifyFlowRecordCurrentOperator();
         flowRecordVerifyService.loadFlowWork();

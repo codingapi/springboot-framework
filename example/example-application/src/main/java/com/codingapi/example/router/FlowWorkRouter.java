@@ -29,7 +29,13 @@ public class FlowWorkRouter {
         User user = userRepository.getUserByUsername(request.getUsername());
         long id = request.getId();
         if (id == 0) {
-            FlowWork flowWork = new FlowWork(request.getCode(),request.getTitle(), request.getDescription(), request.getPostponedMax(), user);
+            FlowWork flowWork = new FlowWork(
+                    request.getCode(),
+                    request.getTitle(),
+                    request.getDescription(),
+                    request.isSkipIfSameApprover(),
+                    request.getPostponedMax(),
+                    user);
             flowWorkRepository.save(flowWork);
         } else {
             FlowWorkEntity flowWork = flowWorkEntityRepository.getFlowWorkEntityById(id);
@@ -37,6 +43,7 @@ public class FlowWorkRouter {
             flowWork.setCode(request.getCode());
             flowWork.setDescription(request.getDescription());
             flowWork.setPostponedMax(request.getPostponedMax());
+            flowWork.setSkipIfSameApprover(request.isSkipIfSameApprover());
             flowWork.setUpdateTime(System.currentTimeMillis());
             flowWorkEntityRepository.save(flowWork);
         }
