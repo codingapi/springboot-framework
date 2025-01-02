@@ -20,7 +20,6 @@ import org.springframework.util.StringUtils;
 public class FlowService {
 
     private final FlowDetailService flowDetailService;
-    private final FlowStartService flowStartService;
     private final FlowCustomEventService flowCustomEventService;
     private final FlowRecallService flowRecallService;
     private final FlowTrySubmitService flowTrySubmitService;
@@ -40,7 +39,6 @@ public class FlowService {
                        FlowBackupRepository flowBackupRepository) {
         this.flowServiceRepositoryHolder = new FlowServiceRepositoryHolder(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowOperatorRepository, flowProcessRepository, flowBackupRepository);
         this.flowDetailService = new FlowDetailService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowOperatorRepository, flowProcessRepository);
-        this.flowStartService = new FlowStartService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowOperatorRepository, flowProcessRepository, flowBackupRepository);
         this.flowCustomEventService = new FlowCustomEventService(flowRecordRepository, flowProcessRepository);
         this.flowRecallService = new FlowRecallService(flowRecordRepository, flowProcessRepository);
         this.flowTrySubmitService = new FlowTrySubmitService(flowRecordRepository, flowBindDataRepository, flowOperatorRepository, flowProcessRepository, flowWorkRepository, flowBackupRepository);
@@ -171,7 +169,8 @@ public class FlowService {
      * @param advice   审批意见
      */
     public FlowResult startFlow(String workCode, IFlowOperator operator, IBindData bindData, String advice) {
-        return flowStartService.startFlow(workCode, operator, bindData, advice);
+        FlowStartService flowStartService = new FlowStartService(workCode, operator, bindData, advice, flowServiceRepositoryHolder);
+        return flowStartService.startFlow();
     }
 
 
