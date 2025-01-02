@@ -4,6 +4,7 @@ import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.FlowProcessRepository;
 import com.codingapi.springboot.flow.repository.FlowRecordRepository;
+import com.codingapi.springboot.flow.repository.FlowWorkRepository;
 import com.codingapi.springboot.flow.service.FlowRecordVerifyService;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 public class FlowPostponedService {
 
+    private final FlowWorkRepository flowWorkRepository;
     private final FlowRecordRepository flowRecordRepository;
     private final FlowProcessRepository flowProcessRepository;
 
@@ -24,11 +26,10 @@ public class FlowPostponedService {
      * @param time            延期时间
      */
     public void postponed(long recordId, IFlowOperator currentOperator, long time) {
-        FlowRecordVerifyService flowRecordVerifyService = new FlowRecordVerifyService(flowRecordRepository,
+        FlowRecordVerifyService flowRecordVerifyService = new FlowRecordVerifyService(flowWorkRepository,flowRecordRepository,
                 flowProcessRepository,
                 recordId, currentOperator);
 
-        flowRecordVerifyService.loadFlowRecord();
         flowRecordVerifyService.verifyFlowRecordSubmitState();
         flowRecordVerifyService.verifyFlowRecordCurrentOperator();
         flowRecordVerifyService.loadFlowWork();

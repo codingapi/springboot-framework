@@ -2,10 +2,12 @@ package com.codingapi.springboot.flow.pojo;
 
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.record.FlowRecord;
+import com.codingapi.springboot.flow.user.IFlowOperator;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class FlowResult {
@@ -22,5 +24,15 @@ public class FlowResult {
         this.flowWork = flowWork;
         this.records = new ArrayList<>();
         this.records.add(flowRecord);
+    }
+
+
+    /**
+     * 匹配操作者的记录
+     * @param operator 操作者
+     * @return 记录
+     */
+    public List<FlowRecord> matchRecordByOperator(IFlowOperator operator){
+        return records.stream().filter(record -> record.isOperator(operator)).collect(Collectors.toList());
     }
 }

@@ -11,6 +11,7 @@ import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.FlowBindDataRepository;
 import com.codingapi.springboot.flow.repository.FlowProcessRepository;
 import com.codingapi.springboot.flow.repository.FlowRecordRepository;
+import com.codingapi.springboot.flow.repository.FlowWorkRepository;
 import com.codingapi.springboot.flow.service.FlowRecordVerifyService;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import com.codingapi.springboot.framework.event.EventPusher;
@@ -25,6 +26,7 @@ import java.util.List;
 @AllArgsConstructor
 public class FlowTransferService {
 
+    private final FlowWorkRepository flowWorkRepository;
     private final FlowRecordRepository flowRecordRepository;
     private final FlowBindDataRepository flowBindDataRepository;
     private final FlowProcessRepository flowProcessRepository;
@@ -41,11 +43,10 @@ public class FlowTransferService {
      */
     public void transfer(long recordId, IFlowOperator currentOperator, IFlowOperator targetOperator, IBindData bindData, String advice) {
 
-        FlowRecordVerifyService flowRecordVerifyService = new FlowRecordVerifyService(flowRecordRepository,
+        FlowRecordVerifyService flowRecordVerifyService = new FlowRecordVerifyService(flowWorkRepository, flowRecordRepository,
                 flowProcessRepository,
                 recordId, currentOperator);
 
-        flowRecordVerifyService.loadFlowRecord();
         flowRecordVerifyService.verifyFlowRecordSubmitState();
         flowRecordVerifyService.verifyFlowRecordCurrentOperator();
         flowRecordVerifyService.verifyTargetOperatorIsNotCurrentOperator(targetOperator);

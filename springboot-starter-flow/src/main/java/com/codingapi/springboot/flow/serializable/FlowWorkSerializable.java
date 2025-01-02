@@ -63,6 +63,13 @@ public class FlowWorkSerializable implements Serializable {
      * 更新时间
      */
     private long updateTime;
+
+    /**
+     * 是否跳过相同审批人，默认为false
+     */
+    @Setter
+    private boolean skipIfSameApprover;
+
     /**
      * 是否启用
      */
@@ -140,6 +147,7 @@ public class FlowWorkSerializable implements Serializable {
                 createTime,
                 updateTime,
                 enable,
+                skipIfSameApprover,
                 postponedMax,
                 flowNodes,
                 relations.stream().map((item) -> item.toFlowRelation(flowNodes)).collect(Collectors.toList()),
