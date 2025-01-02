@@ -5,7 +5,7 @@ import {
     ModalForm,
     PageContainer,
     ProForm,
-    ProFormDigit,
+    ProFormDigit, ProFormSwitch,
     ProFormText, ProFormTextArea,
     ProTable
 } from "@ant-design/pro-components";
@@ -171,6 +171,7 @@ const FlowPage = () => {
     return (
         <PageContainer>
             <ProTable
+                data-testid={"flow-table"}
                 actionRef={actionRef}
                 rowKey={"id"}
                 columns={columns}
@@ -251,6 +252,12 @@ const FlowPage = () => {
                             message:'最大延期次数不能为空'
                         }
                     ]}
+                />
+
+                <ProFormSwitch
+                    name={"skipIfSameApprover"}
+                    tooltip={"是否跳过相同审批人，默认为否"}
+                    label={"是否跳过相同审批人"}
                 />
 
             </ModalForm>

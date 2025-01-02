@@ -132,6 +132,84 @@ public class FlowTest {
 
 
     /**
+     * 自己审批时直接通过
+     */
+    @Test
+    void sameUserFlow() {
+        PageRequest pageRequest = PageRequest.of(0, 1000);
+
+        User user = new User("张飞");
+        userRepository.save(user);
+
+        User dept = new User("刘备");
+        userRepository.save(dept);
+
+        User boss = new User("诸葛亮");
+        userRepository.save(boss);
+
+        FlowWork flowWork = FlowWorkBuilder.builder(user)
+                .title("请假流程")
+                .skipIfSameApprover(true)
+                .nodes()
+                .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
+                .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(dept.getUserId()))
+                .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(dept.getUserId()))
+                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
+                .relations()
+                .relation("部门领导审批", "start", "dept")
+                .relation("总经理审批", "dept", "manager")
+                .relation("结束节点", "manager", "over")
+                .build();
+
+        flowWorkRepository.save(flowWork);
+
+        String workCode = flowWork.getCode();
+
+        Leave leave = new Leave("我要出去看看");
+        leaveRepository.save(leave);
+
+        // 创建流程
+        flowService.startFlow(workCode, user, leave, "发起流程");
+
+        // 查看我的待办
+        List<FlowRecord> userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
+        assertEquals(1, userTodos.size());
+
+        // 提交流程
+        FlowRecord userTodo = userTodos.get(0);
+        assertEquals(0, userTodo.getTimeoutTime());
+
+        flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
+
+        // 查看刘备经理的待办
+        List<FlowRecord> deptTodos = flowRecordRepository.findTodoByOperatorId(dept.getUserId(), pageRequest).getContent();
+        assertEquals(1, deptTodos.size());
+
+        // 提交委托dept部门经理的审批
+        FlowRecord deptTodo = deptTodos.get(0);
+        flowService.submitFlow(deptTodo.getId(), dept, leave, Opinion.pass("同意"));
+
+        // 查看所有流程
+        List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
+        assertEquals(3, records.size());
+
+        userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
+        assertEquals(0, userTodos.size());
+
+        records = flowRecordRepository.findAll(pageRequest).getContent();
+        assertEquals(3, records.size());
+        // 查看所有流程是否都已经结束
+        assertTrue(records.stream().allMatch(FlowRecord::isFinish));
+
+        List<BindDataSnapshot> snapshots = flowBindDataRepository.findAll();
+        assertEquals(4, snapshots.size());
+
+    }
+
+
+
+
+    /**
      * 同意再拒绝
      */
     @Test

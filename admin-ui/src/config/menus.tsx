@@ -16,10 +16,10 @@ export const menus = [
         page: 'welcome',
     },
     {
-        path: '/portal',
-        name: '门户',
+        path: '/salary',
+        name: '薪酬',
         icon: "SmileOutlined",
-        page: 'portal',
+        page: 'salary',
     },
     {
         path: '/user',

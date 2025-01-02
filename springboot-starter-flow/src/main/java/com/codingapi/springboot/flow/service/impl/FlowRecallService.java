@@ -16,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class FlowRecallService {
 
+    private final FlowWorkRepository flowWorkRepository;
     private final FlowRecordRepository flowRecordRepository;
     private final FlowProcessRepository flowProcessRepository;
 
@@ -26,11 +27,12 @@ public class FlowRecallService {
      * @param currentOperator 当前操作者
      */
     public void recall(long recordId, IFlowOperator currentOperator) {
-        FlowRecordVerifyService flowRecordVerifyService = new FlowRecordVerifyService(flowRecordRepository,
+        FlowRecordVerifyService flowRecordVerifyService = new FlowRecordVerifyService(
+                flowWorkRepository,
+                flowRecordRepository,
                 flowProcessRepository,
                 recordId, currentOperator);
 
-        flowRecordVerifyService.loadFlowRecord();
         flowRecordVerifyService.verifyFlowRecordCurrentOperator();
         flowRecordVerifyService.loadFlowWork();
         flowRecordVerifyService.loadFlowNode();

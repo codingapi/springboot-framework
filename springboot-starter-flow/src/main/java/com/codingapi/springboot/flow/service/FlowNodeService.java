@@ -28,6 +28,7 @@ public class FlowNodeService {
     @Getter
     private FlowNode nextNode;
     private IFlowOperator nextOperator;
+    private IFlowOperator backOperator;
 
     private final FlowOperatorRepository flowOperatorRepository;
     private final FlowRecordRepository flowRecordRepository;
@@ -115,6 +116,7 @@ public class FlowNodeService {
         }
         this.nextNode = nextNode;
         this.nextOperator = flowOperator;
+        this.backOperator = flowOperator;
     }
 
 
@@ -137,6 +139,7 @@ public class FlowNodeService {
         }
         this.nextNode = nextNode;
         this.nextOperator = flowOperator;
+        this.backOperator = flowOperator;
     }
 
 
@@ -238,10 +241,16 @@ public class FlowNodeService {
                 historyRecords);
 
         long workId = flowWork.getId();
-        List<? extends IFlowOperator> operators = nextNode.loadFlowNodeOperator(flowSession, flowOperatorRepository);
+        List<? extends IFlowOperator> operators = null;
+        if(this.backOperator==null){
+            operators = nextNode.loadFlowNodeOperator(flowSession, flowOperatorRepository);
+        }else {
+            operators = List.of(this.backOperator);
+        }
         List<Long> customOperatorIds = opinion.getOperatorIds();
         if (customOperatorIds != null && !customOperatorIds.isEmpty()) {
-            operators = operators.stream().filter(operator -> customOperatorIds.contains(operator.getUserId())).toList();
+            operators = operators.stream()
+                    .filter(operator -> customOperatorIds.contains(operator.getUserId())).toList();
             if (operators.size() != customOperatorIds.size()) {
                 throw new IllegalArgumentException("operator not match.");
             }

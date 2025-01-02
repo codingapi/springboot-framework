@@ -61,6 +61,12 @@ public class FlowWork {
     private boolean enable;
 
     /**
+     * 是否跳过相同审批人，默认为false
+     */
+    @Setter
+    private boolean skipIfSameApprover;
+
+    /**
      * 最大延期次数
      */
     @Setter
@@ -122,12 +128,13 @@ public class FlowWork {
         flowWork.setTitle(this.getTitle());
         flowWork.setCode(RandomGenerator.randomString(8));
         flowWork.setPostponedMax(this.getPostponedMax());
+        flowWork.setSkipIfSameApprover(this.isSkipIfSameApprover());
         flowWork.schema(schema);
         return flowWork;
     }
 
 
-    public FlowWork(String code,String title, String description, int postponedMax, IFlowOperator createUser) {
+    public FlowWork(String code,String title, String description,boolean skipIfSameApprover, int postponedMax, IFlowOperator createUser) {
         this.title = title;
         this.code = code;
         this.description = description;
@@ -138,6 +145,7 @@ public class FlowWork {
         this.nodes = new ArrayList<>();
         this.relations = new ArrayList<>();
         this.enable = false;
+        this.skipIfSameApprover = skipIfSameApprover;
     }
 
 
@@ -226,6 +234,7 @@ public class FlowWork {
                 createTime,
                 updateTime,
                 enable,
+                skipIfSameApprover,
                 postponedMax,
                 schema,
                 nodes.stream().map(FlowNode::toSerializable).collect(Collectors.toCollection(ArrayList::new)),

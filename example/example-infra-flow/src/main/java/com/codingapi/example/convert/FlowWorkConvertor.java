@@ -19,6 +19,7 @@ public class FlowWorkConvertor {
         entity.setCreateTime(flowWork.getCreateTime());
         entity.setUpdateTime(flowWork.getUpdateTime());
         entity.setEnable(flowWork.isEnable());
+        entity.setSkipIfSameApprover(flowWork.isSkipIfSameApprover());
         entity.setPostponedMax(flowWork.getPostponedMax());
         entity.setSchema(flowWork.getSchema());
         return entity;

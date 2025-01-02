@@ -4,6 +4,7 @@ import com.codingapi.springboot.flow.bind.IBindData;
 import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.domain.Opinion;
+import com.codingapi.springboot.flow.em.FlowSourceDirection;
 import com.codingapi.springboot.flow.error.NodeResult;
 import com.codingapi.springboot.flow.error.OperatorResult;
 import com.codingapi.springboot.flow.pojo.FlowResult;
@@ -174,6 +175,22 @@ public class FlowSession {
         FlowService flowService = loadFlowService();
         FlowResult result = flowService.submitFlow(flowRecord.getId(), currentOperator, bindData, Opinion.reject(opinion.getAdvice()));
         return MessageResult.create(result);
+    }
+
+    /**
+     * 是否为驳回状态
+     * @return 是否为驳回状态
+     */
+    public boolean isRejectState(){
+        List<FlowRecord> historyRecords = this.historyRecords;
+        if(historyRecords!=null) {
+            for (FlowRecord record : historyRecords) {
+                if (record.getId() == this.flowRecord.getPreId()) {
+                    return record.getFlowSourceDirection() == FlowSourceDirection.REJECT;
+                }
+            }
+        }
+        return false;
     }
 
 

@@ -8,6 +8,7 @@ import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.FlowProcessRepository;
 import com.codingapi.springboot.flow.repository.FlowRecordRepository;
+import com.codingapi.springboot.flow.repository.FlowWorkRepository;
 import com.codingapi.springboot.flow.result.MessageResult;
 import com.codingapi.springboot.flow.service.FlowRecordVerifyService;
 import com.codingapi.springboot.flow.user.IFlowOperator;
@@ -21,6 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 public class FlowCustomEventService {
 
+    private final FlowWorkRepository flowWorkRepository;
     private final FlowRecordRepository flowRecordRepository;
     private final FlowProcessRepository flowProcessRepository;
 
@@ -34,10 +36,8 @@ public class FlowCustomEventService {
      * @param opinion         审批意见
      */
     public MessageResult customFlowEvent(long recordId, IFlowOperator currentOperator, String buttonId, IBindData bindData, Opinion opinion) {
-        FlowRecordVerifyService flowRecordVerifyService = new FlowRecordVerifyService(flowRecordRepository, flowProcessRepository, recordId, currentOperator);
+        FlowRecordVerifyService flowRecordVerifyService = new FlowRecordVerifyService(flowWorkRepository,flowRecordRepository, flowProcessRepository, recordId, currentOperator);
 
-        // 加载流程
-        flowRecordVerifyService.loadFlowRecord();
         // 验证流程的提交状态
         flowRecordVerifyService.verifyFlowRecordSubmitState();
         // 验证当前操作者

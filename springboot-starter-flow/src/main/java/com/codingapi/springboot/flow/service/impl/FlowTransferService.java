@@ -22,6 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 public class FlowTransferService {
 
+    private final FlowWorkRepository flowWorkRepository;
     private final FlowRecordRepository flowRecordRepository;
     private final FlowBindDataRepository flowBindDataRepository;
     private final FlowProcessRepository flowProcessRepository;
@@ -38,11 +39,10 @@ public class FlowTransferService {
      */
     public void transfer(long recordId, IFlowOperator currentOperator, IFlowOperator targetOperator, IBindData bindData, String advice) {
 
-        FlowRecordVerifyService flowRecordVerifyService = new FlowRecordVerifyService(flowRecordRepository,
+        FlowRecordVerifyService flowRecordVerifyService = new FlowRecordVerifyService(flowWorkRepository,flowRecordRepository,
                 flowProcessRepository,
                 recordId, currentOperator);
 
-        flowRecordVerifyService.loadFlowRecord();
         flowRecordVerifyService.verifyFlowRecordSubmitState();
         flowRecordVerifyService.verifyFlowRecordCurrentOperator();
         flowRecordVerifyService.verifyTargetOperatorIsNotCurrentOperator(targetOperator);

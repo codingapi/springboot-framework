@@ -16,6 +16,7 @@ public class FlowWorkCmd {
         private String code;
         private String description;
         private int postponedMax;
+        private boolean skipIfSameApprover;
 
 
         public String getUsername(){

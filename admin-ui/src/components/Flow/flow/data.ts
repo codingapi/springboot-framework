@@ -268,6 +268,20 @@ export class FlowData extends FlowWorkData {
         return false;
     }
 
+    // 是否是退回状态
+    isReject(){
+        const historyRecords = this.data.historyRecords || [];
+        const currentRecord = this.data.flowRecord;
+        if(currentRecord && historyRecords.length>0){
+            const preId = currentRecord.preId;
+            const preRecord = historyRecords.find((item:any)=>item.id===preId);
+            if(preRecord){
+                return preRecord.flowSourceDirection === 'REJECT';
+            }
+        }
+        return false;
+    }
+
     // 是否是结束节点
     private isFinished() {
         if (this.data.flowRecord) {
