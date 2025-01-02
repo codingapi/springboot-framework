@@ -35,7 +35,7 @@ public class FlowDetailService {
      */
     public FlowDetail detail(long recordId, IFlowOperator currentOperator) {
 
-        FlowRecordVerifyService flowRecordVerifyService = new FlowRecordVerifyService(flowRecordRepository,
+        FlowRecordVerifyService flowRecordVerifyService = new FlowRecordVerifyService(flowWorkRepository,flowRecordRepository,
                 flowProcessRepository,
                 recordId, currentOperator);
 

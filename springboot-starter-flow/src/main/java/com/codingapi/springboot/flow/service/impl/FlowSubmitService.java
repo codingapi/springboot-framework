@@ -55,7 +55,9 @@ public class FlowSubmitService {
         this.currentOperator = currentOperator;
         this.bindData = bindData;
         this.opinion = opinion;
-        this.flowRecordVerifyService = new FlowRecordVerifyService(flowServiceRepositoryHolder.getFlowRecordRepository(),
+        this.flowRecordVerifyService = new FlowRecordVerifyService(
+                flowServiceRepositoryHolder.getFlowWorkRepository(),
+                flowServiceRepositoryHolder.getFlowRecordRepository(),
                 flowServiceRepositoryHolder.getFlowProcessRepository(),
                 recordId,
                 currentOperator);
@@ -73,7 +75,9 @@ public class FlowSubmitService {
         this.currentOperator = currentOperator;
         this.bindData = bindData;
         this.opinion = opinion;
-        this.flowRecordVerifyService = new FlowRecordVerifyService(flowServiceRepositoryHolder.getFlowRecordRepository(),
+        this.flowRecordVerifyService = new FlowRecordVerifyService(
+                flowServiceRepositoryHolder.getFlowWorkRepository(),
+                flowServiceRepositoryHolder.getFlowRecordRepository(),
                 flowServiceRepositoryHolder.getFlowProcessRepository(),
                 flowRecord,
                 flowWork,
@@ -221,6 +225,7 @@ public class FlowSubmitService {
 
     /**
      * 提交流程 根据流程的是否跳过相同审批人来判断是否需要继续提交
+     *
      * @return 流程结果
      */
     public FlowResult submitFlow() {
@@ -242,6 +247,7 @@ public class FlowSubmitService {
 
     /**
      * 提交当前流程
+     *
      * @return 流程结果
      */
     private FlowResult submitCurrentFlow() {
@@ -370,6 +376,6 @@ public class FlowSubmitService {
 
     // 是否跳过相同审批人
     public boolean isSkipIfSameApprover() {
-        return flowWork.isSkipIfSameApprover();
+        return flowWork.isSkipIfSameApprover() && !nextNode.isOverNode();
     }
 }

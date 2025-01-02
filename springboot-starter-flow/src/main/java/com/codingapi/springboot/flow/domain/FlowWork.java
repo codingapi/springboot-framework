@@ -133,7 +133,7 @@ public class FlowWork {
     }
 
 
-    public FlowWork(String code,String title, String description, int postponedMax, IFlowOperator createUser) {
+    public FlowWork(String code,String title, String description,boolean skipIfSameApprover, int postponedMax, IFlowOperator createUser) {
         this.title = title;
         this.code = code;
         this.description = description;
@@ -144,6 +144,7 @@ public class FlowWork {
         this.nodes = new ArrayList<>();
         this.relations = new ArrayList<>();
         this.enable = false;
+        this.skipIfSameApprover = skipIfSameApprover;
     }
 
 

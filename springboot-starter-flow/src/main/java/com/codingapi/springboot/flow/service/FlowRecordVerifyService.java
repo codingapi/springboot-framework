@@ -5,6 +5,7 @@ import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.FlowProcessRepository;
 import com.codingapi.springboot.flow.repository.FlowRecordRepository;
+import com.codingapi.springboot.flow.repository.FlowWorkRepository;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import lombok.Getter;
 
@@ -22,6 +23,7 @@ public class FlowRecordVerifyService {
     // register repository
     final FlowRecordRepository flowRecordRepository;
     final FlowProcessRepository flowProcessRepository;
+    final FlowWorkRepository flowWorkRepository;
 
     // load Object
     @Getter
@@ -31,10 +33,13 @@ public class FlowRecordVerifyService {
     @Getter
     private final FlowRecord flowRecord;
 
-    public FlowRecordVerifyService(FlowRecordRepository flowRecordRepository,
-                                   FlowProcessRepository flowProcessRepository,
-                                   long recordId,
-                                   IFlowOperator currentOperator) {
+    public FlowRecordVerifyService(
+            FlowWorkRepository flowWorkRepository,
+            FlowRecordRepository flowRecordRepository,
+            FlowProcessRepository flowProcessRepository,
+            long recordId,
+            IFlowOperator currentOperator) {
+        this.flowWorkRepository = flowWorkRepository;
         this.flowRecordRepository = flowRecordRepository;
         this.flowProcessRepository = flowProcessRepository;
 
@@ -46,13 +51,16 @@ public class FlowRecordVerifyService {
         this.flowRecord = flowRecord;
     }
 
-    public FlowRecordVerifyService(FlowRecordRepository flowRecordRepository,
+    public FlowRecordVerifyService(FlowWorkRepository flowWorkRepository,
+                                   FlowRecordRepository flowRecordRepository,
                                    FlowProcessRepository flowProcessRepository,
                                    FlowRecord flowRecord,
                                    FlowWork flowWork,
                                    IFlowOperator currentOperator) {
+        this.flowWorkRepository = flowWorkRepository;
         this.flowRecordRepository = flowRecordRepository;
         this.flowProcessRepository = flowProcessRepository;
+
         this.currentOperator = currentOperator;
         this.flowRecord = flowRecord;
         this.flowWork = flowWork;
@@ -149,8 +157,11 @@ public class FlowRecordVerifyService {
      * 获取流程设计对象
      */
     public void loadFlowWork() {
-        if(this.flowWork ==null) {
+        if (this.flowWork == null) {
             FlowWork flowWork = flowProcessRepository.getFlowWorkByProcessId(flowRecord.getProcessId());
+            if (flowWork == null) {
+                flowWork = flowWorkRepository.getFlowWorkByCode(flowRecord.getWorkCode());
+            }
             if (flowWork == null) {
                 throw new IllegalArgumentException("flow work not found");
             }
