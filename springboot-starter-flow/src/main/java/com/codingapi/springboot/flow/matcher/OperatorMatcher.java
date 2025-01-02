@@ -5,6 +5,7 @@ import com.codingapi.springboot.flow.script.GroovyShellContext;
 import lombok.Getter;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -113,6 +114,9 @@ public class OperatorMatcher {
      */
     public List<Long> matcher(FlowSession flowSession) {
         List<Object> values = (List<Object>) runtime.invokeMethod("run", flowSession);
+        if (values == null) {
+            return new ArrayList<>();
+        }
         return values.stream().map(item -> {
             if (item instanceof Number) {
                 return ((Number) item).longValue();
