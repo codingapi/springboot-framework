@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom';
+import {TextEncoder} from 'util';
 
-
-// src/jest.setup.ts
-import '@testing-library/jest-dom';
+// 添加全局对象
+global.TextEncoder = TextEncoder;
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -21,9 +21,14 @@ Object.defineProperty(window, 'matchMedia', {
 
 // Mock ResizeObserver
 global.ResizeObserver = class ResizeObserver {
-    observe() {}
-    unobserve() {}
-    disconnect() {}
+    observe() {
+    }
+
+    unobserve() {
+    }
+
+    disconnect() {
+    }
 };
 
 // Suppress findDOMNode warnings in test output

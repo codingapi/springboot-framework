@@ -27,4 +27,11 @@ public class FlowSessionBeanProvider {
         return null;
     }
 
+    public <T> T getBean(Class<T> clazz) {
+        if (spring != null) {
+            return spring.getBean(clazz);
+        }
+        return null;
+    }
+
 }

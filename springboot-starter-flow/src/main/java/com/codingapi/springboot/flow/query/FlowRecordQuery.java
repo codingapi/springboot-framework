@@ -9,7 +9,19 @@ import org.springframework.data.domain.PageRequest;
  */
 public interface FlowRecordQuery {
 
+    /**
+     * 根据ID获取流程记录
+     * @param id 流程记录ID
+     * @return 流程记录
+     */
+    FlowRecord getFlowRecordById(long id);
 
+
+    /**
+     * 查询所有流程记录
+     * @param pageRequest 分页参数
+     * @return 流程记录
+     */
     Page<FlowRecord> findAll(PageRequest pageRequest);
 
 

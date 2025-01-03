@@ -9,6 +9,7 @@ import com.codingapi.springboot.flow.error.NodeResult;
 import com.codingapi.springboot.flow.error.OperatorResult;
 import com.codingapi.springboot.flow.pojo.FlowResult;
 import com.codingapi.springboot.flow.pojo.FlowSubmitResult;
+import com.codingapi.springboot.flow.query.FlowRecordQuery;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.result.MessageResult;
 import com.codingapi.springboot.flow.service.FlowService;
@@ -67,8 +68,13 @@ public class FlowSession {
     }
 
 
+    public <T> T getBean(Class<T> clazz) {
+        return provider.getBean(clazz);
+    }
+
+
     /**
-     *  获取审批意见
+     * 获取审批意见
      */
     public String getAdvice() {
         if (opinion != null) {
@@ -179,16 +185,18 @@ public class FlowSession {
 
     /**
      * 是否为驳回状态
+     *
      * @return 是否为驳回状态
      */
-    public boolean isRejectState(){
-        List<FlowRecord> historyRecords = this.historyRecords;
-        if(historyRecords!=null) {
-            for (FlowRecord record : historyRecords) {
-                if (record.getId() == this.flowRecord.getPreId()) {
-                    return record.getFlowSourceDirection() == FlowSourceDirection.REJECT;
-                }
-            }
+    public boolean isRejectState() {
+        long preId = flowRecord.getPreId();
+        if (preId == 0) {
+            return false;
+        }
+        FlowRecordQuery flowRecordQuery = getBean(FlowRecordQuery.class);
+        FlowRecord preRecord = flowRecordQuery.getFlowRecordById(preId);
+        if (preRecord != null) {
+            return preRecord.getFlowSourceDirection() == FlowSourceDirection.REJECT;
         }
         return false;
     }
