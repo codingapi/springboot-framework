@@ -4,10 +4,12 @@ import com.codingapi.springboot.flow.bind.IBindData;
 import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.domain.Opinion;
+import com.codingapi.springboot.flow.em.FlowSourceDirection;
 import com.codingapi.springboot.flow.error.NodeResult;
 import com.codingapi.springboot.flow.error.OperatorResult;
 import com.codingapi.springboot.flow.pojo.FlowResult;
 import com.codingapi.springboot.flow.pojo.FlowSubmitResult;
+import com.codingapi.springboot.flow.query.FlowRecordQuery;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.result.MessageResult;
 import com.codingapi.springboot.flow.service.FlowService;
@@ -66,9 +68,13 @@ public class FlowSession {
     }
 
 
+    public <T> T getBean(Class<T> clazz) {
+        return provider.getBean(clazz);
+    }
+
 
     /**
-     *  获取审批意见
+     * 获取审批意见
      */
     public String getAdvice() {
         if (opinion != null) {
@@ -175,6 +181,24 @@ public class FlowSession {
         FlowService flowService = loadFlowService();
         FlowResult result = flowService.submitFlow(flowRecord.getId(), currentOperator, bindData, Opinion.reject(opinion.getAdvice()));
         return MessageResult.create(result);
+    }
+
+    /**
+     * 是否为驳回状态
+     *
+     * @return 是否为驳回状态
+     */
+    public boolean isRejectState() {
+        long preId = flowRecord.getPreId();
+        if (preId == 0) {
+            return false;
+        }
+        FlowRecordQuery flowRecordQuery = getBean(FlowRecordQuery.class);
+        FlowRecord preRecord = flowRecordQuery.getFlowRecordById(preId);
+        if (preRecord != null) {
+            return preRecord.getFlowSourceDirection() == FlowSourceDirection.REJECT;
+        }
+        return false;
     }
 
 
