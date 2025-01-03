@@ -21,6 +21,11 @@ public class DefaultSQLInterceptor implements SQLInterceptor {
 
     @Override
     public void afterHandler(String sql, String newSql, SQLException exception) {
+        if(exception!=null){
+            log.error("sql:{}",sql);
+            log.error("newSql:{}",newSql);
+            log.error(exception.getMessage(),exception);
+        }
         if (DataAuthorizationPropertyContext.getInstance().showSql()) {
             log.info("newSql:{}", newSql);
         }
