@@ -304,7 +304,7 @@ public class FlowSubmitService {
             this.saveFlowRecord(flowRecord);
             this.updateFinishFlowRecord();
 
-            this.pushEvent(flowRecord, FlowApprovalEvent.STATE_CREATE);
+            this.pushEvent(flowRecord, FlowApprovalEvent.STATE_FINISH);
 
             if (!nextRecords.isEmpty()) {
                 return new FlowResult(flowWork, nextRecords.get(0));
