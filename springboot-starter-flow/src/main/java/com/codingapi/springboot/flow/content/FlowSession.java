@@ -189,6 +189,9 @@ public class FlowSession {
      * @return 是否为驳回状态
      */
     public boolean isRejectState() {
+        if (flowRecord == null) {
+            return false;
+        }
         long preId = flowRecord.getPreId();
         if (preId == 0) {
             return false;
