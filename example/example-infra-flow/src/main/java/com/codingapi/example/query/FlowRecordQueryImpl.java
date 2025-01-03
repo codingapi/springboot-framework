@@ -18,6 +18,12 @@ public class FlowRecordQueryImpl implements FlowRecordQuery {
     private final FlowRecordEntityRepository flowRecordEntityRepository;
     private final UserRepository userRepository;
 
+
+    @Override
+    public FlowRecord getFlowRecordById(long id) {
+        return FlowRecordConvertor.convert(flowRecordEntityRepository.getFlowRecordEntityById(id),userRepository);
+    }
+
     @Override
     public Page<FlowRecord> findAll(PageRequest pageRequest) {
         Page<FlowRecordEntity> page = flowRecordEntityRepository.findAllFlowRecords(pageRequest);
