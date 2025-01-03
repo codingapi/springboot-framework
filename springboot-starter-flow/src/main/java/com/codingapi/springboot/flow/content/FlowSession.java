@@ -204,7 +204,7 @@ public class FlowSession {
     }
 
     /**
-     * 是否来自驳回状态
+     * 上级节点的状态是驳回状态
      *
      * @see #backStateIsReject()
      */
