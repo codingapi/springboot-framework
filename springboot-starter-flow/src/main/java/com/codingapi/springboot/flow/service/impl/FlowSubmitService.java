@@ -371,6 +371,7 @@ public class FlowSubmitService {
 
         while (nextNode.isCirculate()){
             flowNodeService.skipCirculate();
+            this.nextNode = flowNodeService.getNextNode();
         }
 
         List<? extends IFlowOperator> operators = flowNodeService.loadNextNodeOperators();
