@@ -370,6 +370,11 @@ public class FlowSubmitService {
 
         this.loadNextNode(historyRecords);
 
+        while (nextNode.isCirculate()){
+            flowNodeService.skipCirculate();
+            this.nextNode = flowNodeService.getNextNode();
+        }
+
         List<? extends IFlowOperator> operators = flowNodeService.loadNextNodeOperators();
         return new FlowSubmitResult(flowWork, nextNode, operators);
     }

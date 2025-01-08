@@ -253,9 +253,6 @@ public class FlowNodeService {
         if (customOperatorIds != null && !customOperatorIds.isEmpty()) {
             operators = operators.stream()
                     .filter(operator -> customOperatorIds.contains(operator.getUserId())).collect(Collectors.toList());
-            if (operators.size() != customOperatorIds.size()) {
-                throw new IllegalArgumentException("operator not match.");
-            }
         }
         List<FlowRecord> recordList;
         if (operators.isEmpty()) {
