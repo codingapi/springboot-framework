@@ -303,7 +303,7 @@ public class FlowSubmitService {
             this.saveFlowRecord(flowRecord);
             this.updateFinishFlowRecord();
 
-            this.pushEvent(flowRecord, FlowApprovalEvent.STATE_CREATE);
+            this.pushEvent(flowRecord, FlowApprovalEvent.STATE_FINISH);
 
             if (!nextRecords.isEmpty()) {
                 return new FlowResult(flowWork, nextRecords.get(0));
@@ -368,6 +368,11 @@ public class FlowSubmitService {
         flowSourceDirection = flowDirectionService.reloadFlowSourceDirection();
 
         this.loadNextNode(historyRecords);
+
+        while (nextNode.isCirculate()){
+            flowNodeService.skipCirculate();
+            this.nextNode = flowNodeService.getNextNode();
+        }
 
         List<? extends IFlowOperator> operators = flowNodeService.loadNextNodeOperators();
         return new FlowSubmitResult(flowWork, nextNode, operators);

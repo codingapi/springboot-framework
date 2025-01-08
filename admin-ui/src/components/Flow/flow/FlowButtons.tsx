@@ -21,6 +21,10 @@ const FlowButtons: React.FC<FlowButtonsProps> = (props) => {
         return null;
     }
 
+    if(flowData.hasData() && !flowData.canHandle()){
+        return null;
+    }
+
     const buttons = flowData.getNodeButtons();
 
     return (

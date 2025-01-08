@@ -184,11 +184,13 @@ public class FlowSession {
     }
 
     /**
-     * 是否为驳回状态
-     *
-     * @return 是否为驳回状态
+     * 上级节点的状态是驳回状态
+     * @return 上级节点的状态是驳回状态
      */
-    public boolean isRejectState() {
+    public boolean backStateIsReject() {
+        if (flowRecord == null) {
+            return false;
+        }
         long preId = flowRecord.getPreId();
         if (preId == 0) {
             return false;
@@ -197,6 +199,26 @@ public class FlowSession {
         FlowRecord preRecord = flowRecordQuery.getFlowRecordById(preId);
         if (preRecord != null) {
             return preRecord.getFlowSourceDirection() == FlowSourceDirection.REJECT;
+        }
+        return false;
+    }
+
+    /**
+     * 上级节点的状态是驳回状态
+     *
+     * @see #backStateIsReject()
+     */
+    @Deprecated
+    public boolean isRejectState() {
+        return this.backStateIsReject();
+    }
+
+    /**
+     * 当前节点的状态是驳回状态
+     */
+    public boolean currentStateIsReject() {
+        if (flowRecord != null) {
+            return flowRecord.getFlowSourceDirection() == FlowSourceDirection.REJECT;
         }
         return false;
     }
