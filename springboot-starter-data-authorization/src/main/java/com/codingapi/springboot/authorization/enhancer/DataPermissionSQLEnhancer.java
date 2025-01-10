@@ -8,12 +8,10 @@ import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
-import net.sf.jsqlparser.statement.select.FromItem;
-import net.sf.jsqlparser.statement.select.Join;
-import net.sf.jsqlparser.statement.select.PlainSelect;
-import net.sf.jsqlparser.statement.select.Select;
+import net.sf.jsqlparser.statement.select.*;
 
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * 数据权限 SQL 增强器
@@ -45,14 +43,28 @@ public class DataPermissionSQLEnhancer {
             if (statement instanceof Select) {
                 tableColumnAliasHolder.holderAlias();
                 Select select = (Select) statement;
-                PlainSelect plainSelect = select.getPlainSelect();
-                this.enhanceDataPermissionInSelect(plainSelect);
+                this.deepMatch(select);
                 return statement.toString();
             }
         } catch (Exception e) {
             throw new SQLException(e);
         }
         return sql;
+    }
+
+
+    private void deepMatch(Select select) throws Exception {
+        if (select instanceof PlainSelect) {
+            PlainSelect plainSelect = select.getPlainSelect();
+            this.enhanceDataPermissionInSelect(plainSelect);
+        }
+        if (select instanceof SetOperationList) {
+            SetOperationList setOperationList = select.getSetOperationList();
+            List<Select> selectList = setOperationList.getSelects();
+            for (Select selectItem : selectList) {
+                this.deepMatch(selectItem.getPlainSelect());
+            }
+        }
     }
 
     public TableColumnAliasContext getTableAlias() {
