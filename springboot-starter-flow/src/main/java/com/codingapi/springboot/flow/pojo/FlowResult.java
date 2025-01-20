@@ -34,4 +34,7 @@ public class FlowResult {
         return records.stream().filter(record -> record.isOperator(operator)).toList();
     }
 
+    public boolean isOver() {
+        return records.stream().allMatch(FlowRecord::isOverNode);
+    }
 }

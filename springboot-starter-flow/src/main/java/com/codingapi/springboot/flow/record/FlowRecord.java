@@ -432,4 +432,8 @@ public class FlowRecord {
     public boolean isStartRecord() {
         return this.preId == 0;
     }
+
+    public boolean isOverNode() {
+        return this.nodeCode.equals(FlowNode.CODE_OVER);
+    }
 }
