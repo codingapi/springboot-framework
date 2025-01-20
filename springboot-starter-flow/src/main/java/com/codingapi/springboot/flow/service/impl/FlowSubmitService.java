@@ -236,7 +236,7 @@ public class FlowSubmitService {
             if (!flowRecords.isEmpty()) {
                 for (FlowRecord flowRecord : flowRecords) {
                     FlowSubmitService flowSubmitService = new FlowSubmitService(flowRecord.getId(), currentOperator, bindData, opinion, flowServiceRepositoryHolder);
-                    result = flowSubmitService.submitCurrentFlow();
+                    result = flowSubmitService.submitFlow();
                 }
             }
             return result;
