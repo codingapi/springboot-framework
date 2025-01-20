@@ -231,13 +231,13 @@ public class FlowSubmitService {
      */
     public FlowResult submitFlow() {
         FlowResult flowResult = this.submitCurrentFlow();
-        if (this.isSkipIfSameApprover()) {
+        if (this.isSkipIfSameApprover() && !flowResult.isOver()) {
             List<FlowRecord> flowRecords = flowResult.matchRecordByOperator(currentOperator);
             FlowResult result = flowResult;
             if (!flowRecords.isEmpty()) {
                 for (FlowRecord flowRecord : flowRecords) {
                     FlowSubmitService flowSubmitService = new FlowSubmitService(flowRecord.getId(), currentOperator, bindData, opinion, flowServiceRepositoryHolder);
-                    result = flowSubmitService.submitCurrentFlow();
+                    result = flowSubmitService.submitFlow();
                 }
             }
             return result;
