@@ -28,6 +28,22 @@ public class FlowCmd {
             return TokenContext.current().getUsername();
         }
     }
+    @Setter
+    @Getter
+    public static class FlowStep{
+        private String workCode;
+        private JSONObject formData;
+
+        @SneakyThrows
+        public IBindData getBindData() {
+            String clazzName = formData.getString("clazzName");
+            return (IBindData)formData.toJavaObject(Class.forName(clazzName));
+        }
+
+        public String getUserName() {
+            return TokenContext.current().getUsername();
+        }
+    }
 
     @Setter
     @Getter

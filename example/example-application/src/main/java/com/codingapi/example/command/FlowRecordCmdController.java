@@ -3,8 +3,9 @@ package com.codingapi.example.command;
 import com.codingapi.example.domain.User;
 import com.codingapi.example.pojo.cmd.FlowCmd;
 import com.codingapi.example.repository.UserRepository;
-import com.codingapi.springboot.flow.pojo.FlowSubmitResult;
 import com.codingapi.springboot.flow.pojo.FlowResult;
+import com.codingapi.springboot.flow.pojo.FlowStepResult;
+import com.codingapi.springboot.flow.pojo.FlowSubmitResult;
 import com.codingapi.springboot.flow.result.MessageResult;
 import com.codingapi.springboot.flow.service.FlowService;
 import com.codingapi.springboot.framework.dto.response.Response;
@@ -31,13 +32,19 @@ public class FlowRecordCmdController {
         return SingleResponse.of(flowService.startFlow(request.getWorkCode(), current, request.getBindData(), request.getAdvice()));
     }
 
+    @PostMapping("/getFlowStep")
+    public SingleResponse<FlowStepResult> getFlowStep(@RequestBody FlowCmd.FlowStep request) {
+        User current = userRepository.getUserByUsername(request.getUserName());
+        return SingleResponse.of(flowService.getFlowStep(request.getWorkCode(), request.getBindData(), current));
+    }
+
 
     @PostMapping("/trySubmitFlow")
     public SingleResponse<FlowSubmitResult> trySubmitFlow(@RequestBody FlowCmd.SubmitFlow request) {
         User current = userRepository.getUserByUsername(request.getUserName());
-        if(request.getRecordId()>0) {
+        if (request.getRecordId() > 0) {
             return SingleResponse.of(flowService.trySubmitFlow(request.getRecordId(), current, request.getBindData(), request.getOpinion()));
-        }else {
+        } else {
             return SingleResponse.of(flowService.trySubmitFlow(request.getWorkCode(), current, request.getBindData(), request.getOpinion()));
         }
     }

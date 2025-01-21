@@ -4,6 +4,7 @@ import com.codingapi.springboot.flow.bind.IBindData;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.pojo.FlowDetail;
 import com.codingapi.springboot.flow.pojo.FlowResult;
+import com.codingapi.springboot.flow.pojo.FlowStepResult;
 import com.codingapi.springboot.flow.pojo.FlowSubmitResult;
 import com.codingapi.springboot.flow.repository.*;
 import com.codingapi.springboot.flow.result.MessageResult;
@@ -39,13 +40,13 @@ public class FlowService {
                        FlowBackupRepository flowBackupRepository) {
         this.flowServiceRepositoryHolder = new FlowServiceRepositoryHolder(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowOperatorRepository, flowProcessRepository, flowBackupRepository);
         this.flowDetailService = new FlowDetailService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowOperatorRepository, flowProcessRepository);
-        this.flowCustomEventService = new FlowCustomEventService(flowWorkRepository,flowRecordRepository, flowProcessRepository);
-        this.flowRecallService = new FlowRecallService(flowWorkRepository,flowRecordRepository, flowProcessRepository);
-        this.flowRemoveService = new FlowRemoveService(flowWorkRepository,flowRecordRepository, flowProcessRepository);
-        this.flowSaveService = new FlowSaveService(flowWorkRepository,flowRecordRepository, flowBindDataRepository, flowProcessRepository);
-        this.flowTransferService = new FlowTransferService(flowWorkRepository,flowRecordRepository, flowBindDataRepository, flowProcessRepository);
-        this.flowPostponedService = new FlowPostponedService(flowWorkRepository,flowRecordRepository, flowProcessRepository);
-        this.flowUrgeService = new FlowUrgeService(flowWorkRepository,flowRecordRepository, flowProcessRepository);
+        this.flowCustomEventService = new FlowCustomEventService(flowWorkRepository, flowRecordRepository, flowProcessRepository);
+        this.flowRecallService = new FlowRecallService(flowWorkRepository, flowRecordRepository, flowProcessRepository);
+        this.flowRemoveService = new FlowRemoveService(flowWorkRepository, flowRecordRepository, flowProcessRepository);
+        this.flowSaveService = new FlowSaveService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowProcessRepository);
+        this.flowTransferService = new FlowTransferService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowProcessRepository);
+        this.flowPostponedService = new FlowPostponedService(flowWorkRepository, flowRecordRepository, flowProcessRepository);
+        this.flowUrgeService = new FlowUrgeService(flowWorkRepository, flowRecordRepository, flowProcessRepository);
     }
 
     /**
@@ -185,6 +186,18 @@ public class FlowService {
     public FlowSubmitResult trySubmitFlow(long recordId, IFlowOperator currentOperator, IBindData bindData, Opinion opinion) {
         FlowTrySubmitService flowTrySubmitService = new FlowTrySubmitService(currentOperator, bindData, opinion, flowServiceRepositoryHolder);
         return flowTrySubmitService.trySubmitFlow(recordId);
+    }
+
+    /**
+     * 获取流程执行节点
+     *
+     * @param workCode
+     * @param currentOperator
+     * @return
+     */
+    public FlowStepResult getFlowStep(String workCode, IBindData bindData, IFlowOperator currentOperator) {
+        FlowStepService flowStepService = new FlowStepService(workCode, currentOperator, bindData, flowServiceRepositoryHolder);
+        return flowStepService.getFlowStep();
     }
 
 

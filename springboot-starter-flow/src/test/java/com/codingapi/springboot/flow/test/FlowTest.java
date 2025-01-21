@@ -8,6 +8,7 @@ import com.codingapi.springboot.flow.em.ApprovalType;
 import com.codingapi.springboot.flow.flow.Leave;
 import com.codingapi.springboot.flow.matcher.OperatorMatcher;
 import com.codingapi.springboot.flow.pojo.FlowDetail;
+import com.codingapi.springboot.flow.pojo.FlowStepResult;
 import com.codingapi.springboot.flow.pojo.FlowSubmitResult;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.*;
@@ -29,8 +30,8 @@ public class FlowTest {
     private final FlowBindDataRepositoryImpl flowBindDataRepository = new FlowBindDataRepositoryImpl();
     private final LeaveRepository leaveRepository = new LeaveRepository();
     private final FlowBackupRepository flowBackupRepository = new FlowBackupRepositoryImpl();
-    private final FlowProcessRepository flowProcessRepository = new FlowProcessRepositoryImpl(flowBackupRepository,userRepository);
-    private final FlowService flowService = new FlowService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, userRepository,flowProcessRepository,flowBackupRepository);
+    private final FlowProcessRepository flowProcessRepository = new FlowProcessRepositoryImpl(flowBackupRepository, userRepository);
+    private final FlowService flowService = new FlowService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, userRepository, flowProcessRepository, flowBackupRepository);
 
     /**
      * 委托测试测试
@@ -71,6 +72,9 @@ public class FlowTest {
         Leave leave = new Leave("我要出去看看");
         leaveRepository.save(leave);
 
+        FlowStepResult result = flowService.getFlowStep(workCode, leave, user);
+        result.print();
+
         // 创建流程
         flowService.startFlow(workCode, user, leave, "发起流程");
 
@@ -83,7 +87,7 @@ public class FlowTest {
         assertEquals(0, userTodo.getTimeoutTime());
         // 保存流程
         leave.setTitle("我要出去看看~~");
-        flowService.save(userTodo.getId(), user, leave,"暂存");
+        flowService.save(userTodo.getId(), user, leave, "暂存");
 
         // 查看流程详情
         FlowDetail flowDetail = flowService.detail(userTodo.getId(), user);
@@ -128,7 +132,6 @@ public class FlowTest {
         assertEquals(4, snapshots.size());
 
     }
-
 
 
     /**
@@ -205,8 +208,6 @@ public class FlowTest {
         assertEquals(4, snapshots.size());
 
     }
-
-
 
 
     /**
@@ -319,7 +320,7 @@ public class FlowTest {
         FlowRecord userTodo = userTodos.get(0);
         // 保存流程
         leave.setTitle("我要出去看看~~");
-        flowService.save(userTodo.getId(), user, leave,"暂存");
+        flowService.save(userTodo.getId(), user, leave, "暂存");
 
         // 查看流程详情
         FlowDetail flowDetail = flowService.detail(userTodo.getId(), user);
@@ -819,7 +820,7 @@ public class FlowTest {
                 .title("请假流程")
                 .nodes()
                 .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
-                .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(dept.getUserId(),lorne.getUserId()))
+                .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(dept.getUserId(), lorne.getUserId()))
                 .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
                 .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .relations()
@@ -845,7 +846,7 @@ public class FlowTest {
         // 提交流程
         FlowRecord userTodo = userTodos.get(0);
 
-        FlowSubmitResult flowSubmitResult =  flowService.trySubmitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
+        FlowSubmitResult flowSubmitResult = flowService.trySubmitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
         assertEquals(flowSubmitResult.getOperators().size(), 2);
         assertTrue(flowSubmitResult.getOperators().stream().map(IFlowOperator::getUserId).toList().contains(dept.getUserId()));
         assertTrue(flowSubmitResult.getOperators().stream().map(IFlowOperator::getUserId).toList().contains(lorne.getUserId()));

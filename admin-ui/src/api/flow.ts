@@ -42,6 +42,10 @@ export async function startFlow(body:any) {
     return post('/api/cmd/flowRecord/startFlow', body);
 }
 
+export async function getFlowStep(body:any) {
+    return post('/api/cmd/flowRecord/getFlowStep', body);
+}
+
 export async function removeFlow(body:any) {
     return post('/api/cmd/flowRecord/remove', body);
 }

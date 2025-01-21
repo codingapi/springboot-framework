@@ -8,6 +8,7 @@ import com.codingapi.springboot.flow.em.ApprovalType;
 import com.codingapi.springboot.flow.flow.Leave;
 import com.codingapi.springboot.flow.matcher.OperatorMatcher;
 import com.codingapi.springboot.flow.pojo.FlowDetail;
+import com.codingapi.springboot.flow.pojo.FlowStepResult;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.*;
 import com.codingapi.springboot.flow.service.FlowService;
@@ -78,6 +79,10 @@ public class CirculateTest {
 
         // 创建流程
         flowService.startFlow(workCode, user, leave, "发起流程");
+
+        FlowStepResult result = flowService.getFlowStep(workCode, leave, user);
+        result.print();
+
 
         // 查看我的待办
         List<FlowRecord> userTodos = flowRecordRepository.findUnReadByOperatorId(user.getUserId(), pageRequest).getContent();
