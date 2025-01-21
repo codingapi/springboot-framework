@@ -13,4 +13,6 @@ public interface FlowProcessRepository {
 
     FlowWork getFlowWorkByProcessId(String processId);
 
+    void deleteByProcessId(String processId);
+
 }

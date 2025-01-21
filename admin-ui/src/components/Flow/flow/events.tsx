@@ -1,7 +1,18 @@
 import {useEffect} from "react";
 import {FormInstance} from "antd/es/form/hooks/useForm";
 import {FlowData, FlowSubmitResultBuilder, FlowTrySubmitResultBuilder} from "@/components/Flow/flow/data";
-import {custom, postponed, recall, saveFlow, startFlow, submitFlow, transfer, trySubmitFlow, urge} from "@/api/flow";
+import {
+    custom,
+    postponed,
+    recall,
+    removeFlow,
+    saveFlow,
+    startFlow,
+    submitFlow,
+    transfer,
+    trySubmitFlow,
+    urge
+} from "@/api/flow";
 import {message} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import {
@@ -231,6 +242,24 @@ export const registerEvents = (id: string,
         })
     }
 
+
+    // 删除流程
+    const handleRemoveFlow = () => {
+        const body = {
+            recordId,
+        }
+        setRequestLoading(true);
+        removeFlow(body).then(res => {
+            if (res.success) {
+                message.success('流程已删除').then();
+                closeFlow();
+            }
+        }).finally(() => {
+            setRequestLoading(false)
+        })
+    }
+
+
     // 延期流程
     const handlePostponedFlow = () => {
         const body = {
@@ -416,6 +445,10 @@ export const registerEvents = (id: string,
             }
             case 'RECALL': {
                 handleRecallFlow();
+                break;
+            }
+            case 'REMOVE': {
+                handleRemoveFlow();
                 break;
             }
             case 'URGE': {

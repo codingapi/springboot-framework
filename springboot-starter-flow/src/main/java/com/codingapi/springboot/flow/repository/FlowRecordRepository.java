@@ -71,4 +71,6 @@ public interface FlowRecordRepository {
      */
     void delete(List<FlowRecord> childrenRecords);
 
+    void deleteByProcessId(String processId);
+
 }

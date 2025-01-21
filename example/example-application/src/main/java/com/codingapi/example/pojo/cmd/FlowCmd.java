@@ -180,6 +180,17 @@ public class FlowCmd {
         }
     }
 
+    @Setter
+    @Getter
+    public static class RemoveFlow {
+
+        private long recordId;
+
+        public String getUserName() {
+            return TokenContext.current().getUsername();
+        }
+    }
+
 
     @Setter
     @Getter

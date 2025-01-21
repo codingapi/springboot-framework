@@ -13,6 +13,8 @@ public interface FlowRecordEntityRepository extends FastRepository<FlowRecordEnt
 
     FlowRecordEntity getFlowRecordEntityById(long id);
 
+    void deleteByProcessId(String processId);
+
 
     List<FlowRecordEntity> findFlowRecordEntityByPreId(long preId);
 

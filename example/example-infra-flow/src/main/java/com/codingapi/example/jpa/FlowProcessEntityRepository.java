@@ -7,4 +7,7 @@ public interface FlowProcessEntityRepository extends FastRepository<FlowProcessE
 
     FlowProcessEntity getFlowProcessEntityByProcessId(String processId);
 
+
+    void deleteByProcessId(String processId);
+
 }

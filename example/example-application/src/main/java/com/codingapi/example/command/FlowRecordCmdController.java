@@ -100,4 +100,11 @@ public class FlowRecordCmdController {
     }
 
 
+    @PostMapping("/remove")
+    public Response remove(@RequestBody FlowCmd.RemoveFlow request) {
+        User current = userRepository.getUserByUsername(request.getUserName());
+        flowService.remove(request.getRecordId(), current);
+        return Response.buildSuccess();
+    }
+
 }

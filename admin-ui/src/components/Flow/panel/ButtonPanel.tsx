@@ -69,6 +69,10 @@ const buttonEventOptions = [
         label: "自定义事件",
         value: "VIEW"
     },
+    {
+        label: "删除",
+        value: "REMOVE"
+    },
 ] as {
     label: string;
     value: CustomButtonType;

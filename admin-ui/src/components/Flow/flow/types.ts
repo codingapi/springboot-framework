@@ -16,7 +16,8 @@ export type CustomButtonType =
     | 'POSTPONED'
     | 'URGE'
     | 'CUSTOM'
-    | 'VIEW';
+    | 'VIEW'
+    | 'REMOVE';
 
 // 流程图中线的类型
 export type EdgeType = 'line' | 'polyline' | 'bezier';
