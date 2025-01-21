@@ -4,6 +4,7 @@ import com.codingapi.springboot.flow.bind.IBindData;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.pojo.FlowDetail;
 import com.codingapi.springboot.flow.pojo.FlowResult;
+import com.codingapi.springboot.flow.pojo.FlowStepResult;
 import com.codingapi.springboot.flow.pojo.FlowSubmitResult;
 import com.codingapi.springboot.flow.repository.*;
 import com.codingapi.springboot.flow.result.MessageResult;
@@ -187,6 +188,18 @@ public class FlowService {
         return flowTrySubmitService.trySubmitFlow(recordId);
     }
 
+
+    /**
+     * 获取流程执行节点
+     *
+     * @param workCode
+     * @param currentOperator
+     * @return
+     */
+    public FlowStepResult getFlowStep(String workCode, IBindData bindData, IFlowOperator currentOperator) {
+        FlowStepService flowStepService = new FlowStepService(workCode, currentOperator, bindData, flowServiceRepositoryHolder);
+        return flowStepService.getFlowStep();
+    }
 
     /**
      * 尝试提交流程 (发起流程)

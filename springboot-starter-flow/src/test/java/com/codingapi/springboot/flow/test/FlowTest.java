@@ -8,6 +8,7 @@ import com.codingapi.springboot.flow.em.ApprovalType;
 import com.codingapi.springboot.flow.flow.Leave;
 import com.codingapi.springboot.flow.matcher.OperatorMatcher;
 import com.codingapi.springboot.flow.pojo.FlowDetail;
+import com.codingapi.springboot.flow.pojo.FlowStepResult;
 import com.codingapi.springboot.flow.pojo.FlowSubmitResult;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.*;
@@ -71,6 +72,9 @@ public class FlowTest {
 
         Leave leave = new Leave("我要出去看看");
         leaveRepository.save(leave);
+
+        FlowStepResult result = flowService.getFlowStep(workCode, leave, user);
+        result.print();
 
         // 创建流程
         flowService.startFlow(workCode, user, leave, "发起流程");
@@ -898,7 +902,7 @@ public class FlowTest {
      * 删除流程测试
      */
     @Test
-    void removeTest1() {
+    void removeTest() {
         PageRequest pageRequest = PageRequest.of(0, 1000);
 
         User lorne = new User("lorne");
