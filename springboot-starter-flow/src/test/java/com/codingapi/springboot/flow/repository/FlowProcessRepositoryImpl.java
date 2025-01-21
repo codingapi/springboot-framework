@@ -35,5 +35,8 @@ public class FlowProcessRepositoryImpl implements FlowProcessRepository {
         return flowBackup.resume(userRepository);
     }
 
-
+    @Override
+    public void deleteByProcessId(String processId) {
+        cache.removeIf(flowProcess -> flowProcess.getProcessId().equals(processId));
+    }
 }

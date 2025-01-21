@@ -71,4 +71,10 @@ public interface FlowRecordRepository {
      */
     void delete(List<FlowRecord> childrenRecords);
 
+    /**
+     * 根据流程id删除流程记录
+     * @param processId 流程id
+     */
+    void deleteByProcessId(String processId);
+
 }

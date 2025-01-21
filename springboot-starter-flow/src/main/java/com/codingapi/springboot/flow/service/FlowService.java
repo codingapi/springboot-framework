@@ -22,6 +22,7 @@ public class FlowService {
     private final FlowDetailService flowDetailService;
     private final FlowCustomEventService flowCustomEventService;
     private final FlowRecallService flowRecallService;
+    private final FlowRemoveService flowRemoveService;
     private final FlowSaveService flowSaveService;
     private final FlowTransferService flowTransferService;
     private final FlowPostponedService flowPostponedService;
@@ -40,6 +41,7 @@ public class FlowService {
         this.flowDetailService = new FlowDetailService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowOperatorRepository, flowProcessRepository);
         this.flowCustomEventService = new FlowCustomEventService(flowWorkRepository,flowRecordRepository, flowProcessRepository);
         this.flowRecallService = new FlowRecallService(flowWorkRepository,flowRecordRepository, flowProcessRepository);
+        this.flowRemoveService = new FlowRemoveService(flowWorkRepository,flowRecordRepository, flowProcessRepository);
         this.flowSaveService = new FlowSaveService(flowWorkRepository,flowRecordRepository, flowBindDataRepository, flowProcessRepository);
         this.flowTransferService = new FlowTransferService(flowWorkRepository,flowRecordRepository, flowBindDataRepository, flowProcessRepository);
         this.flowPostponedService = new FlowPostponedService(flowWorkRepository,flowRecordRepository, flowProcessRepository);
@@ -239,4 +241,14 @@ public class FlowService {
     }
 
 
+
+    /**
+     * 删除流程
+     *
+     * @param recordId        流程记录id
+     * @param currentOperator 当前操作者
+     */
+    public void remove(long recordId, IFlowOperator currentOperator) {
+        flowRemoveService.remove(recordId, currentOperator);
+    }
 }

@@ -161,4 +161,9 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository, FlowRecor
     public void delete(List<FlowRecord> childrenRecords) {
         cache.removeAll(childrenRecords);
     }
+
+    @Override
+    public void deleteByProcessId(String processId) {
+        cache.removeIf(record -> record.getProcessId().equals(processId));
+    }
 }

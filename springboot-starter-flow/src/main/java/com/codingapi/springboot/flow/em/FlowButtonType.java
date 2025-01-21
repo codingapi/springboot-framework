@@ -26,4 +26,6 @@ public enum FlowButtonType {
     CUSTOM,
     // 前端
     VIEW,
+    // 删除
+    REMOVE,
 }
