@@ -70,13 +70,13 @@ public class FlowStepService {
         flowNodeService.setNextNode(start);
 
         this.flowNode = start;
-        flowStepResult.addFlowNode(this.flowNode);
+        flowStepResult.addFlowNode(this.flowNode, this.flowNodeService.loadNextNodeOperators());
 
         do {
             flowNodeService.loadNextPassNode(this.flowNode);
             this.flowNode = flowNodeService.getNextNode();
 
-            flowStepResult.addFlowNode(this.flowNode);
+            flowStepResult.addFlowNode(this.flowNode, this.flowNodeService.loadNextNodeOperators());
         } while (!flowNode.isOverNode());
 
         return flowStepResult;
