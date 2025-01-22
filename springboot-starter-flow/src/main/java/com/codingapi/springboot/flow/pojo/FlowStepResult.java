@@ -25,4 +25,9 @@ public class FlowStepResult {
             System.out.println("flowNode = " + flowNode.getName());
         }
     }
+
+
+    public static class FlowStepNode{
+
+    }
 }

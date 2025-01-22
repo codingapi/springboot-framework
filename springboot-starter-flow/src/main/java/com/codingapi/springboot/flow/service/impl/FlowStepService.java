@@ -75,6 +75,7 @@ public class FlowStepService {
         do {
             flowNodeService.loadNextPassNode(this.flowNode);
             this.flowNode = flowNodeService.getNextNode();
+
             flowStepResult.addFlowNode(this.flowNode);
         } while (!flowNode.isOverNode());
 
