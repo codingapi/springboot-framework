@@ -35,8 +35,6 @@ public class Opinion {
     public static final int RESULT_CIRCULATE = 4;
     // 审批结果 等待
     public static final int RESULT_WAITING = 5;
-    // 审批结果 唤醒
-    public static final int RESULT_NOTIFY = 6;
 
     /**
      * 审批意见
@@ -94,10 +92,6 @@ public class Opinion {
 
     public static Opinion waiting(String advice) {
         return new Opinion(advice, RESULT_WAITING, TYPE_DEFAULT);
-    }
-
-    public static Opinion notify(String advice) {
-        return new Opinion(advice, RESULT_NOTIFY, TYPE_DEFAULT);
     }
 
     public static Opinion unSignAutoSuccess() {
