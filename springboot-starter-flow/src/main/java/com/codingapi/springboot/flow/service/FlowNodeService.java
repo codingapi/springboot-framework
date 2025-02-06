@@ -264,7 +264,7 @@ public class FlowNodeService {
             String recordTitle = nextNode.generateTitle(flowSession);
             recordList = new ArrayList<>();
             for (IFlowOperator operator : operators) {
-                FlowRecord record = nextNode.createRecord(workId, flowWork.getCode(), processId, preId, recordTitle, createOperator, operator, snapshot);
+                FlowRecord record = nextNode.createRecord(workId, flowWork.getCode(), processId, preId, recordTitle, createOperator, operator, snapshot, opinion.isWaiting());
                 recordList.add(record);
             }
         }
@@ -294,7 +294,7 @@ public class FlowNodeService {
                 for (IFlowOperator operator : operators) {
                     FlowSession content = new FlowSession(flowRecord, flowWork, currentNode, createOperator, operator, snapshot.toBindData(), opinion, historyRecords);
                     String recordTitle = currentNode.generateTitle(content);
-                    FlowRecord record = currentNode.createRecord(flowWork.getId(), flowWork.getCode(), processId, preId, recordTitle, createOperator, operator, snapshot);
+                    FlowRecord record = currentNode.createRecord(flowWork.getId(), flowWork.getCode(), processId, preId, recordTitle, createOperator, operator, snapshot, opinion.isWaiting());
                     recordList.add(record);
                 }
                 return recordList;
@@ -312,7 +312,7 @@ public class FlowNodeService {
                 if (!matcherOperators.isEmpty()) {
                     for (IFlowOperator matcherOperator : matcherOperators) {
                         String recordTitle = node.generateTitle(content);
-                        FlowRecord record = node.createRecord(flowWork.getId(), flowWork.getCode(), processId, preId, recordTitle, createOperator, matcherOperator, snapshot);
+                        FlowRecord record = node.createRecord(flowWork.getId(), flowWork.getCode(), processId, preId, recordTitle, createOperator, matcherOperator, snapshot, opinion.isWaiting());
                         recordList.add(record);
                     }
                 }

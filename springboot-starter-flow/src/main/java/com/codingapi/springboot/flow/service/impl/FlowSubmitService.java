@@ -209,7 +209,7 @@ public class FlowSubmitService {
     }
 
     // 保存流程记录
-    private void saveFlowRecords(List<FlowRecord> flowRecords) {
+    private void saveNextFlowRecords(List<FlowRecord> flowRecords) {
         flowServiceRepositoryHolder.getFlowRecordRepository().save(flowRecords);
     }
 
@@ -313,7 +313,7 @@ public class FlowSubmitService {
         }
 
         // 保存流程记录
-        this.saveFlowRecords(nextRecords);
+        this.saveNextFlowRecords(nextRecords);
 
         // 推送审批事件消息
         int eventState = flowSourceDirection == FlowSourceDirection.PASS ? FlowApprovalEvent.STATE_PASS : FlowApprovalEvent.STATE_REJECT;
@@ -321,7 +321,9 @@ public class FlowSubmitService {
 
         // 推送待办事件消息
         for (FlowRecord record : nextRecords) {
-            this.pushEvent(record, FlowApprovalEvent.STATE_TODO);
+            if(record.isTodo()) {
+                this.pushEvent(record, FlowApprovalEvent.STATE_TODO);
+            }
         }
 
         return new FlowResult(flowWork, nextRecords);

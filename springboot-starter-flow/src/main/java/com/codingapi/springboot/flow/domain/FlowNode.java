@@ -217,7 +217,8 @@ public class FlowNode {
                                    String title,
                                    IFlowOperator createOperator,
                                    IFlowOperator currentOperator,
-                                   BindDataSnapshot snapshot) {
+                                   BindDataSnapshot snapshot,
+                                   boolean isWaiting) {
 
         // 当前操作者存在委托人时，才需要寻找委托人
         IFlowOperator flowOperator = currentOperator;
@@ -239,7 +240,7 @@ public class FlowNode {
         record.setPreId(preId);
         record.setTitle(title);
         record.setTimeoutTime(this.loadTimeoutTime());
-        record.setFlowType(FlowType.TODO);
+        record.setFlowType(isWaiting?FlowType.WAITING:FlowType.TODO);
         record.setErrMessage(null);
         record.setSnapshotId(snapshot.getId());
         return record;

@@ -30,7 +30,7 @@ public class FlowTest2 {
     private final FlowService flowService = new FlowService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, userRepository,flowProcessRepository,flowBackupRepository);
 
     /**
-     * flow test
+     * 转办测试
      */
     @Test
     void flowTest() {
@@ -102,6 +102,74 @@ public class FlowTest2 {
 
         List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
         assertEquals(5, records.size());
+
+        // 查看所有流程是否都已经结束
+        assertTrue(records.stream().allMatch(FlowRecord::isFinish));
+
+    }
+
+
+    /**
+     * 流程等待测试
+     */
+    @Test
+    void flowWaitingTest() {
+        PageRequest pageRequest = PageRequest.of(0, 1000);
+        User lorne = new User("lorne");
+        userRepository.save(lorne);
+
+        User boss = new User("boss");
+        userRepository.save(boss);
+
+        FlowWork flowWork = FlowWorkBuilder.builder(lorne)
+                .title("请假流程")
+                .nodes()
+                .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
+                .node("老板审批", "boss", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
+                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
+                .relations()
+                .relation("老板审批", "start", "boss")
+                .relation("结束节点", "boss", "over")
+                .build();
+
+        flowWorkRepository.save(flowWork);
+
+        String workCode = flowWork.getCode();
+
+        Leave leave = new Leave("我想要出去看看");
+        leaveRepository.save(leave);
+
+        // 创建流程
+        flowService.startFlow(workCode, lorne, leave, "发起流程");
+
+        // 查看我的待办
+        List<FlowRecord> userTodos = flowRecordRepository.findTodoByOperatorId(lorne.getUserId(), pageRequest).getContent();
+        assertEquals(1, userTodos.size());
+
+        String processId = userTodos.get(0).getProcessId();
+
+        FlowRecord userTodo = userTodos.get(0);
+        flowService.submitFlow(userTodo.getId(), lorne, leave, Opinion.waiting("自己先提交"));
+
+        // 查看boss的待办
+        List<FlowRecord> bossTodos = flowRecordRepository.findTodoByOperatorId(boss.getUserId(), pageRequest).getContent();
+        assertEquals(0, bossTodos.size());
+
+        // 通知流程
+        flowService.notifyFlow(processId,boss);
+
+        // 查看boss的待办
+        bossTodos = flowRecordRepository.findTodoByOperatorId(boss.getUserId(), pageRequest).getContent();
+        assertEquals(1, bossTodos.size());
+
+        FlowRecord bossTodo = bossTodos.get(0);
+        flowService.submitFlow(bossTodo.getId(), boss, leave, Opinion.pass("领导审批通过"));
+
+        bossTodos = flowRecordRepository.findTodoByOperatorId(lorne.getUserId(), pageRequest).getContent();
+        assertEquals(0, bossTodos.size());
+
+        List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
+        assertEquals(2, records.size());
 
         // 查看所有流程是否都已经结束
         assertTrue(records.stream().allMatch(FlowRecord::isFinish));

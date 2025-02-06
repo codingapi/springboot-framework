@@ -228,6 +228,15 @@ public class FlowService {
         return flowSubmitService.submitFlow();
     }
 
+    /**
+     * 唤醒流程
+     * @param processId  流程实例id
+     * @param currentOperator 当前操作者
+     */
+    public void notifyFlow(String processId,IFlowOperator currentOperator) {
+        FlowNotifyService flowNotifyService = new FlowNotifyService(processId, currentOperator, flowServiceRepositoryHolder);
+        flowNotifyService.notifyFlow();
+    }
 
     /**
      * 自定义事件
