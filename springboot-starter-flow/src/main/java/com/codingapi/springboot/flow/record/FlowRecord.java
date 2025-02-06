@@ -322,6 +322,13 @@ public class FlowRecord {
     }
 
     /**
+     * 是否等待
+     */
+    public boolean isWaiting() {
+        return this.flowType == FlowType.WAITING;
+    }
+
+    /**
      * 是否是待办
      */
     public boolean isTodo() {

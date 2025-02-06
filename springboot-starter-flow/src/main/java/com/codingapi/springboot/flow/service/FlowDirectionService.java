@@ -40,7 +40,7 @@ public class FlowDirectionService {
      * 解析当前的审批方向
      */
     public void loadFlowSourceDirection() {
-        if (opinion.isSuccess()) {
+        if (opinion.isSuccess() || opinion.isWaiting()) {
             flowSourceDirection = FlowSourceDirection.PASS;
         }
         if (opinion.isReject()) {

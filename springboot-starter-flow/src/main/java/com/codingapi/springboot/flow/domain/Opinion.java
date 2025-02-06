@@ -33,6 +33,10 @@ public class Opinion {
     public static final int RESULT_REJECT = 3;
     // 审批结果 抄送
     public static final int RESULT_CIRCULATE = 4;
+    // 审批结果 等待
+    public static final int RESULT_WAITING = 5;
+    // 审批结果 唤醒
+    public static final int RESULT_NOTIFY = 6;
 
     /**
      * 审批意见
@@ -88,6 +92,14 @@ public class Opinion {
         return new Opinion(advice, RESULT_TRANSFER, TYPE_DEFAULT);
     }
 
+    public static Opinion waiting(String advice) {
+        return new Opinion(advice, RESULT_WAITING, TYPE_DEFAULT);
+    }
+
+    public static Opinion notify(String advice) {
+        return new Opinion(advice, RESULT_NOTIFY, TYPE_DEFAULT);
+    }
+
     public static Opinion unSignAutoSuccess() {
         return new Opinion("非会签自动审批", RESULT_PASS, TYPE_AUTO);
     }
@@ -102,6 +114,10 @@ public class Opinion {
 
     public boolean isSuccess() {
         return result == RESULT_PASS;
+    }
+
+    public boolean isWaiting() {
+        return result == RESULT_WAITING;
     }
 
     public boolean isReject() {

@@ -20,7 +20,11 @@ public enum FlowType {
     /**
      * 转办
      */
-    TRANSFER;
+    TRANSFER,
+    /**
+     * 等待执行
+     */
+    WAITING;
 
 
     public static FlowType parser(String type){
