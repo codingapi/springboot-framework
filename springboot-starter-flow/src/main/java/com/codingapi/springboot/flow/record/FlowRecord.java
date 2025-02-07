@@ -345,6 +345,13 @@ public class FlowRecord {
     }
 
     /**
+     * 拒绝状态
+     */
+    public boolean isReject() {
+        return this.opinion != null && this.opinion.isReject() && isDone();
+    }
+
+    /**
      * 审批通过
      */
     public boolean isPass() {
