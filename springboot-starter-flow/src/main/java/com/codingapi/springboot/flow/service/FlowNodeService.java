@@ -101,24 +101,44 @@ public class FlowNodeService {
     /**
      * 加载默认回退节点
      */
-    public void loadDefaultBackNode(long parentRecordId) {
-        IFlowOperator flowOperator;
-        // 拒绝时，默认返回上一个已办节点
-        FlowRecord preRecord = flowRecordRepository.getFlowRecordById(parentRecordId);
-        // 只寻找已办节点
-        while (!preRecord.isDone()) {
-            // 继续寻找上一个节点
-            preRecord = flowRecordRepository.getFlowRecordById(preRecord.getPreId());
+    public void loadDefaultBackNode(FlowRecord currentRecord) {
+        List<FlowRecord> historyRecords =
+                flowRecordRepository.findFlowRecordByProcessId(currentRecord.getProcessId())
+                        .stream()
+                        .sorted((o1, o2) -> (int) (o2.getId() - o1.getId()))
+                        .filter(record -> record.getId() < currentRecord.getId())
+                        .collect(Collectors.toList());
+
+        int index = 0;
+        while (true) {
+            if (index >= historyRecords.size()) {
+                throw new IllegalArgumentException("back node not found");
+            }
+            FlowRecord record = historyRecords.get(index);
+            if (record.isDone()) {
+                // 是连续的回退节点时，则根据流程记录的状态来判断
+                if(record.isReject()){
+                    boolean startRemove = false;
+                    for(FlowRecord historyRecord: historyRecords){
+                        if(startRemove){
+                            this.nextNode = flowWork.getNodeByCode(historyRecord.getNodeCode());
+                            this.nextOperator = historyRecord.getCurrentOperator();
+                            this.backOperator = historyRecord.getCurrentOperator();
+                            return;
+                        }
+                        if(historyRecord.getNodeCode().equals(currentRecord.getNodeCode())){
+                            startRemove = true;
+                        }
+                    }
+                }else {
+                    this.nextNode = flowWork.getNodeByCode(record.getNodeCode());
+                    this.nextOperator = record.getCurrentOperator();
+                    this.backOperator = record.getCurrentOperator();
+                    return;
+                }
+            }
+            index++;
         }
-        // 获取上一个节点的审批者，继续将审批者设置为当前审批者
-        flowOperator = preRecord.getCurrentOperator();
-        FlowNode nextNode = flowWork.getNodeByCode(preRecord.getNodeCode());
-        if (nextNode == null) {
-            throw new IllegalArgumentException("next node not found");
-        }
-        this.nextNode = nextNode;
-        this.nextOperator = flowOperator;
-        this.backOperator = flowOperator;
     }
 
 

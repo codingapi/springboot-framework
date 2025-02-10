@@ -194,7 +194,7 @@ public class FlowSubmitService {
             flowNodeService.loadNextPassNode(flowNode);
             // 审批拒绝返回上一节点
         } else if (flowDirectionService.isDefaultBackRecord()) {
-            flowNodeService.loadDefaultBackNode(flowRecord.getPreId());
+            flowNodeService.loadDefaultBackNode(flowRecord);
         } else {
             // 审批拒绝，并且自定了返回节点
             flowNodeService.loadCustomBackNode(flowNode, flowRecord.getPreId());

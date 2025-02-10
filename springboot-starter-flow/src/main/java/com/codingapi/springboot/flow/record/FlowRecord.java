@@ -344,6 +344,14 @@ public class FlowRecord {
         return this.flowType == FlowType.TRANSFER;
     }
 
+
+    /**
+     * 拒绝状态
+     */
+    public boolean isReject() {
+        return this.opinion != null && this.opinion.isReject() && isDone();
+    }
+
     /**
      * 审批通过
      */

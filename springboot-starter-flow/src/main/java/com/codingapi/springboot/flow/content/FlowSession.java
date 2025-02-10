@@ -24,7 +24,7 @@ import java.util.List;
 @Getter
 public class FlowSession {
 
-    // 当前的流程记录
+    // 当前的流程记录（当前审批的流程）
     private final FlowRecord flowRecord;
     // 当前的流程设计器
     private final FlowWork flowWork;
@@ -32,7 +32,7 @@ public class FlowSession {
     private final FlowNode flowNode;
     // 流程的创建者
     private final IFlowOperator createOperator;
-    // 当前的操作者
+    // 当前的操作者（当前的操作者，非代办人）
     private final IFlowOperator currentOperator;
     // 流程绑定数据
     private final IBindData bindData;
