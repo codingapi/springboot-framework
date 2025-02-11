@@ -102,6 +102,12 @@ const FlowDetail: React.FC<FlowDetailProps> = (props) => {
                                 <ProFormTextArea
                                     disabled={props.review}
                                     placeholder={'请输入审批意见'}
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: '请输入审批意见'
+                                        }
+                                    ]}
                                     name={"advice"}
                                 />
                             </ProForm>
