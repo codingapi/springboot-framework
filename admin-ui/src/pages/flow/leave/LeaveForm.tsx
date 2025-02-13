@@ -111,6 +111,14 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
                 >点击了自定义事件</Button>
             )}
 
+            <Button
+                onClick={()=>{
+                    const recordId = props.flowData?.getRecordId();
+                    alert(recordId);
+                }}
+            >getRecordId</Button>
+
+
         </ProForm>
     )
 }

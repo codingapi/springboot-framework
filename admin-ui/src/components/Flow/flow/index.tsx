@@ -158,11 +158,14 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
     }, [flowViewVisible]);
 
 
+    // 流程数据
+    const flowData = new FlowData(props.id,data, props.formParams);
+
     // 注册事件
     const handlerClicks = registerEvents(
         recordId,
         setRecordId,
-        new FlowData(data, props.formParams),
+        flowData,
         viewForm,
         adviceForm,
         setRequestLoading,
@@ -172,9 +175,18 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
         }
     );
 
+
+    useEffect(() => {
+        if(recordId){
+            flowData.setRecordId(recordId);
+        }
+    }, [recordId]);
+
+
     if (!props.visible) {
         return null;
     }
+
 
     // 延期表单视图
     const PostponedFormView = getComponent(PostponedFormViewKey) as React.ComponentType<PostponedFormProps>;
@@ -185,8 +197,7 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
     // 用户选人视图
     const UserSelectView = getComponent(UserSelectViewKey) as React.ComponentType<UserSelectProps>;
 
-    // 流程数据
-    const flowData = new FlowData(data, props.formParams);
+
 
     return (
         <Modal
