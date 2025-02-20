@@ -56,12 +56,14 @@ export interface FormProps {
     onFinish?: (values: any) => Promise<void>;
     // 表单控制对象
     actionRef?: React.Ref<FormAction>;
-    // form布局
-    layout: 'horizontal' | 'vertical';
+    // form布局，默认vertical
+    layout?: 'horizontal' | 'vertical';
     // children元素
     children?: React.ReactNode;
     // footer元素
     footer?: React.ReactNode;
+    // 初始化值
+    initialValues?: any;
 }
 
 interface FormContextProps {
@@ -271,6 +273,7 @@ const Index: React.FC<FormProps> = (props) => {
                 onFinish={(values) => {
                     props.onFinish && props.onFinish(values);
                 }}
+                initialValues={props.initialValues}
                 layout={props.layout}
                 footer={props.footer}
             >

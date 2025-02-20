@@ -10,7 +10,7 @@ const EducationIndex = () => {
     const data = [
         {
             id: 1,
-            state: 'un_submit',
+            state: 'done',
             attrs:{
                 '学历': '大学本科',
                 '类别': '全日制教育',
@@ -28,7 +28,7 @@ const EducationIndex = () => {
         },
         {
             id: 3,
-            state: 'un_submit',
+            state: 'todo',
             attrs: {
                 '学历': '博士研究生',
                 '类别': '全日制教育',
@@ -71,9 +71,8 @@ const EducationIndex = () => {
                 '日期': '2026.9~2030.7',
             }
         },
-
         {
-            id: 1,
+            id: 8,
             state: 'un_submit',
             attrs: {
                 '学历': '大学本科',
@@ -82,7 +81,7 @@ const EducationIndex = () => {
             }
         },
         {
-            id: 2,
+            id: 9,
             state: 'un_submit',
             attrs: {
                 '学历': '硕士研究生',
@@ -91,7 +90,7 @@ const EducationIndex = () => {
             }
         },
         {
-            id: 3,
+            id: 10,
             state: 'un_submit',
             attrs: {
                 '学历': '博士研究生',
@@ -100,7 +99,7 @@ const EducationIndex = () => {
             }
         },
         {
-            id: 4,
+            id: 11,
             state: 'un_submit',
             attrs: {
                 '学历': '博士研究生',
@@ -109,7 +108,7 @@ const EducationIndex = () => {
             }
         },
         {
-            id: 5,
+            id: 12,
             state: 'un_submit',
             attrs: {
                 '学历': '博士研究生',
@@ -118,7 +117,7 @@ const EducationIndex = () => {
             }
         },
         {
-            id: 6,
+            id: 13,
             state: 'un_submit',
             attrs: {
                 '学历': '博士研究生',
@@ -127,7 +126,7 @@ const EducationIndex = () => {
             }
         },
         {
-            id: 7,
+            id: 14,
             state: 'un_submit',
             attrs: {
                 '学历': '博士研究生',

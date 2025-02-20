@@ -15,6 +15,8 @@ export interface ListAction {
 }
 
 export interface ListProps {
+    style?: React.CSSProperties;
+
     listAction?:React.Ref<ListAction>;
     // 每页数量，默认为10
     pageSize?: number;
@@ -133,6 +135,7 @@ const List: React.FC<ListProps> = (props) => {
 
     return (
         <div
+            style={props.style}
             className={"mobile-list"}
         >
             <PullToRefresh
