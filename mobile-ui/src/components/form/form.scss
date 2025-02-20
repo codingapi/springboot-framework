@@ -1,5 +1,7 @@
+@use "../../config/variables" as *;
+
 .placeholder-span {
-  color: #ddb7b7;
+  color: $from-placeholder-color;
 }
 
 .form-uploader-file {
@@ -11,7 +13,7 @@
   flex-wrap: wrap;  /* 允许子元素换行 */
   text-align: center;  /* 水平居中 */
   word-wrap: break-word; /* 超出容器时换行 */
-  border: 0.5px solid #d8e3de;
+  border: 0.5px solid $body-background-color;
   position: relative;
 
   .delete-icon{
@@ -88,12 +90,12 @@
       align-items: center;
 
       .arrow {
-        color: #4a79d8;
+        color: $theme-primary-color;
       }
 
       .span {
         margin-left: 10px;
-        color: #4a79d8;
+        color: $theme-primary-color;
       }
     }
   }

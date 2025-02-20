@@ -1,3 +1,5 @@
+@use "../../../config/variables" as *;
+
 .basic-info {
   background-color: white;
   margin-top: 5px;
@@ -9,7 +11,7 @@
 .basic-header-title {
   width: 100%;
   height: 20px;
-  border-left: 4px solid #0b83de;
+  border-left: 4px solid $theme-primary-color;
   padding-left: 4px;
   font-size: 14px;
 }
@@ -18,7 +20,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   padding-left: 8px;
-  border-bottom: 2px solid #e6e7ea;
+  border-bottom: 2px solid $body-background-color;
   height: 80px;
 
   .title {
@@ -40,7 +42,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   padding-left: 8px;
-  border-bottom: 2px solid #e6e7ea;
+  border-bottom: 2px solid $body-background-color;
   height: 50px;
 
   .title {

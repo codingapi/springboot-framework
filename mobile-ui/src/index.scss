@@ -1,9 +1,11 @@
+@use "config/variables" as *;
+
 body {
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #e6e7ea;
+  background-color: $body-background-color;
 }
 
 code {

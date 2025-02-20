@@ -7,8 +7,8 @@ import com.codingapi.springboot.framework.dto.request.SearchRequest;
 import com.codingapi.springboot.framework.dto.response.MultiResponse;
 import com.codingapi.springboot.security.gateway.TokenContext;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +27,7 @@ public class LeaveAppQueryController {
 
         SQLBuilder sqlBuilder = new SQLBuilder("from LeaveEntity l where 1 =1 ");
         sqlBuilder.append(" and l.username = ? ",username);
-        if(!StringUtils.isEmpty(lastId)){
+        if(StringUtils.hasText(lastId)){
             sqlBuilder.append(" and l.id < ? ",Long.parseLong(lastId));
         }
         sqlBuilder.appendSql(" order by l.id desc ");
