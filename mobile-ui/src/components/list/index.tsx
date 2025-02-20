@@ -3,14 +3,19 @@ import "./index.scss";
 import {ErrorBlock, InfiniteScroll, PullToRefresh} from "antd-mobile";
 import {PullStatus} from "antd-mobile/es/components/pull-to-refresh";
 
-interface ListResponse {
+export interface ListResponse {
     data: {
         total: number;
         list: any[]
     }
 }
 
-interface ListProps {
+export interface ListAction {
+    reload:()=>void;
+}
+
+export interface ListProps {
+    listAction?:React.Ref<ListAction>;
     // 每页数量，默认为10
     pageSize?: number;
     // 刷新数据
@@ -55,6 +60,12 @@ const List: React.FC<ListProps> = (props) => {
         refreshing: props.pullStates?.refreshing || '玩命加载中...',
         complete: props.pullStates?.complete || '好啦',
     }
+
+    React.useImperativeHandle(props.listAction, () => ({
+        reload: () => {
+            refresh();
+        }
+    }), [props.listAction])
 
     const loadMore = async () => {
         if (loading) {
