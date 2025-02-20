@@ -167,7 +167,7 @@ const EducationIndex = () => {
                     color='primary'
                     size={'middle'}
                     style={{
-                        margin:'120px'
+                        margin:'15%'
                     }}
                 >
                     新增教育信息

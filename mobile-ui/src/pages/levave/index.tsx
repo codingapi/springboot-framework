@@ -11,7 +11,7 @@ const leaveItem = (item: any) => {
     return (
         <div style={{
             backgroundColor: 'white',
-            marginTop: '5px',
+            marginTop: '1px',
             position: 'relative'
         }}>
             <div style={{
@@ -64,7 +64,7 @@ const LeaveListPage = () => {
             <Header>请假历史</Header>
             <List
                 style={{
-                    height: 'calc(100vh - 120px)',
+                    height: 'calc(100vh - 100px)',
                     overflow: 'auto'
                 }}
                 item={(item, index) => {
@@ -76,7 +76,7 @@ const LeaveListPage = () => {
             <Footer>
                 <Button
                     style={{
-                        margin:"120px"
+                        margin:"15%"
                     }}
                     onClick={() => {
                         navigate("/leave/create");

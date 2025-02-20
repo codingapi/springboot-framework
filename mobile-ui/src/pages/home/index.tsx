@@ -28,7 +28,6 @@ const HomePage = () => {
         <div>
             <Header isHome={true}>首页</Header>
             <Swiper>{items}</Swiper>
-
             <Grid
                 columns={3}
                 gap={[24, 24]}
@@ -36,9 +35,11 @@ const HomePage = () => {
                     marginTop: 10
                 }}
             >
-
                 <Grid.Item>
                     <Button
+                        style={{
+                            width:"100%"
+                        }}
                         onClick={() => {
                             navigate("/person/education/index")
                         }}
@@ -47,6 +48,9 @@ const HomePage = () => {
 
                 <Grid.Item>
                     <Button
+                        style={{
+                            width:"100%"
+                        }}
                         onClick={() => {
                             navigate("/leave/index")
                         }}
@@ -56,7 +60,11 @@ const HomePage = () => {
                 {Array.from({length: 21}).map((item, index) => {
                     return (
                         <Grid.Item>
-                            <Button>button{index + 1}</Button>
+                            <Button
+                                style={{
+                                    width:"100%"
+                                }}
+                            >button{index + 1}</Button>
                         </Grid.Item>
                     )
                 })}

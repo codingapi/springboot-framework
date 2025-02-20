@@ -44,6 +44,8 @@ export interface ListProps {
         // 默认值，没有任何信息
         description: string;
     }
+    // 无数据提示，默认值为无更多数据
+    noDataStates?: React.ReactNode;
 }
 
 const List: React.FC<ListProps> = (props) => {
@@ -55,6 +57,8 @@ const List: React.FC<ListProps> = (props) => {
     const [hasMore, setHasMore] = React.useState(true);
 
     const [loading, setLoading] = React.useState(false);
+
+    const noDataStates = props.noDataStates || "暂无更多数据...";
 
     const statusRecord: Record<PullStatus, string> = {
         pulling: props.pullStates?.pulling || '用力拉',
@@ -151,7 +155,12 @@ const List: React.FC<ListProps> = (props) => {
                 })}
 
                 {!noData && (
-                    <InfiniteScroll loadMore={loadMore} hasMore={hasMore}/>
+                    <InfiniteScroll
+                        loadMore={loadMore}
+                        hasMore={hasMore}
+                    >
+                        {noDataStates}
+                    </InfiniteScroll>
                 )}
                 {noData && (
                     <ErrorBlock
