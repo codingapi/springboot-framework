@@ -1,23 +1,22 @@
-import React from "react";
-import "./index.scss";
+import React, {useImperativeHandle} from "react";
 import todo from "@/assets/flow/todo.png";
 import un_submit from "@/assets/flow/un_submit.png";
 import done from "@/assets/flow/done.png";
-
 import {Button} from "antd-mobile";
-import List, {ListResponse} from "@/components/list";
+import List, {ListAction, ListResponse} from "@/components/list";
 import {DeleteOutline, EditSOutline, EyeOutline} from "antd-mobile-icons";
+import "./index.scss";
 
 export type InfoState = 'un_submit' | 'todo' | 'done' | 'reject';
 
-const stateConvert = (state:InfoState)=>{
-    if(state==='todo'){
+const stateConvert = (state: InfoState) => {
+    if (state === 'todo') {
         return todo;
     }
-    if(state === 'un_submit'){
+    if (state === 'un_submit') {
         return un_submit;
     }
-    if(state ==='done'){
+    if (state === 'done') {
         return done;
     }
     return un_submit;
@@ -26,19 +25,21 @@ const stateConvert = (state:InfoState)=>{
 export type InfoItem = {
     id: number;
     state: InfoState;
-    attrs:{
+    attrs: {
         [key: string]: any;
     },
     [key: string]: any;
 }
 
 interface InfoListProps {
+
+    listAction?: React.Ref<ListAction>;
     // 详情事件
-    onDetailClick?:(item:InfoItem)=>void;
+    onDetailClick?: (item: InfoItem) => void;
     // 编辑事件
-    onEditClick?:(item:InfoItem)=>void;
+    onEditClick?: (item: InfoItem) => void;
     // 删除事件
-    onDeleteClick?:(item:InfoItem)=>void;
+    onDeleteClick?: (item: InfoItem) => void;
 
     // 每页数量，默认为10
     pageSize?: number;
@@ -49,12 +50,25 @@ interface InfoListProps {
 }
 
 const InfoList: React.FC<InfoListProps> = (props) => {
+
+    const listAction = React.useRef<ListAction>(null);
+
+    useImperativeHandle(props.listAction, () => {
+        return {
+            reload: () => {
+                if (listAction.current) {
+                    listAction.current.reload();
+                }
+            }
+        }
+    }, [props.listAction])
+
     return (
         <div className={"infoList-list"}>
-
             <List
+                listAction={listAction}
                 pageSize={props.pageSize}
-                item={(item,index)=>{
+                item={(item, index) => {
                     const attrs = item.attrs;
                     const attrKeys = Object.keys(attrs);
                     return (
@@ -77,39 +91,39 @@ const InfoList: React.FC<InfoListProps> = (props) => {
                                 </div>
                                 <div className={"infoList-operate"}>
                                     <Button
-                                        onClick={()=>{
+                                        onClick={() => {
                                             props.onDeleteClick && props.onDeleteClick(item);
                                         }}
                                         className={"infoList-operate-button"}
                                         shape={'rounded'}
                                         style={{
-                                            backgroundColor:'red'
+                                            backgroundColor: 'red'
                                         }}
                                     >
                                         <DeleteOutline color={'white'}/>
                                     </Button>
 
                                     <Button
-                                        onClick={()=>{
+                                        onClick={() => {
                                             props.onEditClick && props.onEditClick(item);
                                         }}
                                         className={"infoList-operate-button"}
                                         shape={'rounded'}
                                         style={{
-                                            backgroundColor:'blue'
+                                            backgroundColor: 'blue'
                                         }}
                                     >
                                         <EditSOutline color={'white'}/>
                                     </Button>
 
                                     <Button
-                                        onClick={()=>{
+                                        onClick={() => {
                                             props.onDetailClick && props.onDetailClick(item);
                                         }}
                                         className={"infoList-operate-button"}
                                         shape={'rounded'}
                                         style={{
-                                            backgroundColor:'blue'
+                                            backgroundColor: 'blue'
                                         }}
                                     >
                                         <EyeOutline color={'white'}/>
