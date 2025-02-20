@@ -1,4 +1,4 @@
-import {FlowFormView, FlowViewProps} from "@/components/flow/types";
+import {FlowButton, FlowFormView, FlowViewProps} from "@/components/flow/types";
 
 export class FlowViewContext {
 
@@ -10,15 +10,27 @@ export class FlowViewContext {
         this.data = data;
     }
 
+    // 获取流程的Form视图
     getFlowFormView() {
         const view = this.props.view;
-        if (this.data) {
-            const nodeView = this.data.nodeView;
-            if (typeof view === 'object') {
-                return (view as FlowFormView)[nodeView];
-            }
+        if (typeof view === 'object') {
+            const nodeView = this.data.flowNode.view;
+            return (view as FlowFormView)[nodeView];
         }
         return view;
+    }
+
+    //获取流程的form数据
+    getFlowFormParams(){
+        return {
+            ...this.data.bindData,
+            ...this.props.formParams
+        }
+    }
+
+    // 获取流程的操作按钮
+    getFlowButtons() {
+        return this.data.flowNode.buttons as FlowButton[] || [];
     }
 
 }

@@ -1,92 +1,77 @@
-import React from "react";
+import React, {createContext, useEffect} from "react";
 import {Provider} from "react-redux";
 import {flowStore} from "@/components/flow/store/FlowSlice";
-import {FlowFormViewProps, FlowViewProps} from "@/components/flow/types";
-import {Tabs} from "antd-mobile";
+import {FlowViewProps} from "@/components/flow/types";
+import {Skeleton} from "antd-mobile";
 import {FlowViewContext} from "@/components/flow/data";
 import FlowFooter from "@/components/flow/components/FlowFooter";
+import FlowContent from "@/components/flow/components/FlowContent";
+import {detail} from "@/api/flow";
 import "./index.scss";
 
-const $FlowView: React.FC<FlowViewProps> = (props) => {
+interface $FlowViewProps extends FlowViewProps {
+    // 流程详情数据
+    flowData: any;
+}
 
-    const flowViewContext = new FlowViewContext(props);
+export const FlowViewReactContext = createContext<FlowViewContext | null>(null);
 
-    const FlowFormView = flowViewContext.getFlowFormView() as React.ComponentType<FlowFormViewProps>;
+const $FlowView: React.FC<$FlowViewProps> = (props) => {
 
-    const buttons = [
-        {
-            title: '提交',
-            color: 'primary',
-            onClick: () => {
-                console.log('提交')
-            }
-        },
-        {
-            title: '提交给人事管理员',
-            color: 'default',
-            onClick: () => {
-                console.log('暂存1')
-            }
-        },
-        {
-            title: '暂存2',
-            color: 'default',
-            onClick: () => {
-                console.log('暂存1')
-            }
-        },
-        {
-            title: '暂存3',
-            color: 'default',
-            onClick: () => {
-                console.log('暂存1')
-            }
-        },
-        {
-            title: '暂存4',
-            color: 'default',
-            onClick: () => {
-                console.log('暂存1')
-            }
-        },
-        {
-            title: '暂存5',
-            color: 'default',
-            onClick: () => {
-                console.log('暂存1')
-            }
-        },
-        {
-            title: '暂存6',
-            color: 'default',
-            onClick: () => {
-                console.log('暂存1')
-            }
-        },
-    ]
+    const flowViewContext = new FlowViewContext(props, props.flowData);
 
     return (
-        <div className={"flow-view"}>
-            <div className={"flow-view-content"}>
-                <Tabs>
-                    <Tabs.Tab title='详情' key='detail'>
-                        <FlowFormView/>
-                    </Tabs.Tab>
-                    <Tabs.Tab title='流程' key='flow'>
-                        流程详情
-                    </Tabs.Tab>
-                </Tabs>
+        <FlowViewReactContext.Provider value={flowViewContext}>
+            <div className={"flow-view"}>
+                <FlowContent/>
+                <FlowFooter/>
             </div>
-            <FlowFooter buttons={buttons}/>
-        </div>
+        </FlowViewReactContext.Provider>
     )
 }
 
 const FlowView: React.FC<FlowViewProps> = (props) => {
+    const [data, setData] = React.useState<any>(null);
+
+    // 请求流程详情数据
+    const loadFlowDetail = () => {
+        if (props.id) {
+            detail(props.id, null).then(res => {
+                if (res.success) {
+                    setData(res.data);
+                }
+            });
+        }
+        if (props.workCode) {
+            detail(null, props.workCode).then(res => {
+                if (res.success) {
+                    setData(res.data);
+                }
+            });
+        }
+    }
+
+    useEffect(() => {
+        loadFlowDetail();
+    }, []);
+
     return (
-        <Provider store={flowStore}>
-            <$FlowView {...props} />
-        </Provider>
+        <>
+            {!data && (
+                <>
+                    <Skeleton.Title animated={true} className={"flow-skeleton-header"}/>
+                    <Skeleton.Paragraph lineCount={5} animated={true} className={"flow-skeleton-body"}/>
+                </>
+            )}
+            {data && (
+                <Provider store={flowStore}>
+                    <$FlowView
+                        {...props}
+                        flowData={data}
+                    />
+                </Provider>
+            )}
+        </>
     )
 }
 

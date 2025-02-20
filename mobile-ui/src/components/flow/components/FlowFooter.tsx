@@ -1,20 +1,18 @@
-import React from "react";
+import React, {useContext} from "react";
 import {ActionSheet, Button} from "antd-mobile";
-
-
-interface FlowButton {
-    title: string;
-    color: string;
-    onClick: () => void;
-}
+import {FlowViewReactContext} from "@/components/flow/view";
 
 interface FlowFooterProps {
     maxButtonCount?: number;
-    buttons?: FlowButton[];
 }
 
 const FlowFooter: React.FC<FlowFooterProps> = (props) => {
-    const buttons = props.buttons || [];
+    const flowViewReactContext = useContext(FlowViewReactContext) || null;
+    if (!flowViewReactContext) {
+        return <></>;
+    }
+
+    const buttons = flowViewReactContext.getFlowButtons();
     const maxButtonCount = props.maxButtonCount || 4;
 
     const [visible, setVisible] = React.useState(false);
@@ -24,9 +22,12 @@ const FlowFooter: React.FC<FlowFooterProps> = (props) => {
             {buttons && buttons.length <= maxButtonCount && buttons.map((item) => {
                 return (
                     <Button
-                        color={item.color as any}
+                        key={item.id}
                         className={"flow-view-footer-button"}
-                    >{item.title}</Button>
+                        style={{
+                            ...item.style
+                        }}
+                    >{item.name}</Button>
                 )
             })}
             {buttons && buttons.length > maxButtonCount && (
@@ -34,9 +35,12 @@ const FlowFooter: React.FC<FlowFooterProps> = (props) => {
                     {buttons && buttons.slice(0, maxButtonCount - 1).map(item => {
                         return (
                             <Button
-                                color={item.color as any}
+                                key={item.id}
                                 className={"flow-view-footer-button"}
-                            >{item.title}</Button>
+                                style={{
+                                    ...item.style
+                                }}
+                            >{item.name}</Button>
                         )
                     })}
 
@@ -56,10 +60,9 @@ const FlowFooter: React.FC<FlowFooterProps> = (props) => {
                         visible={visible}
                         actions={buttons.slice(maxButtonCount - 1).map((item, index) => {
                             return {
-                                text: item.title,
-                                key: index,
+                                text: item.name,
+                                key: item.id,
                                 onClick: () => {
-                                    item.onClick();
                                     setVisible(false);
                                 }
                             }

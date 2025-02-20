@@ -2,6 +2,16 @@
 
 $flow-footer-height: 80px;
 
+.flow-skeleton-header{
+  width: 100%;
+  height: 40px;
+}
+
+.flow-skeleton-body{
+  height: 60vh;
+  width: 100%;
+}
+
 .flow-view {
   background-color: white !important;
   width: 100%;
