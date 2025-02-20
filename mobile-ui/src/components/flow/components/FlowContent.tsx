@@ -3,19 +3,18 @@ import {Tabs} from "antd-mobile";
 import {FlowFormViewProps} from "@/components/flow/types";
 import {FlowViewReactContext} from "@/components/flow/view";
 import FlowHistory from "@/components/flow/components/FlowHistory";
-import {FormAction} from "@/components/form";
 
 const FlowContent = () => {
-    const flowViewContext = useContext(FlowViewReactContext);
-    if (!flowViewContext) {
+    const flowViewReactContext = useContext(FlowViewReactContext);
+    if (!flowViewReactContext) {
         return <></>;
     }
+    const flowViewContext = flowViewReactContext.flowViewContext;
+    const formAction = flowViewReactContext.formAction;
 
     const FlowFormView = flowViewContext.getFlowFormView() as React.ComponentType<FlowFormViewProps>;
 
     const formParams = flowViewContext.getFlowFormParams();
-
-    const formAction = React.useRef<FormAction>(null);
 
     return (
         <div className={"flow-view-content"}>

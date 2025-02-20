@@ -3,10 +3,12 @@ import {Provider} from "react-redux";
 import {flowStore} from "@/components/flow/store/FlowSlice";
 import {FlowViewProps} from "@/components/flow/types";
 import {Skeleton} from "antd-mobile";
-import {FlowViewContext} from "@/components/flow/data";
+import {FlowViewContext} from "@/components/flow/domain/FlowViewContext";
+import {FlowEventContext} from "@/components/flow/domain/FlowEventContext";
 import FlowFooter from "@/components/flow/components/FlowFooter";
 import FlowContent from "@/components/flow/components/FlowContent";
 import {detail} from "@/api/flow";
+import {FormAction} from "@/components/form";
 import "./index.scss";
 
 interface $FlowViewProps extends FlowViewProps {
@@ -14,14 +16,26 @@ interface $FlowViewProps extends FlowViewProps {
     flowData: any;
 }
 
-export const FlowViewReactContext = createContext<FlowViewContext | null>(null);
+interface FlowViewReactContextProps {
+    flowViewContext: FlowViewContext;
+    formAction: React.RefObject<FormAction>;
+    flowEventContext: FlowEventContext;
+}
+
+export const FlowViewReactContext = createContext<FlowViewReactContextProps | null>(null);
 
 const $FlowView: React.FC<$FlowViewProps> = (props) => {
 
     const flowViewContext = new FlowViewContext(props, props.flowData);
+    const formAction = React.useRef<FormAction>(null);
+    const flowEvenContext = new FlowEventContext(flowViewContext, formAction);
 
     return (
-        <FlowViewReactContext.Provider value={flowViewContext}>
+        <FlowViewReactContext.Provider value={{
+            flowViewContext: flowViewContext,
+            formAction: formAction,
+            flowEventContext: flowEvenContext
+        }}>
             <div className={"flow-view"}>
                 <FlowContent/>
                 <FlowFooter/>

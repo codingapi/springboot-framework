@@ -7,12 +7,12 @@ interface FlowFooterProps {
 }
 
 const FlowFooter: React.FC<FlowFooterProps> = (props) => {
-    const flowViewReactContext = useContext(FlowViewReactContext) || null;
+    const flowViewReactContext = useContext(FlowViewReactContext);
     if (!flowViewReactContext) {
         return <></>;
     }
-
-    const buttons = flowViewReactContext.getFlowButtons();
+    const flowViewContext = flowViewReactContext.flowViewContext;
+    const buttons = flowViewContext.getFlowButtons();
     const maxButtonCount = props.maxButtonCount || 4;
 
     const [visible, setVisible] = React.useState(false);

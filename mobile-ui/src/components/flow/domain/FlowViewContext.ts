@@ -21,7 +21,7 @@ export class FlowViewContext {
     }
 
     //获取流程的form数据
-    getFlowFormParams(){
+    getFlowFormParams() {
         return {
             ...this.data.bindData,
             ...this.props.formParams
@@ -30,8 +30,9 @@ export class FlowViewContext {
 
     // 获取流程的操作按钮
     getFlowButtons() {
-        return this.data.flowNode.buttons as FlowButton[] || [];
+        const buttons = this.data.flowNode.buttons as FlowButton[] || [];
+        return buttons.sort((item1: any, item2: any) => {
+            return item1.order - item2.order;
+        })
     }
-
 }
-
