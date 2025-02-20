@@ -1,0 +1,36 @@
+import React from "react";
+import {FormItemProps} from "@/components/form/types";
+import {Form, TextArea} from "antd-mobile";
+import formFieldInit from "@/components/form/common";
+
+const FormTextArea: React.FC<FormItemProps> = (props) => {
+
+    const {formAction,rules,validateContext} = formFieldInit(props);
+
+    return (
+        <Form.Item
+            name={props.name}
+            label={props.label}
+            rules={rules}
+            hidden={props.hidden}
+            help={props.help}
+            disabled={props.disabled}
+        >
+            <TextArea
+                value={props.value}
+                showCount={true}
+                placeholder={props.placeholder}
+                maxLength={props.textAreaMaxLength}
+                rows={props.textAreaRows}
+                onChange={(e) => {
+                    if(formAction) {
+                        validateContext?.validateField(props.name, formAction);
+                    }
+                    props.onChange && props.onChange(e,formAction);
+                }}
+            />
+        </Form.Item>
+    )
+}
+
+export default FormTextArea;

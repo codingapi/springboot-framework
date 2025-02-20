@@ -1,0 +1,112 @@
+.placeholder-span {
+  color: #ddb7b7;
+}
+
+.form-uploader-file {
+  height: 90px;
+  width: 90px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;  /* 允许子元素换行 */
+  text-align: center;  /* 水平居中 */
+  word-wrap: break-word; /* 超出容器时换行 */
+  border: 0.5px solid #d8e3de;
+  position: relative;
+
+  .delete-icon{
+    margin-top: -5px;
+    margin-right: -5px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 15px;
+    height: 15px;
+  }
+
+  a{
+    width: 100%;
+    font-size: 12px;
+  }
+}
+
+.form-password {
+  display: flex;
+
+  .form-password-eye {
+    flex: none;
+    margin-left: 8px;
+    padding: 4px;
+    cursor: pointer;
+
+    svg {
+      display: block;
+    }
+  }
+}
+
+
+.select-popup {
+  padding: 12px;
+  width: 100%;
+
+  .select-popup-content {
+    height: 45vh;
+    padding: 15px;
+    width: 100%;
+    overflow-y: scroll;
+
+    .checkbox-parent {
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  .select-popup-header {
+    height: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+
+    a {
+      font-weight: bold;
+    }
+  }
+
+  .select-popup-navbar {
+    padding: 10px 5px 0 10px;
+    height: 20px;
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 100vw;
+    display: flex;
+
+    .select-popup-navbar-item {
+      height: 20px;
+      align-items: center;
+
+      .arrow {
+        color: #4a79d8;
+      }
+
+      .span {
+        margin-left: 10px;
+        color: #4a79d8;
+      }
+    }
+  }
+
+  .select-popup-navbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .select-popup-search {
+    height: 30px;
+    padding: 5px;
+  }
+
+}
+
+
