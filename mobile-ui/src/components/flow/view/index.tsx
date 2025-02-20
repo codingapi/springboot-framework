@@ -4,6 +4,7 @@ import {flowStore} from "@/components/flow/store/FlowSlice";
 import {FlowFormViewProps, FlowViewProps} from "@/components/flow/types";
 import {Tabs} from "antd-mobile";
 import {FlowViewContext} from "@/components/flow/data";
+import FlowFooter from "@/components/flow/components/FlowFooter";
 import "./index.scss";
 
 const $FlowView: React.FC<FlowViewProps> = (props) => {
@@ -11,6 +12,58 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
     const flowViewContext = new FlowViewContext(props);
 
     const FlowFormView = flowViewContext.getFlowFormView() as React.ComponentType<FlowFormViewProps>;
+
+    const buttons = [
+        {
+            title: '提交',
+            color: 'primary',
+            onClick: () => {
+                console.log('提交')
+            }
+        },
+        {
+            title: '提交给人事管理员',
+            color: 'default',
+            onClick: () => {
+                console.log('暂存1')
+            }
+        },
+        {
+            title: '暂存2',
+            color: 'default',
+            onClick: () => {
+                console.log('暂存1')
+            }
+        },
+        {
+            title: '暂存3',
+            color: 'default',
+            onClick: () => {
+                console.log('暂存1')
+            }
+        },
+        {
+            title: '暂存4',
+            color: 'default',
+            onClick: () => {
+                console.log('暂存1')
+            }
+        },
+        {
+            title: '暂存5',
+            color: 'default',
+            onClick: () => {
+                console.log('暂存1')
+            }
+        },
+        {
+            title: '暂存6',
+            color: 'default',
+            onClick: () => {
+                console.log('暂存1')
+            }
+        },
+    ]
 
     return (
         <div className={"flow-view"}>
@@ -24,9 +77,7 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
                     </Tabs.Tab>
                 </Tabs>
             </div>
-            <div className={"flow-view-footer"}>
-
-            </div>
+            <FlowFooter buttons={buttons}/>
         </div>
     )
 }

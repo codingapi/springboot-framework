@@ -7,17 +7,18 @@ export interface ListResponse {
     data: {
         total: number;
         list: any[]
-    }
+    },
+    success: boolean
 }
 
 export interface ListAction {
-    reload:()=>void;
+    reload: () => void;
 }
 
 export interface ListProps {
     style?: React.CSSProperties;
 
-    listAction?:React.Ref<ListAction>;
+    listAction?: React.Ref<ListAction>;
     // 每页数量，默认为10
     pageSize?: number;
     // 刷新数据
@@ -81,27 +82,29 @@ const List: React.FC<ListProps> = (props) => {
             setLoading(true);
             props.onLoadMore(last, pageSize)
                 .then(res => {
-                    const {data} = res;
-                    if (data.total > 0) {
-                        const list = data.list;
-                        const last = list[list.length - 1].id;
-                        setLast(last);
-                        const currentList = orderList;
+                    if(res.success) {
+                        const {data} = res;
+                        if (data.total > 0) {
+                            const list = data.list;
+                            const last = list[list.length - 1].id;
+                            setLast(last);
+                            const currentList = orderList;
 
-                        for (let i = 0; i < list.length; i++) {
-                            const item = list[i];
-                            if (currentList.find((value: any) => value.id === item.id)) {
-                                continue;
+                            for (let i = 0; i < list.length; i++) {
+                                const item = list[i];
+                                if (currentList.find((value: any) => value.id === item.id)) {
+                                    continue;
+                                }
+                                currentList.push(item);
                             }
-                            currentList.push(item);
-                        }
 
-                        setOrderList(currentList);
-                        setHasMore(data.total > list.length);
-                    } else {
-                        setHasMore(false);
-                        if(!last) {
-                            setNoData(true);
+                            setOrderList(currentList);
+                            setHasMore(data.total > list.length);
+                        } else {
+                            setHasMore(false);
+                            if (!last) {
+                                setNoData(true);
+                            }
                         }
                     }
                 })
@@ -119,16 +122,18 @@ const List: React.FC<ListProps> = (props) => {
             setLoading(true);
             props.onRefresh(pageSize)
                 .then(res => {
-                    const {data} = res;
-                    if (data.total > 0) {
-                        const list = data.list;
-                        const last = list[list.length - 1].id;
-                        setLast(last);
-                        setOrderList(list);
-                        setHasMore(data.total > list.length);
-                    } else {
-                        setHasMore(false);
-                        setNoData(true)
+                    if(res.success) {
+                        const {data} = res;
+                        if (data.total > 0) {
+                            const list = data.list;
+                            const last = list[list.length - 1].id;
+                            setLast(last);
+                            setOrderList(list);
+                            setHasMore(data.total > list.length);
+                        } else {
+                            setHasMore(false);
+                            setNoData(true)
+                        }
                     }
                 })
                 .finally(() => {

@@ -146,7 +146,8 @@ const EducationIndex = () => {
                         data:{
                             total: data.length,
                             list: data
-                        }
+                        },
+                        success:true
                     }
                 }}
                 onLoadMore={async ()=>{
@@ -154,7 +155,8 @@ const EducationIndex = () => {
                         data:{
                             total: data.length,
                             list: data
-                        }
+                        },
+                        success:true
                     }
                 }}
                 onDetailClick={(item)=>{
