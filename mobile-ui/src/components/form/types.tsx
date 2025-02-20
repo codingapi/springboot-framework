@@ -1,7 +1,7 @@
 import {NamePath} from "antd-mobile/es/components/form";
 import type {Rule} from "rc-field-form/lib/interface";
 import {FormValidateContent} from "@/components/form/validate";
-import {FormAction} from "@/components/form/form";
+import {FormAction} from "@/components/form";
 
 // Form表单选项类型
 export interface FormOption {

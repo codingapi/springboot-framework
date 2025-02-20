@@ -3,7 +3,7 @@ import {FormItemProps} from "@/components/form/types";
 import {Form, Image, ImageUploader, ImageUploadItem, ImageViewer} from "antd-mobile";
 import formFieldInit from "@/components/form/common";
 import {loadFiles, upload} from "@/api/oss";
-import {FormAction} from "@/components/form/form";
+import {FormAction} from "@/components/form";
 import {FormValidateContext} from "@/components/form/validate";
 import {CloseCircleFill} from "antd-mobile-icons";
 

@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {FormContext} from "@/components/form/form";
+import {FormContext} from "@/components/form";
 import {FormItemProps} from "@/components/form/types";
 
 const formFieldInit = (props: FormItemProps,reloadOption?:()=>void) => {

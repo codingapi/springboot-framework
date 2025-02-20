@@ -1,5 +1,5 @@
 import React from "react";
-import Form, {FormProps} from "@/components/form/form";
+import Index, {FormProps} from "@/components/form";
 import "./index.scss";
 
 interface FormInfoProps extends FormProps {
@@ -11,7 +11,7 @@ const FormInfo: React.FC<FormInfoProps> = (props) => {
         <div className={"form-info"}>
             <div className={"form-header-title"}>{props.title}</div>
             <div className={"form-content"}>
-                <Form {...props}/>
+                <Index {...props}/>
             </div>
         </div>
     )

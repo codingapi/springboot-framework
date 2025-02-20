@@ -77,7 +77,7 @@ interface FormContextProps {
 
 export const FormContext = React.createContext<FormContextProps | null>(null);
 
-const Form: React.FC<FormProps> = (props) => {
+const Index: React.FC<FormProps> = (props) => {
 
     const [form] = MobileForm.useForm();
 
@@ -285,4 +285,4 @@ const Form: React.FC<FormProps> = (props) => {
     )
 }
 
-export default Form;
+export default Index;

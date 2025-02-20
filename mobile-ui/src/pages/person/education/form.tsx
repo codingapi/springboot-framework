@@ -5,7 +5,7 @@ import BasicInfo from "@/components/info/BasicInfo";
 import FormInfo from "@/components/info/FormInfo";
 import {Button, Toast} from "antd-mobile";
 import {loadFields} from "@/pages/person/education/fields";
-import {FormAction} from "@/components/form/form";
+import {FormAction} from "@/components/form";
 import {Grid} from "antd-mobile/es/components/grid/grid";
 
 const EducationForm = () => {

@@ -8,6 +8,7 @@ import React from "react";
 import EducationIndex from "@/pages/person/education";
 import EducationForm from "@/pages/person/education/form";
 import Test from "@/pages/test";
+import LeaveListPage from "@/pages/levave";
 
 
 export const routes: RouteObject[] = [
@@ -26,6 +27,10 @@ export const routes: RouteObject[] = [
             {
                 path: "/",
                 element: <HomePage/>,
+            },
+            {
+                path: "/leave/index",
+                element: <LeaveListPage/>,
             },
             {
                 path: "/person/education/index",

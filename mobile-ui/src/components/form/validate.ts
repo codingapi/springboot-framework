@@ -1,5 +1,5 @@
 import {NamePath} from "rc-field-form/es/interface";
-import {FormAction} from "@/components/form/form";
+import {FormAction} from "@/components/form";
 
 // 流程表单验证内容
 export class FormValidateContent {

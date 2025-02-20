@@ -45,6 +45,14 @@ const HomePage = () => {
                     >教育信息</Button>
                 </Grid.Item>
 
+                <Grid.Item>
+                    <Button
+                        onClick={() => {
+                            navigate("/leave/index")
+                        }}
+                    >请假</Button>
+                </Grid.Item>
+
                 {Array.from({length: 21}).map((item, index) => {
                     return (
                         <Grid.Item>
