@@ -2,7 +2,7 @@ import React, {useImperativeHandle} from "react";
 import todo from "@/assets/flow/todo.png";
 import un_submit from "@/assets/flow/un_submit.png";
 import done from "@/assets/flow/done.png";
-import {Button} from "antd-mobile";
+import {Button, Dialog} from "antd-mobile";
 import List, {ListAction, ListResponse} from "@/components/list";
 import {DeleteOutline, EditSOutline, EyeOutline} from "antd-mobile-icons";
 import "./index.scss";
@@ -91,8 +91,13 @@ const InfoList: React.FC<InfoListProps> = (props) => {
                                 </div>
                                 <div className={"infoList-operate"}>
                                     <Button
-                                        onClick={() => {
-                                            props.onDeleteClick && props.onDeleteClick(item);
+                                        onClick={async () => {
+                                            await Dialog.confirm({
+                                                content: '确认要删除吗？',
+                                                onConfirm: async () => {
+                                                    props.onDeleteClick && props.onDeleteClick(item);
+                                                },
+                                            })
                                         }}
                                         className={"infoList-operate-button"}
                                         shape={'rounded'}
