@@ -8,16 +8,9 @@ const LeaveCreatePage = () => {
     return (
         <div>
             <Header>发起请假</Header>
-
-            <div
-                style={{
-                    marginTop: 5
-                }}
-            >
-                <FlowView
-                    view={LeaveForm}
-                />
-            </div>
+            <FlowView
+                view={LeaveForm}
+            />
         </div>
     )
 }

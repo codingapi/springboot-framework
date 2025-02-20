@@ -14,15 +14,19 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
 
     return (
         <div className={"flow-view"}>
-            <Tabs
-            >
-                <Tabs.Tab title='详情' key='detail'>
-                    <FlowFormView/>
-                </Tabs.Tab>
-                <Tabs.Tab title='流程' key='flow'>
-                    流程详情
-                </Tabs.Tab>
-            </Tabs>
+            <div className={"flow-view-content"}>
+                <Tabs>
+                    <Tabs.Tab title='详情' key='detail'>
+                        <FlowFormView/>
+                    </Tabs.Tab>
+                    <Tabs.Tab title='流程' key='flow'>
+                        流程详情
+                    </Tabs.Tab>
+                </Tabs>
+            </div>
+            <div className={"flow-view-footer"}>
+
+            </div>
         </div>
     )
 }

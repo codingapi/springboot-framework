@@ -5,6 +5,7 @@ import List from "@/components/list";
 import {Button} from "antd-mobile";
 import {RightOutline} from "antd-mobile-icons";
 import {useNavigate} from "react-router";
+import Footer from "@/layout/Footer";
 
 const leaveItem = (item: any) => {
     return (
@@ -72,19 +73,18 @@ const LeaveListPage = () => {
                 onRefresh={handlerRefresh}
                 onLoadMore={handlerLoadMore}
             />
-            <div
-                style={{
-                    height: 60,
-                }}
-            >
+            <Footer>
                 <Button
+                    style={{
+                        margin:"120px"
+                    }}
                     onClick={() => {
                         navigate("/leave/create");
                     }}
                     color={'primary'}
                     block={true}
                 >请假</Button>
-            </div>
+            </Footer>
         </>
     )
 }

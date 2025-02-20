@@ -19,7 +19,7 @@ const HeaderLayout:React.FC<HeaderLayoutProps> = (props)=>{
 
     return (
         <NavBar
-            className={"layout-header"}
+            className={"page-header"}
             onBack={back}
             backIcon={props.isHome?false:undefined}
             left={props.left}

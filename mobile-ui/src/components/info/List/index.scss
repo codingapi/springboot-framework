@@ -1,6 +1,8 @@
+@use "@/config/variables" as *;
+
 .infoList-list {
   width: 100%;
-  height: calc(100vh - 120px);
+  height: $page-content-height;
   overflow: auto;
 }
 
@@ -8,8 +10,8 @@
   background-color: white;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  margin-top: 5px;
-  margin-bottom: 5px;
+  margin-top: 1px;
+  margin-bottom: 1px;
 }
 
 .infoList-left {

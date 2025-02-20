@@ -1,5 +1,10 @@
-.layout-header{
+@use "@/config/variables" as *;
+
+.page-header {
   background-color: white;
-  height: 60px;
+  height: $page-header-height !important;
   width: 100%;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-shadow: inset 0 0 0 1px $body-background-color;
 }

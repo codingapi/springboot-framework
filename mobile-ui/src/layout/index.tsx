@@ -1,7 +1,6 @@
 import React from "react";
 import {Routes} from "react-router";
 import {loadLayoutRoutes} from "@/config/route";
-import Footer from "@/layout/Footer";
 import {Provider} from "react-redux";
 import {layoutStore} from "@/sotre/LayoutSlice";
 
@@ -14,8 +13,6 @@ const $Layout = () => {
                     {loadLayoutRoutes()}
                 </Routes>
             </div>
-
-            <Footer/>
         </>
     )
 }

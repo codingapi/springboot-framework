@@ -5,6 +5,10 @@ $body-background-color: #e6e7ea;
 // header颜色
 $header-background-color: white;
 // FormPlaceholder颜色
-$from-placeholder-color: #c4c4c4
-
-
+$from-placeholder-color: #c4c4c4;
+// 导航栏的高度
+$page-header-height: 60px;
+// Footer栏的高度
+$page-footer-height: 60px;
+// 页面内容区域的高度
+$page-content-height: calc(100vh - #{$page-header-height} - #{$page-footer-height});

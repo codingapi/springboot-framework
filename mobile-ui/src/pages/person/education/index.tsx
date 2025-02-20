@@ -1,8 +1,9 @@
 import React from "react";
 import Header from "@/layout/Header";
 import InfoList, {InfoItem} from "@/components/info/List";
-import FooterButton from "@/components/info/Footer";
 import {useNavigate} from "react-router";
+import Footer from "@/layout/Footer";
+import {Button} from "antd-mobile";
 
 const EducationIndex = () => {
     const navigate = useNavigate();
@@ -160,7 +161,18 @@ const EducationIndex = () => {
                     navigate('/person/education/form', {state: item})
                 }}
             />
-            <FooterButton text={'新增教育信息'}/>
+            <Footer>
+                <Button
+                    block={true}
+                    color='primary'
+                    size={'middle'}
+                    style={{
+                        margin:'120px'
+                    }}
+                >
+                    新增教育信息
+                </Button>
+            </Footer>
         </>
     )
 }

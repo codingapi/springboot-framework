@@ -1,5 +1,5 @@
 import React from "react";
-import {Footer} from "antd-mobile";
+import "./index.scss";
 
 interface FooterLayoutProps {
     children?: React.ReactNode;
@@ -8,9 +8,11 @@ interface FooterLayoutProps {
 const FooterLayout: React.FC<FooterLayoutProps> = (props) => {
 
     return (
-        <Footer
-            content={props.children}
-        />
+        <div
+            className={"page-footer"}
+        >
+            {props.children}
+        </div>
     )
 }
 
