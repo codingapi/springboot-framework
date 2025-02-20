@@ -47,6 +47,8 @@ const List: React.FC<ListProps> = (props) => {
     const [noData, setNoData] = React.useState(false);
     const [hasMore, setHasMore] = React.useState(true);
 
+    const [loading, setLoading] = React.useState(false);
+
     const statusRecord: Record<PullStatus, string> = {
         pulling: props.pullStates?.pulling || '用力拉',
         canRelease: props.pullStates?.canRelease || '松开吧',
@@ -55,44 +57,67 @@ const List: React.FC<ListProps> = (props) => {
     }
 
     const loadMore = async () => {
-        props.onLoadMore && props.onLoadMore(last,pageSize).then(res => {
-            const {data} = res;
-            if (data.total > 0) {
-                const list = data.list;
-                const last = list[list.length - 1].id;
-                setLast(last);
-                const currentList = orderList;
+        if (loading) {
+            return;
+        }
+        if (props.onLoadMore) {
+            setLoading(true);
+            props.onLoadMore(last, pageSize)
+                .then(res => {
+                    const {data} = res;
+                    if (data.total > 0) {
+                        const list = data.list;
+                        const last = list[list.length - 1].id;
+                        setLast(last);
+                        const currentList = orderList;
 
-                for (let i = 0; i < list.length; i++) {
-                    const item = list[i];
-                    if (currentList.find((value: any) => value.id === item.id)) {
-                        continue;
+                        for (let i = 0; i < list.length; i++) {
+                            const item = list[i];
+                            if (currentList.find((value: any) => value.id === item.id)) {
+                                continue;
+                            }
+                            currentList.push(item);
+                        }
+
+                        setOrderList(currentList);
+                        setHasMore(data.total > list.length);
+                    } else {
+                        setHasMore(false);
+                        if(!last) {
+                            setNoData(true);
+                        }
                     }
-                    currentList.push(item);
-                }
-
-                setOrderList(currentList);
-                setHasMore(data.total > list.length);
-            } else {
-                setHasMore(false);
-            }
-        });
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        }
     }
 
     const refresh = () => {
-        props.onRefresh && props.onRefresh(pageSize).then(res => {
-            const {data} = res;
-            if (data.total > 0) {
-                const list = data.list;
-                const last = list[list.length - 1].id;
-                setLast(last);
-                setOrderList(list);
-                setHasMore(data.total > list.length);
-            } else {
-                setHasMore(false);
-                setNoData(true)
-            }
-        });
+        if (loading) {
+            return;
+        }
+        if (props.onRefresh) {
+            setLoading(true);
+            props.onRefresh(pageSize)
+                .then(res => {
+                    const {data} = res;
+                    if (data.total > 0) {
+                        const list = data.list;
+                        const last = list[list.length - 1].id;
+                        setLast(last);
+                        setOrderList(list);
+                        setHasMore(data.total > list.length);
+                    } else {
+                        setHasMore(false);
+                        setNoData(true)
+                    }
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        }
     }
 
     return (

@@ -31,8 +31,6 @@ api.interceptors.response.use(async (response: any) => {
                 console.log('reset token', token);
                 localStorage.setItem("token", token)
             }
-
-            console.log('response', response);
             if(response.data) {
                 const success = response.data.success;
                 if (!success) {
