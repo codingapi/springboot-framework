@@ -130,6 +130,26 @@ export class FlowEventContext {
                 });
             }
         }
+
+        if (button.type === 'REJECT') {
+            if (this.flowStateContext.hasRecordId()) {
+                this.submitFlow(false, () => {
+                    this.flowStateContext.setResult({
+                        success: true,
+                        title: '流程提交成功',
+                    })
+                })
+            } else {
+                this.startFlow(() => {
+                    this.submitFlow(false, () => {
+                        this.flowStateContext.setResult({
+                            success: true,
+                            title: '流程提交成功',
+                        })
+                    })
+                });
+            }
+        }
         if (button.type === 'SAVE') {
             if (this.flowStateContext.hasRecordId()) {
                 this.saveFlow(() => {

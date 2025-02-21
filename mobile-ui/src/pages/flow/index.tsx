@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Header from "@/layout/Header";
 import List, {ListAction} from "@/components/list";
 import {RightOutline} from "antd-mobile-icons";
@@ -13,9 +13,19 @@ import {
 import {Tabs} from "antd-mobile";
 import moment from "moment";
 import "./index.scss";
+import {useNavigate} from "react-router";
 
 
-const todoItem = (item: any) => {
+interface TodoItemProps{
+    item:any;
+}
+
+const TodoItem:React.FC<TodoItemProps> = (props) => {
+
+    const item = props.item;
+
+    const navigate = useNavigate();
+
     return (
         <div className={"flow-todo-item"}>
             <div
@@ -39,6 +49,9 @@ const todoItem = (item: any) => {
                 className={"flow-todo-item-arrow"}>
                 <RightOutline
                     fontSize={20}
+                    onClick={()=>{
+                        navigate('/flow/detail',{state:item});
+                    }}
                 />
             </div>
         </div>
@@ -80,17 +93,18 @@ const FlowListPage = () => {
 
     const listAction = React.useRef<ListAction>(null);
 
+    useEffect(() => {
+        listAction.current?.reload();
+    }, [key]);
+
     return (
         <>
-            <Header>待办中心</Header>
+            <Header>待办中心{key}</Header>
             <div className={"flow-todo-content"}>
                 <Tabs
                     className={"flow-todo-tabs"}
                     activeKey={key}
-                    onChange={(key) => {
-                        setKey(key);
-                        listAction.current?.reload();
-                    }}
+                    onChange={setKey}
                 >
                     <Tabs.Tab title={"待办"} key={"todo"}/>
                     <Tabs.Tab title={"已办"} key={"done"}/>
@@ -104,7 +118,7 @@ const FlowListPage = () => {
                     listAction={listAction}
                     className={"flow-todo-list"}
                     item={(item, index) => {
-                        return todoItem(item);
+                        return <TodoItem item={item}/>
                     }}
                     onRefresh={handlerRefresh}
                     onLoadMore={handlerLoadMore}

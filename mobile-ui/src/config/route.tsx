@@ -11,6 +11,7 @@ import Test from "@/pages/test";
 import LeaveListPage from "@/pages/levave";
 import LeaveCreatePage from "@/pages/levave/create";
 import FlowListPage from "@/pages/flow";
+import FlowDetailPage from "@/pages/flow/detail";
 
 
 export const routes: RouteObject[] = [
@@ -35,8 +36,12 @@ export const routes: RouteObject[] = [
                 element: <LeaveListPage/>,
             },
             {
-                path: "/flow",
+                path: "/flow/list",
                 element: <FlowListPage/>,
+            },
+            {
+                path: "/flow/detail",
+                element: <FlowDetailPage/>,
             },
             {
                 path: "/leave/create",

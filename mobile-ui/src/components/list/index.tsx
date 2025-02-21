@@ -73,9 +73,10 @@ const List: React.FC<ListProps> = (props) => {
 
     React.useImperativeHandle(props.listAction, () => ({
         reload: () => {
+            setOrderList([]);
             refresh();
         }
-    }), [props.listAction])
+    }), [props.listAction,props])
 
     const loadMore = async () => {
         if (loading) {

@@ -8,8 +8,8 @@ import {FlowEventContext} from "@/components/flow/domain/FlowEventContext";
 import {detail} from "@/api/flow";
 import {FormAction} from "@/components/form";
 import {FlowStateContext} from "@/components/flow/domain/FlowStateContext";
-import "./index.scss";
 import FlowPage from "@/components/flow/components/FlowPage";
+import "./index.scss";
 
 
 interface FlowViewReactContextProps {
@@ -32,6 +32,7 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
             detail(props.id, null).then(res => {
                 if (res.success) {
                     setData(res.data);
+                    dispatch(initState());
                 }
             });
         }
@@ -39,6 +40,7 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
             detail(null, props.workCode).then(res => {
                 if (res.success) {
                     setData(res.data);
+                    dispatch(initState());
                 }
             });
         }
@@ -48,11 +50,6 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
         loadFlowDetail();
     }, []);
 
-    useEffect(() => {
-        if (data) {
-            dispatch(initState());
-        }
-    }, [data]);
 
     return (
         <>

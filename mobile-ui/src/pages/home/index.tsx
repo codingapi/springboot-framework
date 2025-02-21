@@ -64,7 +64,7 @@ const HomePage = () => {
                             width:"100%"
                         }}
                         onClick={() => {
-                            navigate("/flow")
+                            navigate("/flow/list")
                         }}
                     >待办中心</Button>
                 </Grid.Item>
