@@ -29,12 +29,12 @@ export class FlowEventContext {
         const flowData = this.flowViewContext.getFlowFormParams();
         const workCode = this.flowViewContext.getWorkCode();
         const recordId = this.flowStateContext.getRecordId();
-        const advice = "";
+        const advice = this.opinionAction.current?.getFieldsValue();
 
         return {
             recordId,
             workCode,
-            advice: advice,
+            ...advice,
             formData: {
                 ...flowData,
                 ...formData,

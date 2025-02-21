@@ -28,6 +28,16 @@ export class FlowViewContext {
         return view;
     }
 
+    // 获取审批意见
+    getOpinionAdvice = () => {
+        if(this.data.flowRecord){
+            if(this.data.flowRecord.opinion){
+                return this.data.flowRecord.opinion.advice;
+            }
+        }
+        return null;
+    }
+
     //获取流程的form数据
     getFlowFormParams() {
         return {

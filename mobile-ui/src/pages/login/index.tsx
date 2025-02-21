@@ -73,6 +73,7 @@ const LoginPage = () => {
                     name={'password'}
                     label={'密码'}
                     placeholder={'请输入密码'}
+                    required={true}
                     validateFunction={async (content)=>{
                         if(content.value){
                             return []

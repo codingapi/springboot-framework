@@ -8,7 +8,7 @@ const formFieldInit = (props: FormItemProps,reloadOption?:()=>void) => {
     const validateContext = formContext?.validateContext;
     const [random, setRandom] = React.useState(0);
 
-    const rules: never[] = [];
+    const rules= props.required?[{required: true}]:[];
 
     useEffect(() => {
         if (props.validateFunction) {
