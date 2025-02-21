@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {FlowViewProps} from "@/components/flow/types";
+import {FlowFormViewProps, FlowViewProps} from "@/components/flow/types";
 import {useDispatch, useSelector} from "react-redux";
 import {FlowReduxState, updateState} from "@/components/flow/store/FlowSlice";
 import {FlowViewContext} from "@/components/flow/domain/FlowViewContext";
@@ -10,6 +10,7 @@ import FlowResult from "@/components/flow/components/FlowResult";
 import FlowContent from "@/components/flow/components/FlowContent";
 import FlowFooter from "@/components/flow/components/FlowFooter";
 import {FlowViewReactContext} from "@/components/flow/view";
+import FlowForm404 from "@/components/flow/components/FlowForm404";
 
 
 interface FlowPageProps extends FlowViewProps {
@@ -35,6 +36,7 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
     });
 
     const flowEvenContext = new FlowEventContext(flowViewContext, formAction, flowStateContext);
+    const FlowFormView = flowViewContext.getFlowFormView() as React.ComponentType<FlowFormViewProps>;
 
     // 设置流程编号
     useEffect(() => {
@@ -43,26 +45,32 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
         }
     }, [props.id]);
 
-    return (
-        <FlowViewReactContext.Provider value={{
-            flowViewContext: flowViewContext,
-            flowEventContext: flowEvenContext,
-            flowStateContext: flowStateContext,
-            formAction: formAction,
-        }}>
-            <div className={"flow-view"}>
-                {result && (
-                    <FlowResult/>
-                )}
-                {!result && (
-                    <>
-                        <FlowContent/>
-                        <FlowFooter/>
-                    </>
-                )}
-            </div>
-        </FlowViewReactContext.Provider>
-    )
+    if(FlowFormView) {
+        return (
+            <FlowViewReactContext.Provider value={{
+                flowViewContext: flowViewContext,
+                flowEventContext: flowEvenContext,
+                flowStateContext: flowStateContext,
+                formAction: formAction,
+            }}>
+                <div className={"flow-view"}>
+                    {result && (
+                        <FlowResult/>
+                    )}
+                    {!result && (
+                        <>
+                            <FlowContent/>
+                            <FlowFooter/>
+                        </>
+                    )}
+                </div>
+            </FlowViewReactContext.Provider>
+        )
+    }else {
+        return (
+            <FlowForm404/>
+        )
+    }
 }
 
 export default FlowPage;
