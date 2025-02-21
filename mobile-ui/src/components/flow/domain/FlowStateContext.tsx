@@ -2,39 +2,42 @@ import {FlowStore} from "@/components/flow/store/FlowSlice";
 
 export class FlowStateContext {
 
-    private readonly flowStore: FlowStore;
-    private readonly updateFlowStore: (state: FlowStore) => void;
-    private recordId: string;
+    private currentState: FlowStore;
+    private readonly updateFlowStore: (currentState:any) => any;
 
-    constructor(flowStore: FlowStore, updateFlowStore: (state: FlowStore) => void) {
-        this.flowStore = flowStore;
+    constructor(currentState: FlowStore, updateFlowStore: (state: any) => any) {
+        this.currentState = JSON.parse(JSON.stringify(currentState));
         this.updateFlowStore = updateFlowStore;
-        this.recordId = flowStore.recordId;
-        console.log('recordId:', this.recordId);
     }
 
+    private updateState(){
+        this.updateFlowStore({
+            ...this.currentState
+        })
+    }
 
     setRequestLoading = (requestLoading: boolean) => {
-        this.updateFlowStore({
-            ...this.flowStore,
+        this.currentState = {
+            ...this.currentState,
             requestLoading
-        });
+        }
+        this.updateState();
     }
 
     updateRecordId = (recordId: string) => {
-        this.recordId = recordId;
-        this.updateFlowStore({
-            ...this.flowStore,
+        this.currentState = {
+            ...this.currentState,
             recordId
-        });
+        }
+        this.updateState();
     }
 
     hasRecordId = () => {
-        return this.flowStore.recordId !== '';
+        return this.currentState.recordId;
     }
 
     getRecordId = () => {
-        return this.recordId || this.flowStore.recordId;
+        return this.currentState.recordId;
     }
 
 }

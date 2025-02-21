@@ -18,7 +18,7 @@ export class FlowEventContext {
         this.flowStateContext = flowStateContext;
     }
 
-    private loadRequestBody = () => {
+    private getRequestBody = () => {
         const formData = this.flowAction.current?.getFieldsValue();
         const flowData = this.flowViewContext.getFlowFormParams();
         const workCode = this.flowViewContext.getWorkCode();
@@ -38,7 +38,7 @@ export class FlowEventContext {
     }
 
     startFlow = (callback?: (res: any) => void) => {
-        const body = this.loadRequestBody();
+        const body = this.getRequestBody();
         this.flowStateContext.setRequestLoading(true);
         flowApi.startFlow(body)
             .then(res => {
@@ -57,13 +57,12 @@ export class FlowEventContext {
     }
 
 
-    submitFlow = (approvalState:boolean,callback?: (res: any) => void) => {
-        this.flowAction.current?.validate().then((flag) => {
-            console.log('flag', flag);
-            if (flag) {
+    submitFlow = (approvalState: boolean, callback?: (res: any) => void) => {
+        this.flowAction.current?.validate().then((validateState) => {
+            if (validateState) {
                 const body = {
-                    ...this.loadRequestBody(),
-                    success:approvalState,
+                    ...this.getRequestBody(),
+                    success: approvalState,
                 }
                 this.flowStateContext.setRequestLoading(true);
                 flowApi.submitFlow(body)
@@ -81,19 +80,72 @@ export class FlowEventContext {
         })
     }
 
+    removeFlow = (callback?: (res: any) => void) => {
+        this.flowStateContext.setRequestLoading(true);
+        const body = {
+            recordId: this.flowStateContext.getRecordId()
+        };
+        flowApi.removeFlow(body).then(res => {
+            if (res.success) {
+                if (callback) {
+                    callback(res);
+                }
+            }
+        }).finally(() => {
+            this.flowStateContext.setRequestLoading(false);
+        })
+    }
+
+    saveFlow = (callback?: (res: any) => void) => {
+        this.flowStateContext.setRequestLoading(true);
+        const body = this.getRequestBody();
+        flowApi.saveFlow(body).then(res => {
+            if (res.success) {
+                if (callback) {
+                    callback(res);
+                }
+            }
+        }).finally(() => {
+            this.flowStateContext.setRequestLoading(false);
+        })
+    }
+
     handlerClick(button: FlowButton) {
-        console.log('button', button);
         if (button.type === 'SUBMIT') {
             if (this.flowStateContext.hasRecordId()) {
-                this.submitFlow(true,() => {
+                this.submitFlow(true, () => {
                     Toast.show('流程提交成功');
                 })
             } else {
                 this.startFlow(() => {
-                    this.submitFlow(true,() => {
+                    this.submitFlow(true, () => {
                         Toast.show('流程提交成功');
                     })
                 });
+            }
+        }
+        if (button.type === 'SAVE') {
+            if (this.flowStateContext.hasRecordId()) {
+                this.saveFlow(() => {
+                    Toast.show('流程保存成功');
+                })
+            } else {
+                this.startFlow(() => {
+                    this.saveFlow(() => {
+                        Toast.show('流程保存成功');
+                    })
+                });
+            }
+        }
+
+        if (button.type === 'REMOVE') {
+            console.log('hasRecordId:',this.flowStateContext.hasRecordId());
+            if (this.flowStateContext.hasRecordId()) {
+                this.removeFlow(() => {
+                    Toast.show('流程删除成功');
+                });
+            } else {
+                Toast.show('流程尚未发起，无法删除');
             }
         }
     }

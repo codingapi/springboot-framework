@@ -9,8 +9,8 @@ import FlowFooter from "@/components/flow/components/FlowFooter";
 import FlowContent from "@/components/flow/components/FlowContent";
 import {detail} from "@/api/flow";
 import {FormAction} from "@/components/form";
-import "./index.scss";
 import {FlowStateContext} from "@/components/flow/domain/FlowStateContext";
+import "./index.scss";
 
 interface $FlowViewProps extends FlowViewProps {
     // 流程详情数据
@@ -32,17 +32,19 @@ const $FlowView: React.FC<$FlowViewProps> = (props) => {
 
     const flowViewContext = new FlowViewContext(props, props.flowData);
     const formAction = React.useRef<FormAction>(null);
-    const flowStore = useSelector((state: FlowReduxState) => state.flow);
+    const currentState = useSelector((state: FlowReduxState) => state.flow);
 
-    const flowStateContext = new FlowStateContext(flowStore, (state) => {
-        dispatch(updateState(state));
+    const flowStateContext = new FlowStateContext(currentState, (state: any) => {
+        dispatch(updateState({
+            ...state
+        }));
     });
 
     const flowEvenContext = new FlowEventContext(flowViewContext, formAction, flowStateContext);
 
     // 设置流程编号
     useEffect(() => {
-        if(props.id){
+        if (props.id) {
             flowStateContext.updateRecordId(props.id);
         }
     }, [props.id]);

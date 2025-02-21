@@ -8,7 +8,7 @@ export interface FlowStore {
 }
 
 export type FlowStoreAction = {
-    updateState: (state: FlowStore, action: PayloadAction<FlowStore>) => void;
+    updateState: (state: FlowStore, action: PayloadAction<any>) => void;
 }
 
 export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
@@ -19,8 +19,14 @@ export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
     },
     reducers: {
         updateState: (state, action) => {
-            state.requestLoading = action.payload.requestLoading;
-            state.recordId = action.payload.recordId;
+            const currentState = action.payload;
+            const keys = Object.keys(currentState);
+            if(keys.includes('requestLoading')) {
+                state.requestLoading = currentState.requestLoading;
+            }
+            if(keys.includes('recordId')) {
+                state.recordId = action.payload.recordId;
+            }
         },
     },
 });
