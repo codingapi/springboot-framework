@@ -84,24 +84,8 @@ const Index: React.FC<FormProps> = (props) => {
     const [form] = MobileForm.useForm();
 
     const validateContext = new FormValidateContext();
-
     const reloadContext = new FormFieldReloadListenerContext();
-
     const optionContext = new FormFieldOptionListenerContext();
-
-    const [fields, setFields] = React.useState<FormField[]>([]);
-
-    const reloadFields = ()=>{
-        if(props.loadFields){
-            props.loadFields().then(fields=>{
-                setFields(fields);
-            })
-        }
-    }
-
-    useEffect(() => {
-        reloadFields();
-    }, []);
 
     const formAction = {
         submit: async () => {
@@ -255,18 +239,35 @@ const Index: React.FC<FormProps> = (props) => {
         }
     }
 
+    const formContextProps = {
+        formAction: formAction,
+        validateContext: validateContext,
+        reloadContext:reloadContext,
+        optionContext:optionContext
+    }
+
+    const [fields, setFields] = React.useState<FormField[]>([]);
+
+    const reloadFields = ()=>{
+        if(props.loadFields){
+            props.loadFields().then(fields=>{
+                setFields(fields);
+            })
+        }
+    }
+
+    useEffect(() => {
+        reloadFields();
+    }, []);
+
+
     React.useImperativeHandle(props.actionRef, () => {
         return formAction
-    }, [props.actionRef]);
+    }, [props.actionRef,fields]);
 
     return (
         <FormContext.Provider
-            value={{
-                formAction: formAction,
-                validateContext: validateContext,
-                reloadContext:reloadContext,
-                optionContext:optionContext
-            }}
+            value={formContextProps}
         >
             <MobileForm
                 form={form}

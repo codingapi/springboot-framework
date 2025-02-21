@@ -36,12 +36,12 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
                             label: "请假天数",
                             name: "days",
                             required: true,
-                            rules: [
-                                {
-                                    required: true,
-                                    message: '请输入请假天数'
+                            validateFunction:async (content)=>{
+                                if(content.value<=0){
+                                    return ["请假天数不能小于0"];
                                 }
-                            ]
+                                return []
+                            }
                         }
                     },
                     {
@@ -50,12 +50,12 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
                             label: "请假理由",
                             name: "desc",
                             required: true,
-                            rules: [
-                                {
-                                    required: true,
-                                    message: '请输入请假理由'
+                            validateFunction:async (content)=>{
+                                if(content.value && content.value.length>0){
+                                    return []
                                 }
-                            ]
+                                return ["请假理由不能为空"];
+                            }
                         }
                     }
                 ] as FormField[]
@@ -66,8 +66,8 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
             footer={(
                 <div>
                     <Button
-                        onClick={() => {
-                            formAction.current && formAction.current.submit();
+                        onClick={async () => {
+                            formAction.current && await formAction.current.validate();
                         }}
                     >test</Button>
                 </div>

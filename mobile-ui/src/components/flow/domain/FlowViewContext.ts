@@ -10,6 +10,11 @@ export class FlowViewContext {
         this.data = data;
     }
 
+    // 获取流程的工作编码
+    getWorkCode() {
+        return this.data.flowWork.code;
+    }
+
     // 获取流程的Form视图
     getFlowFormView() {
         const view = this.props.view;
@@ -35,4 +40,5 @@ export class FlowViewContext {
             return item1.order - item2.order;
         })
     }
+
 }

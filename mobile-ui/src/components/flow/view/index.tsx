@@ -1,6 +1,6 @@
 import React, {createContext, useEffect} from "react";
-import {Provider} from "react-redux";
-import {flowStore} from "@/components/flow/store/FlowSlice";
+import {Provider, useDispatch, useSelector} from "react-redux";
+import {FlowReduxState, flowStore, updateState} from "@/components/flow/store/FlowSlice";
 import {FlowViewProps} from "@/components/flow/types";
 import {Skeleton} from "antd-mobile";
 import {FlowViewContext} from "@/components/flow/domain/FlowViewContext";
@@ -10,6 +10,7 @@ import FlowContent from "@/components/flow/components/FlowContent";
 import {detail} from "@/api/flow";
 import {FormAction} from "@/components/form";
 import "./index.scss";
+import {FlowStateContext} from "@/components/flow/domain/FlowStateContext";
 
 interface $FlowViewProps extends FlowViewProps {
     // 流程详情数据
@@ -18,23 +19,40 @@ interface $FlowViewProps extends FlowViewProps {
 
 interface FlowViewReactContextProps {
     flowViewContext: FlowViewContext;
-    formAction: React.RefObject<FormAction>;
     flowEventContext: FlowEventContext;
+    flowStateContext: FlowStateContext;
+    formAction: React.RefObject<FormAction>;
 }
 
 export const FlowViewReactContext = createContext<FlowViewReactContextProps | null>(null);
 
 const $FlowView: React.FC<$FlowViewProps> = (props) => {
 
+    const dispatch = useDispatch();
+
     const flowViewContext = new FlowViewContext(props, props.flowData);
     const formAction = React.useRef<FormAction>(null);
-    const flowEvenContext = new FlowEventContext(flowViewContext, formAction);
+    const flowStore = useSelector((state: FlowReduxState) => state.flow);
+
+    const flowStateContext = new FlowStateContext(flowStore, (state) => {
+        dispatch(updateState(state));
+    });
+
+    const flowEvenContext = new FlowEventContext(flowViewContext, formAction, flowStateContext);
+
+    // 设置流程编号
+    useEffect(() => {
+        if(props.id){
+            flowStateContext.updateRecordId(props.id);
+        }
+    }, [props.id]);
 
     return (
         <FlowViewReactContext.Provider value={{
             flowViewContext: flowViewContext,
+            flowEventContext: flowEvenContext,
+            flowStateContext: flowStateContext,
             formAction: formAction,
-            flowEventContext: flowEvenContext
         }}>
             <div className={"flow-view"}>
                 <FlowContent/>

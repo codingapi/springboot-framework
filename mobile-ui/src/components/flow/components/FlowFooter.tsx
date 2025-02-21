@@ -1,6 +1,8 @@
 import React, {useContext} from "react";
 import {ActionSheet, Button} from "antd-mobile";
 import {FlowViewReactContext} from "@/components/flow/view";
+import {useSelector} from "react-redux";
+import {FlowReduxState} from "@/components/flow/store/FlowSlice";
 
 interface FlowFooterProps {
     maxButtonCount?: number;
@@ -12,8 +14,11 @@ const FlowFooter: React.FC<FlowFooterProps> = (props) => {
         return <></>;
     }
     const flowViewContext = flowViewReactContext.flowViewContext;
+    const flowEventContext = flowViewReactContext.flowEventContext;
+
     const buttons = flowViewContext.getFlowButtons();
     const maxButtonCount = props.maxButtonCount || 4;
+    const requestLoading = useSelector((state: FlowReduxState) => state.flow.requestLoading);
 
     const [visible, setVisible] = React.useState(false);
 
@@ -22,10 +27,14 @@ const FlowFooter: React.FC<FlowFooterProps> = (props) => {
             {buttons && buttons.length <= maxButtonCount && buttons.map((item) => {
                 return (
                     <Button
+                        loading={requestLoading}
                         key={item.id}
                         className={"flow-view-footer-button"}
                         style={{
                             ...item.style
+                        }}
+                        onClick={()=>{
+                            flowEventContext.handlerClick(item);
                         }}
                     >{item.name}</Button>
                 )
@@ -35,16 +44,21 @@ const FlowFooter: React.FC<FlowFooterProps> = (props) => {
                     {buttons && buttons.slice(0, maxButtonCount - 1).map(item => {
                         return (
                             <Button
+                                loading={requestLoading}
                                 key={item.id}
                                 className={"flow-view-footer-button"}
                                 style={{
                                     ...item.style
+                                }}
+                                onClick={()=>{
+                                    flowEventContext.handlerClick(item);
                                 }}
                             >{item.name}</Button>
                         )
                     })}
 
                     <Button
+                        loading={requestLoading}
                         color={"default"}
                         className={"flow-view-footer-button"}
                         onClick={() => {
@@ -63,6 +77,7 @@ const FlowFooter: React.FC<FlowFooterProps> = (props) => {
                                 text: item.name,
                                 key: item.id,
                                 onClick: () => {
+                                    flowEventContext.handlerClick(item);
                                     setVisible(false);
                                 }
                             }
