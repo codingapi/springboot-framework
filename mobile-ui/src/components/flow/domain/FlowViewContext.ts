@@ -1,5 +1,8 @@
 import {FlowButton, FlowFormView, FlowViewProps} from "@/components/flow/types";
 
+/**
+ * 流程的详情控制上下文对象
+ */
 export class FlowViewContext {
 
     private readonly props: FlowViewProps;

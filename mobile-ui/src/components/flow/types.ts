@@ -19,6 +19,7 @@ export type ButtonType =
     | 'VIEW'
     | 'REMOVE';
 
+// 流程自定义按钮
 export interface FlowButton {
     id: string;
     eventKey: string;
@@ -29,6 +30,13 @@ export interface FlowButton {
     type: ButtonType;
 }
 
+// 流程用户
+export interface FlowUser {
+    id: string;
+    name: string;
+
+    [key: string]: any;
+}
 
 // 表单参数
 export interface FlowFormParams {

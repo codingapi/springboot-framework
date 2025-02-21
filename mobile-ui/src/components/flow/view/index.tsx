@@ -11,11 +11,15 @@ import {FlowStateContext} from "@/components/flow/domain/FlowStateContext";
 import FlowPage from "@/components/flow/components/FlowPage";
 import "./index.scss";
 
-
+// 流程视图上下文属性
 interface FlowViewReactContextProps {
+    // 流程的详情控制上下文对象
     flowViewContext: FlowViewContext;
+    // 流程的事件控制上下文对象
     flowEventContext: FlowEventContext;
+    // 流程的状态数据上下文对象
     flowStateContext: FlowStateContext;
+    // 表单操作对象
     formAction: React.RefObject<FormAction>;
 }
 

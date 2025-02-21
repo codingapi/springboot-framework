@@ -3,9 +3,12 @@ import {FormAction} from "@/components/form";
 import {FlowViewContext} from "@/components/flow/domain/FlowViewContext";
 import {FlowStateContext} from "@/components/flow/domain/FlowStateContext";
 import * as flowApi from "@/api/flow";
-import {FlowButton} from "@/components/flow/types";
+import {FlowButton, FlowUser} from "@/components/flow/types";
 import {Toast} from "antd-mobile";
 
+/**
+ * 流程的事件控制上下文对象
+ */
 export class FlowEventContext {
 
     private readonly flowViewContext: FlowViewContext;
@@ -37,6 +40,10 @@ export class FlowEventContext {
 
     }
 
+    /**
+     * 发起流程
+     * @param callback 回调函数
+     */
     startFlow = (callback?: (res: any) => void) => {
         const body = this.getRequestBody();
         this.flowStateContext.setRequestLoading(true);
@@ -57,6 +64,11 @@ export class FlowEventContext {
     }
 
 
+    /**
+     * 提交流程
+     * @param approvalState 是否审批通过
+     * @param callback 回调函数
+     */
     submitFlow = (approvalState: boolean, callback?: (res: any) => void) => {
         this.flowAction.current?.validate().then((validateState) => {
             if (validateState) {
@@ -80,6 +92,10 @@ export class FlowEventContext {
         })
     }
 
+    /**
+     * 删除流程
+     * @param callback 回调函数
+     */
     removeFlow = (callback?: (res: any) => void) => {
         this.flowStateContext.setRequestLoading(true);
         const body = {
@@ -96,6 +112,10 @@ export class FlowEventContext {
         })
     }
 
+    /**
+     * 保存流程
+     * @param callback 回调函数
+     */
     saveFlow = (callback?: (res: any) => void) => {
         this.flowStateContext.setRequestLoading(true);
         const body = this.getRequestBody();
@@ -110,6 +130,154 @@ export class FlowEventContext {
         })
     }
 
+    /**
+     * 延期流程
+     * @param timeOut 延期时间
+     * @param callback 回调函数
+     */
+    postponedFlow(timeOut:number,callback?: (res: any) => void){
+        this.flowStateContext.setRequestLoading(true);
+        const body = {
+            recordId: this.flowStateContext.getRecordId(),
+            timeOut
+        };
+        flowApi.postponed(body).then(res => {
+            if (res.success) {
+                if (callback) {
+                    callback(res);
+                }
+            }
+        }).finally(() => {
+            this.flowStateContext.setRequestLoading(false);
+        })
+    }
+
+    /**
+     * 自定义流程
+     * @param button 自定义按钮
+     * @param callback 回调函数
+     */
+    customFlow(button:FlowButton,callback?: (res: any) => void){
+        this.flowAction.current?.validate().then((validateState) => {
+            if (validateState) {
+                const body = {
+                    ...this.getRequestBody(),
+                    buttonId: button.id,
+                }
+                this.flowStateContext.setRequestLoading(true);
+                flowApi.custom(body)
+                    .then(res => {
+                        if (res.success) {
+                            if (callback) {
+                                callback(res);
+                            }
+                        }
+                    })
+                    .finally(() => {
+                        this.flowStateContext.setRequestLoading(false);
+                    })
+            }
+        })
+    }
+
+    /**
+     * 转办流程
+     * @param user 转办用户
+     * @param callback 回调函数
+     */
+    transferFlow(user:FlowUser,callback?: (res: any) => void){
+        this.flowAction.current?.validate().then((validateState) => {
+            if (validateState) {
+                const body = {
+                    ...this.getRequestBody(),
+                    targetUserId:user.id
+                }
+                this.flowStateContext.setRequestLoading(true);
+                flowApi.transfer(body)
+                    .then(res => {
+                        if (res.success) {
+                            if (callback) {
+                                callback(res);
+                            }
+                        }
+                    })
+                    .finally(() => {
+                        this.flowStateContext.setRequestLoading(false);
+                    })
+            }
+        })
+    }
+
+    /**
+     * 催办流程
+     * @param callback
+     */
+    urgeFlow(callback?: (res: any) => void){
+        this.flowStateContext.setRequestLoading(true);
+        const body = {
+            recordId: this.flowStateContext.getRecordId()
+        };
+        flowApi.urge(body).then(res => {
+            if (res.success) {
+                if (callback) {
+                    callback(res);
+                }
+            }
+        }).finally(() => {
+            this.flowStateContext.setRequestLoading(false);
+        })
+    }
+
+    /**
+     * 撤回流程
+     */
+    recallFlow(callback?: (res: any) => void){
+        this.flowStateContext.setRequestLoading(true);
+        const body = {
+            recordId: this.flowStateContext.getRecordId()
+        };
+        flowApi.recall(body).then(res => {
+            if (res.success) {
+                if (callback) {
+                    callback(res);
+                }
+            }
+        }).finally(() => {
+            this.flowStateContext.setRequestLoading(false);
+        })
+    }
+
+    /**
+     * 预提交流程
+     * @param callback
+     */
+    trySubmitFlow(callback?: (res: any) => void){
+        this.flowAction.current?.validate().then((validateState) => {
+            if (validateState) {
+                const body = {
+                    ...this.getRequestBody(),
+                    success: true,
+                }
+                this.flowStateContext.setRequestLoading(true);
+                flowApi.trySubmitFlow(body)
+                    .then(res => {
+                        if (res.success) {
+                            if (callback) {
+                                callback(res);
+                            }
+                        }
+                    })
+                    .finally(() => {
+                        this.flowStateContext.setRequestLoading(false);
+                    })
+            }
+        })
+    }
+
+    /**
+     * 处理按钮点击事件
+     * @param button
+     */
     handlerClick(button: FlowButton) {
         if (button.type === 'SUBMIT') {
             if (this.flowStateContext.hasRecordId()) {
@@ -175,6 +343,33 @@ export class FlowEventContext {
             } else {
                 Toast.show('流程尚未发起，无法删除');
             }
+        }
+
+        if(button.type === 'RECALL'){
+            this.recallFlow(()=>{
+                this.flowStateContext.setResult({
+                    success: true,
+                    title: '流程撤回成功',
+                });
+            });
+        }
+
+        if(button.type === 'URGE'){
+            this.urgeFlow(()=>{
+                this.flowStateContext.setResult({
+                    success: true,
+                    title: '催办提醒已发送',
+                });
+            });
+        }
+
+        if(button.type === "CUSTOM"){
+            this.customFlow(button,()=>{
+                this.flowStateContext.setResult({
+                    success: true,
+                    title: '操作成功',
+                });
+            });
         }
     }
 }

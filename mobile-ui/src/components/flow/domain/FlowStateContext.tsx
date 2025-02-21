@@ -1,5 +1,8 @@
 import {FlowStore} from "@/components/flow/store/FlowSlice";
 
+/**
+ * 流程的状态数据上下文对象
+ */
 export class FlowStateContext {
 
     private currentState: FlowStore;
