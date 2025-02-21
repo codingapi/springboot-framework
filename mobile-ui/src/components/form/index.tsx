@@ -27,8 +27,12 @@ export interface FormAction {
     create: (field: FormField, index?: number) => void;
     // 禁用表单项，禁用后的表单项还会被提交
     disable: (name: NamePath) => void;
+    // 全部禁用，禁用后的表单项还会被提交
+    disableAll:()=>void;
     // 启用表单项，启用后的表单项还会被提交
     enable: (name: NamePath) => void;
+    // 全部启用，启用后的表单项还会被提交
+    enableAll:()=>void;
     // 必填选项控制,true为必填false为非必填提示
     required: (name: NamePath,required:boolean) => void;
     // 获取字段的值
@@ -169,6 +173,19 @@ const Index: React.FC<FormProps> = (props) => {
             validateContext.clear();
         },
 
+        disableAll:()=>{
+            setFields(prevFields => prevFields.map((field) => {
+                return {
+                    ...field,
+                    props: {
+                        ...field.props,
+                        disabled: true
+                    }
+                }
+            }));
+            validateContext.clear();
+        },
+
         enable: (name: NamePath) => {
             setFields(prevFields => prevFields.map((field) => {
                 if (field.props.name === name) {
@@ -181,6 +198,19 @@ const Index: React.FC<FormProps> = (props) => {
                     }
                 }
                 return field;
+            }));
+            validateContext.clear();
+        },
+
+        enableAll:()=>{
+            setFields(prevFields => prevFields.map((field) => {
+                return {
+                    ...field,
+                    props: {
+                        ...field.props,
+                        disabled: false
+                    }
+                }
             }));
             validateContext.clear();
         },

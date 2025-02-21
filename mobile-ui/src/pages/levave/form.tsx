@@ -11,6 +11,8 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
 
     const flowViewReactContext = useContext(FlowViewReactContext);
 
+    console.log('LeaveForm init:', props);
+
     return (
         <Form
             initialValues={{
@@ -91,6 +93,66 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
                             Toast.show(`流程编号：${recordId}`);
                         }}
                     >获取流程编号</Button>
+
+                    <Button
+                        style={{
+                            margin:5
+                        }}
+                        onClick={async () => {
+                            const isApproval = flowViewReactContext?.flowViewContext?.isApproval();
+                            Toast.show(`是否可以审批：${isApproval?'是':'否'}`);
+                        }}
+                    >是否可审批</Button>
+
+                    <Button
+                        style={{
+                            margin:5
+                        }}
+                        onClick={async () => {
+                            const isStartNode = flowViewReactContext?.flowViewContext?.isStartNode();
+                            Toast.show(`是否开始节点：${isStartNode?'是':'否'}`);
+                        }}
+                    >是否开始节点</Button>
+
+                    <Button
+                        style={{
+                            margin:5
+                        }}
+                        onClick={async () => {
+                            const nodeCode = flowViewReactContext?.flowViewContext?.getNodeCode();
+                            Toast.show(`当前流程编码：${nodeCode}`);
+                        }}
+                    >当前流程编码</Button>
+
+                    <Button
+                        style={{
+                            margin:5
+                        }}
+                        onClick={async () => {
+                            const isEditable = flowViewReactContext?.flowViewContext?.isEditable();
+                            Toast.show(`是否可编辑：${isEditable?'是':'否'}`);
+                        }}
+                    >是否可编辑</Button>
+
+                    <Button
+                        style={{
+                            margin:5
+                        }}
+                        onClick={async () => {
+                            const isDone = flowViewReactContext?.flowViewContext?.isDone();
+                            Toast.show(`是否已审批：${isDone?'是':'否'}`);
+                        }}
+                    >是否已审批</Button>
+
+                    <Button
+                        style={{
+                            margin:5
+                        }}
+                        onClick={async () => {
+                            const isFinished = flowViewReactContext?.flowViewContext?.isFinished();
+                            Toast.show(`是否完成：${isFinished?'是':'否'}`);
+                        }}
+                    >是否完成</Button>
                 </div>
             )}
         />

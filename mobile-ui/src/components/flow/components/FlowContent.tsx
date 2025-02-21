@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 import {Tabs} from "antd-mobile";
 import {FlowFormViewProps} from "@/components/flow/types";
 import {FlowViewReactContext} from "@/components/flow/view";
@@ -15,6 +15,14 @@ const FlowContent = () => {
     const FlowFormView = flowViewContext.getFlowFormView() as React.ComponentType<FlowFormViewProps>;
 
     const formParams = flowViewContext.getFlowFormParams();
+
+    useEffect(() => {
+        if(!flowViewContext.isEditable()){
+            setTimeout(()=>{
+                formAction.current?.disableAll();
+            },100);
+        }
+    }, []);
 
     return (
         <div className={"flow-view-content"}>
