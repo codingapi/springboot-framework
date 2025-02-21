@@ -1,0 +1,57 @@
+@use "@/config/variables" as *;
+
+$flow-tabs-height: 45px;
+
+.flow-todo-content {
+
+}
+
+.flow-todo-tabs {
+  height: $flow-tabs-height;
+  background-color: white;
+}
+
+.flow-todo-list {
+  height: calc(100vh - $page-header-height - $flow-tabs-height);
+  overflow: auto;
+}
+
+.flow-todo-item {
+  display: flex;
+  background-color: white;
+  margin-top: 2px;
+
+  .flow-todo-item-content {
+    padding: 15px;
+    flex: 4;
+
+    .flow-todo-item-title {
+      font-size: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .flow-todo-item-attr {
+      font-size: 14px;
+      display: flex;
+      margin-top: 10px;
+
+      .flow-todo-item-attr-title {
+        flex: 1;
+      }
+
+      .flow-todo-item-attr-content {
+        flex: 4;
+      }
+    }
+  }
+
+  .flow-todo-item-arrow {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+}

@@ -10,6 +10,7 @@ import EducationForm from "@/pages/person/education/form";
 import Test from "@/pages/test";
 import LeaveListPage from "@/pages/levave";
 import LeaveCreatePage from "@/pages/levave/create";
+import FlowListPage from "@/pages/flow";
 
 
 export const routes: RouteObject[] = [
@@ -32,6 +33,10 @@ export const routes: RouteObject[] = [
             {
                 path: "/leave/index",
                 element: <LeaveListPage/>,
+            },
+            {
+                path: "/flow",
+                element: <FlowListPage/>,
             },
             {
                 path: "/leave/create",

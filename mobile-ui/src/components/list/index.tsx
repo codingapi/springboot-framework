@@ -16,7 +16,10 @@ export interface ListAction {
 }
 
 export interface ListProps {
+    // 样式
     style?: React.CSSProperties;
+    // className
+    className?: string;
 
     listAction?: React.Ref<ListAction>;
     // 每页数量，默认为10
@@ -145,7 +148,7 @@ const List: React.FC<ListProps> = (props) => {
     return (
         <div
             style={props.style}
-            className={"mobile-list"}
+            className={["mobile-list", props.className].join(" ")}
         >
             <PullToRefresh
                 onRefresh={async () => {

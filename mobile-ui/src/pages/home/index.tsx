@@ -57,6 +57,18 @@ const HomePage = () => {
                     >请假</Button>
                 </Grid.Item>
 
+
+                <Grid.Item>
+                    <Button
+                        style={{
+                            width:"100%"
+                        }}
+                        onClick={() => {
+                            navigate("/flow")
+                        }}
+                    >待办中心</Button>
+                </Grid.Item>
+
                 {Array.from({length: 21}).map((item, index) => {
                     return (
                         <Grid.Item>
