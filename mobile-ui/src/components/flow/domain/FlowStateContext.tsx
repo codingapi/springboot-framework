@@ -1,4 +1,5 @@
 import {FlowStore} from "@/components/flow/store/FlowSlice";
+import {FlowResultMessage} from "@/components/flow/types";
 
 /**
  * 流程的状态数据上下文对象
@@ -35,7 +36,7 @@ export class FlowStateContext {
         this.updateState();
     }
 
-    setResult = (result: any) => {
+    setResult = (result: FlowResultMessage) => {
         this.currentState = {
             ...this.currentState,
             result
@@ -51,4 +52,11 @@ export class FlowStateContext {
         return this.currentState.recordId;
     }
 
+    setPostponedVisible(visible: boolean) {
+        this.currentState = {
+            ...this.currentState,
+            postponedVisible: visible
+        }
+        this.updateState();
+    }
 }

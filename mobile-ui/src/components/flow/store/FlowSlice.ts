@@ -1,4 +1,5 @@
 import {configureStore, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {FlowResultMessage} from "@/components/flow/types";
 
 export interface FlowStore {
     // 流程记录ID
@@ -6,7 +7,10 @@ export interface FlowStore {
     // 请求加载中
     requestLoading: boolean;
     // 流程结果
-    result: any;
+    result: FlowResultMessage | null;
+
+    // 延期时间窗口状态
+    postponedVisible: boolean;
 }
 
 export type FlowStoreAction = {
@@ -20,6 +24,7 @@ export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
         recordId: '',
         requestLoading: false,
         result: null,
+        postponedVisible: false
     },
     reducers: {
         updateState: (state, action) => {
@@ -39,6 +44,7 @@ export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
             state.recordId = '';
             state.requestLoading = false;
             state.result = null;
+            state.postponedVisible = false;
         }
     },
 });

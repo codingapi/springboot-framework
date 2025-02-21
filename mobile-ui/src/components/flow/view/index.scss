@@ -43,15 +43,38 @@ $flow-footer-height: 80px;
 
 .flow-result-content {
   padding: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 
-  .flow-result-content-button {
-    margin: 10px;
+  .flow-result-content-item {
+    display: flex;
     font-size: 14px;
-    padding: 8px 8px;
-    width: 40%;
-    border-color: $theme-primary-color;
+    margin-top: 10px;
+
+    .flow-result-content-item-label {
+      flex: 1;
+      text-align: right;
+      margin: 5px;
+    }
+
+    .flow-result-content-item-value {
+      flex: 1;
+      text-align: left;
+      margin: 5px;
+    }
   }
+
+  .flow-result-content-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+
+    .flow-result-content-button {
+      margin: 10px;
+      font-size: 14px;
+      padding: 8px 8px;
+      width: 40%;
+      border-color: $theme-primary-color;
+    }
+  }
+
 }

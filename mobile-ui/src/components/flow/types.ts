@@ -1,6 +1,8 @@
 import React from "react";
 import {FormAction} from "@/components/form";
 
+// 延期表单视图Key
+export const PostponedFormViewKey = 'PostponedFormView';
 
 // 自定义按钮类型
 export type ButtonType =
@@ -28,6 +30,29 @@ export interface FlowButton {
     order: number;
     style: any;
     type: ButtonType;
+}
+
+// 延期表单 【拓展视图】
+export interface PostponedFormProps {
+    visible: boolean;
+    setVisible: (visible: boolean) => void;
+    onFinish: (timeout: number) => void;
+}
+
+// 结果展示数据项目
+export interface FlowResultItem {
+    label: string,
+    value: string
+}
+
+type FlowResultMessageState = 'success'|'info'|'warning';
+
+// 结果展示数据信息
+export interface FlowResultMessage {
+    title: string,
+    closeable: boolean,
+    state: FlowResultMessageState,
+    items?: FlowResultItem[]
 }
 
 // 流程用户
