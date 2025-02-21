@@ -4,15 +4,15 @@ import {Form, Selector} from "antd-mobile";
 import formFieldInit from "@/components/form/common";
 
 
-const valueToForm = (value:string)=>{
-    if(value && value.length>0){
+const valueToForm = (value: string) => {
+    if (value && value.length > 0) {
         return value.split(",");
     }
     return value;
 }
 
-const formToValue = (value:string[])=>{
-    if(value && value.length>0){
+const formToValue = (value: string[]) => {
+    if (value && value.length > 0) {
         return value.join(",")
     }
     return value;
@@ -23,7 +23,7 @@ const FormSelector: React.FC<FormItemProps> = (props) => {
 
     const [options, setOptions] = React.useState(props.options);
 
-    const {formAction,rules,validateContext} = formFieldInit(props,()=>{
+    const {formAction, rules} = formFieldInit(props, () => {
         reloadOptions();
     });
 
@@ -47,8 +47,8 @@ const FormSelector: React.FC<FormItemProps> = (props) => {
             hidden={props.hidden}
             help={props.help}
             disabled={props.disabled}
-            getValueProps={(value)=>{
-                if(value) {
+            getValueProps={(value) => {
+                if (value) {
                     return {
                         value: valueToForm(value)
                     }
@@ -63,9 +63,6 @@ const FormSelector: React.FC<FormItemProps> = (props) => {
                 value={props.value}
                 onChange={(e) => {
                     formAction?.setFieldValue(props.name, formToValue(e));
-                    if(formAction) {
-                        validateContext?.validateField(props.name, formAction);
-                    }
                     props.onChange && props.onChange(e, formAction);
                 }}
             />

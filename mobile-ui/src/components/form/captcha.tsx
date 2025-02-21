@@ -7,7 +7,7 @@ import formFieldInit from "@/components/form/common";
 
 const FormCaptcha: React.FC<FormItemProps> = (props) => {
     const [captchaImg, setCaptchaImg] = useState<string>('');
-    const {formAction,rules,validateContext} = formFieldInit(props);
+    const {formAction,rules} = formFieldInit(props);
 
     const reloadCaptcha = () => {
         captcha().then((res) => {
@@ -46,11 +46,9 @@ const FormCaptcha: React.FC<FormItemProps> = (props) => {
             <Input
                 value={props.value}
                 placeholder={props.placeholder}
-                onChange={(e) => {
-                    if(formAction) {
-                        validateContext?.validateField(props.name, formAction);
-                    }
-                    props.onChange && props.onChange(e,formAction);
+                onChange={(value) => {
+                    formAction?.setFieldValue(props.name, value);
+                    props.onChange && props.onChange(value,formAction);
                 }}
             />
         </Form.Item>

@@ -21,6 +21,8 @@ interface FlowViewReactContextProps {
     flowStateContext: FlowStateContext;
     // 表单操作对象
     formAction: React.RefObject<FormAction>;
+    // 审批意见操作对象
+    opinionAction: React.RefObject<FormAction>;
 }
 
 export const FlowViewReactContext = createContext<FlowViewReactContextProps | null>(null);

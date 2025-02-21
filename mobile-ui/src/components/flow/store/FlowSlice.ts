@@ -9,8 +9,12 @@ export interface FlowStore {
     // 流程结果
     result: FlowResultMessage | null;
 
+    // 意见框展示状态
+    opinionVisible: boolean;
+
     // 延期时间窗口状态
     postponedVisible: boolean;
+
 }
 
 export type FlowStoreAction = {
@@ -24,7 +28,8 @@ export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
         recordId: '',
         requestLoading: false,
         result: null,
-        postponedVisible: false
+        postponedVisible: false,
+        opinionVisible:true,
     },
     reducers: {
         updateState: (state, action) => {
@@ -45,6 +50,7 @@ export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
             state.requestLoading = false;
             state.result = null;
             state.postponedVisible = false;
+            state.opinionVisible = true;
         }
     },
 });

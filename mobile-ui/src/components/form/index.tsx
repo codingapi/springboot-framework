@@ -253,6 +253,7 @@ const Index: React.FC<FormProps> = (props) => {
         setFieldValue(name: NamePath, value: any): void {
             form.setFieldValue(name, value);
             reloadContext.notify(name);
+            validateContext?.validateField(name, formAction);
         },
 
         setFieldsValue(values: any): void {
@@ -293,7 +294,7 @@ const Index: React.FC<FormProps> = (props) => {
 
     React.useImperativeHandle(props.actionRef, () => {
         return formAction
-    }, [props.actionRef,fields]);
+    }, [fields]);
 
     return (
         <FormContext.Provider

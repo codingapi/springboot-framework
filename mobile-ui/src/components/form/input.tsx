@@ -6,7 +6,7 @@ import formFieldInit from "@/components/form/common";
 const FormInput: React.FC<FormItemProps> = (props) => {
 
     const inputType = props.inputType || "text";
-    const {formAction,rules,validateContext} = formFieldInit(props);
+    const {formAction, rules} = formFieldInit(props);
 
     return (
         <Form.Item
@@ -23,11 +23,9 @@ const FormInput: React.FC<FormItemProps> = (props) => {
                 type={inputType}
                 placeholder={props.placeholder}
                 maxLength={props.inputMaxLength}
-                onChange={(e) => {
-                    if(formAction) {
-                        validateContext?.validateField(props.name, formAction);
-                    }
-                    props.onChange && props.onChange(e,formAction);
+                onChange={(value) => {
+                    formAction?.setFieldValue(props.name, value);
+                    props.onChange && props.onChange(value, formAction);
                 }}
             />
         </Form.Item>

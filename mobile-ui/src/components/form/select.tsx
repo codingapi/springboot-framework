@@ -6,15 +6,16 @@ import formFieldInit from "@/components/form/common";
 import "./form.scss";
 
 
-const valueToForm = (value:string)=>{
-    if(value && value.length>0){
+const valueToForm = (value: string) => {
+    if (value && value.length > 0) {
         return value.split(",");
     }
     return value;
 }
 
-const formToValue = (value:string[])=>{
-    if(value && value.length>0){
+const formToValue = (value: string[]) => {
+    console.log('select', value);
+    if (value && value.length > 0) {
         return value.join(",")
     }
     return value;
@@ -25,7 +26,7 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
     const [visible, setVisible] = React.useState(false);
     const [searchText, setSearchText] = React.useState('');
 
-    const {formAction, rules, validateContext} = formFieldInit(props, () => {
+    const {formAction, rules} = formFieldInit(props, () => {
         reloadOptions();
     });
 
@@ -164,8 +165,8 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
                     }}
                 />
             )}
-            getValueProps={(value)=>{
-                if(value) {
+            getValueProps={(value) => {
+                if (value) {
                     return {
                         value: valueToForm(value)
                     }
@@ -192,9 +193,6 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
                     <a
                         onClick={() => {
                             formAction?.setFieldValue(props.name, formToValue(selected));
-                            if (formAction) {
-                                validateContext?.validateField(props.name, formAction);
-                            }
                             props.onChange && props.onChange(selected, formAction);
                             setVisible(false);
                         }}
@@ -238,9 +236,6 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
                             // 单选时，选中即关闭弹框
                             if (!props.selectMultiple) {
                                 formAction?.setFieldValue(props.name, formToValue(currentValue));
-                                if (formAction) {
-                                    validateContext?.validateField(props.name, formAction);
-                                }
                                 props.onChange && props.onChange(formToValue(currentValue), formAction);
 
                                 setVisible(false);

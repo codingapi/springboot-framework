@@ -11,7 +11,7 @@ import {Grid} from "antd-mobile/es/components/grid/grid";
 const EducationForm = () => {
     const location = useLocation();
     const item = location.state;
-    console.log('items:', item);
+    // console.log('items:', item);
 
     const formAction = React.useRef<FormAction>(null);
 
@@ -50,6 +50,19 @@ const EducationForm = () => {
                         formAction.current?.reset();
                     }}
                 >重置</Button>
+
+                <Button
+                    onClick={() => {
+                        const values = formAction.current?.getFieldsValue();
+                        console.log(values);
+                    }}
+                >获取所有值</Button>
+
+                <Button
+                    onClick={() => {
+                        formAction.current?.validate();
+                    }}
+                >校验字段</Button>
 
                 <Button
                     onClick={() => {
@@ -118,9 +131,9 @@ const EducationForm = () => {
                                 validateFunction: (content) => {
                                     return new Promise<string[]>((resolve) => {
                                         if (content.value) {
-                                            return resolve([]);
+                                            resolve([]);
                                         } else {
-                                            return resolve(["姓名不存在"]);
+                                            resolve(["姓名不存在"]);
                                         }
                                     })
                                 }

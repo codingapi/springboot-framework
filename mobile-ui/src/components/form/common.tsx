@@ -8,11 +8,7 @@ const formFieldInit = (props: FormItemProps,reloadOption?:()=>void) => {
     const validateContext = formContext?.validateContext;
     const [random, setRandom] = React.useState(0);
 
-    const propsRules = props.rules || [];
-    const rules = props.required ? [{
-        required: true,
-        message: `${props.label}不能为空`
-    }, ...propsRules] : propsRules;
+    const rules: never[] = [];
 
     useEffect(() => {
         if (props.validateFunction) {
@@ -27,7 +23,6 @@ const formFieldInit = (props: FormItemProps,reloadOption?:()=>void) => {
         const reloadContext = formContext?.reloadContext;
         if (reloadContext) {
             reloadContext.addListener(props.name, () => {
-                console.log('reload field name:', props.name);
                 setRandom(Math.random);
             });
         }
@@ -35,13 +30,12 @@ const formFieldInit = (props: FormItemProps,reloadOption?:()=>void) => {
         const optionContext = formContext?.optionContext;
         if (optionContext) {
             optionContext.addListener(props.name, () => {
-                console.log('reload field option name:', props.name);
                 if(reloadOption){
                     reloadOption();
                 }
             });
         }
-    }, []);
+    }, [formContext]);
 
     return {formAction, validateContext, rules};
 }

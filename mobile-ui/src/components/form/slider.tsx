@@ -5,7 +5,7 @@ import formFieldInit from "@/components/form/common";
 
 const FormSlider: React.FC<FormItemProps> = (props) => {
 
-    const {formAction,rules,validateContext} = formFieldInit(props);
+    const {formAction, rules} = formFieldInit(props);
 
     return (
         <Form.Item
@@ -25,11 +25,9 @@ const FormSlider: React.FC<FormItemProps> = (props) => {
                 ticks={props.sliderTicks}
                 popover={props.sliderPopover}
                 marks={props.sliderMarks}
-                onChange={(e) => {
-                    if(formAction) {
-                        validateContext?.validateField(props.name, formAction);
-                    }
-                    props.onChange && props.onChange(e, formAction);
+                onChange={(value) => {
+                    formAction?.setFieldValue(props.name, value);
+                    props.onChange && props.onChange(value, formAction);
                 }}
             />
         </Form.Item>

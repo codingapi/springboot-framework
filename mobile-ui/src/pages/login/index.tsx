@@ -73,12 +73,13 @@ const LoginPage = () => {
                     name={'password'}
                     label={'密码'}
                     placeholder={'请输入密码'}
-                    rules={[
-                        {
-                            required: true,
-                            message: '密码不能为空'
+                    validateFunction={async (content)=>{
+                        if(content.value){
+                            return []
+                        }else {
+                            return ["密码不能为空"]
                         }
-                    ]}
+                    }}
                 />
             </Index>
         </div>

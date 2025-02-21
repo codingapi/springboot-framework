@@ -4,7 +4,6 @@ import {Form, Image, ImageUploader, ImageUploadItem, ImageViewer} from "antd-mob
 import formFieldInit from "@/components/form/common";
 import {loadFiles, upload} from "@/api/oss";
 import {FormAction} from "@/components/form";
-import {FormValidateContext} from "@/components/form/validate";
 import {CloseCircleFill} from "antd-mobile-icons";
 
 const fileToBase64 = (file: File): Promise<string> => {
@@ -19,7 +18,6 @@ const fileToBase64 = (file: File): Promise<string> => {
 interface UploaderProps {
     name: string;
     formAction?: FormAction;
-    validateContext?: FormValidateContext;
     uploaderAccept?: string;
     uploaderMaxCount?: number;
     value?: any;
@@ -31,7 +29,6 @@ const Uploader: React.FC<UploaderProps> = (props) => {
 
     const [visible, setVisible] = React.useState(false);
     const formAction = props.formAction;
-    const validateContext = props.validateContext;
 
     const [fileList, setFileList] = React.useState<ImageUploadItem[]>([]);
 
@@ -87,10 +84,7 @@ const Uploader: React.FC<UploaderProps> = (props) => {
 
         // 更新表单字段
         const currentValue = updatedFileList?.map((item: any) => item.id).join(",");
-        if (formAction) {
-            formAction.setFieldValue(props.name, currentValue);
-            validateContext?.validateField(props.name, formAction);
-        }
+        formAction?.setFieldValue(props.name, currentValue);
         props.onChange && props.onChange(currentValue, formAction);
     };
 
@@ -110,9 +104,6 @@ const Uploader: React.FC<UploaderProps> = (props) => {
                 onChange={(fileList) => {
                     const currentValue = fileList?.map((item: any) => item.id).join(",");
                     formAction && formAction?.setFieldValue(props.name, currentValue);
-                    if (formAction) {
-                        validateContext?.validateField(props.name, formAction);
-                    }
                     props.onChange && props.onChange(currentValue, formAction);
                     setFileList(fileList);
                 }}
@@ -152,7 +143,7 @@ const Uploader: React.FC<UploaderProps> = (props) => {
 }
 
 const FormUploader: React.FC<FormItemProps> = (props) => {
-    const {formAction, rules, validateContext} = formFieldInit(props);
+    const {formAction, rules} = formFieldInit(props);
 
     return (
         <Form.Item
@@ -167,7 +158,6 @@ const FormUploader: React.FC<FormItemProps> = (props) => {
                 name={props.name}
                 value={props.value}
                 formAction={formAction}
-                validateContext={validateContext}
                 {...props}
             />
         </Form.Item>

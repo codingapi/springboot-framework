@@ -7,7 +7,7 @@ import formFieldInit from "@/components/form/common";
 const FormRadio: React.FC<FormItemProps> = (props) => {
     const [options, setOptions] = React.useState(props.options);
 
-    const {formAction,rules,validateContext} = formFieldInit(props,()=>{
+    const {formAction, rules} = formFieldInit(props, () => {
         reloadOptions();
     });
 
@@ -34,11 +34,9 @@ const FormRadio: React.FC<FormItemProps> = (props) => {
         >
             <Radio.Group
                 value={props.value}
-                onChange={(e) => {
-                    if(formAction) {
-                        validateContext?.validateField(props.name, formAction);
-                    }
-                    props.onChange && props.onChange(e,formAction);
+                onChange={(value) => {
+                    formAction?.setFieldValue(props.name, value);
+                    props.onChange && props.onChange(value, formAction);
                 }}
             >
                 <Space direction={props.radioDirection}>

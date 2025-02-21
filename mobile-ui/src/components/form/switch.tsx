@@ -16,7 +16,7 @@ const Switch: React.FC<SwitchProps> = ({value, ...props}) => {
 
 const FormSwitch: React.FC<FormItemProps> = (props) => {
 
-    const {formAction,rules,validateContext} = formFieldInit(props);
+    const {formAction, rules} = formFieldInit(props);
 
     return (
         <Form.Item
@@ -31,11 +31,9 @@ const FormSwitch: React.FC<FormItemProps> = (props) => {
                 value={props.value}
                 checkedText={props.switchCheckText}
                 uncheckedText={props.switchUnCheckText}
-                onChange={async val => {
-                    if(formAction) {
-                        validateContext?.validateField(props.name, formAction);
-                    }
-                    props.onChange && props.onChange(val, formAction);
+                onChange={(value) => {
+                    formAction?.setFieldValue(props.name, value);
+                    props.onChange && props.onChange(value, formAction);
                 }}
             />
         </Form.Item>

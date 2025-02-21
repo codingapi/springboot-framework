@@ -33,8 +33,6 @@ export interface FormItemProps {
     disabled?: boolean;
     // 是否必填,当为true时会自动给rules添加required校验
     required?: boolean;
-    // 静态规则校验，对应validateFunction的动态校验
-    rules?: Rule[];
     // 表单字段名
     name?: NamePath;
     // 表单字段标签

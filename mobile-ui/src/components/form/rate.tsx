@@ -4,7 +4,7 @@ import {Form, Rate} from "antd-mobile";
 import formFieldInit from "@/components/form/common";
 
 const FormRate: React.FC<FormItemProps> = (props) => {
-    const {formAction,rules,validateContext} = formFieldInit(props);
+    const {formAction, rules} = formFieldInit(props);
 
     return (
         <Form.Item
@@ -19,11 +19,9 @@ const FormRate: React.FC<FormItemProps> = (props) => {
                 count={props.rateCount}
                 allowHalf={props.rateAllowHalf}
                 value={props.value}
-                onChange={(e) => {
-                    if(formAction) {
-                        validateContext?.validateField(props.name, formAction);
-                    }
-                    props.onChange && props.onChange(e, formAction);
+                onChange={(value) => {
+                    formAction?.setFieldValue(props.name, value);
+                    props.onChange && props.onChange(value, formAction);
                 }}
             />
         </Form.Item>

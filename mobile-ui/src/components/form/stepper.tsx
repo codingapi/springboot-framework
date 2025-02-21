@@ -5,7 +5,7 @@ import formFieldInit from "@/components/form/common";
 
 const FormStepper: React.FC<FormItemProps> = (props) => {
 
-    const {formAction,rules,validateContext} = formFieldInit(props);
+    const {formAction, rules} = formFieldInit(props);
 
     return (
         <Form.Item
@@ -21,11 +21,9 @@ const FormStepper: React.FC<FormItemProps> = (props) => {
                 max={props.stepperMaxNumber}
                 min={props.stepperMinNumber}
                 digits={props.stepperDecimalLength}
-                onChange={(e) => {
-                    if(formAction) {
-                        validateContext?.validateField(props.name, formAction);
-                    }
-                    props.onChange && props.onChange(e, formAction);
+                onChange={(value) => {
+                    formAction?.setFieldValue(props.name, value);
+                    props.onChange && props.onChange(value, formAction);
                 }}
             />
         </Form.Item>

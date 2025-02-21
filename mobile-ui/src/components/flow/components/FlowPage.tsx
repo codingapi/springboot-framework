@@ -26,6 +26,7 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
     const currentState = useSelector((state: FlowReduxState) => state.flow);
     const flowViewContext = new FlowViewContext(props, props.flowData);
     const formAction = React.useRef<FormAction>(null);
+    const opinionAction = React.useRef<FormAction>(null);
 
     console.log('currentState', currentState);
 
@@ -35,7 +36,7 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
         }));
     });
 
-    const flowEvenContext = new FlowEventContext(flowViewContext, formAction, flowStateContext);
+    const flowEvenContext = new FlowEventContext(flowViewContext, formAction, opinionAction, flowStateContext);
     const FlowFormView = flowViewContext.getFlowFormView() as React.ComponentType<FlowFormViewProps>;
 
     // 延期表单视图
@@ -56,6 +57,7 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
                 flowEventContext: flowEvenContext,
                 flowStateContext: flowStateContext,
                 formAction: formAction,
+                opinionAction: opinionAction
             }}>
                 <div className={"flow-view"}>
                     {currentState.result && (

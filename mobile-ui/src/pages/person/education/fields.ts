@@ -73,6 +73,8 @@ export const loadFields = async (state:any,setState:(state:any)=>void)=>{
                     ]
                 },
                 validateFunction: async (content) => {
+                    const value = content.form.getFieldValue('type');
+                    console.log('validateFunction type value', content.value,value);
                     if (content.value && content.value.length > 0) {
                         return [];
                     } else {
@@ -90,7 +92,6 @@ export const loadFields = async (state:any,setState:(state:any)=>void)=>{
                 selectMultiple: true,
                 loadOptions: async (form) => {
                     const name = form?.getFieldValue('name');
-                    console.log('name', name);
                     return [
                         {
                             label: '大学',

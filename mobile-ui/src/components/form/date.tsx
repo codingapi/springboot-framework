@@ -8,7 +8,7 @@ import formFieldInit from "@/components/form/common";
 
 const FormDate: React.FC<FormItemProps> = (props) => {
 
-    const {formAction,rules,validateContext} = formFieldInit(props);
+    const {formAction, rules} = formFieldInit(props);
 
     const format = props.dateFormat || 'YYYY-MM-DD';
     const precision = props.datePrecision || "day";
@@ -49,10 +49,7 @@ const FormDate: React.FC<FormItemProps> = (props) => {
                 onConfirm={value => {
                     const currentDate = dayjs(value).format(format);
                     formAction?.setFieldValue(props.name as string, currentDate);
-                    if(formAction) {
-                        validateContext?.validateField(props.name, formAction);
-                    }
-                    props.onChange && props.onChange(currentDate,formAction);
+                    props.onChange && props.onChange(currentDate, formAction);
                     setVisible(false)
                 }}
             >

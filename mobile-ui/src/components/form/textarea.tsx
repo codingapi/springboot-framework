@@ -5,7 +5,7 @@ import formFieldInit from "@/components/form/common";
 
 const FormTextArea: React.FC<FormItemProps> = (props) => {
 
-    const {formAction,rules,validateContext} = formFieldInit(props);
+    const {formAction, rules} = formFieldInit(props);
 
     return (
         <Form.Item
@@ -22,11 +22,9 @@ const FormTextArea: React.FC<FormItemProps> = (props) => {
                 placeholder={props.placeholder}
                 maxLength={props.textAreaMaxLength}
                 rows={props.textAreaRows}
-                onChange={(e) => {
-                    if(formAction) {
-                        validateContext?.validateField(props.name, formAction);
-                    }
-                    props.onChange && props.onChange(e,formAction);
+                onChange={(value) => {
+                    formAction?.setFieldValue(props.name, value);
+                    props.onChange && props.onChange(value, formAction);
                 }}
             />
         </Form.Item>

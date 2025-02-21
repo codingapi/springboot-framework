@@ -4,15 +4,15 @@ import {Checkbox, Form, Space} from "antd-mobile";
 import formFieldInit from "@/components/form/common";
 import "./form.scss";
 
-const valueToForm = (value:string)=>{
-    if(value && value.length>0){
+const valueToForm = (value: string) => {
+    if (value && value.length > 0) {
         return value.split(",");
     }
     return value;
 }
 
-const formToValue = (value:string[])=>{
-    if(value && value.length>0){
+const formToValue = (value: string[]) => {
+    if (value && value.length > 0) {
         return value.join(",")
     }
     return value;
@@ -21,7 +21,7 @@ const formToValue = (value:string[])=>{
 const FormCheckbox: React.FC<FormItemProps> = (props) => {
     const [options, setOptions] = React.useState(props.options);
 
-    const {formAction,rules,validateContext} = formFieldInit(props,()=>{
+    const {formAction, rules} = formFieldInit(props, () => {
         reloadOptions();
     });
 
@@ -45,8 +45,8 @@ const FormCheckbox: React.FC<FormItemProps> = (props) => {
             hidden={props.hidden}
             help={props.help}
             disabled={props.disabled}
-            getValueProps={(value)=>{
-                if(value) {
+            getValueProps={(value) => {
+                if (value) {
                     return {
                         value: valueToForm(value)
                     }
@@ -58,10 +58,7 @@ const FormCheckbox: React.FC<FormItemProps> = (props) => {
                 value={props.value}
                 onChange={(e) => {
                     formAction?.setFieldValue(props.name, formToValue(e as string[]));
-                    if(formAction) {
-                        validateContext?.validateField(props.name, formAction);
-                    }
-                    props.onChange && props.onChange(e,formAction)
+                    props.onChange && props.onChange(e, formAction)
                 }}
             >
                 <Space direction={props.checkboxDirection}>

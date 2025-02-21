@@ -14,11 +14,13 @@ export class FlowEventContext {
 
     private readonly flowViewContext: FlowViewContext;
     private readonly flowAction: React.RefObject<FormAction>;
+    private readonly opinionAction: React.RefObject<FormAction>;
     private readonly flowStateContext: FlowStateContext;
 
-    constructor(flowViewContext: FlowViewContext, flowAction: React.RefObject<FormAction>, flowStateContext: FlowStateContext) {
+    constructor(flowViewContext: FlowViewContext, flowAction: React.RefObject<FormAction>,opinionAction: React.RefObject<FormAction>,flowStateContext: FlowStateContext) {
         this.flowViewContext = flowViewContext;
         this.flowAction = flowAction;
+        this.opinionAction = opinionAction;
         this.flowStateContext = flowStateContext;
     }
 
@@ -38,7 +40,13 @@ export class FlowEventContext {
                 ...formData,
             }
         }
+    }
 
+
+    private validateForm = async () => {
+        const formState = await this.flowAction.current?.validate();
+        const opinionState = await this.opinionAction.current?.validate();
+        return formState && opinionState;
     }
 
     /**
@@ -71,7 +79,7 @@ export class FlowEventContext {
      * @param callback 回调函数
      */
     submitFlow = (approvalState: boolean, callback?: (res: any) => void) => {
-        this.flowAction.current?.validate().then((validateState) => {
+        this.validateForm().then((validateState) => {
             if (validateState) {
                 const body = {
                     ...this.getRequestBody(),
@@ -159,7 +167,7 @@ export class FlowEventContext {
      * @param callback 回调函数
      */
     customFlow(button: FlowButton, callback?: (res: any) => void) {
-        this.flowAction.current?.validate().then((validateState) => {
+        this.validateForm().then((validateState) => {
             if (validateState) {
                 const body = {
                     ...this.getRequestBody(),
@@ -187,7 +195,7 @@ export class FlowEventContext {
      * @param callback 回调函数
      */
     transferFlow(user: FlowUser, callback?: (res: any) => void) {
-        this.flowAction.current?.validate().then((validateState) => {
+        this.validateForm().then((validateState) => {
             if (validateState) {
                 const body = {
                     ...this.getRequestBody(),
@@ -253,7 +261,7 @@ export class FlowEventContext {
      * @param callback
      */
     trySubmitFlow(callback?: (res: any) => void) {
-        this.flowAction.current?.validate().then((validateState) => {
+        this.validateForm().then((validateState) => {
             if (validateState) {
                 const body = {
                     ...this.getRequestBody(),

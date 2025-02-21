@@ -3,6 +3,9 @@ import {Tabs} from "antd-mobile";
 import {FlowFormViewProps} from "@/components/flow/types";
 import {FlowViewReactContext} from "@/components/flow/view";
 import FlowHistory from "@/components/flow/components/FlowHistory";
+import FlowOpinion from "@/components/flow/components/FlowOpinion";
+import {useSelector} from "react-redux";
+import {FlowReduxState} from "@/components/flow/store/FlowSlice";
 
 const FlowContent = () => {
     const flowViewReactContext = useContext(FlowViewReactContext);
@@ -15,6 +18,8 @@ const FlowContent = () => {
     const FlowFormView = flowViewContext.getFlowFormView() as React.ComponentType<FlowFormViewProps>;
 
     const formParams = flowViewContext.getFlowFormParams();
+
+    const opinionVisible = useSelector((state: FlowReduxState) => state.flow.opinionVisible);
 
     useEffect(() => {
         if(!flowViewContext.isEditable()){
@@ -32,6 +37,10 @@ const FlowContent = () => {
                         data={formParams}
                         formAction={formAction}
                     />
+
+                    {opinionVisible && (
+                        <FlowOpinion/>
+                    )}
                 </Tabs.Tab>
                 <Tabs.Tab title='流程' key='flow'>
                     <FlowHistory/>

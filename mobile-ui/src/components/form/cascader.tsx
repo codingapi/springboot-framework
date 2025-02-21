@@ -5,15 +5,15 @@ import {RightOutline} from "antd-mobile-icons";
 import formFieldInit from "@/components/form/common";
 import "./form.scss";
 
-const valueToForm = (value:string)=>{
-    if(value && value.length>0){
+const valueToForm = (value: string) => {
+    if (value && value.length > 0) {
         return value.split(",");
     }
     return value;
 }
 
-const formToValue = (value:string[])=>{
-    if(value && value.length>0){
+const formToValue = (value: string[]) => {
+    if (value && value.length > 0) {
         return value.join(",")
     }
     return value;
@@ -25,7 +25,7 @@ const FormCascader: React.FC<FormItemProps> = (props) => {
     const [visible, setVisible] = React.useState(false);
     const [options, setOptions] = React.useState(props.options);
 
-    const {formAction,rules,validateContext} = formFieldInit(props,()=>{
+    const {formAction, rules} = formFieldInit(props, () => {
         reloadOptions();
     });
 
@@ -62,8 +62,8 @@ const FormCascader: React.FC<FormItemProps> = (props) => {
                     }}
                 />
             )}
-            getValueProps={(value)=>{
-                if(value) {
+            getValueProps={(value) => {
+                if (value) {
                     return {
                         value: valueToForm(value)
                     }
@@ -80,9 +80,6 @@ const FormCascader: React.FC<FormItemProps> = (props) => {
                 }}
                 onConfirm={(value) => {
                     formAction?.setFieldValue(props.name as string, formToValue(value as string[]));
-                    if(formAction) {
-                        validateContext?.validateField(props.name, formAction);
-                    }
                     props.onChange && props.onChange(value, formAction);
                     setVisible(false);
                 }}
