@@ -37,6 +37,21 @@ public class FlowAppQueryController {
     }
 
 
+    @GetMapping("/findAllByOperatorId")
+    public MultiResponse<FlowRecordEntity> findAllByOperatorId(SearchRequest searchRequest) {
+        User user = userRepository.getUserByUsername(TokenContext.current().getUsername());
+        String lastId = searchRequest.getParameter("lastId");
+        SQLBuilder sqlBuilder = new SQLBuilder("from FlowRecordEntity  d where d.id in (select max(r.id) from FlowRecordEntity  r where r.currentOperatorId = ?1  group by r.processId) ");
+        sqlBuilder.addParam(user.getId());
+        if(StringUtils.hasText(lastId)){
+            sqlBuilder.append(" and d.id < ?",Long.parseLong(lastId));
+        }
+        sqlBuilder.appendSql(" order by d.id desc ");
+        PageRequest pageRequest = PageRequest.of(0, searchRequest.getPageSize());
+        return MultiResponse.of(flowRecordQuery.dynamicPageQuery(sqlBuilder,pageRequest));
+    }
+
+
     @GetMapping("/findTodoByOperatorId")
     public MultiResponse<FlowRecordEntity> findTodoByOperatorId(SearchRequest searchRequest) {
         User user = userRepository.getUserByUsername(TokenContext.current().getUsername());

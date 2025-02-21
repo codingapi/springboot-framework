@@ -101,6 +101,17 @@ export async function flowRecordList(params: any,
 }
 
 
+export async function findAllByOperatorId(params: any,
+                                     sort: any,
+                                     filter: any,
+                                     match: {
+                                         key: string,
+                                         type: string
+                                     }[]) {
+    return page('/api/query/flowRecord/findAllByOperatorId', params, sort, filter, match);
+}
+
+
 export async function findTodoByOperatorId(params: any,
                                      sort: any,
                                      filter: any,

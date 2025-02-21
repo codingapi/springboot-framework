@@ -44,6 +44,9 @@ public interface FlowRecordEntityRepository extends FastRepository<FlowRecordEnt
     @Query(value = "select d from FlowRecordEntity  d where d.id in (select max(r.id) from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.preId = 0 and r.nodeCode = 'start'  group by r.processId) order by d.id desc")
     Page<FlowRecordEntity> findInitiatedByOperatorId(long operatorId, PageRequest pageRequest);
 
+    @Query(value = "select d from FlowRecordEntity  d where d.id in (select max(r.id) from FlowRecordEntity  r where r.currentOperatorId = ?1  group by r.processId) order by d.id desc")
+    Page<FlowRecordEntity> findAllByOperatorId(long operatorId, PageRequest pageRequest);
+
     @Query(value = "select d from FlowRecordEntity  d where d.id in (select max(r.id) from FlowRecordEntity  r where r.currentOperatorId = ?1  and r.workCode = ?2 and r.preId = 0 and r.nodeCode = 'start'  group by r.processId) order by d.id desc")
     Page<FlowRecordEntity> findInitiatedByOperatorIdAndWorkCode(long operatorId, String workCode, PageRequest pageRequest);
 

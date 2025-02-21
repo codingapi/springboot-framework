@@ -96,9 +96,9 @@ export async function urge(body:any) {
 
 // 待办中心控制
 
-export async function flowRecordList( lastId?: string,
+export async function findAllByOperatorId( lastId?: string,
                                       pageSize=10) {
-    return get('/api/app/query/flowRecord/list',{lastId,pageSize});
+    return get('/api/app/query/flowRecord/findAllByOperatorId',{lastId,pageSize});
 }
 
 export async function findTodoByOperatorId(lastId?: string,

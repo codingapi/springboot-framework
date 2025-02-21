@@ -45,6 +45,15 @@ public class FlowRecordQueryController {
     }
 
 
+
+    @GetMapping("/findAllByOperatorId")
+    public MultiResponse<FlowRecordEntity> findAllByOperatorId(SearchRequest searchRequest) {
+        User user = userRepository.getUserByUsername(TokenContext.current().getUsername());
+        PageRequest pageRequest = PageRequest.of(searchRequest.getCurrent(), searchRequest.getPageSize());
+        return MultiResponse.of(flowRecordQuery.findAllByOperatorId(user.getId(), pageRequest));
+    }
+
+
     @GetMapping("/findTodoByOperatorId")
     public MultiResponse<FlowRecordEntity> findTodoByOperatorId(SearchRequest searchRequest) {
         User user = userRepository.getUserByUsername(TokenContext.current().getUsername());

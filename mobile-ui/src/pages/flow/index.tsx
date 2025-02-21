@@ -8,7 +8,7 @@ import {
     findPostponedTodoByOperatorId,
     findTimeoutTodoByOperatorId,
     findTodoByOperatorId,
-    flowRecordList,
+    findAllByOperatorId,
 } from "@/api/flow";
 import {Tabs} from "antd-mobile";
 import moment from "moment";
@@ -79,7 +79,7 @@ const FlowListPage = () => {
             return findPostponedTodoByOperatorId(last, pageSize);
         }
         if (key === 'all') {
-            return flowRecordList(last, pageSize);
+            return findAllByOperatorId(last, pageSize);
         }
     }
 
