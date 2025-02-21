@@ -27,13 +27,14 @@ const FlowFooter: React.FC<FlowFooterProps> = (props) => {
         return (
             <div className={"flow-view-footer"}>
                 {buttons && buttons.length <= maxButtonCount && buttons.map((item) => {
+                    const style = item.style && JSON.parse(item.style) || {};
                     return (
                         <Button
                             loading={requestLoading}
                             key={item.id}
                             className={"flow-view-footer-button"}
                             style={{
-                                ...item.style
+                                ...style
                             }}
                             onClick={() => {
                                 flowEventContext.handlerClick(item);
@@ -44,13 +45,14 @@ const FlowFooter: React.FC<FlowFooterProps> = (props) => {
                 {buttons && buttons.length > maxButtonCount && (
                     <>
                         {buttons && buttons.slice(0, maxButtonCount - 1).map(item => {
+                            const style = item.style && JSON.parse(item.style) || {};
                             return (
                                 <Button
                                     loading={requestLoading}
                                     key={item.id}
                                     className={"flow-view-footer-button"}
                                     style={{
-                                        ...item.style
+                                        ...style
                                     }}
                                     onClick={() => {
                                         flowEventContext.handlerClick(item);
