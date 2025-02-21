@@ -3,14 +3,14 @@ import {FlowStore} from "@/components/flow/store/FlowSlice";
 export class FlowStateContext {
 
     private currentState: FlowStore;
-    private readonly updateFlowStore: (currentState:any) => any;
+    private readonly updateFlowStore: (currentState: any) => any;
 
     constructor(currentState: FlowStore, updateFlowStore: (state: any) => any) {
         this.currentState = JSON.parse(JSON.stringify(currentState));
         this.updateFlowStore = updateFlowStore;
     }
 
-    private updateState(){
+    private updateState() {
         this.updateFlowStore({
             ...this.currentState
         })
@@ -24,10 +24,18 @@ export class FlowStateContext {
         this.updateState();
     }
 
-    updateRecordId = (recordId: string) => {
+    setRecordId = (recordId: string) => {
         this.currentState = {
             ...this.currentState,
             recordId
+        }
+        this.updateState();
+    }
+
+    setResult = (result: any) => {
+        this.currentState = {
+            ...this.currentState,
+            result
         }
         this.updateState();
     }

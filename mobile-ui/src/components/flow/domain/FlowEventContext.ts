@@ -44,7 +44,7 @@ export class FlowEventContext {
             .then(res => {
                 if (res.success) {
                     const newRecordId = res.data.records[0].id;
-                    this.flowStateContext.updateRecordId(newRecordId);
+                    this.flowStateContext.setRecordId(newRecordId);
 
                     if (callback) {
                         callback(res);
@@ -114,12 +114,18 @@ export class FlowEventContext {
         if (button.type === 'SUBMIT') {
             if (this.flowStateContext.hasRecordId()) {
                 this.submitFlow(true, () => {
-                    Toast.show('流程提交成功');
+                    this.flowStateContext.setResult({
+                        success: true,
+                        title: '流程提交成功',
+                    })
                 })
             } else {
                 this.startFlow(() => {
                     this.submitFlow(true, () => {
-                        Toast.show('流程提交成功');
+                        this.flowStateContext.setResult({
+                            success: true,
+                            title: '流程提交成功',
+                        })
                     })
                 });
             }
@@ -139,10 +145,12 @@ export class FlowEventContext {
         }
 
         if (button.type === 'REMOVE') {
-            console.log('hasRecordId:',this.flowStateContext.hasRecordId());
             if (this.flowStateContext.hasRecordId()) {
                 this.removeFlow(() => {
-                    Toast.show('流程删除成功');
+                    this.flowStateContext.setResult({
+                        success: true,
+                        title: '流程删除成功',
+                    });
                 });
             } else {
                 Toast.show('流程尚未发起，无法删除');
