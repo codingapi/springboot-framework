@@ -6,6 +6,7 @@ import {createHashRouter, RouterProvider} from "react-router-dom";
 import {routes} from "@/config/route";
 import zhCN from "antd-mobile/es/locales/zh-CN";
 import {ConfigProvider} from "antd-mobile";
+import "@/config/register.component";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement

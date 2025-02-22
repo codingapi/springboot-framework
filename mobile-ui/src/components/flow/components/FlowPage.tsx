@@ -81,8 +81,8 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
                                     closeable: true,
                                     items: [
                                         {
-                                            label: '延期时长',
-                                            value: `${timeOut}`
+                                            label: '延期时间',
+                                            value: `${timeOut}小时`
                                         }
                                     ]
                                 })

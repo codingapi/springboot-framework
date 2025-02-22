@@ -48,6 +48,9 @@ export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
                 state.result = action.payload.result;
                 state.contentHiddenVisible =  state.result!=null;
             }
+            if (keys.includes('postponedVisible')) {
+                state.postponedVisible = action.payload.postponedVisible;
+            }
         },
         initState: (state) => {
             state.recordId = '';

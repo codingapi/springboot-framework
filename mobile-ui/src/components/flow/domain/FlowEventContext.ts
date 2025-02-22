@@ -392,6 +392,7 @@ export class FlowEventContext {
         }
 
         if (button.type === 'POSTPONED') {
+            console.log('POSTPONED');
             this.flowStateContext.setPostponedVisible(true);
         }
     }
