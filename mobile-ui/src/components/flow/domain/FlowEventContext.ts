@@ -5,7 +5,8 @@ import {FlowStateContext} from "@/components/flow/domain/FlowStateContext";
 import * as flowApi from "@/api/flow";
 import {FlowButton, FlowUser} from "@/components/flow/types";
 import {Toast} from "antd-mobile";
-import {FlowSubmitResultParser} from "@/components/flow/domain/FlowResultParser";
+import {FlowSubmitResultParser, FlowTrySubmitResultParser} from "@/components/flow/domain/FlowResultParser";
+import {UserSelectMode} from "@/components/flow/store/FlowSlice";
 
 /**
  * 流程的事件控制上下文对象
@@ -77,13 +78,15 @@ export class FlowEventContext {
      * 提交流程
      * @param approvalState 是否审批通过
      * @param callback 回调函数
+     * @param operatorIds 指定审批人
      */
-    submitFlow = (approvalState: boolean, callback?: (res: any) => void) => {
+    submitFlow = (approvalState: boolean, callback?: (res: any) => void, operatorIds?: number[]) => {
         this.validateForm().then((validateState) => {
             if (validateState) {
                 const body = {
                     ...this.getRequestBody(),
                     success: approvalState,
+                    operatorIds: operatorIds,
                 }
                 this.flowStateContext.setRequestLoading(true);
                 flowApi.submitFlow(body)
@@ -284,11 +287,60 @@ export class FlowEventContext {
         })
     }
 
+
+
+    userSelectCallback(users: FlowUser[], userSelectMode: UserSelectMode | null) {
+        if (users.length > 0) {
+            if (userSelectMode) {
+                if (userSelectMode.userSelectType === 'transfer') {
+                    const targetUser = users[0];
+                    this.transferFlow(targetUser, (res) => {
+                        const message = `已经成功转办给${targetUser.name}`;
+                        this.flowStateContext.setResult({
+                            state: 'success',
+                            closeable: true,
+                            title: message,
+                        });
+                    });
+                }
+                if (userSelectMode.userSelectType === 'nextNodeUser') {
+                    const userIds = users.map((item: any) => {
+                        return item.id;
+                    });
+                    this.submitFlow(true, (res) => {
+                        const flowSubmitResultParser = new FlowSubmitResultParser(res.data);
+                        this.flowStateContext.setResult(flowSubmitResultParser.parser());
+                    }, userIds);
+                }
+            }
+        }
+
+        this.flowStateContext.setUserSelectVisible(false);
+    }
+
     /**
      * 处理按钮点击事件
      * @param button
      */
     handlerClick(button: FlowButton) {
+        if (button.type === "RELOAD") {
+            //todo
+        }
+
+        if (button.type === 'SAVE') {
+            if (this.flowStateContext.hasRecordId()) {
+                this.saveFlow(() => {
+                    Toast.show('流程保存成功');
+                })
+            } else {
+                this.startFlow(() => {
+                    this.saveFlow(() => {
+                        Toast.show('流程保存成功');
+                    })
+                });
+            }
+        }
+
         if (button.type === "START") {
             if (this.flowStateContext.hasRecordId()) {
                 Toast.show('流程已发起，无需重复发起');
@@ -298,6 +350,21 @@ export class FlowEventContext {
                 })
             }
         }
+        if (button.type === 'SPECIFY_SUBMIT') {
+            this.trySubmitFlow((res) => {
+                const operators = res.data.operators;
+                const userIds = operators.map((item: any) => {
+                    return item.userId;
+                });
+
+                this.flowStateContext.setUserSelectMode({
+                    userSelectType: 'nextNodeUser',
+                    multiple: true,
+                    specifyUserIds: userIds,
+                });
+            });
+        }
+
         if (button.type === 'SUBMIT') {
             if (this.flowStateContext.hasRecordId()) {
                 this.submitFlow(true, (res) => {
@@ -321,26 +388,25 @@ export class FlowEventContext {
                     this.flowStateContext.setResult(flowSubmitResultParser.parser());
                 })
             } else {
-                this.startFlow(() => {
-                    this.submitFlow(false, (res) => {
-                        const flowSubmitResultParser = new FlowSubmitResultParser(res.data);
-                        this.flowStateContext.setResult(flowSubmitResultParser.parser());
-                    })
-                });
+                Toast.show('流程尚未发起，无法操作');
             }
         }
-        if (button.type === 'SAVE') {
-            if (this.flowStateContext.hasRecordId()) {
-                this.saveFlow(() => {
-                    Toast.show('流程保存成功');
-                })
-            } else {
-                this.startFlow(() => {
-                    this.saveFlow(() => {
-                        Toast.show('流程保存成功');
-                    })
+
+        if (button.type === 'TRY_SUBMIT') {
+            this.trySubmitFlow((res) => {
+                const flowTrySubmitResultParser = new FlowTrySubmitResultParser(res.data);
+                this.flowStateContext.setResult(flowTrySubmitResultParser.parser());
+            });
+        }
+
+        if (button.type === 'RECALL') {
+            this.recallFlow(() => {
+                this.flowStateContext.setResult({
+                    state: 'success',
+                    closeable: true,
+                    title: '流程撤回成功',
                 });
-            }
+            });
         }
 
         if (button.type === 'REMOVE') {
@@ -357,15 +423,6 @@ export class FlowEventContext {
             }
         }
 
-        if (button.type === 'RECALL') {
-            this.recallFlow(() => {
-                this.flowStateContext.setResult({
-                    state: 'success',
-                    closeable: true,
-                    title: '流程撤回成功',
-                });
-            });
-        }
 
         if (button.type === 'URGE') {
             this.urgeFlow(() => {
@@ -374,6 +431,18 @@ export class FlowEventContext {
                     closeable: true,
                     title: '催办提醒已发送',
                 });
+            });
+        }
+
+        if (button.type === 'POSTPONED') {
+            this.flowStateContext.setPostponedVisible(true);
+        }
+
+
+        if (button.type === 'TRANSFER') {
+            this.flowStateContext.setUserSelectMode({
+                userSelectType: 'transfer',
+                multiple: false,
             });
         }
 
@@ -391,17 +460,14 @@ export class FlowEventContext {
             }
         }
 
-        if (button.type === 'POSTPONED') {
-            this.flowStateContext.setPostponedVisible(true);
+        if(button.type === 'VIEW'){
+            const eventKey = button.eventKey;
+            console.log('eventKey',eventKey);
         }
 
-        if (button.type === 'TRANSFER') {
-            this.flowStateContext.setUserSelectMode({
-                userSelectType: 'transfer',
-                multiple: false,
-            });
-        }
     }
+
 }
+
 
 

@@ -26,7 +26,6 @@ export class FlowWorkData {
 }
 
 
-
 export class FlowSubmitResultParser extends FlowWorkData {
 
     constructor(data: any) {
@@ -50,8 +49,8 @@ export class FlowSubmitResultParser extends FlowWorkData {
         }
         return {
             title: '流程审批完成',
-            closeable:true,
-            state:'success',
+            closeable: true,
+            state: 'success',
             items: resultItems
         } as FlowResultMessage;
     }
@@ -73,8 +72,8 @@ export class FlowTrySubmitResultParser {
         });
         const flowResult = {
             title: '下级节点提示',
-            closeable:true,
-            state:'success',
+            closeable: false,
+            state: 'success',
             items: [
                 {
                     label: '下级审批节点',

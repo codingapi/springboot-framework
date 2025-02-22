@@ -108,11 +108,7 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
                         }}
                         onFinish={(users) => {
                             // 选择的人
-                            console.log('users', users);
-                            // todo 选人流程处理
-
-                            // 选人完成
-                            flowStateContext.setUserSelectVisible(false);
+                            flowEvenContext.userSelectCallback(users,currentState.userSelectMode);
                         }}
                         multiple={currentState.userSelectMode.multiple}
                         specifyUserIds={currentState.userSelectMode.specifyUserIds}
