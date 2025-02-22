@@ -213,7 +213,12 @@ public class FlowCmd {
     public static class PostponedFlow {
         private long recordId;
 
+        // 单位小时
         private long timeOut;
+
+        public long getTimeOut() {
+            return timeOut * 60 * 60 * 1000;
+        }
 
         public String getUserName() {
             return TokenContext.current().getUsername();
