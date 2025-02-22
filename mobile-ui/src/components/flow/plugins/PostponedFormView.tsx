@@ -3,31 +3,13 @@ import {PostponedFormProps} from "@/components/flow/types";
 import Popup from "@/components/popup";
 import {DatePickerView} from "antd-mobile";
 import dayjs from "dayjs";
+import {dateLabelRenderer} from "@/components/form/date";
 
 const PostponedFormView: React.FC<PostponedFormProps> = (props) => {
 
     const [value, setValue] = React.useState(new Date());
     // 获取一小时后的日期
     const now = dayjs().add(1, 'hour').toDate();
-
-    const labelRenderer = (type: string, data: number) => {
-        switch (type) {
-            case 'year':
-                return data + '年'
-            case 'month':
-                return data + '月'
-            case 'day':
-                return data + '日'
-            case 'hour':
-                return data + '时'
-            case 'minute':
-                return data + '分'
-            case 'second':
-                return data + '秒'
-            default:
-                return data
-        }
-    }
 
     return (
         <Popup
@@ -44,7 +26,7 @@ const PostponedFormView: React.FC<PostponedFormProps> = (props) => {
             <div>
                 <DatePickerView
                     precision={"hour"}
-                    renderLabel={labelRenderer}
+                    renderLabel={dateLabelRenderer}
                     value={value}
                     min={now}
                     onChange={(value) => {

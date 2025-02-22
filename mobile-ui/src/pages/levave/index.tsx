@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "@/layout/Header";
 import {list} from "@/api/leave";
-import List from "@/components/list";
+import PullToRefreshList from "@/components/list";
 import {Button} from "antd-mobile";
 import {RightOutline} from "antd-mobile-icons";
 import {useNavigate} from "react-router";
@@ -62,7 +62,7 @@ const LeaveListPage = () => {
     return (
         <>
             <Header>请假历史</Header>
-            <List
+            <PullToRefreshList
                 style={{
                     height: 'calc(100vh - 100px)',
                     overflow: 'auto'

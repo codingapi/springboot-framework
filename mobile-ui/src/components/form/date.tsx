@@ -6,6 +6,26 @@ import dayjs from "dayjs";
 import "./form.scss";
 import formFieldInit from "@/components/form/common";
 
+
+export const dateLabelRenderer = (type: string, data: number) => {
+    switch (type) {
+        case 'year':
+            return data + '年'
+        case 'month':
+            return data + '月'
+        case 'day':
+            return data + '日'
+        case 'hour':
+            return data + '时'
+        case 'minute':
+            return data + '分'
+        case 'second':
+            return data + '秒'
+        default:
+            return data
+    }
+}
+
 const FormDate: React.FC<FormItemProps> = (props) => {
 
     const {formAction, rules} = formFieldInit(props);
@@ -43,6 +63,7 @@ const FormDate: React.FC<FormItemProps> = (props) => {
                 value={props.value}
                 visible={visible}
                 precision={precision}
+                renderLabel={dateLabelRenderer}
                 onClose={() => {
                     setVisible(false)
                 }}

@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "@/layout/Header";
-import InfoList, {InfoItem} from "@/components/info/List";
+import {PullToRefreshTodoList,TodoListItem} from "@/components/info/List";
 import {useNavigate} from "react-router";
 import Footer from "@/layout/Footer";
 import {Button} from "antd-mobile";
@@ -135,12 +135,12 @@ const EducationIndex = () => {
                 '日期': '2026.9~2030.7',
             }
         },
-    ] as InfoItem[];
+    ] as TodoListItem[];
 
     return (
         <>
             <Header>教育信息</Header>
-            <InfoList
+            <PullToRefreshTodoList
                 onRefresh={async ()=>{
                     return {
                         data:{

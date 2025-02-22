@@ -1,15 +1,14 @@
-import React, {useImperativeHandle} from "react";
+import React, {useEffect, useImperativeHandle} from "react";
 import todo from "@/assets/flow/todo.png";
 import un_submit from "@/assets/flow/un_submit.png";
 import done from "@/assets/flow/done.png";
-import {Button, Dialog} from "antd-mobile";
-import List, {ListAction, ListResponse} from "@/components/list";
-import {DeleteOutline, EditSOutline, EyeOutline} from "antd-mobile-icons";
+import PullToRefreshList, {ListAction, ListResponse} from "@/components/list";
+import ListItem from "@/components/info/List/Item";
 import "./index.scss";
 
 export type InfoState = 'un_submit' | 'todo' | 'done' | 'reject';
 
-const stateConvert = (state: InfoState) => {
+export const stateConvert = (state: InfoState) => {
     if (state === 'todo') {
         return todo;
     }
@@ -22,7 +21,7 @@ const stateConvert = (state: InfoState) => {
     return un_submit;
 }
 
-export type InfoItem = {
+export type TodoListItem = {
     id: number;
     state: InfoState;
     attrs: {
@@ -31,15 +30,15 @@ export type InfoItem = {
     [key: string]: any;
 }
 
-interface InfoListProps {
+interface PullToRefreshTodoListProps {
 
     listAction?: React.Ref<ListAction>;
     // 详情事件
-    onDetailClick?: (item: InfoItem) => void;
+    onDetailClick?: (item: TodoListItem) => void;
     // 编辑事件
-    onEditClick?: (item: InfoItem) => void;
+    onEditClick?: (item: TodoListItem) => void;
     // 删除事件
-    onDeleteClick?: (item: InfoItem) => void;
+    onDeleteClick?: (item: TodoListItem) => void;
 
     // 每页数量，默认为10
     pageSize?: number;
@@ -47,9 +46,10 @@ interface InfoListProps {
     onRefresh?: (pageSize: number) => Promise<ListResponse>;
     // 加载更多
     onLoadMore?: (pageSize: number, last: any) => Promise<ListResponse>;
+
 }
 
-const InfoList: React.FC<InfoListProps> = (props) => {
+export const PullToRefreshTodoList: React.FC<PullToRefreshTodoListProps> = (props) => {
 
     const listAction = React.useRef<ListAction>(null);
 
@@ -65,77 +65,17 @@ const InfoList: React.FC<InfoListProps> = (props) => {
 
     return (
         <div className={"infoList-list"}>
-            <List
+            <PullToRefreshList
                 listAction={listAction}
                 pageSize={props.pageSize}
                 item={(item, index) => {
-                    const attrs = item.attrs;
-                    const attrKeys = Object.keys(attrs);
                     return (
-                        <div className="infoList-item">
-                            <div className={"infoList-left"}>
-                                {
-                                    attrKeys.map((info) => {
-                                        return (
-                                            <div className={"infoList-info-item"}>
-                                                <div className={"infoList-info-item-title"}>{info}</div>
-                                                <div className={"infoList-info-item-value"}>{attrs[info]}</div>
-                                            </div>
-                                        )
-                                    })
-                                }
-                            </div>
-                            <div className={"infoList-right"}>
-                                <div className={"infoList-state"}>
-                                    <img src={stateConvert(item.state)} className={"infoList-state-img"}/>
-                                </div>
-                                <div className={"infoList-operate"}>
-                                    <Button
-                                        onClick={async () => {
-                                            await Dialog.confirm({
-                                                content: '确认要删除吗？',
-                                                onConfirm: async () => {
-                                                    props.onDeleteClick && props.onDeleteClick(item);
-                                                },
-                                            })
-                                        }}
-                                        className={"infoList-operate-button"}
-                                        shape={'rounded'}
-                                        style={{
-                                            backgroundColor: 'red'
-                                        }}
-                                    >
-                                        <DeleteOutline color={'white'}/>
-                                    </Button>
-
-                                    <Button
-                                        onClick={() => {
-                                            props.onEditClick && props.onEditClick(item);
-                                        }}
-                                        className={"infoList-operate-button"}
-                                        shape={'rounded'}
-                                        style={{
-                                            backgroundColor: 'blue'
-                                        }}
-                                    >
-                                        <EditSOutline color={'white'}/>
-                                    </Button>
-
-                                    <Button
-                                        onClick={() => {
-                                            props.onDetailClick && props.onDetailClick(item);
-                                        }}
-                                        className={"infoList-operate-button"}
-                                        shape={'rounded'}
-                                        style={{
-                                            backgroundColor: 'blue'
-                                        }}
-                                    >
-                                        <EyeOutline color={'white'}/>
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
+                        <ListItem
+                            data={item}
+                            onDetailClick={props.onDetailClick}
+                            onEditClick={props.onEditClick}
+                            onDeleteClick={props.onDeleteClick}
+                        />
                     )
                 }}
                 onRefresh={props.onRefresh}
@@ -145,4 +85,58 @@ const InfoList: React.FC<InfoListProps> = (props) => {
     )
 }
 
-export default InfoList;
+
+interface TodoListProps {
+
+    listAction?: React.Ref<ListAction>;
+    // 详情事件
+    onDetailClick?: (item: TodoListItem) => void;
+    // 编辑事件
+    onEditClick?: (item: TodoListItem) => void;
+    // 删除事件
+    onDeleteClick?: (item: TodoListItem) => void;
+    // 加载数据
+    loadData: () => Promise<ListResponse>;
+
+}
+
+
+export const TodoList: React.FC<TodoListProps> = (props) => {
+
+    const [list, setList] = React.useState<TodoListItem[]>([]);
+
+    const reload = () => {
+        props.loadData().then((res) => {
+            if (res.success) {
+                setList(res.data.list);
+            }
+        });
+    }
+
+    useEffect(() => {
+        reload();
+    }, []);
+
+    useImperativeHandle(props.listAction, () => {
+        return {
+            reload: () => {
+                reload();
+            }
+        }
+    }, [props.listAction])
+
+    return (
+        <div className={"infoList-list"}>
+            {list.map(item => {
+                return (
+                    <ListItem
+                        data={item}
+                        onDetailClick={props.onDetailClick}
+                        onEditClick={props.onEditClick}
+                        onDeleteClick={props.onDeleteClick}
+                    />
+                )
+            })}
+        </div>
+    )
+}

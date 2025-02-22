@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import Header from "@/layout/Header";
-import List, {ListAction} from "@/components/list";
+import PullToRefreshList, {ListAction} from "@/components/list";
 import {RightOutline} from "antd-mobile-icons";
 import {
     findDoneByOperatorId,
@@ -114,7 +114,7 @@ const FlowListPage = () => {
                     <Tabs.Tab title={"全部流程"} key={"all"}/>
                 </Tabs>
 
-                <List
+                <PullToRefreshList
                     listAction={listAction}
                     className={"flow-todo-list"}
                     item={(item, index) => {

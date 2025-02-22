@@ -1,7 +1,7 @@
 import React from "react";
-import "./index.scss";
-import {ErrorBlock, InfiniteScroll, PullToRefresh} from "antd-mobile";
+import {ErrorBlock, InfiniteScroll, PullToRefresh as AntPullToRefresh} from "antd-mobile";
 import {PullStatus} from "antd-mobile/es/components/pull-to-refresh";
+import "./index.scss";
 
 export interface ListResponse {
     data: {
@@ -15,7 +15,7 @@ export interface ListAction {
     reload: () => void;
 }
 
-export interface ListProps {
+export interface PullToRefreshListProps {
     // 样式
     style?: React.CSSProperties;
     // className
@@ -52,7 +52,7 @@ export interface ListProps {
     noDataStates?: React.ReactNode;
 }
 
-const List: React.FC<ListProps> = (props) => {
+const PullToRefreshList: React.FC<PullToRefreshListProps> = (props) => {
 
     const pageSize = props.pageSize || 10;
     const [orderList, setOrderList] = React.useState<any>([]);
@@ -151,7 +151,7 @@ const List: React.FC<ListProps> = (props) => {
             style={props.style}
             className={["mobile-list", props.className].join(" ")}
         >
-            <PullToRefresh
+            <AntPullToRefresh
                 onRefresh={async () => {
                     refresh();
                 }}
@@ -180,10 +180,10 @@ const List: React.FC<ListProps> = (props) => {
                         description={props.blockStates?.description || '没有任何信息'}
                         title={props.blockStates?.title || "暂无信息"}/>
                 )}
-            </PullToRefresh>
+            </AntPullToRefresh>
 
         </div>
     )
 }
 
-export default List;
+export default PullToRefreshList;
