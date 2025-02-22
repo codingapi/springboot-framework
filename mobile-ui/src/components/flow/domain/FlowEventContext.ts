@@ -4,8 +4,7 @@ import {FlowRecordContext} from "@/components/flow/domain/FlowRecordContext";
 import {FlowStateContext} from "@/components/flow/domain/FlowStateContext";
 import * as flowApi from "@/api/flow";
 import {FlowButton, FlowUser} from "@/components/flow/types";
-import {Toast} from "antd-mobile";
-import {FlowSubmitResultParser, FlowTrySubmitResultParser} from "@/components/flow/domain/FlowResultParser";
+import {FlowSubmitResultParser} from "@/components/flow/domain/FlowResultParser";
 import {UserSelectMode} from "@/components/flow/store/FlowSlice";
 import {FlowTriggerContext} from "@/components/flow/domain/FlowTriggerContext";
 
@@ -295,7 +294,26 @@ export class FlowEventContext {
     }
 
 
+    /**
+     * 重新加载流程数据
+     */
+    reloadFlow() {
+        this.flowStateContext.randomVersion();
+    }
 
+
+    /**
+     * 触发流程事件
+     */
+    triggerEvent(eventKey:string){
+        this.flowTriggerContext.triggerEvent(eventKey);
+    }
+
+    /**
+     * 用户选择回调
+     * @param users 选择用户
+     * @param userSelectMode 用户选择模式
+     */
     userSelectCallback(users: FlowUser[], userSelectMode: UserSelectMode | null) {
         if (users.length > 0) {
             if (userSelectMode) {
@@ -323,155 +341,6 @@ export class FlowEventContext {
         }
 
         this.flowStateContext.setUserSelectVisible(false);
-    }
-
-    /**
-     * 处理按钮点击事件
-     * @param button
-     */
-    handlerClick(button: FlowButton) {
-        if (button.type === "RELOAD") {
-            //todo
-        }
-
-        if (button.type === 'SAVE') {
-            if (this.flowStateContext.hasRecordId()) {
-                this.saveFlow(() => {
-                    Toast.show('流程保存成功');
-                })
-            } else {
-                this.startFlow(() => {
-                    this.saveFlow(() => {
-                        Toast.show('流程保存成功');
-                    })
-                });
-            }
-        }
-
-        if (button.type === "START") {
-            if (this.flowStateContext.hasRecordId()) {
-                Toast.show('流程已发起，无需重复发起');
-            } else {
-                this.startFlow((res) => {
-                    Toast.show('流程发起成功.');
-                })
-            }
-        }
-        if (button.type === 'SPECIFY_SUBMIT') {
-            this.trySubmitFlow((res) => {
-                const operators = res.data.operators;
-                const userIds = operators.map((item: any) => {
-                    return item.userId;
-                });
-
-                this.flowStateContext.setUserSelectMode({
-                    userSelectType: 'nextNodeUser',
-                    multiple: true,
-                    specifyUserIds: userIds,
-                });
-            });
-        }
-
-        if (button.type === 'SUBMIT') {
-            if (this.flowStateContext.hasRecordId()) {
-                this.submitFlow(true, (res) => {
-                    const flowSubmitResultParser = new FlowSubmitResultParser(res.data);
-                    this.flowStateContext.setResult(flowSubmitResultParser.parser());
-                })
-            } else {
-                this.startFlow(() => {
-                    this.submitFlow(true, (res) => {
-                        const flowSubmitResultParser = new FlowSubmitResultParser(res.data);
-                        this.flowStateContext.setResult(flowSubmitResultParser.parser());
-                    })
-                });
-            }
-        }
-
-        if (button.type === 'REJECT') {
-            if (this.flowStateContext.hasRecordId()) {
-                this.submitFlow(false, (res) => {
-                    const flowSubmitResultParser = new FlowSubmitResultParser(res.data);
-                    this.flowStateContext.setResult(flowSubmitResultParser.parser());
-                })
-            } else {
-                Toast.show('流程尚未发起，无法操作');
-            }
-        }
-
-        if (button.type === 'TRY_SUBMIT') {
-            this.trySubmitFlow((res) => {
-                const flowTrySubmitResultParser = new FlowTrySubmitResultParser(res.data);
-                this.flowStateContext.setResult(flowTrySubmitResultParser.parser());
-            });
-        }
-
-        if (button.type === 'RECALL') {
-            this.recallFlow(() => {
-                this.flowStateContext.setResult({
-                    state: 'success',
-                    closeable: true,
-                    title: '流程撤回成功',
-                });
-            });
-        }
-
-        if (button.type === 'REMOVE') {
-            if (this.flowStateContext.hasRecordId()) {
-                this.removeFlow(() => {
-                    this.flowStateContext.setResult({
-                        state: 'success',
-                        closeable: true,
-                        title: '流程删除成功',
-                    });
-                });
-            } else {
-                Toast.show('流程尚未发起，无法删除');
-            }
-        }
-
-
-        if (button.type === 'URGE') {
-            this.urgeFlow(() => {
-                this.flowStateContext.setResult({
-                    state: 'success',
-                    closeable: true,
-                    title: '催办提醒已发送',
-                });
-            });
-        }
-
-        if (button.type === 'POSTPONED') {
-            this.flowStateContext.setPostponedVisible(true);
-        }
-
-
-        if (button.type === 'TRANSFER') {
-            this.flowStateContext.setUserSelectMode({
-                userSelectType: 'transfer',
-                multiple: false,
-            });
-        }
-
-        if (button.type === "CUSTOM") {
-            if (this.flowStateContext.hasRecordId()) {
-                this.customFlow(button, (res) => {
-                    const customMessage = res.data;
-                    this.flowStateContext.setResult({
-                        state: customMessage.resultState.toLowerCase(),
-                        ...customMessage
-                    });
-                });
-            } else {
-                Toast.show('流程尚未发起，无法操作');
-            }
-        }
-
-        if(button.type === 'VIEW'){
-            const eventKey = button.eventKey;
-            this.flowTriggerContext.trigger(eventKey);
-        }
-
     }
 
 }

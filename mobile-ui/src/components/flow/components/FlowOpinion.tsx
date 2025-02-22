@@ -12,7 +12,7 @@ const FlowOpinion = ()=>{
 
     useEffect(() => {
         opinionAction?.current?.setFieldValue("advice", flowRecordContext?.getOpinionAdvice());
-    }, []);
+    }, [flowViewReactContext]);
 
     return (
         <>

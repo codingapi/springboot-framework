@@ -84,4 +84,12 @@ export class FlowStateContext {
         }
         this.updateState();
     }
+
+    randomVersion() {
+        this.currentState = {
+            ...this.currentState,
+            version: Math.random()
+        }
+        this.updateState();
+    }
 }

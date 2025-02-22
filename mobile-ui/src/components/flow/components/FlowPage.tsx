@@ -20,6 +20,7 @@ import {FlowViewReactContext} from "@/components/flow/view";
 import FlowForm404 from "@/components/flow/components/FlowForm404";
 import {getComponent} from "@/framework/ComponentBus";
 import {FlowTriggerContext} from "@/components/flow/domain/FlowTriggerContext";
+import {FlowButtonClickContext} from "@/components/flow/domain/FlowButtonClickContext";
 
 
 interface FlowPageProps extends FlowViewProps {
@@ -45,6 +46,7 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
     });
     const flowTriggerContext = new FlowTriggerContext();
     const flowEvenContext = new FlowEventContext(flowRecordContext, flowTriggerContext, formAction, opinionAction, flowStateContext);
+    const flowButtonClickContext = new FlowButtonClickContext(flowEvenContext, flowStateContext);
     const FlowFormView = flowRecordContext.getFlowFormView() as React.ComponentType<FlowFormViewProps>;
 
     // 延期表单视图
@@ -67,6 +69,8 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
                 flowEventContext: flowEvenContext,
                 flowStateContext: flowStateContext,
                 flowTriggerContext: flowTriggerContext,
+                flowButtonClickContext: flowButtonClickContext,
+
                 formAction: formAction,
                 opinionAction: opinionAction
             }}>

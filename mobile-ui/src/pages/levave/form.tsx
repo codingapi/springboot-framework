@@ -6,24 +6,32 @@ import {Button, Toast} from "antd-mobile";
 import {FlowViewReactContext} from "@/components/flow/view";
 
 const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
-
     const formAction = props.formAction;
-
     const flowViewReactContext = useContext(FlowViewReactContext);
 
     console.log('LeaveForm init:', props);
 
     useEffect(() => {
+        // 添加自定义事件触发器
         flowViewReactContext?.flowTriggerContext.addTrigger((eventKey) => {
             console.log('eventKey:', eventKey);
         });
     }, [flowViewReactContext]);
 
+
+    useEffect(() => {
+        // 设置表单数据
+        if(props.data){
+            formAction.current?.setFieldsValue({
+                ...props.data
+            });
+        }
+    }, [props.data]);
+
+    const flowButtons = flowViewReactContext?.flowRecordContext?.getFlowButtons();
+
     return (
         <Form
-            initialValues={{
-                ...props.data
-            }}
             actionRef={formAction}
             loadFields={async () => {
                 return [
@@ -159,6 +167,31 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
                             Toast.show(`是否完成：${isFinished ? '是' : '否'}`);
                         }}
                     >是否完成</Button>
+
+
+                    <Button
+                        style={{
+                            margin: 5
+                        }}
+                        onClick={async () => {
+                           flowViewReactContext?.flowEventContext.reloadFlow();
+                        }}
+                    >刷新数据</Button>
+
+                    {flowButtons && flowButtons.map((button, index) => {
+                        return (
+                            <Button
+                                style={{
+                                    margin: 5
+                                }}
+                                onClick={()=>{
+                                    flowViewReactContext?.flowButtonClickContext?.handlerClick(button);
+                                }}
+                            >
+                                {button.name}
+                            </Button>
+                        )
+                    })}
                 </div>
             )}
         />

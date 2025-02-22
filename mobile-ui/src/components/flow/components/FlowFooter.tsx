@@ -13,7 +13,8 @@ const FlowFooter: React.FC<FlowFooterProps> = (props) => {
     const flowViewReactContext = useContext(FlowViewReactContext);
 
     const flowRecordContext = flowViewReactContext?.flowRecordContext;
-    const flowEventContext = flowViewReactContext?.flowEventContext;
+
+    const flowButtonClickContext = flowViewReactContext?.flowButtonClickContext;
 
     const buttons = flowRecordContext?.getFlowButtons()||[];
     const maxButtonCount = props.maxButtonCount || 4;
@@ -38,7 +39,7 @@ const FlowFooter: React.FC<FlowFooterProps> = (props) => {
                                 ...style
                             }}
                             onClick={() => {
-                                flowEventContext?.handlerClick(item);
+                                flowButtonClickContext?.handlerClick(item);
                             }}
                         >{item.name}</Button>
                     )
@@ -56,7 +57,7 @@ const FlowFooter: React.FC<FlowFooterProps> = (props) => {
                                         ...style
                                     }}
                                     onClick={() => {
-                                        flowEventContext?.handlerClick(item);
+                                        flowButtonClickContext?.handlerClick(item);
                                     }}
                                 >{item.name}</Button>
                             )
@@ -82,7 +83,7 @@ const FlowFooter: React.FC<FlowFooterProps> = (props) => {
                                     text: item.name,
                                     key: item.id,
                                     onClick: () => {
-                                        flowEventContext?.handlerClick(item);
+                                        flowButtonClickContext?.handlerClick(item);
                                         setVisible(false);
                                     }
                                 }

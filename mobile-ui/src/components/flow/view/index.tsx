@@ -1,6 +1,6 @@
 import React, {createContext, useEffect} from "react";
-import {Provider, useDispatch} from "react-redux";
-import {flowStore, initState} from "@/components/flow/store/FlowSlice";
+import {Provider, useDispatch, useSelector} from "react-redux";
+import {FlowReduxState, flowStore, initState} from "@/components/flow/store/FlowSlice";
 import {FlowViewProps} from "@/components/flow/types";
 import {Skeleton} from "antd-mobile";
 import {FlowRecordContext} from "@/components/flow/domain/FlowRecordContext";
@@ -9,8 +9,9 @@ import {detail} from "@/api/flow";
 import {FormAction} from "@/components/form";
 import {FlowStateContext} from "@/components/flow/domain/FlowStateContext";
 import FlowPage from "@/components/flow/components/FlowPage";
-import "./index.scss";
 import {FlowTriggerContext} from "@/components/flow/domain/FlowTriggerContext";
+import {FlowButtonClickContext} from "@/components/flow/domain/FlowButtonClickContext";
+import "./index.scss";
 
 // 流程视图上下文属性
 interface FlowViewReactContextProps {
@@ -22,6 +23,8 @@ interface FlowViewReactContextProps {
     flowStateContext: FlowStateContext;
     // 流程事件触发控制上下文对象
     flowTriggerContext: FlowTriggerContext;
+    // 流程按钮点击触发控制器上下文对象
+    flowButtonClickContext: FlowButtonClickContext;
     // 表单操作对象
     formAction: React.RefObject<FormAction>;
     // 审批意见操作对象
@@ -34,6 +37,8 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
     const [data, setData] = React.useState<any>(null);
 
     const dispatch = useDispatch();
+
+    const version = useSelector((state: FlowReduxState) => state.flow.version);
 
     // 请求流程详情数据
     const loadFlowDetail = () => {
@@ -57,7 +62,7 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
 
     useEffect(() => {
         loadFlowDetail();
-    }, []);
+    }, [version]);
 
 
     return (

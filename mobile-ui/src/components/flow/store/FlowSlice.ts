@@ -10,6 +10,8 @@ export interface FlowStore {
     result: FlowResultMessage | null;
     // 隐藏page的内容
     contentHiddenVisible: boolean;
+    // 数据加载版本号
+    version: number;
 
     // 意见框展示状态
     opinionVisible: boolean;
@@ -48,7 +50,8 @@ export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
         postponedVisible: false,
         opinionVisible: true,
         userSelectVisible: false,
-        userSelectMode: null
+        userSelectMode: null,
+        version:0
     },
     reducers: {
         updateState: (state, action) => {
@@ -73,6 +76,10 @@ export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
                 state.userSelectMode = action.payload.userSelectMode;
             }
 
+            if (keys.includes('version')) {
+                state.version = action.payload.version;
+            }
+
             if (keys.includes('userSelectVisible')) {
                 state.userSelectVisible = action.payload.userSelectVisible;
                 if (!state.userSelectVisible) {
@@ -88,6 +95,8 @@ export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
             state.opinionVisible = true;
             state.contentHiddenVisible = false;
             state.userSelectVisible = false;
+            state.userSelectMode = null;
+            state.version = 0;
         }
     },
 });

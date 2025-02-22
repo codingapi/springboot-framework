@@ -18,7 +18,7 @@ export class FlowTriggerContext {
     }
 
     // 触发事件
-    trigger(eventKey: string) {
+    triggerEvent(eventKey: string) {
         this.list.forEach(trigger => {
             trigger.trigger(eventKey);
         })
