@@ -1,6 +1,6 @@
 import React from "react";
 import {FormAction} from "@/components/form";
-import {FlowViewContext} from "@/components/flow/domain/FlowViewContext";
+import {FlowRecordContext} from "@/components/flow/domain/FlowRecordContext";
 import {FlowStateContext} from "@/components/flow/domain/FlowStateContext";
 import * as flowApi from "@/api/flow";
 import {FlowButton, FlowUser} from "@/components/flow/types";
@@ -13,13 +13,13 @@ import {UserSelectMode} from "@/components/flow/store/FlowSlice";
  */
 export class FlowEventContext {
 
-    private readonly flowViewContext: FlowViewContext;
+    private readonly flowRecordContext: FlowRecordContext;
     private readonly flowAction: React.RefObject<FormAction>;
     private readonly opinionAction: React.RefObject<FormAction>;
     private readonly flowStateContext: FlowStateContext;
 
-    constructor(flowViewContext: FlowViewContext, flowAction: React.RefObject<FormAction>, opinionAction: React.RefObject<FormAction>, flowStateContext: FlowStateContext) {
-        this.flowViewContext = flowViewContext;
+    constructor(flowViewContext: FlowRecordContext, flowAction: React.RefObject<FormAction>, opinionAction: React.RefObject<FormAction>, flowStateContext: FlowStateContext) {
+        this.flowRecordContext = flowViewContext;
         this.flowAction = flowAction;
         this.opinionAction = opinionAction;
         this.flowStateContext = flowStateContext;
@@ -27,8 +27,8 @@ export class FlowEventContext {
 
     private getRequestBody = () => {
         const formData = this.flowAction.current?.getFieldsValue();
-        const flowData = this.flowViewContext.getFlowFormParams();
-        const workCode = this.flowViewContext.getWorkCode();
+        const flowData = this.flowRecordContext.getFlowFormParams();
+        const workCode = this.flowRecordContext.getWorkCode();
         const recordId = this.flowStateContext.getRecordId();
         const advice = this.opinionAction.current?.getFieldsValue();
 

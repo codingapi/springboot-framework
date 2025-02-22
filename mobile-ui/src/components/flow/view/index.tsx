@@ -3,7 +3,7 @@ import {Provider, useDispatch} from "react-redux";
 import {flowStore, initState} from "@/components/flow/store/FlowSlice";
 import {FlowViewProps} from "@/components/flow/types";
 import {Skeleton} from "antd-mobile";
-import {FlowViewContext} from "@/components/flow/domain/FlowViewContext";
+import {FlowRecordContext} from "@/components/flow/domain/FlowRecordContext";
 import {FlowEventContext} from "@/components/flow/domain/FlowEventContext";
 import {detail} from "@/api/flow";
 import {FormAction} from "@/components/form";
@@ -14,7 +14,7 @@ import "./index.scss";
 // 流程视图上下文属性
 interface FlowViewReactContextProps {
     // 流程的详情控制上下文对象
-    flowViewContext: FlowViewContext;
+    flowRecordContext: FlowRecordContext;
     // 流程的事件控制上下文对象
     flowEventContext: FlowEventContext;
     // 流程的状态数据上下文对象

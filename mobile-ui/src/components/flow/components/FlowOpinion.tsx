@@ -8,10 +8,10 @@ const FlowOpinion = ()=>{
 
     const flowViewReactContext = useContext(FlowViewReactContext);
     const opinionAction = flowViewReactContext?.opinionAction;
-    const flowViewContext = flowViewReactContext?.flowViewContext;
+    const flowRecordContext = flowViewReactContext?.flowRecordContext;
 
     useEffect(() => {
-        opinionAction?.current?.setFieldValue("advice", flowViewContext?.getOpinionAdvice());
+        opinionAction?.current?.setFieldValue("advice", flowRecordContext?.getOpinionAdvice());
     }, []);
 
     return (

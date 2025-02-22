@@ -13,18 +13,18 @@ interface FlowContentProps {
 const FlowContent:React.FC<FlowContentProps> = (props) => {
     const flowViewReactContext = useContext(FlowViewReactContext);
 
-    const flowViewContext = flowViewReactContext?.flowViewContext;
+    const flowRecordContext = flowViewReactContext?.flowRecordContext;
     const formAction = flowViewReactContext?.formAction;
 
-    const FlowFormView = flowViewContext?.getFlowFormView() as React.ComponentType<FlowFormViewProps>;
+    const FlowFormView = flowRecordContext?.getFlowFormView() as React.ComponentType<FlowFormViewProps>;
 
-    const formParams = flowViewContext?.getFlowFormParams();
+    const formParams = flowRecordContext?.getFlowFormParams();
 
     const opinionVisible = useSelector((state: FlowReduxState) => state.flow.opinionVisible);
     const contentHiddenVisible = useSelector((state: FlowReduxState) => state.flow.contentHiddenVisible);
 
     useEffect(() => {
-        if(!flowViewContext?.isEditable()){
+        if(!flowRecordContext?.isEditable()){
             setTimeout(()=>{
                 formAction?.current?.disableAll();
             },100);

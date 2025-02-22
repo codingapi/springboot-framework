@@ -9,7 +9,7 @@ import {
 } from "@/components/flow/types";
 import {useDispatch, useSelector} from "react-redux";
 import {FlowReduxState, updateState} from "@/components/flow/store/FlowSlice";
-import {FlowViewContext} from "@/components/flow/domain/FlowViewContext";
+import {FlowRecordContext} from "@/components/flow/domain/FlowRecordContext";
 import {FormAction} from "@/components/form";
 import {FlowStateContext} from "@/components/flow/domain/FlowStateContext";
 import {FlowEventContext} from "@/components/flow/domain/FlowEventContext";
@@ -31,7 +31,7 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
     const dispatch = useDispatch();
 
     const currentState = useSelector((state: FlowReduxState) => state.flow);
-    const flowViewContext = new FlowViewContext(props, props.flowData);
+    const flowRecordContext = new FlowRecordContext(props, props.flowData);
     const formAction = React.useRef<FormAction>(null);
     const opinionAction = React.useRef<FormAction>(null);
 
@@ -43,8 +43,8 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
         }));
     });
 
-    const flowEvenContext = new FlowEventContext(flowViewContext, formAction, opinionAction, flowStateContext);
-    const FlowFormView = flowViewContext.getFlowFormView() as React.ComponentType<FlowFormViewProps>;
+    const flowEvenContext = new FlowEventContext(flowRecordContext, formAction, opinionAction, flowStateContext);
+    const FlowFormView = flowRecordContext.getFlowFormView() as React.ComponentType<FlowFormViewProps>;
 
     // 延期表单视图
     const PostponedFormView = getComponent(PostponedFormViewKey) as React.ComponentType<PostponedFormProps>;
@@ -62,7 +62,7 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
     if (FlowFormView) {
         return (
             <FlowViewReactContext.Provider value={{
-                flowViewContext: flowViewContext,
+                flowRecordContext: flowRecordContext,
                 flowEventContext: flowEvenContext,
                 flowStateContext: flowStateContext,
                 formAction: formAction,

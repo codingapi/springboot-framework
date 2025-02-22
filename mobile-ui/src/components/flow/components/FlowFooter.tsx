@@ -12,10 +12,10 @@ interface FlowFooterProps {
 const FlowFooter: React.FC<FlowFooterProps> = (props) => {
     const flowViewReactContext = useContext(FlowViewReactContext);
 
-    const flowViewContext = flowViewReactContext?.flowViewContext;
+    const flowRecordContext = flowViewReactContext?.flowRecordContext;
     const flowEventContext = flowViewReactContext?.flowEventContext;
 
-    const buttons = flowViewContext?.getFlowButtons()||[];
+    const buttons = flowRecordContext?.getFlowButtons()||[];
     const maxButtonCount = props.maxButtonCount || 4;
     const requestLoading = useSelector((state: FlowReduxState) => state.flow.requestLoading);
     const contentHiddenVisible = useSelector((state: FlowReduxState) => state.flow.contentHiddenVisible);
@@ -24,7 +24,7 @@ const FlowFooter: React.FC<FlowFooterProps> = (props) => {
 
     const style = contentHiddenVisible ? {"display":"none"} : {};
 
-    if(flowViewContext?.isEditable()){
+    if(flowRecordContext?.isEditable()){
         return (
             <div className={"flow-view-footer"} style={style}>
                 {buttons && buttons.length <= maxButtonCount && buttons.map((item) => {
