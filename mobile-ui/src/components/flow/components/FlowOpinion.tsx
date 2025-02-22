@@ -7,14 +7,11 @@ import {FlowViewReactContext} from "@/components/flow/view";
 const FlowOpinion = ()=>{
 
     const flowViewReactContext = useContext(FlowViewReactContext);
-    if (!flowViewReactContext) {
-        return <></>;
-    }
-    const opinionAction = flowViewReactContext.opinionAction;
-    const flowViewContext = flowViewReactContext.flowViewContext;
+    const opinionAction = flowViewReactContext?.opinionAction;
+    const flowViewContext = flowViewReactContext?.flowViewContext;
 
     useEffect(() => {
-        opinionAction?.current?.setFieldValue("advice", flowViewContext.getOpinionAdvice());
+        opinionAction?.current?.setFieldValue("advice", flowViewContext?.getOpinionAdvice());
     }, []);
 
     return (

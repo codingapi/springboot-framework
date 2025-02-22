@@ -11,21 +11,22 @@ interface FlowFooterProps {
 
 const FlowFooter: React.FC<FlowFooterProps> = (props) => {
     const flowViewReactContext = useContext(FlowViewReactContext);
-    if (!flowViewReactContext) {
-        return <></>;
-    }
-    const flowViewContext = flowViewReactContext.flowViewContext;
-    const flowEventContext = flowViewReactContext.flowEventContext;
 
-    const buttons = flowViewContext.getFlowButtons();
+    const flowViewContext = flowViewReactContext?.flowViewContext;
+    const flowEventContext = flowViewReactContext?.flowEventContext;
+
+    const buttons = flowViewContext?.getFlowButtons()||[];
     const maxButtonCount = props.maxButtonCount || 4;
     const requestLoading = useSelector((state: FlowReduxState) => state.flow.requestLoading);
+    const contentHiddenVisible = useSelector((state: FlowReduxState) => state.flow.contentHiddenVisible);
     const [visible, setVisible] = React.useState(false);
     const navigate = useNavigate();
 
-    if(flowViewContext.isEditable()){
+    const style = contentHiddenVisible ? {"display":"none"} : {};
+
+    if(flowViewContext?.isEditable()){
         return (
-            <div className={"flow-view-footer"}>
+            <div className={"flow-view-footer"} style={style}>
                 {buttons && buttons.length <= maxButtonCount && buttons.map((item) => {
                     const style = item.style && JSON.parse(item.style) || {};
                     return (
@@ -37,7 +38,7 @@ const FlowFooter: React.FC<FlowFooterProps> = (props) => {
                                 ...style
                             }}
                             onClick={() => {
-                                flowEventContext.handlerClick(item);
+                                flowEventContext?.handlerClick(item);
                             }}
                         >{item.name}</Button>
                     )
@@ -55,7 +56,7 @@ const FlowFooter: React.FC<FlowFooterProps> = (props) => {
                                         ...style
                                     }}
                                     onClick={() => {
-                                        flowEventContext.handlerClick(item);
+                                        flowEventContext?.handlerClick(item);
                                     }}
                                 >{item.name}</Button>
                             )
@@ -81,7 +82,7 @@ const FlowFooter: React.FC<FlowFooterProps> = (props) => {
                                     text: item.name,
                                     key: item.id,
                                     onClick: () => {
-                                        flowEventContext.handlerClick(item);
+                                        flowEventContext?.handlerClick(item);
                                         setVisible(false);
                                     }
                                 }
@@ -96,7 +97,7 @@ const FlowFooter: React.FC<FlowFooterProps> = (props) => {
         )
     }else {
         return (
-            <div className={"flow-view-footer"}>
+            <div className={"flow-view-footer"} style={style}>
                 <Button
                     loading={requestLoading}
                     style={{

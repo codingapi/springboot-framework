@@ -17,7 +17,7 @@ export class FlowEventContext {
     private readonly opinionAction: React.RefObject<FormAction>;
     private readonly flowStateContext: FlowStateContext;
 
-    constructor(flowViewContext: FlowViewContext, flowAction: React.RefObject<FormAction>,opinionAction: React.RefObject<FormAction>,flowStateContext: FlowStateContext) {
+    constructor(flowViewContext: FlowViewContext, flowAction: React.RefObject<FormAction>, opinionAction: React.RefObject<FormAction>, flowStateContext: FlowStateContext) {
         this.flowViewContext = flowViewContext;
         this.flowAction = flowAction;
         this.opinionAction = opinionAction;
@@ -168,6 +168,7 @@ export class FlowEventContext {
      */
     customFlow(button: FlowButton, callback?: (res: any) => void) {
         this.validateForm().then((validateState) => {
+            console.log('validateState', validateState);
             if (validateState) {
                 const body = {
                     ...this.getRequestBody(),
@@ -289,13 +290,13 @@ export class FlowEventContext {
      */
     handlerClick(button: FlowButton) {
         if (button.type === "START") {
-            this.startFlow((res) => {
-                this.flowStateContext.setResult({
-                    closeable: true,
-                    title: '流程发起成功',
-                    state: 'success',
+            if (this.flowStateContext.hasRecordId()) {
+                Toast.show('流程已发起，无需重复发起');
+            } else {
+                this.startFlow((res) => {
+                    Toast.show('流程发起成功.');
                 })
-            })
+            }
         }
         if (button.type === 'SUBMIT') {
             if (this.flowStateContext.hasRecordId()) {
@@ -377,16 +378,20 @@ export class FlowEventContext {
         }
 
         if (button.type === "CUSTOM") {
-            this.customFlow(button, () => {
-                this.flowStateContext.setResult({
-                    state: 'success',
-                    closeable: true,
-                    title: '操作成功',
+            if (this.flowStateContext.hasRecordId()) {
+                this.customFlow(button, (res) => {
+                    const customMessage = res.data;
+                    this.flowStateContext.setResult({
+                        state: customMessage.resultState.toLowerCase(),
+                        ...customMessage
+                    });
                 });
-            });
+            } else {
+                Toast.show('流程尚未发起，无法操作');
+            }
         }
 
-        if(button.type === 'POSTPONED'){
+        if (button.type === 'POSTPONED') {
             this.flowStateContext.setPostponedVisible(true);
         }
     }

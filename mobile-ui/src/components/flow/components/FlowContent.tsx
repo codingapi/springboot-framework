@@ -7,36 +7,41 @@ import FlowOpinion from "@/components/flow/components/FlowOpinion";
 import {useSelector} from "react-redux";
 import {FlowReduxState} from "@/components/flow/store/FlowSlice";
 
-const FlowContent = () => {
+interface FlowContentProps {
+}
+
+const FlowContent:React.FC<FlowContentProps> = (props) => {
     const flowViewReactContext = useContext(FlowViewReactContext);
-    if (!flowViewReactContext) {
-        return <></>;
-    }
-    const flowViewContext = flowViewReactContext.flowViewContext;
-    const formAction = flowViewReactContext.formAction;
 
-    const FlowFormView = flowViewContext.getFlowFormView() as React.ComponentType<FlowFormViewProps>;
+    const flowViewContext = flowViewReactContext?.flowViewContext;
+    const formAction = flowViewReactContext?.formAction;
 
-    const formParams = flowViewContext.getFlowFormParams();
+    const FlowFormView = flowViewContext?.getFlowFormView() as React.ComponentType<FlowFormViewProps>;
+
+    const formParams = flowViewContext?.getFlowFormParams();
 
     const opinionVisible = useSelector((state: FlowReduxState) => state.flow.opinionVisible);
+    const contentHiddenVisible = useSelector((state: FlowReduxState) => state.flow.contentHiddenVisible);
 
     useEffect(() => {
-        if(!flowViewContext.isEditable()){
+        if(!flowViewContext?.isEditable()){
             setTimeout(()=>{
-                formAction.current?.disableAll();
+                formAction?.current?.disableAll();
             },100);
         }
     }, []);
 
+    const style = contentHiddenVisible ? {"display":"none"} : {};
     return (
-        <div className={"flow-view-content"}>
+        <div className={"flow-view-content"} style={style}>
             <Tabs>
                 <Tabs.Tab title='详情' key='detail'>
-                    <FlowFormView
-                        data={formParams}
-                        formAction={formAction}
-                    />
+                    {formAction && (
+                        <FlowFormView
+                            data={formParams}
+                            formAction={formAction}
+                        />
+                    )}
 
                     {opinionVisible && (
                         <FlowOpinion/>

@@ -44,6 +44,14 @@ export class FlowStateContext {
         this.updateState();
     }
 
+    clearResult = () => {
+        this.currentState = {
+            ...this.currentState,
+            result: null
+        }
+        this.updateState();
+    }
+
     hasRecordId = () => {
         return this.currentState.recordId;
     }

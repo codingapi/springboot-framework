@@ -8,6 +8,8 @@ export interface FlowStore {
     requestLoading: boolean;
     // 流程结果
     result: FlowResultMessage | null;
+    // 隐藏page的内容
+    contentHiddenVisible: boolean;
 
     // 意见框展示状态
     opinionVisible: boolean;
@@ -28,6 +30,7 @@ export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
         recordId: '',
         requestLoading: false,
         result: null,
+        contentHiddenVisible: false,
         postponedVisible: false,
         opinionVisible:true,
     },
@@ -43,6 +46,7 @@ export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
             }
             if (keys.includes('result')) {
                 state.result = action.payload.result;
+                state.contentHiddenVisible =  state.result!=null;
             }
         },
         initState: (state) => {
@@ -51,6 +55,7 @@ export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
             state.result = null;
             state.postponedVisible = false;
             state.opinionVisible = true;
+            state.contentHiddenVisible = false;
         }
     },
 });

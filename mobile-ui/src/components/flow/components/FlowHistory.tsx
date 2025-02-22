@@ -4,9 +4,6 @@ import {FlowViewReactContext} from "@/components/flow/view";
 
 const FlowHistory = () => {
     const flowViewReactContext = useContext(FlowViewReactContext) || null;
-    if (!flowViewReactContext) {
-        return <></>;
-    }
 
     return (
         <></>

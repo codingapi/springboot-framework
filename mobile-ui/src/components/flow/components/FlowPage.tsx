@@ -63,12 +63,8 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
                     {currentState.result && (
                         <FlowResult/>
                     )}
-                    {!currentState.result && (
-                        <>
-                            <FlowContent/>
-                            <FlowFooter/>
-                        </>
-                    )}
+                    <FlowContent/>
+                    <FlowFooter/>
                 </div>
 
                 {PostponedFormView && (
