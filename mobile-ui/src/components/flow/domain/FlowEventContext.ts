@@ -7,6 +7,7 @@ import {FlowButton, FlowUser} from "@/components/flow/types";
 import {Toast} from "antd-mobile";
 import {FlowSubmitResultParser, FlowTrySubmitResultParser} from "@/components/flow/domain/FlowResultParser";
 import {UserSelectMode} from "@/components/flow/store/FlowSlice";
+import {FlowTriggerContext} from "@/components/flow/domain/FlowTriggerContext";
 
 /**
  * 流程的事件控制上下文对象
@@ -14,12 +15,18 @@ import {UserSelectMode} from "@/components/flow/store/FlowSlice";
 export class FlowEventContext {
 
     private readonly flowRecordContext: FlowRecordContext;
+    private readonly flowTriggerContext: FlowTriggerContext;
     private readonly flowAction: React.RefObject<FormAction>;
     private readonly opinionAction: React.RefObject<FormAction>;
     private readonly flowStateContext: FlowStateContext;
 
-    constructor(flowViewContext: FlowRecordContext, flowAction: React.RefObject<FormAction>, opinionAction: React.RefObject<FormAction>, flowStateContext: FlowStateContext) {
+    constructor(flowViewContext: FlowRecordContext,
+                flowTriggerContext:FlowTriggerContext,
+                flowAction: React.RefObject<FormAction>,
+                opinionAction: React.RefObject<FormAction>,
+                flowStateContext: FlowStateContext) {
         this.flowRecordContext = flowViewContext;
+        this.flowTriggerContext = flowTriggerContext;
         this.flowAction = flowAction;
         this.opinionAction = opinionAction;
         this.flowStateContext = flowStateContext;
@@ -462,7 +469,7 @@ export class FlowEventContext {
 
         if(button.type === 'VIEW'){
             const eventKey = button.eventKey;
-            console.log('eventKey',eventKey);
+            this.flowTriggerContext.trigger(eventKey);
         }
 
     }

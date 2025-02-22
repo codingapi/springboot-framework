@@ -19,6 +19,7 @@ import FlowFooter from "@/components/flow/components/FlowFooter";
 import {FlowViewReactContext} from "@/components/flow/view";
 import FlowForm404 from "@/components/flow/components/FlowForm404";
 import {getComponent} from "@/framework/ComponentBus";
+import {FlowTriggerContext} from "@/components/flow/domain/FlowTriggerContext";
 
 
 interface FlowPageProps extends FlowViewProps {
@@ -42,8 +43,8 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
             ...state
         }));
     });
-
-    const flowEvenContext = new FlowEventContext(flowRecordContext, formAction, opinionAction, flowStateContext);
+    const flowTriggerContext = new FlowTriggerContext();
+    const flowEvenContext = new FlowEventContext(flowRecordContext, flowTriggerContext, formAction, opinionAction, flowStateContext);
     const FlowFormView = flowRecordContext.getFlowFormView() as React.ComponentType<FlowFormViewProps>;
 
     // 延期表单视图
@@ -65,6 +66,7 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
                 flowRecordContext: flowRecordContext,
                 flowEventContext: flowEvenContext,
                 flowStateContext: flowStateContext,
+                flowTriggerContext: flowTriggerContext,
                 formAction: formAction,
                 opinionAction: opinionAction
             }}>
@@ -108,7 +110,7 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
                         }}
                         onFinish={(users) => {
                             // 选择的人
-                            flowEvenContext.userSelectCallback(users,currentState.userSelectMode);
+                            flowEvenContext.userSelectCallback(users, currentState.userSelectMode);
                         }}
                         multiple={currentState.userSelectMode.multiple}
                         specifyUserIds={currentState.userSelectMode.specifyUserIds}

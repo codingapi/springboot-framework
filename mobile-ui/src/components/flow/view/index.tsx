@@ -10,6 +10,7 @@ import {FormAction} from "@/components/form";
 import {FlowStateContext} from "@/components/flow/domain/FlowStateContext";
 import FlowPage from "@/components/flow/components/FlowPage";
 import "./index.scss";
+import {FlowTriggerContext} from "@/components/flow/domain/FlowTriggerContext";
 
 // 流程视图上下文属性
 interface FlowViewReactContextProps {
@@ -19,6 +20,8 @@ interface FlowViewReactContextProps {
     flowEventContext: FlowEventContext;
     // 流程的状态数据上下文对象
     flowStateContext: FlowStateContext;
+    // 流程事件触发控制上下文对象
+    flowTriggerContext: FlowTriggerContext;
     // 表单操作对象
     formAction: React.RefObject<FormAction>;
     // 审批意见操作对象

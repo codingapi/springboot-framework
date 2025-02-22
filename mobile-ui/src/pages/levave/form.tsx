@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 import Form from "@/components/form";
 import {FormField} from "@/components/form/types";
 import {FlowFormViewProps} from "@/components/flow/types";
@@ -12,6 +12,12 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
     const flowViewReactContext = useContext(FlowViewReactContext);
 
     console.log('LeaveForm init:', props);
+
+    useEffect(() => {
+        flowViewReactContext?.flowTriggerContext.addTrigger((eventKey) => {
+            console.log('eventKey:', eventKey);
+        });
+    }, [flowViewReactContext]);
 
     return (
         <Form
@@ -71,13 +77,13 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
             footer={(
                 <div
                     style={{
-                        display:'grid',
+                        display: 'grid',
                         gridTemplateColumns: '1fr 1fr',
                     }}
                 >
                     <Button
                         style={{
-                            margin:5
+                            margin: 5
                         }}
                         onClick={async () => {
                             formAction.current && await formAction.current.validate();
@@ -86,7 +92,7 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
 
                     <Button
                         style={{
-                            margin:5
+                            margin: 5
                         }}
                         onClick={async () => {
                             const recordId = flowViewReactContext?.flowStateContext?.getRecordId() || "";
@@ -96,27 +102,27 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
 
                     <Button
                         style={{
-                            margin:5
+                            margin: 5
                         }}
                         onClick={async () => {
                             const isApproval = flowViewReactContext?.flowRecordContext?.isApproval();
-                            Toast.show(`是否可以审批：${isApproval?'是':'否'}`);
+                            Toast.show(`是否可以审批：${isApproval ? '是' : '否'}`);
                         }}
                     >是否可审批</Button>
 
                     <Button
                         style={{
-                            margin:5
+                            margin: 5
                         }}
                         onClick={async () => {
                             const isStartNode = flowViewReactContext?.flowRecordContext?.isStartNode();
-                            Toast.show(`是否开始节点：${isStartNode?'是':'否'}`);
+                            Toast.show(`是否开始节点：${isStartNode ? '是' : '否'}`);
                         }}
                     >是否开始节点</Button>
 
                     <Button
                         style={{
-                            margin:5
+                            margin: 5
                         }}
                         onClick={async () => {
                             const nodeCode = flowViewReactContext?.flowRecordContext?.getNodeCode();
@@ -126,31 +132,31 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
 
                     <Button
                         style={{
-                            margin:5
+                            margin: 5
                         }}
                         onClick={async () => {
                             const isEditable = flowViewReactContext?.flowRecordContext?.isEditable();
-                            Toast.show(`是否可编辑：${isEditable?'是':'否'}`);
+                            Toast.show(`是否可编辑：${isEditable ? '是' : '否'}`);
                         }}
                     >是否可编辑</Button>
 
                     <Button
                         style={{
-                            margin:5
+                            margin: 5
                         }}
                         onClick={async () => {
                             const isDone = flowViewReactContext?.flowRecordContext?.isDone();
-                            Toast.show(`是否已审批：${isDone?'是':'否'}`);
+                            Toast.show(`是否已审批：${isDone ? '是' : '否'}`);
                         }}
                     >是否已审批</Button>
 
                     <Button
                         style={{
-                            margin:5
+                            margin: 5
                         }}
                         onClick={async () => {
                             const isFinished = flowViewReactContext?.flowRecordContext?.isFinished();
-                            Toast.show(`是否完成：${isFinished?'是':'否'}`);
+                            Toast.show(`是否完成：${isFinished ? '是' : '否'}`);
                         }}
                     >是否完成</Button>
                 </div>
