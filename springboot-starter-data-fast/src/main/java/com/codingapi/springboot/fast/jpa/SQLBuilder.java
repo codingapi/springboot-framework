@@ -9,6 +9,7 @@ public class SQLBuilder {
 
     private final StringBuilder sqlBuilder;
     private final StringBuilder countSQLBuilder;
+    @Getter
     private int index;
     private final List<Object> params;
     @Getter
@@ -37,6 +38,21 @@ public class SQLBuilder {
             params.add(value);
             index++;
         }
+    }
+
+    public void addParam(Object value){
+        params.add(value);
+        index++;
+    }
+
+    public void addParam(Object value,int index){
+        params.add(value);
+        this.index = index;
+    }
+
+    public void appendSql(String sql){
+        sqlBuilder.append(" ").append(sql).append(" ");
+        countSQLBuilder.append(" ").append(sql).append(" ");
     }
 
     public String getSQL() {
