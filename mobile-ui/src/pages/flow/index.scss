@@ -23,12 +23,9 @@ $flow-tabs-height: 45px;
 
   .flow-todo-item-content {
     padding: 15px;
-    flex: 4;
 
     .flow-todo-item-title {
       font-size: 16px;
-      display: flex;
-      justify-content: space-between;
       align-items: center;
     }
 

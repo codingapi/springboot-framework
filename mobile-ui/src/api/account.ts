@@ -19,3 +19,9 @@ export function initUser(user: {
     localStorage.setItem('username', username);
     localStorage.setItem('token', token);
 }
+
+
+export function clearUser() {
+    localStorage.removeItem('username');
+    localStorage.removeItem('token');
+}

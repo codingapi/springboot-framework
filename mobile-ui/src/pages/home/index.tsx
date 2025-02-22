@@ -1,8 +1,9 @@
 import {Button, Grid, Swiper, Toast} from "antd-mobile";
 import React from "react";
-import "./index.scss";
 import {useNavigate} from "react-router";
 import Header from "@/layout/Header";
+import {clearUser} from "@/api/account";
+import "./index.scss";
 
 const HomePage = () => {
     const colors = ['#ace0ff', '#bcffbd', '#e4fabd', '#ffcfac'];
@@ -69,17 +70,19 @@ const HomePage = () => {
                     >待办中心</Button>
                 </Grid.Item>
 
-                {Array.from({length: 21}).map((item, index) => {
-                    return (
-                        <Grid.Item>
-                            <Button
-                                style={{
-                                    width:"100%"
-                                }}
-                            >button{index + 1}</Button>
-                        </Grid.Item>
-                    )
-                })}
+
+                <Grid.Item>
+                    <Button
+                        style={{
+                            width:"100%"
+                        }}
+                        onClick={()=>{
+                            clearUser();
+                            navigate("/login")
+                        }}
+                    >退出登陆</Button>
+                </Grid.Item>
+
             </Grid>
 
         </div>

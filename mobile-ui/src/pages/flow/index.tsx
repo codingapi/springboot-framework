@@ -3,12 +3,12 @@ import Header from "@/layout/Header";
 import PullToRefreshList, {ListAction} from "@/components/list";
 import {RightOutline} from "antd-mobile-icons";
 import {
+    findAllByOperatorId,
     findDoneByOperatorId,
     findInitiatedByOperatorId,
     findPostponedTodoByOperatorId,
     findTimeoutTodoByOperatorId,
     findTodoByOperatorId,
-    findAllByOperatorId,
 } from "@/api/flow";
 import {Tabs} from "antd-mobile";
 import moment from "moment";
@@ -16,11 +16,11 @@ import "./index.scss";
 import {useNavigate} from "react-router";
 
 
-interface TodoItemProps{
-    item:any;
+interface TodoItemProps {
+    item: any;
 }
 
-const TodoItem:React.FC<TodoItemProps> = (props) => {
+const TodoItem: React.FC<TodoItemProps> = (props) => {
 
     const item = props.item;
 
@@ -31,7 +31,10 @@ const TodoItem:React.FC<TodoItemProps> = (props) => {
             <div
                 className={"flow-todo-item-content"}
             >
-                <div className={"flow-todo-item-title"}>{item.title}</div>
+                <div
+                    className={"flow-todo-item-title"}
+                    dangerouslySetInnerHTML={{__html: item.title}}/>
+
                 <div className={"flow-todo-item-attr"}>
                     <div className={"flow-todo-item-attr-title"}>审批人:</div>
                     <div className={"flow-todo-item-attr-content"}>{item.currentOperatorName}</div>
@@ -42,15 +45,16 @@ const TodoItem:React.FC<TodoItemProps> = (props) => {
                 </div>
                 <div className={"flow-todo-item-attr"}>
                     <div className={"flow-todo-item-attr-title"}>创建时间:</div>
-                    <div className={"flow-todo-item-attr-content"}>{moment(item.createTime).format('YYYY-MM-DD HH:mm:ss')}</div>
+                    <div
+                        className={"flow-todo-item-attr-content"}>{moment(item.createTime).format('YYYY-MM-DD HH:mm:ss')}</div>
                 </div>
             </div>
             <div
                 className={"flow-todo-item-arrow"}>
                 <RightOutline
                     fontSize={20}
-                    onClick={()=>{
-                        navigate('/flow/detail',{state:item});
+                    onClick={() => {
+                        navigate('/flow/detail', {state: item});
                     }}
                 />
             </div>
