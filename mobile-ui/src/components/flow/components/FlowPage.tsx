@@ -1,5 +1,12 @@
 import React, {useEffect} from "react";
-import {FlowFormViewProps, FlowViewProps, PostponedFormProps, PostponedFormViewKey} from "@/components/flow/types";
+import {
+    FlowFormViewProps,
+    FlowViewProps,
+    PostponedFormProps,
+    PostponedFormViewKey,
+    UserSelectFormProps,
+    UserSelectFormViewKey
+} from "@/components/flow/types";
 import {useDispatch, useSelector} from "react-redux";
 import {FlowReduxState, updateState} from "@/components/flow/store/FlowSlice";
 import {FlowViewContext} from "@/components/flow/domain/FlowViewContext";
@@ -41,6 +48,8 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
 
     // 延期表单视图
     const PostponedFormView = getComponent(PostponedFormViewKey) as React.ComponentType<PostponedFormProps>;
+    // 选人表单视图
+    const UserSelectFormView = getComponent(UserSelectFormViewKey) as React.ComponentType<UserSelectFormProps>;
 
 
     // 设置流程编号
@@ -88,6 +97,27 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
                                 })
                             });
                         }}
+                    />
+                )}
+
+                {UserSelectFormView && currentState.userSelectMode && (
+                    <UserSelectFormView
+                        visible={currentState.userSelectVisible}
+                        setVisible={(visible: boolean) => {
+                            flowStateContext.setUserSelectVisible(visible);
+                        }}
+                        onFinish={(users) => {
+                            // 选择的人
+                            console.log('users', users);
+                            // todo 选人流程处理
+
+                            // 选人完成
+                            flowStateContext.setUserSelectVisible(false);
+                        }}
+                        multiple={currentState.userSelectMode.multiple}
+                        specifyUserIds={currentState.userSelectMode.specifyUserIds}
+                        currentUserIds={currentState.userSelectMode.currentUserIds}
+                        userSelectType={currentState.userSelectMode.userSelectType}
                     />
                 )}
 

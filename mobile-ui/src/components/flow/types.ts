@@ -3,6 +3,8 @@ import {FormAction} from "@/components/form";
 
 // 延期表单视图Key
 export const PostponedFormViewKey = 'PostponedFormView';
+// 选人表单视图Key
+export const UserSelectFormViewKey = 'UserSelectFormViewKey';
 
 // 自定义按钮类型
 export type ButtonType =
@@ -38,6 +40,31 @@ export interface PostponedFormProps {
     setVisible: (visible: boolean) => void;
     onFinish: (timeout: number) => void;
 }
+
+// 选人表单 【拓展视图】
+
+export type UserSelectFormType =
+// 选择下级流程节点的人员，约定人员id范围
+    'nextNodeUser'
+    // 选择转办人员，约定本单位下的人员
+    | 'transfer'
+    // 选择所有人员，在流程配置上使用
+    | 'users';
+
+export interface UserSelectFormProps {
+    visible: boolean;
+    setVisible: (visible: boolean) => void;
+    onFinish: (values: FlowUser[]) => void;
+    // 选择模式
+    multiple: boolean;
+    // 指定人员范围
+    specifyUserIds?: number[];
+    // 当前选择的人员
+    currentUserIds?: number[];
+    // 选人方式
+    userSelectType: UserSelectFormType;
+}
+
 
 // 结果展示数据项目
 export interface FlowResultItem {

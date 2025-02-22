@@ -392,8 +392,14 @@ export class FlowEventContext {
         }
 
         if (button.type === 'POSTPONED') {
-            console.log('POSTPONED');
             this.flowStateContext.setPostponedVisible(true);
+        }
+
+        if (button.type === 'TRANSFER') {
+            this.flowStateContext.setUserSelectMode({
+                userSelectType: 'transfer',
+                multiple: false,
+            });
         }
     }
 }

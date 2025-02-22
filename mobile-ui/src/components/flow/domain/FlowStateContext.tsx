@@ -1,4 +1,4 @@
-import {FlowStore} from "@/components/flow/store/FlowSlice";
+import {FlowStore, UserSelectMode} from "@/components/flow/store/FlowSlice";
 import {FlowResultMessage} from "@/components/flow/types";
 
 /**
@@ -64,6 +64,23 @@ export class FlowStateContext {
         this.currentState = {
             ...this.currentState,
             postponedVisible: visible
+        }
+        this.updateState();
+    }
+
+    setUserSelectVisible(visible: boolean) {
+        this.currentState = {
+            ...this.currentState,
+            userSelectVisible: visible
+        }
+        this.updateState();
+    }
+
+    setUserSelectMode(userSelectMode: UserSelectMode) {
+        this.currentState = {
+            ...this.currentState,
+            userSelectVisible: true,
+            userSelectMode: userSelectMode
         }
         this.updateState();
     }

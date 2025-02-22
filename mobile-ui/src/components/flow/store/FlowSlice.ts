@@ -1,5 +1,5 @@
 import {configureStore, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {FlowResultMessage} from "@/components/flow/types";
+import {FlowResultMessage, UserSelectFormType} from "@/components/flow/types";
 
 export interface FlowStore {
     // 流程记录ID
@@ -16,7 +16,21 @@ export interface FlowStore {
 
     // 延期时间窗口状态
     postponedVisible: boolean;
+    // 选人窗口状态
+    userSelectVisible: boolean;
+    // 选人状态
+    userSelectMode: UserSelectMode | null;
+}
 
+export interface UserSelectMode {
+    // 指定人员范围
+    specifyUserIds?: number[];
+    // 当前选择的人员
+    currentUserIds?: number[];
+    // 选人类型
+    userSelectType: UserSelectFormType;
+    // 是否多选
+    multiple: boolean;
 }
 
 export type FlowStoreAction = {
@@ -32,7 +46,9 @@ export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
         result: null,
         contentHiddenVisible: false,
         postponedVisible: false,
-        opinionVisible:true,
+        opinionVisible: true,
+        userSelectVisible: false,
+        userSelectMode: null
     },
     reducers: {
         updateState: (state, action) => {
@@ -46,10 +62,22 @@ export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
             }
             if (keys.includes('result')) {
                 state.result = action.payload.result;
-                state.contentHiddenVisible =  state.result!=null;
+                state.contentHiddenVisible = state.result != null;
             }
             if (keys.includes('postponedVisible')) {
                 state.postponedVisible = action.payload.postponedVisible;
+            }
+
+            if (keys.includes('userSelectMode')) {
+                state.userSelectVisible = true;
+                state.userSelectMode = action.payload.userSelectMode;
+            }
+
+            if (keys.includes('userSelectVisible')) {
+                state.userSelectVisible = action.payload.userSelectVisible;
+                if (!state.userSelectVisible) {
+                    state.userSelectMode = null;
+                }
             }
         },
         initState: (state) => {
@@ -59,6 +87,7 @@ export const flowSlice = createSlice<FlowStore, FlowStoreAction, "flow", {}>({
             state.postponedVisible = false;
             state.opinionVisible = true;
             state.contentHiddenVisible = false;
+            state.userSelectVisible = false;
         }
     },
 });
