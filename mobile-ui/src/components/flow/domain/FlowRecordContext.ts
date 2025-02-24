@@ -49,6 +49,12 @@ export class FlowRecordContext {
         return "wait";
     }
 
+
+    // 获取历史记录
+    getHistoryRecords = () => {
+        return this.data.historyRecords;
+    }
+
     // 获取当前节点的流程图
     getFlowSchema = () => {
         if (this.data.flowWork.schema) {

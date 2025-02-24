@@ -4,10 +4,24 @@ import {FlowViewReactContext} from "@/components/flow/view";
 
 const FlowRecord = () => {
     const flowViewReactContext = useContext(FlowViewReactContext);
+    const flowRecordContext = flowViewReactContext?.flowRecordContext;
+
+    const historyRecords = flowRecordContext?.getHistoryRecords();
 
     return (
         <div>
-            这里应该有流程的审批记录
+            <div className={"flow-history-row-title"}>流程历史记录</div>
+
+            <div className={"flow-history-list"}>
+                {historyRecords && historyRecords.map((item: any) => {
+                    return (
+                        <div>
+                            <div>{item.title}</div>
+                        </div>
+                    )
+                })}
+            </div>
+
         </div>
     )
 }

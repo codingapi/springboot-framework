@@ -76,9 +76,17 @@ $flow-footer-height: 80px;
       border-color: $theme-primary-color;
     }
   }
-
 }
 
+.flow-history-row-title {
+  text-align: center;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.flow-history-list{
+
+}
 
 .flow-chart-content {
   transition: 0.3s;
@@ -86,6 +94,12 @@ $flow-footer-height: 80px;
 
   .flow-view {
     width: 100%;
-    height: 55vh;
+    height: 0vh;
+  }
+
+  .flow-img {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ebeef5;
   }
 }
