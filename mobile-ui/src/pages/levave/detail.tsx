@@ -9,8 +9,6 @@ const LeaveDetailPage = () => {
     const location = useLocation();
     const state = location.state;
 
-    console.log('LeaveDetailPage:', state);
-
     return (
         <>
             <Header>流程详情</Header>

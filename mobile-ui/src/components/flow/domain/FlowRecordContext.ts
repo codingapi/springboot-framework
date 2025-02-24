@@ -29,6 +29,19 @@ export class FlowRecordContext {
     }
 
 
+    // 获取节点的数据
+    getNode = (code: string) => {
+        if (this.data) {
+            const nodes = this.data.flowWork.nodes;
+            for (const node of nodes) {
+                if (node.code === code) {
+                    return node;
+                }
+            }
+        }
+        return null;
+    }
+
     // 获取当前节点的表单数据 （内部使用）
     private getNodeState = (code: string) => {
         const historyRecords = this.data.historyRecords || [];
@@ -53,6 +66,11 @@ export class FlowRecordContext {
     // 获取历史记录
     getHistoryRecords = () => {
         return this.data.historyRecords;
+    }
+
+    // 获取当前的详情的记录数据
+    getCurrentFlowRecord = () => {
+        return this.data.flowRecord;
     }
 
     // 获取当前节点的流程图

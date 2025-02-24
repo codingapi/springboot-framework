@@ -54,7 +54,8 @@ const Descriptions: React.FC<DescriptionsProps> = (props) => {
                     const value = data[key] || null;
                     return (
                         <div className={"descriptions-list-item"}>
-                            <div className={"descriptions-list-item-label"}>{item.props.label}:</div>
+                            <div className={"descriptions-list-item-label"}
+                                 dangerouslySetInnerHTML={{__html: item.props.label || ""}}/>
                             <div className={"descriptions-list-item-value"}>{value}</div>
                         </div>
                     )

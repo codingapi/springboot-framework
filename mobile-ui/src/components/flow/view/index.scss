@@ -78,17 +78,58 @@ $flow-footer-height: 80px;
   }
 }
 
-.flow-history{
-  .flow-basic{
+.flow-history {
+  .flow-basic {
 
   }
 
-  .flow-history-list{
+  .flow-history-list {
+    margin-top: 10px;
 
+    .flow-history-list-item {
+      padding: 5px;
+      display: flex;
+      flex-direction: row;
+      margin-left: 10px;
+
+      .flow-history-list-item-line {
+        width: 30px;
+        height: 30px;
+        background-color: $theme-primary-color;
+        border-radius: 50%;
+        position: relative;
+      }
+
+      .flow-history-list-item-dot {
+        content: '';
+        position: absolute;
+        top: 33px;
+        left: 15px;
+        width: 1px;
+        height: calc(100% + 75px);
+        background-color: $theme-primary-color;
+        z-index: 0;
+      }
+
+      .flow-history-list-item-content {
+        display: flex;
+        flex-direction: column;
+        margin-left: 10px;
+        padding: 5px;
+
+        .flow-history-list-item-title {
+          font-size: $title-font-size;
+          font-weight: bold;
+        }
+
+        .flow-history-list-item-attr {
+          margin-top: 5px;
+          font-size: $content-font-size;
+        }
+      }
+    }
   }
 }
-
-
 
 .flow-chart {
   transition: 0.3s;
@@ -102,6 +143,5 @@ $flow-footer-height: 80px;
   .flow-img {
     width: 100%;
     height: 100%;
-    border: 1px solid #ebeef5;
   }
 }
