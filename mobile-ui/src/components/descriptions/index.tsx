@@ -19,6 +19,8 @@ interface DescriptionsProps {
     footer?: React.ReactNode;
     // 页头
     header?: React.ReactNode;
+    // 数据转换
+    dataConvert?: (field: FormField, data: any) => Promise<any>;
 }
 
 // 详情展示
@@ -28,8 +30,23 @@ const Descriptions: React.FC<DescriptionsProps> = (props) => {
 
     const reload = () => {
         if (props.request) {
-            props.request().then(data => {
-                setData(data);
+            props.request().then((data) => {
+                if(props.dataConvert) {
+                    const promise = [] as Promise<any>[];
+                    props.columns?.map(item => {
+                        promise.push(new Promise<any>((resolve, reject) => {
+                            props.dataConvert?.(item, data).then(value => {
+                                data[item.props.name] = value;
+                                resolve(value);
+                            }).catch(reject);
+                        }));
+                    });
+                    Promise.all(promise).then(() => {
+                        setData(data);
+                    });
+                }else {
+                    setData(data);
+                }
             })
         }
     }
@@ -42,6 +59,10 @@ const Descriptions: React.FC<DescriptionsProps> = (props) => {
 
     useEffect(() => {
         reload();
+
+        return () => {
+            setData(null);
+        }
     }, []);
 
     return (
@@ -51,12 +72,21 @@ const Descriptions: React.FC<DescriptionsProps> = (props) => {
                 .filter(item => !item.props.hidden)
                 .map((item) => {
                     const key = item.props.name;
-                    const value = data[key] || null;
+                    const value = data[key];
+                    const valueType = typeof value === 'object' ? 'object' : 'string';
                     return (
                         <div className={"descriptions-list-item"}>
                             <div className={"descriptions-list-item-label"}
                                  dangerouslySetInnerHTML={{__html: item.props.label || ""}}/>
-                            <div className={"descriptions-list-item-value"}>{value}</div>
+                            {valueType === 'string' && (
+                                <div className={"descriptions-list-item-value"}
+                                     dangerouslySetInnerHTML={{__html: value}}/>
+                            )}
+                            {valueType === 'object' && (
+                                <div className={"descriptions-list-item-value"}>
+                                    {value}
+                                </div>
+                            )}
                         </div>
                     )
                 })}

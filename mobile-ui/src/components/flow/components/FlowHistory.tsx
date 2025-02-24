@@ -10,7 +10,7 @@ const fields = [
         type: 'input',
         props: {
             name: 'title',
-            label: '标题',
+            label: '',
         }
     },
     {

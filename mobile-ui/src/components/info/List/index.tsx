@@ -47,6 +47,11 @@ interface PullToRefreshTodoListProps {
     // 加载更多
     onLoadMore?: (pageSize: number, last: any) => Promise<ListResponse>;
 
+
+    showDetail?: (item: TodoListItem) => boolean;
+    showEdit?: (item: TodoListItem) => boolean;
+    showDelete?: (item: TodoListItem) => boolean;
+
 }
 
 export const PullToRefreshTodoList: React.FC<PullToRefreshTodoListProps> = (props) => {
@@ -76,6 +81,9 @@ export const PullToRefreshTodoList: React.FC<PullToRefreshTodoListProps> = (prop
                             onDetailClick={props.onDetailClick}
                             onEditClick={props.onEditClick}
                             onDeleteClick={props.onDeleteClick}
+                            showDetail={props.showDetail}
+                            showEdit={props.showEdit}
+                            showDelete={props.showDelete}
                         />
                     )
                 }}
@@ -98,6 +106,11 @@ interface TodoListProps {
     onDeleteClick?: (item: TodoListItem) => void;
     // 加载数据
     loadData: () => Promise<ListResponse>;
+
+
+    showDetail?: (item: TodoListItem) => boolean;
+    showEdit?: (item: TodoListItem) => boolean;
+    showDelete?: (item: TodoListItem) => boolean;
 
 }
 
@@ -135,6 +148,9 @@ export const TodoList: React.FC<TodoListProps> = (props) => {
                         onDetailClick={props.onDetailClick}
                         onEditClick={props.onEditClick}
                         onDeleteClick={props.onDeleteClick}
+                        showDetail={props.showDetail}
+                        showEdit={props.showEdit}
+                        showDelete={props.showDelete}
                     />
                 )
             })}

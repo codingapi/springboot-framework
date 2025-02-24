@@ -1,11 +1,11 @@
 import React from "react";
-import {TodoListItem, stateConvert} from "@/components/info/List/index";
+import {stateConvert, TodoListItem} from "@/components/info/List/index";
 import {Button, Dialog} from "antd-mobile";
 import {DeleteOutline, EditSOutline, EyeOutline} from "antd-mobile-icons";
 
 
 interface ListItemProps {
-    data:TodoListItem;
+    data: TodoListItem;
 
     // 详情事件
     onDetailClick?: (item: TodoListItem) => void;
@@ -13,6 +13,11 @@ interface ListItemProps {
     onEditClick?: (item: TodoListItem) => void;
     // 删除事件
     onDeleteClick?: (item: TodoListItem) => void;
+
+    showDetail?: (item: TodoListItem) => boolean;
+    showEdit?: (item: TodoListItem) => boolean;
+    showDelete?: (item: TodoListItem) => boolean;
+
 
 }
 
@@ -39,49 +44,56 @@ const ListItem: React.FC<ListItemProps> = (props) => {
                     <img src={stateConvert(item.state)} className={"infoList-state-img"}/>
                 </div>
                 <div className={"infoList-operate"}>
-                    <Button
-                        onClick={async () => {
-                            await Dialog.confirm({
-                                content: '确认要删除吗？',
-                                onConfirm: async () => {
-                                    props.onDeleteClick && props.onDeleteClick(item);
-                                },
-                            })
-                        }}
-                        className={"infoList-operate-button"}
-                        shape={'rounded'}
-                        style={{
-                            backgroundColor: 'red'
-                        }}
-                    >
-                        <DeleteOutline color={'white'}/>
-                    </Button>
+                    {props.showDelete && props.showDelete(item) && (
+                        <Button
+                            onClick={async () => {
+                                await Dialog.confirm({
+                                    content: '确认要删除吗？',
+                                    onConfirm: async () => {
+                                        props.onDeleteClick && props.onDeleteClick(item);
+                                    },
+                                })
+                            }}
+                            className={"infoList-operate-button"}
+                            shape={'rounded'}
+                            style={{
+                                backgroundColor: 'red'
+                            }}
+                        >
+                            <DeleteOutline color={'white'}/>
+                        </Button>
+                    )}
 
-                    <Button
-                        onClick={() => {
-                            props.onEditClick && props.onEditClick(item);
-                        }}
-                        className={"infoList-operate-button"}
-                        shape={'rounded'}
-                        style={{
-                            backgroundColor: 'blue'
-                        }}
-                    >
-                        <EditSOutline color={'white'}/>
-                    </Button>
 
-                    <Button
-                        onClick={() => {
-                            props.onDetailClick && props.onDetailClick(item);
-                        }}
-                        className={"infoList-operate-button"}
-                        shape={'rounded'}
-                        style={{
-                            backgroundColor: 'blue'
-                        }}
-                    >
-                        <EyeOutline color={'white'}/>
-                    </Button>
+                    {props.showEdit && props.showEdit(item) && (
+                        <Button
+                            onClick={() => {
+                                props.onEditClick && props.onEditClick(item);
+                            }}
+                            className={"infoList-operate-button"}
+                            shape={'rounded'}
+                            style={{
+                                backgroundColor: 'blue'
+                            }}
+                        >
+                            <EditSOutline color={'white'}/>
+                        </Button>
+                    )}
+
+                    {props.showDetail && props.showDetail(item) && (
+                        <Button
+                            onClick={() => {
+                                props.onDetailClick && props.onDetailClick(item);
+                            }}
+                            className={"infoList-operate-button"}
+                            shape={'rounded'}
+                            style={{
+                                backgroundColor: 'blue'
+                            }}
+                        >
+                            <EyeOutline color={'white'}/>
+                        </Button>
+                    )}
                 </div>
             </div>
         </div>
