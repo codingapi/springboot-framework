@@ -71,6 +71,7 @@ export const PullToRefreshTodoList: React.FC<PullToRefreshTodoListProps> = (prop
                 item={(item, index) => {
                     return (
                         <ListItem
+                            key={index}
                             data={item}
                             onDetailClick={props.onDetailClick}
                             onEditClick={props.onEditClick}

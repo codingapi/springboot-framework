@@ -37,8 +37,6 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
     const formAction = React.useRef<FormAction>(null);
     const opinionAction = React.useRef<FormAction>(null);
 
-    console.log('currentState', currentState);
-
     const flowStateContext = new FlowStateContext(currentState, (state: any) => {
         dispatch(updateState({
             ...state
@@ -54,13 +52,14 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
     // 选人表单视图
     const UserSelectFormView = getComponent(UserSelectFormViewKey) as React.ComponentType<UserSelectFormProps>;
 
+    const version = useSelector((state: FlowReduxState) => state.flow.version);
 
     // 设置流程编号
     useEffect(() => {
         if (props.id) {
             flowStateContext.setRecordId(props.id);
         }
-    }, [props.id]);
+    }, [version]);
 
     if (FlowFormView) {
         return (

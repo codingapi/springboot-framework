@@ -122,7 +122,7 @@ const FlowListPage = () => {
                     listAction={listAction}
                     className={"flow-todo-list"}
                     item={(item, index) => {
-                        return <TodoItem item={item}/>
+                        return <TodoItem item={item} key={index}/>
                     }}
                     onRefresh={handlerRefresh}
                     onLoadMore={handlerLoadMore}

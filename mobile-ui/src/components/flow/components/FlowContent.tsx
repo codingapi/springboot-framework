@@ -10,10 +10,7 @@ import FlowChart from "@/components/flow/components/FlowChart";
 import FlowHistoryLine from "@/components/flow/components/FlowHistoryLine";
 import FlowOpinion from "@/components/flow/components/FlowOpinion";
 
-interface FlowContentProps {
-}
-
-const FlowContent:React.FC<FlowContentProps> = (props) => {
+const FlowContent= () => {
     const flowViewReactContext = useContext(FlowViewReactContext);
 
     const flowRecordContext = flowViewReactContext?.flowRecordContext;
@@ -24,6 +21,7 @@ const FlowContent:React.FC<FlowContentProps> = (props) => {
     const formParams = flowRecordContext?.getFlowFormParams();
 
     const opinionVisible = useSelector((state: FlowReduxState) => state.flow.opinionVisible);
+    const dataVersion = useSelector((state: FlowReduxState) => state.flow.dataVersion);
     const contentHiddenVisible = useSelector((state: FlowReduxState) => state.flow.contentHiddenVisible);
 
     useEffect(() => {
@@ -43,6 +41,7 @@ const FlowContent:React.FC<FlowContentProps> = (props) => {
                         <FlowFormView
                             data={formParams}
                             formAction={formAction}
+                            dataVersion={dataVersion}
                         />
                     )}
 

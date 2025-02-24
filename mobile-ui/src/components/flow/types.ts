@@ -107,6 +107,8 @@ export interface FlowFormViewProps {
     data: FlowFormParams;
     // 表单控制对象
     formAction: React.RefObject<FormAction>;
+    // 数据版本
+    dataVersion?: number;
 }
 
 // 表单视图

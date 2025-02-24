@@ -1,6 +1,6 @@
 import React, {createContext, useEffect} from "react";
 import {Provider, useDispatch, useSelector} from "react-redux";
-import {FlowReduxState, flowStore, initState} from "@/components/flow/store/FlowSlice";
+import {FlowReduxState, flowStore, initState, updateState} from "@/components/flow/store/FlowSlice";
 import {FlowViewProps} from "@/components/flow/types";
 import {Skeleton} from "antd-mobile";
 import {FlowRecordContext} from "@/components/flow/domain/FlowRecordContext";
@@ -46,7 +46,6 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
             detail(props.id, null).then(res => {
                 if (res.success) {
                     setData(res.data);
-                    dispatch(initState());
                 }
             });
         }
@@ -54,11 +53,23 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
             detail(null, props.workCode).then(res => {
                 if (res.success) {
                     setData(res.data);
-                    dispatch(initState());
                 }
             });
         }
     }
+
+    useEffect(() => {
+        if(data){
+            const dataVersion = Math.random();
+            dispatch(updateState({dataVersion:dataVersion}));
+        }
+    }, [data]);
+
+    useEffect(() => {
+        return ()=>{
+            dispatch(initState());
+        }
+    }, []);
 
     useEffect(() => {
         loadFlowDetail();

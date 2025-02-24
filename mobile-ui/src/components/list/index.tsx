@@ -57,7 +57,9 @@ const PullToRefreshList: React.FC<PullToRefreshListProps> = (props) => {
     const pageSize = props.pageSize || 10;
     const [orderList, setOrderList] = React.useState<any>([]);
     const [last, setLast] = React.useState<any>("");
+    // 没有数据了
     const [noData, setNoData] = React.useState(false);
+    // 是否还有更多数据
     const [hasMore, setHasMore] = React.useState(true);
 
     const [loading, setLoading] = React.useState(false);
@@ -76,7 +78,7 @@ const PullToRefreshList: React.FC<PullToRefreshListProps> = (props) => {
             setOrderList([]);
             refresh();
         }
-    }), [props.listAction,props])
+    }), [props.listAction, props])
 
     const loadMore = async () => {
         if (loading) {
@@ -86,7 +88,7 @@ const PullToRefreshList: React.FC<PullToRefreshListProps> = (props) => {
             setLoading(true);
             props.onLoadMore(last, pageSize)
                 .then(res => {
-                    if(res.success) {
+                    if (res.success) {
                         const {data} = res;
                         if (data.total > 0) {
                             const list = data.list;
@@ -126,7 +128,7 @@ const PullToRefreshList: React.FC<PullToRefreshListProps> = (props) => {
             setLoading(true);
             props.onRefresh(pageSize)
                 .then(res => {
-                    if(res.success) {
+                    if (res.success) {
                         const {data} = res;
                         if (data.total > 0) {
                             const list = data.list;
@@ -163,7 +165,7 @@ const PullToRefreshList: React.FC<PullToRefreshListProps> = (props) => {
                     return props.item(item, index);
                 })}
 
-                {!noData && (
+                {orderList && orderList.length > 0 && (
                     <InfiniteScroll
                         loadMore={loadMore}
                         hasMore={hasMore}

@@ -26,6 +26,7 @@ class FormFactory {
             return (
                 <FormInput
                     {...props}
+                    key={props.name}
                 />
             )
         }
@@ -34,6 +35,7 @@ class FormFactory {
             return (
                 <FormCaptcha
                     {...props}
+                    key={props.name}
                 />
             )
         }
@@ -42,6 +44,7 @@ class FormFactory {
             return (
                 <FormPassword
                     {...props}
+                    key={props.name}
                 />
             )
         }
@@ -50,6 +53,7 @@ class FormFactory {
             return (
                 <FormCascader
                     {...props}
+                    key={props.name}
                 />
             )
         }
@@ -58,6 +62,7 @@ class FormFactory {
             return (
                 <FormSelect
                     {...props}
+                    key={props.name}
                 />
             )
         }
@@ -66,6 +71,7 @@ class FormFactory {
             return (
                 <FormDate
                     {...props}
+                    key={props.name}
                 />
             )
         }
@@ -74,6 +80,7 @@ class FormFactory {
             return (
                 <FormRadio
                     {...props}
+                    key={props.name}
                 />
             )
         }
@@ -82,6 +89,7 @@ class FormFactory {
             return (
                 <FormCheckbox
                     {...props}
+                    key={props.name}
                 />
             )
         }
@@ -90,6 +98,7 @@ class FormFactory {
             return (
                 <FormTextArea
                     {...props}
+                    key={props.name}
                 />
             )
         }
@@ -98,6 +107,7 @@ class FormFactory {
             return (
                 <FormUploader
                     {...props}
+                    key={props.name}
                 />
             )
         }
@@ -106,6 +116,7 @@ class FormFactory {
             return (
                 <FormSwitch
                     {...props}
+                    key={props.name}
                 />
             )
         }
@@ -114,6 +125,7 @@ class FormFactory {
             return (
                 <FormStepper
                     {...props}
+                    key={props.name}
                 />
             )
         }
@@ -122,6 +134,7 @@ class FormFactory {
             return (
                 <FormSlider
                     {...props}
+                    key={props.name}
                 />
             )
         }
@@ -130,6 +143,7 @@ class FormFactory {
             return (
                 <FormRate
                     {...props}
+                    key={props.name}
                 />
             )
         }
@@ -138,6 +152,7 @@ class FormFactory {
             return (
                 <FormSelector
                     {...props}
+                    key={props.name}
                 />
             )
         }

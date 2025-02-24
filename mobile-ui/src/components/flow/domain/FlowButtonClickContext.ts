@@ -50,32 +50,40 @@ export class FlowButtonClickContext {
             }
         }
         if (button.type === 'SPECIFY_SUBMIT') {
-            this.flowEventContext?.trySubmitFlow((res) => {
-                const operators = res.data.operators;
-                const userIds = operators.map((item: any) => {
-                    return item.userId;
+            const trySpecifySubmitHandler = ()=>{
+                this.flowEventContext?.trySubmitFlow((res) => {
+                    const operators = res.data.operators;
+                    const userIds = operators.map((item: any) => {
+                        return item.userId;
+                    });
+                    this.flowStateContext?.setUserSelectMode({
+                        userSelectType: 'nextNodeUser',
+                        multiple: true,
+                        specifyUserIds: userIds,
+                    });
                 });
-
-                this.flowStateContext?.setUserSelectMode({
-                    userSelectType: 'nextNodeUser',
-                    multiple: true,
-                    specifyUserIds: userIds,
+            }
+            if (this.flowStateContext?.hasRecordId()) {
+                trySpecifySubmitHandler();
+            }else {
+                this.flowEventContext?.startFlow(() => {
+                    trySpecifySubmitHandler();
                 });
-            });
+            }
         }
 
         if (button.type === 'SUBMIT') {
-            if (this.flowStateContext?.hasRecordId()) {
+            const submitHandler = ()=>{
                 this.flowEventContext?.submitFlow(true, (res) => {
                     const flowSubmitResultParser = new FlowSubmitResultParser(res.data);
                     this.flowStateContext?.setResult(flowSubmitResultParser.parser());
                 })
+            }
+            if (this.flowStateContext?.hasRecordId()) {
+                submitHandler();
             } else {
                 this.flowEventContext?.startFlow(() => {
-                    this.flowEventContext?.submitFlow(true, (res) => {
-                        const flowSubmitResultParser = new FlowSubmitResultParser(res.data);
-                        this.flowStateContext?.setResult(flowSubmitResultParser.parser());
-                    })
+                    submitHandler();
                 });
             }
         }
@@ -92,10 +100,19 @@ export class FlowButtonClickContext {
         }
 
         if (button.type === 'TRY_SUBMIT') {
-            this.flowEventContext?.trySubmitFlow((res) => {
-                const flowTrySubmitResultParser = new FlowTrySubmitResultParser(res.data);
-                this.flowStateContext?.setResult(flowTrySubmitResultParser.parser());
-            });
+            const trySubmitHandler = ()=>{
+                this.flowEventContext?.trySubmitFlow((res) => {
+                    const flowTrySubmitResultParser = new FlowTrySubmitResultParser(res.data);
+                    this.flowStateContext?.setResult(flowTrySubmitResultParser.parser());
+                });
+            }
+            if (this.flowStateContext?.hasRecordId()) {
+                trySubmitHandler();
+            }else {
+                this.flowEventContext?.startFlow(() => {
+                    trySubmitHandler();
+                });
+            }
         }
 
         if (button.type === 'RECALL') {
@@ -134,15 +151,23 @@ export class FlowButtonClickContext {
         }
 
         if (button.type === 'POSTPONED') {
-            this.flowStateContext?.setPostponedVisible(true);
+            if (this.flowStateContext?.hasRecordId()) {
+                this.flowStateContext?.setPostponedVisible(true);
+            }else {
+                Toast.show('流程尚未发起，无法操作');
+            }
         }
 
 
         if (button.type === 'TRANSFER') {
-            this.flowStateContext?.setUserSelectMode({
-                userSelectType: 'transfer',
-                multiple: false,
-            });
+            if (this.flowStateContext?.hasRecordId()) {
+                this.flowStateContext?.setUserSelectMode({
+                    userSelectType: 'transfer',
+                    multiple: false,
+                });
+            }else {
+                Toast.show('流程尚未发起，无法操作');
+            }
         }
 
         if (button.type === "CUSTOM") {
@@ -160,8 +185,12 @@ export class FlowButtonClickContext {
         }
 
         if (button.type === 'VIEW') {
-            const eventKey = button.eventKey;
-            this.flowEventContext?.triggerEvent(eventKey);
+            if (this.flowStateContext?.hasRecordId()) {
+                const eventKey = button.eventKey;
+                this.flowEventContext?.triggerEvent(eventKey);
+            }else {
+                Toast.show('流程尚未发起，无法操作');
+            }
         }
     }
 }

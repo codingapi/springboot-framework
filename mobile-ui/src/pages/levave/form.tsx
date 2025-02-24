@@ -21,12 +21,12 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
 
     useEffect(() => {
         // 设置表单数据
-        if (props.data) {
+        if (props.dataVersion && props.data) {
             formAction.current?.setFieldsValue({
                 ...props.data
             });
         }
-    }, [props.data]);
+    }, [props.dataVersion]);
 
     const flowButtons = flowViewReactContext?.flowRecordContext?.getFlowButtons();
 
@@ -138,6 +138,7 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
                     {flowButtons && flowButtons.map((button, index) => {
                         return (
                             <Button
+                                key={index}
                                 style={{
                                     margin: 5
                                 }}
