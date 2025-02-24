@@ -1,6 +1,10 @@
 import React from "react";
 import {FormAction} from "@/components/form";
 
+
+// 流程图中线的类型
+export type EdgeType = 'line' | 'polyline' | 'bezier';
+
 // 延期表单视图Key
 export const PostponedFormViewKey = 'PostponedFormView';
 // 选人表单视图Key

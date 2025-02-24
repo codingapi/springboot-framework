@@ -78,3 +78,14 @@ $flow-footer-height: 80px;
   }
 
 }
+
+
+.flow-chart-content {
+  transition: 0.3s;
+  border-radius: 12px;
+
+  .flow-view {
+    width: 100%;
+    height: 55vh;
+  }
+}
