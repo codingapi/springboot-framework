@@ -284,7 +284,7 @@ public class FlowSubmitService {
                 if (record.isTodo() && record.getId() != flowRecord.getId()) {
                     record.autoPass(currentOperator, snapshot);
                     FlowRecordRepository flowRecordRepository = flowServiceRepositoryHolder.getFlowRecordRepository();
-                    flowRecordRepository.update(flowRecord);
+                    flowRecordRepository.update(record);
                 }
             }
         }
