@@ -78,6 +78,20 @@ $flow-footer-height: 80px;
   }
 }
 
+.flow-history-opinion-item {
+  padding: 5px;
+  font-size: $content-font-size;
+  border-bottom: 1px solid $body-background-color;
+
+  .flow-history-opinion-item-row {
+    margin-top: 10px;
+
+    span:first-child {
+      font-weight: bold;
+    }
+  }
+}
+
 .flow-history {
   .flow-basic {
 

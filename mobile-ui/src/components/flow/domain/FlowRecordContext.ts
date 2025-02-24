@@ -97,6 +97,19 @@ export class FlowRecordContext {
         return null;
     }
 
+    // 获取历史审批意见
+    getHistoryOpinions() {
+        if(this.data.opinions){
+            return this.data.opinions.filter((item:any)=>{
+                if(!item.opinion){
+                    return false;
+                }
+                return item.opinion.result!==0;
+            });
+        }
+        return [];
+    }
+
     //获取流程的form数据
     getFlowFormParams() {
         return {
