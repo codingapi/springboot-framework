@@ -1,5 +1,5 @@
 import React, {useContext, useEffect} from "react";
-import {Tabs} from "antd-mobile";
+import {Divider, Tabs} from "antd-mobile";
 import {FlowFormViewProps} from "@/components/flow/types";
 import {FlowViewReactContext} from "@/components/flow/view";
 import FlowHistory from "@/components/flow/components/FlowHistory";
@@ -7,6 +7,7 @@ import FlowOpinion from "@/components/flow/components/FlowOpinion";
 import {useSelector} from "react-redux";
 import {FlowReduxState} from "@/components/flow/store/FlowSlice";
 import FlowChart from "@/components/flow/components/FlowChart";
+import FlowHistoryLine from "@/components/flow/components/FlowHistoryLine";
 
 interface FlowContentProps {
 }
@@ -53,6 +54,8 @@ const FlowContent:React.FC<FlowContentProps> = (props) => {
                 </Tabs.Tab>
                 <Tabs.Tab title='流程图' key='chart'>
                     <FlowChart/>
+                    <Divider>流转历史</Divider>
+                    <FlowHistoryLine/>
                 </Tabs.Tab>
             </Tabs>
         </div>
