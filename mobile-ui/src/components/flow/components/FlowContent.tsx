@@ -3,11 +3,12 @@ import {Divider, Tabs} from "antd-mobile";
 import {FlowFormViewProps} from "@/components/flow/types";
 import {FlowViewReactContext} from "@/components/flow/view";
 import FlowHistory from "@/components/flow/components/FlowHistory";
-import FlowOpinion from "@/components/flow/components/FlowOpinion";
+import FlowFormOpinion from "@/components/flow/components/FlowFormOpinion";
 import {useSelector} from "react-redux";
 import {FlowReduxState} from "@/components/flow/store/FlowSlice";
 import FlowChart from "@/components/flow/components/FlowChart";
 import FlowHistoryLine from "@/components/flow/components/FlowHistoryLine";
+import FlowOpinion from "@/components/flow/components/FlowOpinion";
 
 interface FlowContentProps {
 }
@@ -46,11 +47,13 @@ const FlowContent:React.FC<FlowContentProps> = (props) => {
                     )}
 
                     {opinionVisible && (
-                        <FlowOpinion/>
+                        <FlowFormOpinion/>
                     )}
                 </Tabs.Tab>
                 <Tabs.Tab title='流程记录' key='record'>
                     <FlowHistory/>
+                    <Divider>审批记录</Divider>
+                    <FlowOpinion/>
                 </Tabs.Tab>
                 <Tabs.Tab title='流程图' key='chart'>
                     <FlowChart/>

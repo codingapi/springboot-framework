@@ -1,38 +1,14 @@
-import React, {useContext, useEffect} from "react";
-import Form from "@/components/form";
-import FormTextArea from "@/components/form/textarea";
+import React, {useContext} from "react";
 import {FlowViewReactContext} from "@/components/flow/view";
 
-
-const FlowOpinion = ()=>{
+const FlowOpinion = () => {
 
     const flowViewReactContext = useContext(FlowViewReactContext);
-    const opinionAction = flowViewReactContext?.opinionAction;
     const flowRecordContext = flowViewReactContext?.flowRecordContext;
-
-    useEffect(() => {
-        opinionAction?.current?.setFieldValue("advice", flowRecordContext?.getOpinionAdvice());
-    }, []);
 
     return (
         <>
-            <Form
-                actionRef={opinionAction}
-            >
-                <FormTextArea
-                    name={"advice"}
-                    label={"审批意见"}
-                    textAreaRows={2}
-                    required={true}
-                    validateFunction={async (content)=>{
-                        const value = content.value;
-                        if(value){
-                            return [];
-                        }
-                        return ["请输入审批意见"];
-                    }}
-                />
-            </Form>
+            这里是流程的评论信息
         </>
     )
 }
