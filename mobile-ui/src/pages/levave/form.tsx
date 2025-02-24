@@ -1,9 +1,9 @@
 import React, {useContext, useEffect} from "react";
 import Form from "@/components/form";
-import {FormField} from "@/components/form/types";
 import {FlowFormViewProps} from "@/components/flow/types";
 import {Button, Toast} from "antd-mobile";
 import {FlowViewReactContext} from "@/components/flow/view";
+import {fields} from "@/pages/levave/fields";
 
 const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
     const formAction = props.formAction;
@@ -21,7 +21,7 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
 
     useEffect(() => {
         // 设置表单数据
-        if(props.data){
+        if (props.data) {
             formAction.current?.setFieldsValue({
                 ...props.data
             });
@@ -34,50 +34,7 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
         <Form
             actionRef={formAction}
             loadFields={async () => {
-                return [
-                    {
-                        type: "input",
-                        props: {
-                            name: "clazzName",
-                            hidden: true
-                        }
-                    },
-                    {
-                        type: "input",
-                        props: {
-                            name: "username",
-                            hidden: true
-                        }
-                    },
-                    {
-                        type: "input",
-                        props: {
-                            label: "请假天数",
-                            name: "days",
-                            required: true,
-                            validateFunction: async (content) => {
-                                if (content.value <= 0) {
-                                    return ["请假天数不能小于0"];
-                                }
-                                return []
-                            }
-                        }
-                    },
-                    {
-                        type: "textarea",
-                        props: {
-                            label: "请假理由",
-                            name: "desc",
-                            required: true,
-                            validateFunction: async (content) => {
-                                if (content.value && content.value.length > 0) {
-                                    return []
-                                }
-                                return ["请假理由不能为空"];
-                            }
-                        }
-                    }
-                ] as FormField[]
+                return fields;
             }}
             onFinish={async (values) => {
                 console.log('values:', values);
@@ -174,7 +131,7 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
                             margin: 5
                         }}
                         onClick={async () => {
-                           flowViewReactContext?.flowEventContext.reloadFlow();
+                            flowViewReactContext?.flowEventContext.reloadFlow();
                         }}
                     >刷新数据</Button>
 
@@ -184,7 +141,7 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
                                 style={{
                                     margin: 5
                                 }}
-                                onClick={()=>{
+                                onClick={() => {
                                     flowViewReactContext?.flowButtonClickContext?.handlerClick(button);
                                 }}
                             >

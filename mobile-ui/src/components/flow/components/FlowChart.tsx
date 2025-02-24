@@ -80,9 +80,8 @@ const FlowChart: React.FC<FlowChartProps> = (props) => {
 
     return (
         <div>
-            <div className={"flow-history-row-title"}>流程图</div>
-            <div className="flow-chart-content">
-                <div className={"flow-view"} ref={container}/>
+            <div className="flow-chart">
+                <div className={"flow-chart-content"} ref={container}/>
                 {url && (
                     <img src={url} className={"flow-img"}/>
                 )}

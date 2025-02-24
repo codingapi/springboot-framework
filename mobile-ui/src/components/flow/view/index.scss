@@ -78,23 +78,25 @@ $flow-footer-height: 80px;
   }
 }
 
-.flow-history-row-title {
-  text-align: center;
-  margin-bottom: 5px;
-  font-size: 14px;
+.flow-history{
+  .flow-basic{
+
+  }
+
+  .flow-history-list{
+
+  }
 }
 
-.flow-history-list{
 
-}
 
-.flow-chart-content {
+.flow-chart {
   transition: 0.3s;
   border-radius: 12px;
 
-  .flow-view {
-    width: 100%;
-    height: 0vh;
+  .flow-chart-content {
+    width: 0;
+    height: 0;
   }
 
   .flow-img {

@@ -7,7 +7,15 @@ import {RightOutline} from "antd-mobile-icons";
 import {useNavigate} from "react-router";
 import Footer from "@/layout/Footer";
 
-const leaveItem = (item: any) => {
+
+interface LeaveItemProps{
+    item:any;
+}
+
+const LeaveItem:React.FC<LeaveItemProps> = (props) => {
+    const item = props.item;
+    const navigate = useNavigate();
+
     return (
         <div style={{
             backgroundColor: 'white',
@@ -42,6 +50,9 @@ const leaveItem = (item: any) => {
             }}>
                 <RightOutline
                     fontSize={20}
+                    onClick={()=>{
+                        navigate(`/leave/detail`,{state:item});
+                    }}
                 />
             </div>
         </div>
@@ -68,7 +79,9 @@ const LeaveListPage = () => {
                     overflow: 'auto'
                 }}
                 item={(item, index) => {
-                    return leaveItem(item);
+                    return (
+                        <LeaveItem item={item}/>
+                    );
                 }}
                 onRefresh={handlerRefresh}
                 onLoadMore={handlerLoadMore}

@@ -1,5 +1,4 @@
 import {NamePath} from "antd-mobile/es/components/form";
-import type {Rule} from "rc-field-form/lib/interface";
 import {FormValidateContent} from "@/components/form/validate";
 import {FormAction} from "@/components/form";
 

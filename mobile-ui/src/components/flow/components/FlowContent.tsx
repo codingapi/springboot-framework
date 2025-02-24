@@ -6,6 +6,7 @@ import FlowHistory from "@/components/flow/components/FlowHistory";
 import FlowOpinion from "@/components/flow/components/FlowOpinion";
 import {useSelector} from "react-redux";
 import {FlowReduxState} from "@/components/flow/store/FlowSlice";
+import FlowChart from "@/components/flow/components/FlowChart";
 
 interface FlowContentProps {
 }
@@ -35,7 +36,7 @@ const FlowContent:React.FC<FlowContentProps> = (props) => {
     return (
         <div className={"flow-view-content"} style={style}>
             <Tabs>
-                <Tabs.Tab title='详情' key='detail'>
+                <Tabs.Tab title='流程详情' key='detail'>
                     {formAction && (
                         <FlowFormView
                             data={formParams}
@@ -47,8 +48,11 @@ const FlowContent:React.FC<FlowContentProps> = (props) => {
                         <FlowOpinion/>
                     )}
                 </Tabs.Tab>
-                <Tabs.Tab title='流程' key='flow'>
+                <Tabs.Tab title='流程记录' key='record'>
                     <FlowHistory/>
+                </Tabs.Tab>
+                <Tabs.Tab title='流程图' key='chart'>
+                    <FlowChart/>
                 </Tabs.Tab>
             </Tabs>
         </div>
