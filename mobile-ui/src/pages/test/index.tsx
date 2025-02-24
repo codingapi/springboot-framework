@@ -1,24 +1,73 @@
-import React from "react";
+import React, {useImperativeHandle} from "react";
+import {Button} from "antd-mobile";
 
-const MyContext = React.createContext('默认值');
+export const MyContext = React.createContext<string|null>(null);
 
+interface ChildAction{
+    getValue:()=>string;
+}
 
-const Child = ()=>{
+interface ChildProps {
+    title: string;
+    onFinish?:(values:string)=>void;
+    childAction?:React.Ref<ChildAction>;
+}
 
-    const contextValue = React.useContext(MyContext);
+const Child: React.FC<ChildProps> = (props) => {
+
+    const myContext = React.useContext(MyContext);
+
+    const [value,setValue] = React.useState('');
+
+    useImperativeHandle(props.childAction,()=> {
+        return {
+            getValue:()=>{
+                return value;
+            }
+        }
+    },[value]);
 
     return (
-        <div>Child--- {contextValue}</div>
+        <>
+            <div>{props.title}</div>
+            <div>{myContext}</div>
+            <input value={value} onChange={(e)=>{
+                setValue(e.target.value);
+            }}/>
+            <Button
+                onClick={()=>{
+                    props.onFinish && props.onFinish(value);
+                }}
+            >ok</Button>
+        </>
+
     )
 }
 
-const Test = ()=>{
+const Test = () => {
     const value = 'Hello, Context!';
+
+    const childAction = React.useRef<ChildAction>(null);
 
     return (
         <MyContext.Provider value={value}>
-            test
-            <Child />
+
+           <div>
+               <Child
+                   childAction={childAction}
+                   title={"title"}
+                   onFinish={(values)=>{
+                       console.log(values);
+                   }}
+               />
+           </div>
+
+            <Button
+                onClick={()=>{
+                    const value = childAction.current?.getValue();
+                    console.log(value);
+                }}
+            >test</Button>
         </MyContext.Provider>
 
     )

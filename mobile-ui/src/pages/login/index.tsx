@@ -3,7 +3,7 @@ import {Button, Toast} from "antd-mobile";
 import FormInput from "@/components/form/input";
 import FormPassword from "@/components/form/password";
 import {useNavigate} from "react-router";
-import Index, {FormAction} from "@/components/form";
+import Form, {FormAction} from "@/components/form";
 import {initUser, login} from "@/api/account";
 import {config} from "@/config/theme";
 
@@ -38,7 +38,7 @@ const LoginPage = () => {
             }}>
                 login page
             </h3>
-            <Index
+            <Form
                 actionRef={formAction}
                 onFinish={handlerLogin}
                 layout="horizontal"
@@ -82,7 +82,7 @@ const LoginPage = () => {
                         }
                     }}
                 />
-            </Index>
+            </Form>
         </div>
     )
 }
