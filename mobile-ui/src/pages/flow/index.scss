@@ -17,20 +17,20 @@ $flow-tabs-height: 45px;
 }
 
 .flow-todo-item {
-  display: flex;
   background-color: white;
   margin-top: 2px;
+  position: relative;
 
   .flow-todo-item-content {
     padding: 15px;
 
     .flow-todo-item-title {
-      font-size: 16px;
+      font-size: $title-font-size;
       align-items: center;
     }
 
     .flow-todo-item-attr {
-      font-size: 14px;
+      font-size: $content-font-size;
       display: flex;
       margin-top: 10px;
 
@@ -45,10 +45,9 @@ $flow-tabs-height: 45px;
   }
 
   .flow-todo-item-arrow {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    position: absolute;
+    right: 10px;
+    top: 50%;
   }
 
 }

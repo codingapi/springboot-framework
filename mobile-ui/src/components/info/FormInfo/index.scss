@@ -13,7 +13,7 @@
   height: 20px;
   border-left: 4px solid $theme-primary-color;
   padding-left: 4px;
-  font-size: 14px;
+  font-size: $content-font-size;
   margin-bottom: 10px;
 }
 
@@ -22,13 +22,13 @@
   border-bottom: 2px solid $body-background-color;
 
   .label {
-    font-size: 14px;
+    font-size: $content-font-size;
     display: flex;
     align-items: center;
   }
 
   .value {
-    font-size: 14px;
+    font-size: $content-font-size;
     display: flex;
     align-items: center;
   }

@@ -1,13 +1,23 @@
+@use "@/config/variables" as *;
+
 .descriptions-list {
+  padding: 3px;
+
 
   .descriptions-list-item {
+    background-color: white;
+    padding: 10px;
+    font-size: $content-font-size;
+    display: flex;
+    align-items: center;
 
     .descriptions-list-item-label {
-
+      font-weight: bold;
+      flex: 1;
     }
 
     .descriptions-list-item-value {
-
+      flex: 3;
     }
   }
 }

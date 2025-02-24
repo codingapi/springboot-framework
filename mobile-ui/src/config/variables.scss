@@ -12,3 +12,7 @@ $page-header-height: 50px;
 $page-footer-height: 50px;
 // 页面内容区域的高度
 $page-content-height: calc(100vh - #{$page-header-height} - #{$page-footer-height});
+// 标题字体大小
+$title-font-size: 16px;
+// 内容字体大小
+$content-font-size:14px;

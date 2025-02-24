@@ -30,11 +30,11 @@
   padding: 5px;
 
   .infoList-info-item-title {
-    font-size: 14px;
+    font-size: $content-font-size;
   }
 
   .infoList-info-item-value {
-    font-size: 14px;
+    font-size: $content-font-size;
     text-align: left;
   }
 

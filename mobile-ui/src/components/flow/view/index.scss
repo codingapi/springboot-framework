@@ -46,7 +46,7 @@ $flow-footer-height: 80px;
 
   .flow-result-content-item {
     display: flex;
-    font-size: 14px;
+    font-size: $content-font-size;
     margin-top: 10px;
 
     .flow-result-content-item-label {
@@ -70,7 +70,7 @@ $flow-footer-height: 80px;
 
     .flow-result-content-button {
       margin: 10px;
-      font-size: 14px;
+      font-size: $content-font-size;
       padding: 8px 8px;
       width: 40%;
       border-color: $theme-primary-color;

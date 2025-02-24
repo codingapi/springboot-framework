@@ -12,7 +12,7 @@
   height: 20px;
   border-left: 4px solid $theme-primary-color;
   padding-left: 4px;
-  font-size: 14px;
+  font-size: $content-font-size;
 }
 
 .basic-header-icon {
@@ -23,13 +23,13 @@
   height: 80px;
 
   .title {
-    font-size: 14px;
+    font-size: $content-font-size;
     display: flex;
     align-items: center;
   }
 
   .value {
-    font-size: 14px;
+    font-size: $content-font-size;
 
     .img-icon {
       width: 50px;
@@ -45,13 +45,13 @@
   height: 50px;
 
   .title {
-    font-size: 14px;
+    font-size: $content-font-size;
     display: flex;
     align-items: center;
   }
 
   .value {
-    font-size: 14px;
+    font-size: $content-font-size;
     display: flex;
     align-items: center;
   }
