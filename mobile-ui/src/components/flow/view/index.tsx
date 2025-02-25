@@ -48,6 +48,7 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
                     setData(res.data);
                 }
             });
+            return;
         }
         if (props.workCode) {
             detail(null, props.workCode).then(res => {
@@ -55,6 +56,7 @@ const $FlowView: React.FC<FlowViewProps> = (props) => {
                     setData(res.data);
                 }
             });
+            return;
         }
     }
 
