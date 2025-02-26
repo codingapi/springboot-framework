@@ -12,6 +12,7 @@ import FormTextArea from "@/components/form/textarea";
 import FormSwitch from "@/components/form/switch";
 import FormDate from "@/components/form/date";
 import FormCascader from "@/components/form/cascader";
+import FormSelect from "@/components/form/select";
 
 
 class FormFactory {
@@ -121,6 +122,24 @@ class FormFactory {
         if (type === 'cascader') {
             return (
                 <FormCascader
+                    {...props}
+                    key={props.name}
+                />
+            )
+        }
+
+        if (type === 'selector') {
+            return (
+                <FormCheckbox
+                    {...props}
+                    key={props.name}
+                />
+            )
+        }
+
+        if (type === 'select') {
+            return (
+                <FormSelect
                     {...props}
                     key={props.name}
                 />

@@ -16,6 +16,7 @@ import FormSwitch from "@/components/form/switch";
 import FormTextArea from "@/components/form/textarea";
 import FormDate from "@/components/form/date";
 import FormCascader from "@/components/form/cascader";
+import FormSelect from "@/components/form/select";
 
 
 const FooterButtons: React.FC<{ formAction: React.RefObject<FormAction> }> = ({formAction}) => {
@@ -247,6 +248,20 @@ const WelcomePage = () => {
                     },
                 ]
             }
+        },
+        {
+            type: 'select',
+            props: {
+                required: true,
+                name: ['user', 'select'],
+                label: '选择器',
+                selectMultiple:true,
+                options: [
+                    {label: '选项1', value: '1'},
+                    {label: '选项2', value: '2'},
+                    {label: '选项3', value: '3'},
+                ]
+            }
         }
     ] as FormField[];
 
@@ -407,6 +422,18 @@ const WelcomePage = () => {
                                         },
                                     ]
                                 },
+                            ]}
+                        />
+
+                        <FormSelect
+                            required={true}
+                            name={["user", "select"]}
+                            label={"选择器"}
+                            selectMultiple={true}
+                            options={[
+                                {label: '选项1', value: '1'},
+                                {label: '选项2', value: '2'},
+                                {label: '选项3', value: '3'},
                             ]}
                         />
 
