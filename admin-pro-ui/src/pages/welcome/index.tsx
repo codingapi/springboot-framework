@@ -1,9 +1,9 @@
 import React from 'react';
 import './index.scss';
-import Page from "@/components/Layout/Page";
 import {Button, Form, Input} from "antd";
 import {FlowFormApiContext, FlowFormCustomValidateContext} from "@/api/validate";
 import * as api from "@/api"
+import {PageContainer} from "@ant-design/pro-components";
 
 FlowFormApiContext.getInstance().setApi({
     get: (url: string, params?: any) => {
@@ -30,7 +30,7 @@ const Index = () => {
     context.addCustomFunctionCodeValidate(["user", "name"], validateFuncCode);
 
     return (
-        <Page enablePageContainer={true}>
+        <PageContainer>
 
             <Form
                 form={form}
@@ -54,7 +54,7 @@ const Index = () => {
                 context.validate(form);
             }}>test2</Button>
 
-        </Page>
+        </PageContainer>
     );
 }
 

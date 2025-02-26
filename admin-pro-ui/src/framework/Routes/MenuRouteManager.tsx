@@ -4,7 +4,7 @@ import {Route} from "react-router";
 import {menus} from "@/config/menus";
 import RoleControl from "@/utils/RoleControl";
 import {cloneDeep} from 'lodash';
-import Index from "@/components/View/MenuIcon";
+import Icons from "@/components/Icons";
 
 const accessFilter = (menu: Menu): boolean => {
     if (menu.roles) {
@@ -119,7 +119,7 @@ export class MenuRouteManager {
         const menuMap = (menu: any) => {
             if (mapping) {
                 if (menu.icon) {
-                    menu.icon = <Index icon={menu.icon}/>
+                    menu.icon = <Icons icon={menu.icon}/>
                 }
                 if (menu.routes) {
                     menu.routes = menu.routes.map(menuMap);
