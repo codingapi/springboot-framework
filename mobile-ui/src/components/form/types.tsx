@@ -1,6 +1,7 @@
 import {NamePath} from "antd-mobile/es/components/form";
 import {FormValidateContent} from "@/components/form/validate";
 import {FormAction} from "@/components/form";
+import React from "react";
 
 // Form表单选项类型
 export interface FormOption {
@@ -22,6 +23,11 @@ export interface FormField {
     type: FormFieldType;
     // 表单字段属性
     props: FormItemProps;
+}
+
+// 自定义Select组件选项维护视图
+export interface SelectOptionFormEditProps {
+    formAction?: React.Ref<FormAction>;
 }
 
 // Form表单字段属性
@@ -62,6 +68,16 @@ export interface FormItemProps {
     textAreaMaxLength?: number,
     // select组件是否支持多选
     selectMultiple?: boolean,
+    //select组件添加的视图是否开启编辑
+    selectOptionFormEditable?: boolean,
+    // select组件添加的视图
+    selectOptionFormEditView?: React.ComponentType<SelectOptionFormEditProps>,
+    // Select组件添加数据事件
+    onSelectOptionFormFinish?: (formAction: FormAction,
+                                selectOptionFormEditFormAction: FormAction,
+                                reloadOption?: () => void,
+                                close?: () => void) => void;
+
     // 文件上传接受的文件类型，默认为 image/*
     uploaderAccept?: string,
     // 文件上传最大数量
@@ -108,6 +124,7 @@ export interface FormItemProps {
     selectorColumn?: number,
     // Captcha组件切换验证码事件
     onCaptchaChange?: (value: string) => void;
+
 }
 
 

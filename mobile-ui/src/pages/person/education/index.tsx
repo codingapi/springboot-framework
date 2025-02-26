@@ -141,6 +141,15 @@ const EducationIndex = () => {
         <>
             <Header>教育信息</Header>
             <PullToRefreshTodoList
+                showDetail={()=>{
+                    return true;
+                }}
+                showDelete={()=>{
+                    return true;
+                }}
+                showEdit={()=>{
+                    return true;
+                }}
                 onRefresh={async ()=>{
                     return {
                         data:{
@@ -159,7 +168,7 @@ const EducationIndex = () => {
                         success:true
                     }
                 }}
-                onDetailClick={(item)=>{
+                onEditClick={(item)=>{
                     navigate('/person/education/form', {state: item})
                 }}
             />

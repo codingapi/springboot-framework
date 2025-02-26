@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {ErrorBlock, InfiniteScroll, PullToRefresh as AntPullToRefresh} from "antd-mobile";
 import {PullStatus} from "antd-mobile/es/components/pull-to-refresh";
 import "./index.scss";
@@ -147,6 +147,10 @@ const PullToRefreshList: React.FC<PullToRefreshListProps> = (props) => {
                 });
         }
     }
+
+    useEffect(() => {
+        refresh();
+    }, []);
 
     return (
         <div

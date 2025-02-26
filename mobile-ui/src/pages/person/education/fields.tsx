@@ -1,6 +1,7 @@
 import {FormField} from "@/components/form/types";
+import CustomFormEditOption from "@/pages/person/education/custom";
 
-export const loadFields = async (state:any,setState:(state:any)=>void)=>{
+export const loadFields = async (state: any, setState: (state: any) => void) => {
     return [
         {
             type: 'input',
@@ -20,7 +21,7 @@ export const loadFields = async (state:any,setState:(state:any)=>void)=>{
                 onChange: (value, form) => {
                     setState({
                         ...state,
-                        name:value
+                        name: value
                     })
                     form?.setFieldValue('type', 'Shuxue');
                     form?.reloadOptions('type');
@@ -43,9 +44,19 @@ export const loadFields = async (state:any,setState:(state:any)=>void)=>{
                 label: '学科类别',
                 placeholder: '请输入学科类别',
                 selectMultiple: false,
+                selectOptionFormEditable: true,
+                selectOptionFormEditView: CustomFormEditOption,
+                onSelectOptionFormFinish: (formAction, selectOptionFormEditFormAction,
+                                           reloadOption, close) => {
+                    const values = selectOptionFormEditFormAction.getFieldsValue();
+                    console.log('values', values);
+                    const type = values['type'];
+                    formAction.setFieldValue('type', type);
+                    close && close();
+                },
                 loadOptions: async (form) => {
                     const name = form?.getFieldValue('name');
-                    if(name){
+                    if (name) {
                         return [
                             {
                                 label: '数学',
@@ -74,7 +85,7 @@ export const loadFields = async (state:any,setState:(state:any)=>void)=>{
                 },
                 validateFunction: async (content) => {
                     const value = content.form.getFieldValue('type');
-                    console.log('validateFunction type value', content.value,value);
+                    console.log('validateFunction type value', content.value, value);
                     if (content.value && content.value.length > 0) {
                         return [];
                     } else {
@@ -379,25 +390,25 @@ export const loadFields = async (state:any,setState:(state:any)=>void)=>{
                         return ["电影评价不能为空"];
                     }
                 },
-                loadOptions:async (form)=>{
+                loadOptions: async (form) => {
                     return [
                         {
-                            label:"山东",
-                            value:"Shandong",
-                            children:[
+                            label: "山东",
+                            value: "Shandong",
+                            children: [
                                 {
-                                    label:"济南",
-                                    value:"Jinan"
+                                    label: "济南",
+                                    value: "Jinan"
                                 }
                             ]
                         },
                         {
-                            label:"广东",
-                            value:"Guangdong",
-                            children:[
+                            label: "广东",
+                            value: "Guangdong",
+                            children: [
                                 {
-                                    label:"广州",
-                                    value:"Guangzhou"
+                                    label: "广州",
+                                    value: "Guangzhou"
                                 }
                             ]
                         }

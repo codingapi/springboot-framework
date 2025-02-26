@@ -1,8 +1,9 @@
 import React, {useEffect} from "react";
 import {FormItemProps, FormOption} from "@/components/form/types";
-import {CheckList, Form, Popup, SearchBar} from "antd-mobile";
-import {RightOutline} from "antd-mobile-icons";
+import {Button, CheckList, Form, Popup, SearchBar} from "antd-mobile";
+import {RightOutline, SetOutline} from "antd-mobile-icons";
 import formFieldInit from "@/components/form/common";
+import {FormAction} from "@/components/form/index";
 import "./form.scss";
 
 
@@ -14,7 +15,6 @@ const valueToForm = (value: string) => {
 }
 
 const formToValue = (value: string[]) => {
-    console.log('select', value);
     if (value && value.length > 0) {
         return value.join(",")
     }
@@ -33,6 +33,8 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
     const currentValue = valueToForm(formAction?.getFieldValue(props.name)) as string[] || valueToForm(props.value) as string[] || [];
 
     const [selected, setSelected] = React.useState<string[]>(currentValue);
+
+    const [settingOptionVisible, setSettingOptionVisible] = React.useState(false);
 
     // 当前页面展示的选项的数据，会随着树级目录进入子数据，从而更新数据
     const [options, setOptions] = React.useState(props.options);
@@ -150,6 +152,23 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
         }
     }, [visible]);
 
+    const selectOptionFormEditAction = React.useRef<FormAction>(null);
+
+
+    const handlerOptionFormFinish = ()=>{
+        if (props.onSelectOptionFormFinish && selectOptionFormEditAction.current && formAction) {
+            props.onSelectOptionFormFinish(
+                formAction,
+                selectOptionFormEditAction.current,
+                reloadOptions,
+                () => {
+                    setSettingOptionVisible(false);
+                    setVisible(false);
+                }
+            );
+        }
+    }
+
     return (
         <Form.Item
             name={props.name}
@@ -192,21 +211,37 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
                     >取消</a>
                     <a
                         onClick={() => {
-                            formAction?.setFieldValue(props.name, formToValue(selected));
-                            props.onChange && props.onChange(selected, formAction);
-                            setVisible(false);
+                            if(props.selectOptionFormEditable){
+                                handlerOptionFormFinish();
+                            }else {
+                                formAction?.setFieldValue(props.name, formToValue(selected));
+                                props.onChange && props.onChange(selected, formAction);
+                                setVisible(false);
+                            }
                         }}
                     >确定</a>
                 </div>
-                <div className={"select-popup-search"}>
-                    <SearchBar
-                        placeholder='输入查询选项'
-                        value={searchText}
-                        onChange={v => {
-                            setSearchText(v);
-                        }}
-                    />
-                </div>
+                {!settingOptionVisible && (
+                    <div className={"select-popup-search"}>
+                        <SearchBar
+                            className={"select-popup-search-bar"}
+                            placeholder='输入查询选项'
+                            value={searchText}
+                            onChange={v => {
+                                setSearchText(v);
+                            }}
+                        />
+                        {props.selectOptionFormEditable && (
+                            <SetOutline
+                                className={"select-popup-search-button"}
+                                onClick={() => {
+                                    setSettingOptionVisible(!settingOptionVisible);
+                                }}
+                            />
+                        )}
+                    </div>
+                )}
+
                 {paths.length > 0 && (
                     <div className={"select-popup-navbar"}>
                         {paths.map((item, index) => {
@@ -227,41 +262,67 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
                 )}
 
                 <div className={"select-popup-content"}>
-                    <CheckList
-                        className={"select-popup-content-list"}
-                        value={selected}
-                        onChange={(value) => {
-                            const currentValue = value as string[];
-                            setSelected(currentValue);
-                            // 单选时，选中即关闭弹框
-                            if (!props.selectMultiple) {
-                                formAction?.setFieldValue(props.name, formToValue(currentValue));
-                                props.onChange && props.onChange(formToValue(currentValue), formAction);
 
-                                setVisible(false);
-                            }
-                        }}
-                        multiple={props.selectMultiple}
-                    >
-                        {options
-                            && options
-                                .filter(item => {
-                                    if (searchText) {
-                                        if (item.value.toUpperCase().includes(searchText.toUpperCase())) {
-                                            return true;
+                    {settingOptionVisible && (
+                        <div className={"select-popup-content-custom-form"}>
+                            {props.selectOptionFormEditView && (
+                                <props.selectOptionFormEditView formAction={selectOptionFormEditAction}/>
+                            )}
+                            <div className={"select-popup-content-custom-footer"}>
+                                <Button
+                                    size={'middle'}
+                                    color={'primary'}
+                                    onClick={() => {
+                                        handlerOptionFormFinish();
+                                    }}
+                                >添加选项</Button>
+                                <Button
+                                    size={'middle'}
+                                    onClick={() => {
+                                        setSettingOptionVisible(false);
+                                    }}>取消添加</Button>
+                            </div>
+
+                        </div>
+                    )}
+
+                    {!settingOptionVisible && (
+                        <CheckList
+                            className={"select-popup-content-list"}
+                            value={selected}
+                            onChange={(value) => {
+                                const currentValue = value as string[];
+                                setSelected(currentValue);
+                                // 单选时，选中即关闭弹框
+                                if (!props.selectMultiple) {
+                                    formAction?.setFieldValue(props.name, formToValue(currentValue));
+                                    props.onChange && props.onChange(formToValue(currentValue), formAction);
+
+                                    setVisible(false);
+                                }
+                            }}
+                            multiple={props.selectMultiple}
+                        >
+                            {options
+                                && options
+                                    .filter(item => {
+                                        if (searchText) {
+                                            if (item.value.toUpperCase().includes(searchText.toUpperCase())) {
+                                                return true;
+                                            }
+                                            if (item.label.toUpperCase().includes(searchText.toUpperCase())) {
+                                                return true;
+                                            }
+                                            return false;
                                         }
-                                        if (item.label.toUpperCase().includes(searchText.toUpperCase())) {
-                                            return true;
-                                        }
-                                        return false;
-                                    }
-                                    return true;
-                                }).map((item) => {
-                                    return (
-                                        <CheckboxItem {...item}/>
-                                    )
-                                })}
-                    </CheckList>
+                                        return true;
+                                    }).map((item) => {
+                                        return (
+                                            <CheckboxItem {...item}/>
+                                        )
+                                    })}
+                        </CheckList>
+                    )}
                 </div>
             </Popup>
         </Form.Item>
