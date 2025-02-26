@@ -3,7 +3,7 @@ import {FormAction} from "@/components/form";
 import {FlowRecordContext} from "@/components/flow/domain/FlowRecordContext";
 import {FlowStateContext} from "@/components/flow/domain/FlowStateContext";
 import * as flowApi from "@/api/flow";
-import {FlowButton, FlowUser} from "@/components/flow/types";
+import {FlowUser} from "@/components/flow/types";
 import {FlowSubmitResultParser} from "@/components/flow/domain/FlowResultParser";
 import {UserSelectMode} from "@/components/flow/store/FlowSlice";
 import {FlowTriggerContext} from "@/components/flow/domain/FlowTriggerContext";
@@ -172,16 +172,16 @@ export class FlowEventContext {
 
     /**
      * 自定义流程
-     * @param button 自定义按钮
+     * @param buttonId 自定义按钮Id
      * @param callback 回调函数
      */
-    customFlow(button: FlowButton, callback?: (res: any) => void) {
+    customFlow(buttonId: string, callback?: (res: any) => void) {
         this.validateForm().then((validateState) => {
             console.log('validateState', validateState);
             if (validateState) {
                 const body = {
                     ...this.getRequestBody(),
-                    buttonId: button.id,
+                    buttonId: buttonId,
                 }
                 this.flowStateContext.setRequestLoading(true);
                 flowApi.custom(body)

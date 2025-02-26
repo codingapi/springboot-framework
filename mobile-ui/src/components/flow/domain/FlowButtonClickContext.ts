@@ -16,192 +16,289 @@ export class FlowButtonClickContext {
         this.flowStateContext = flowStateContext;
     }
 
+
+    /**
+     * 触发刷新动作
+     */
+    handlerReload(){
+        this.flowEventContext?.reloadFlow();
+    }
+
+    /**
+     * 触发保存动作
+     */
+    handlerSave(){
+        if (this.flowStateContext?.hasRecordId()) {
+            this.flowEventContext?.saveFlow(() => {
+                Toast.show('流程保存成功');
+            })
+        } else {
+            this.flowEventContext?.startFlow(() => {
+                this.flowEventContext?.saveFlow(() => {
+                    Toast.show('流程保存成功');
+                })
+            });
+        }
+    }
+
+    /**
+     * 触发发起动作
+     */
+    handlerStart(){
+        if (this.flowStateContext?.hasRecordId()) {
+            Toast.show('流程已发起，无需重复发起');
+        } else {
+            this.flowEventContext?.startFlow((res) => {
+                Toast.show('流程发起成功.');
+            })
+        }
+    }
+
+    /**
+     * 触发指定人提交动作
+     */
+    handlerSpecifySubmit(){
+        const trySpecifySubmitHandler = ()=>{
+            this.flowEventContext?.trySubmitFlow((res) => {
+                const operators = res.data.operators;
+                const userIds = operators.map((item: any) => {
+                    return item.userId;
+                });
+                this.flowStateContext?.setUserSelectMode({
+                    userSelectType: 'nextNodeUser',
+                    multiple: true,
+                    specifyUserIds: userIds,
+                });
+            });
+        }
+        if (this.flowStateContext?.hasRecordId()) {
+            trySpecifySubmitHandler();
+        }else {
+            this.flowEventContext?.startFlow(() => {
+                trySpecifySubmitHandler();
+            });
+        }
+    }
+
+    /**
+     * 触发提交动作
+     */
+    handlerSubmit(){
+        const submitHandler = ()=>{
+            this.flowEventContext?.submitFlow(true, (res) => {
+                const flowSubmitResultParser = new FlowSubmitResultParser(res.data);
+                this.flowStateContext?.setResult(flowSubmitResultParser.parser());
+            })
+        }
+        if (this.flowStateContext?.hasRecordId()) {
+            submitHandler();
+        } else {
+            this.flowEventContext?.startFlow(() => {
+                submitHandler();
+            });
+        }
+    }
+
+    /**
+     * 触发驳回动作
+     */
+    handlerReject(){
+        if (this.flowStateContext?.hasRecordId()) {
+            this.flowEventContext?.submitFlow(false, (res) => {
+                const flowSubmitResultParser = new FlowSubmitResultParser(res.data);
+                this.flowStateContext?.setResult(flowSubmitResultParser.parser());
+            })
+        } else {
+            Toast.show('流程尚未发起，无法操作');
+        }
+    }
+
+    /**
+     * 触发尝试提交动作
+     */
+    handlerTrySubmit(){
+        const trySubmitHandler = ()=>{
+            this.flowEventContext?.trySubmitFlow((res) => {
+                const flowTrySubmitResultParser = new FlowTrySubmitResultParser(res.data);
+                this.flowStateContext?.setResult(flowTrySubmitResultParser.parser());
+            });
+        }
+        if (this.flowStateContext?.hasRecordId()) {
+            trySubmitHandler();
+        }else {
+            this.flowEventContext?.startFlow(() => {
+                trySubmitHandler();
+            });
+        }
+    }
+
+    /**
+     * 触发撤回动作
+     */
+    handlerRecall(){
+        this.flowEventContext?.recallFlow(() => {
+            this.flowStateContext?.setResult({
+                state: 'success',
+                closeable: true,
+                title: '流程撤回成功',
+            });
+        });
+    }
+
+    /**
+     * 触发删除动作
+     */
+    handlerRemove(){
+        if (this.flowStateContext?.hasRecordId()) {
+            this.flowEventContext?.removeFlow(() => {
+                this.flowStateContext?.setResult({
+                    state: 'success',
+                    closeable: true,
+                    title: '流程删除成功',
+                });
+            });
+        } else {
+            Toast.show('流程尚未发起，无法删除');
+        }
+    }
+
+    /**
+     * 触发催办动作
+     */
+    handlerUrge(){
+        this.flowEventContext?.urgeFlow(() => {
+            this.flowStateContext?.setResult({
+                state: 'success',
+                closeable: true,
+                title: '催办提醒已发送',
+            });
+        });
+    }
+
+    /**
+     * 触发延期动作
+     */
+    handlerPostponed(){
+        if (this.flowStateContext?.hasRecordId()) {
+            this.flowStateContext?.setPostponedVisible(true);
+        }else {
+            Toast.show('流程尚未发起，无法操作');
+        }
+    }
+
+    /**
+     * 触发转办动作
+     */
+    handlerTransfer(){
+        if (this.flowStateContext?.hasRecordId()) {
+            this.flowStateContext?.setUserSelectMode({
+                userSelectType: 'transfer',
+                multiple: false,
+            });
+        }else {
+            Toast.show('流程尚未发起，无法操作');
+        }
+    }
+
+    /**
+     * 触发自定义接口动作
+     * @param buttonId 自定义按钮的id
+     */
+    handlerCustom(buttonId:string){
+        const customHandler = ()=>{
+            this.flowEventContext?.customFlow(buttonId, (res) => {
+                const customMessage = res.data;
+                this.flowStateContext?.setResult({
+                    state: customMessage.resultState.toLowerCase(),
+                    ...customMessage
+                });
+            });
+        }
+        if (this.flowStateContext?.hasRecordId()) {
+            customHandler();
+        } else {
+            this.flowEventContext?.startFlow((res) => {
+                customHandler();
+            });
+        }
+    }
+
+    /**
+     * 触发自定义前端动作
+     * @param eventKey 自定义按钮的事件key
+     */
+    handlerView(eventKey:string){
+        const viewHandler = ()=>{
+            this.flowEventContext?.triggerEvent(eventKey);
+        }
+
+        if (this.flowStateContext?.hasRecordId()) {
+            viewHandler();
+        }else {
+            this.flowEventContext?.startFlow((res) => {
+                viewHandler();
+            });
+        }
+    }
+
     /**
      * 处理按钮点击事件
      * @param button
      */
     handlerClick(button: FlowButton) {
-
         if (button.type === "RELOAD") {
-            this.flowEventContext?.reloadFlow();
+            this.handlerReload();
         }
 
         if (button.type === 'SAVE') {
-            if (this.flowStateContext?.hasRecordId()) {
-                this.flowEventContext?.saveFlow(() => {
-                    Toast.show('流程保存成功');
-                })
-            } else {
-                this.flowEventContext?.startFlow(() => {
-                    this.flowEventContext?.saveFlow(() => {
-                        Toast.show('流程保存成功');
-                    })
-                });
-            }
+           this.handlerSave();
         }
 
         if (button.type === "START") {
-            if (this.flowStateContext?.hasRecordId()) {
-                Toast.show('流程已发起，无需重复发起');
-            } else {
-                this.flowEventContext?.startFlow((res) => {
-                    Toast.show('流程发起成功.');
-                })
-            }
+           this.handlerStart();
         }
         if (button.type === 'SPECIFY_SUBMIT') {
-            const trySpecifySubmitHandler = ()=>{
-                this.flowEventContext?.trySubmitFlow((res) => {
-                    const operators = res.data.operators;
-                    const userIds = operators.map((item: any) => {
-                        return item.userId;
-                    });
-                    this.flowStateContext?.setUserSelectMode({
-                        userSelectType: 'nextNodeUser',
-                        multiple: true,
-                        specifyUserIds: userIds,
-                    });
-                });
-            }
-            if (this.flowStateContext?.hasRecordId()) {
-                trySpecifySubmitHandler();
-            }else {
-                this.flowEventContext?.startFlow(() => {
-                    trySpecifySubmitHandler();
-                });
-            }
+            this.handlerSpecifySubmit();
         }
 
         if (button.type === 'SUBMIT') {
-            const submitHandler = ()=>{
-                this.flowEventContext?.submitFlow(true, (res) => {
-                    const flowSubmitResultParser = new FlowSubmitResultParser(res.data);
-                    this.flowStateContext?.setResult(flowSubmitResultParser.parser());
-                })
-            }
-            if (this.flowStateContext?.hasRecordId()) {
-                submitHandler();
-            } else {
-                this.flowEventContext?.startFlow(() => {
-                    submitHandler();
-                });
-            }
+            this.handlerSubmit();
         }
 
         if (button.type === 'REJECT') {
-            if (this.flowStateContext?.hasRecordId()) {
-                this.flowEventContext?.submitFlow(false, (res) => {
-                    const flowSubmitResultParser = new FlowSubmitResultParser(res.data);
-                    this.flowStateContext?.setResult(flowSubmitResultParser.parser());
-                })
-            } else {
-                Toast.show('流程尚未发起，无法操作');
-            }
+           this.handlerReject();
         }
 
         if (button.type === 'TRY_SUBMIT') {
-            const trySubmitHandler = ()=>{
-                this.flowEventContext?.trySubmitFlow((res) => {
-                    const flowTrySubmitResultParser = new FlowTrySubmitResultParser(res.data);
-                    this.flowStateContext?.setResult(flowTrySubmitResultParser.parser());
-                });
-            }
-            if (this.flowStateContext?.hasRecordId()) {
-                trySubmitHandler();
-            }else {
-                this.flowEventContext?.startFlow(() => {
-                    trySubmitHandler();
-                });
-            }
+           this.handlerTrySubmit();
         }
 
         if (button.type === 'RECALL') {
-            this.flowEventContext?.recallFlow(() => {
-                this.flowStateContext?.setResult({
-                    state: 'success',
-                    closeable: true,
-                    title: '流程撤回成功',
-                });
-            });
+           this.handlerRecall();
         }
 
         if (button.type === 'REMOVE') {
-            if (this.flowStateContext?.hasRecordId()) {
-                this.flowEventContext?.removeFlow(() => {
-                    this.flowStateContext?.setResult({
-                        state: 'success',
-                        closeable: true,
-                        title: '流程删除成功',
-                    });
-                });
-            } else {
-                Toast.show('流程尚未发起，无法删除');
-            }
+           this.handlerRemove();
         }
 
-
         if (button.type === 'URGE') {
-            this.flowEventContext?.urgeFlow(() => {
-                this.flowStateContext?.setResult({
-                    state: 'success',
-                    closeable: true,
-                    title: '催办提醒已发送',
-                });
-            });
+          this.handlerUrge()
         }
 
         if (button.type === 'POSTPONED') {
-            if (this.flowStateContext?.hasRecordId()) {
-                this.flowStateContext?.setPostponedVisible(true);
-            }else {
-                Toast.show('流程尚未发起，无法操作');
-            }
+           this.handlerPostponed();
         }
 
-
         if (button.type === 'TRANSFER') {
-            if (this.flowStateContext?.hasRecordId()) {
-                this.flowStateContext?.setUserSelectMode({
-                    userSelectType: 'transfer',
-                    multiple: false,
-                });
-            }else {
-                Toast.show('流程尚未发起，无法操作');
-            }
+           this.handlerTransfer();
         }
 
         if (button.type === "CUSTOM") {
-            const customHandler = ()=>{
-                this.flowEventContext?.customFlow(button, (res) => {
-                    const customMessage = res.data;
-                    this.flowStateContext?.setResult({
-                        state: customMessage.resultState.toLowerCase(),
-                        ...customMessage
-                    });
-                });
-            }
-            if (this.flowStateContext?.hasRecordId()) {
-                customHandler();
-            } else {
-                this.flowEventContext?.startFlow((res) => {
-                    customHandler();
-                });
-            }
+            this.handlerCustom(button.id);
         }
 
         if (button.type === 'VIEW') {
-            const viewHandler = ()=>{
-                const eventKey = button.eventKey;
-                this.flowEventContext?.triggerEvent(eventKey);
-            }
-
-            if (this.flowStateContext?.hasRecordId()) {
-                viewHandler();
-            }else {
-                this.flowEventContext?.startFlow((res) => {
-                    viewHandler();
-                });
-            }
+           this.handlerView(button.eventKey);
         }
     }
 }
