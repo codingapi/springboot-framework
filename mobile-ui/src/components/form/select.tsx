@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {FormItemProps, FormOption} from "@/components/form/types";
-import {Button, CheckList, Form, Popup, SearchBar} from "antd-mobile";
+import {Button, CheckList, Form, InfiniteScroll, Popup, PullToRefresh, SearchBar} from "antd-mobile";
 import {RightOutline, SetOutline} from "antd-mobile-icons";
 import formFieldInit from "@/components/form/common";
 import {FormAction} from "@/components/form/index";
@@ -19,6 +19,122 @@ const formToValue = (value: string[]) => {
         return value.join(",")
     }
     return value;
+}
+
+interface CheckboxItemProps {
+    item: FormOption;
+    paths: FormOption[];
+    setPaths: (paths: FormOption[]) => void;
+    setOptions: (options: FormOption[]) => void;
+
+}
+
+const CheckboxItem: React.FC<CheckboxItemProps> = (props) => {
+    const {item, paths, setPaths, setOptions} = props;
+    if (item.children && item.children.length > 0) {
+        return (
+            <CheckList.Item
+                value={item.value}
+                disabled={item.disable}
+                readOnly={true}
+            >
+                <div
+                    className={"checkbox-parent"}
+                    onClick={() => {
+                        setPaths([...paths, item]);
+                        setOptions(item.children || []);
+                    }}
+                >
+                    {item.label}
+                    <RightOutline/>
+                </div>
+            </CheckList.Item>
+        )
+    }
+    return (
+        <CheckList.Item
+            value={item.value}
+            disabled={item.disable}
+        >
+            {item.label}
+        </CheckList.Item>
+    )
+}
+
+interface CheckboxListViewProps {
+    data: FormOption[];
+    paths: FormOption[];
+    setPaths: (paths: FormOption[]) => void;
+    setOptions: (options: FormOption[]) => void;
+}
+
+const CheckboxListView: React.FC<CheckboxListViewProps> = (props) => {
+    const {data} = props;
+    const pageSize = 20;
+
+    const [currentPage, setCurrentPage] = React.useState(1);
+
+    const [list, setList] = React.useState<FormOption[]>([]);
+
+    const [hasMore, setHasMore] = React.useState(true);
+
+    const reload = () => {
+        const currentPage = 1;
+        if (data.length > 0) {
+            const list = data.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+            setList(list);
+            setHasMore(true);
+        } else {
+            setList([]);
+            setHasMore(false);
+        }
+        setCurrentPage(currentPage);
+    }
+
+    const loadMore = () => {
+        setCurrentPage(prevState => {
+            const newPage = prevState + 1;
+            if (newPage * pageSize >= data.length) {
+                setHasMore(false);
+            } else {
+                setHasMore(true);
+            }
+            setList(prevState => {
+                const list = data.slice((newPage - 1) * pageSize, newPage * pageSize);
+                return [...prevState, ...list]
+            });
+            return newPage;
+        });
+    }
+
+
+    useEffect(() => {
+        reload();
+    }, [props.data]);
+
+    return (
+        <>
+            <PullToRefresh
+                onRefresh={async () => {
+                    reload();
+                }}
+            >
+                {list && list.map((item: FormOption, index: number) => {
+                    return <CheckboxItem key={index} item={item} {...props}/>
+                })}
+
+                {hasMore && (
+                    <InfiniteScroll
+                        loadMore={async () => {
+                            loadMore();
+                        }}
+                        hasMore={hasMore}
+                    />
+                )}
+
+            </PullToRefresh>
+        </>
+    )
 }
 
 const FormSelect: React.FC<FormItemProps> = (props) => {
@@ -97,37 +213,6 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
         return displaySpan(currentValue);
     }
 
-    const CheckboxItem: React.FC<FormOption> = (item) => {
-        if (item.children && item.children.length > 0) {
-            return (
-                <CheckList.Item
-                    value={item.value}
-                    disabled={item.disable}
-                    readOnly={true}
-                >
-                    <div
-                        className={"checkbox-parent"}
-                        onClick={() => {
-                            setPaths([...paths, item]);
-                            setOptions(item.children);
-                        }}
-                    >
-                        {item.label}
-                        <RightOutline/>
-                    </div>
-                </CheckList.Item>
-            )
-        }
-        return (
-            <CheckList.Item
-                value={item.value}
-                disabled={item.disable}
-            >
-                {item.label}
-            </CheckList.Item>
-        )
-    }
-
     const reloadOptions = () => {
         if (props.loadOptions) {
             props.loadOptions(formAction).then(list => {
@@ -155,7 +240,7 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
     const selectOptionFormEditAction = React.useRef<FormAction>(null);
 
 
-    const handlerOptionFormFinish = ()=>{
+    const handlerOptionFormFinish = () => {
         if (props.onSelectOptionFormFinish && selectOptionFormEditAction.current && formAction) {
             props.onSelectOptionFormFinish(
                 formAction,
@@ -209,11 +294,16 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
                             setVisible(false)
                         }}
                     >取消</a>
+                    {settingOptionVisible && (
+                        <>
+                            {props.selectOptionFormEditFooterOkText || "添加选项"}
+                        </>
+                    )}
                     <a
                         onClick={() => {
-                            if(props.selectOptionFormEditable){
+                            if (props.selectOptionFormEditable) {
                                 handlerOptionFormFinish();
-                            }else {
+                            } else {
                                 formAction?.setFieldValue(props.name, formToValue(selected));
                                 props.onChange && props.onChange(selected, formAction);
                                 setVisible(false);
@@ -265,8 +355,10 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
 
                     {settingOptionVisible && (
                         <div className={"select-popup-content-custom-form"}>
-                            {props.selectOptionFormEditView && (
-                                <props.selectOptionFormEditView formAction={selectOptionFormEditAction}/>
+                            {formAction && props.selectOptionFormEditView && (
+                                <props.selectOptionFormEditView
+                                    currentAction={selectOptionFormEditAction}
+                                    formAction={formAction}/>
                             )}
                             <div className={"select-popup-content-custom-footer"}>
                                 <Button
@@ -275,12 +367,13 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
                                     onClick={() => {
                                         handlerOptionFormFinish();
                                     }}
-                                >添加选项</Button>
+                                >{props.selectOptionFormEditFooterOkText || "添加"}</Button>
                                 <Button
                                     size={'middle'}
                                     onClick={() => {
                                         setSettingOptionVisible(false);
-                                    }}>取消添加</Button>
+                                    }}
+                                >{props.selectOptionFormEditFooterOkText || "取消"}</Button>
                             </div>
 
                         </div>
@@ -303,24 +396,25 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
                             }}
                             multiple={props.selectMultiple}
                         >
-                            {options
-                                && options
-                                    .filter(item => {
-                                        if (searchText) {
-                                            if (item.value.toUpperCase().includes(searchText.toUpperCase())) {
-                                                return true;
+                            <CheckboxListView
+                                data={options && options
+                                        .filter((item => {
+                                            if (searchText) {
+                                                if (item.value.toUpperCase().includes(searchText.toUpperCase())) {
+                                                    return true;
+                                                }
+                                                if (item.label.toUpperCase().includes(searchText.toUpperCase())) {
+                                                    return true;
+                                                }
+                                                return false;
                                             }
-                                            if (item.label.toUpperCase().includes(searchText.toUpperCase())) {
-                                                return true;
-                                            }
-                                            return false;
-                                        }
-                                        return true;
-                                    }).map((item,index) => {
-                                        return (
-                                            <CheckboxItem key={index} {...item}/>
-                                        )
-                                    })}
+                                            return true;
+                                        }))
+                                    || []}
+                                setOptions={setOptions}
+                                paths={paths}
+                                setPaths={setPaths}
+                            />
                         </CheckList>
                     )}
                 </div>

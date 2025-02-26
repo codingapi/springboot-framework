@@ -136,29 +136,32 @@ const FlowHistory = () => {
 
     const currentFlowRecord = flowRecordContext?.getCurrentFlowRecord();
 
-    return (
-        <div className={"flow-history"}>
-            <div className={"flow-basic"}>
-                <Descriptions
-                    columns={fields}
-                    request={async () => {
-                        return {
-                            ...currentFlowRecord,
-                            createOperatorName: currentFlowRecord.createOperator?.name,
-                            createOperatorDate: moment(currentFlowRecord.createTime).format('YYYY-MM-DD HH:mm:ss'),
-                            flowStatus: flowStatusConvert(currentFlowRecord),
-                            recodeType: recodeTypeConvert(currentFlowRecord),
-                            postponedCount: postponedCountConvert(currentFlowRecord),
-                            interfere: interfereConvert(currentFlowRecord),
-                            read: readConvert(currentFlowRecord),
-                            timeoutTime: timeoutTimeConvert(currentFlowRecord),
-                            nodeName: flowRecordContext?.getNode(currentFlowRecord.nodeCode)?.name,
-                        };
-                    }}
-                />
+    if(currentFlowRecord) {
+        return (
+            <div className={"flow-history"}>
+                <div className={"flow-basic"}>
+                    <Descriptions
+                        columns={fields}
+                        request={async () => {
+                            return {
+                                ...currentFlowRecord,
+                                createOperatorName: currentFlowRecord.createOperator?.name,
+                                createOperatorDate: moment(currentFlowRecord.createTime).format('YYYY-MM-DD HH:mm:ss'),
+                                flowStatus: flowStatusConvert(currentFlowRecord),
+                                recodeType: recodeTypeConvert(currentFlowRecord),
+                                postponedCount: postponedCountConvert(currentFlowRecord),
+                                interfere: interfereConvert(currentFlowRecord),
+                                read: readConvert(currentFlowRecord),
+                                timeoutTime: timeoutTimeConvert(currentFlowRecord),
+                                nodeName: flowRecordContext?.getNode(currentFlowRecord.nodeCode)?.name,
+                            };
+                        }}
+                    />
+                </div>
             </div>
-        </div>
-    )
+        )
+    }
+    return <></>
 }
 
 export default FlowHistory;

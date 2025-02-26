@@ -27,7 +27,10 @@ export interface FormField {
 
 // 自定义Select组件选项维护视图
 export interface SelectOptionFormEditProps {
-    formAction?: React.Ref<FormAction>;
+    // 当前表单操作对象
+    currentAction?: React.RefObject<FormAction>;
+    // 父级表单操作对象
+    formAction?: FormAction;
 }
 
 // Form表单字段属性
@@ -68,10 +71,16 @@ export interface FormItemProps {
     textAreaMaxLength?: number,
     // select组件是否支持多选
     selectMultiple?: boolean,
-    //select组件添加的视图是否开启编辑
+    // select组件添加的视图是否开启编辑
     selectOptionFormEditable?: boolean,
     // select组件添加的视图
     selectOptionFormEditView?: React.ComponentType<SelectOptionFormEditProps>,
+    // select组件添加的视图title，默认添加选项
+    selectOptionFormEditTitle?: string,
+    // select组件添加的视图footer确定按钮文字，默认添加选项
+    selectOptionFormEditFooterOkText?: string,
+    // select组件添加的视图footer取消按钮文字，默认取消添加
+    selectOptionFormEditFooterCancelText?: string,
     // Select组件添加数据事件
     onSelectOptionFormFinish?: (formAction: FormAction,
                                 selectOptionFormEditFormAction: FormAction,
@@ -124,6 +133,10 @@ export interface FormItemProps {
     selectorColumn?: number,
     // Captcha组件切换验证码事件
     onCaptchaChange?: (value: string) => void;
+
+    // 验证规则
+    rules?: any[],
+
 
 }
 
