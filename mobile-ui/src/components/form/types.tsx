@@ -140,6 +140,24 @@ export interface FormItemProps {
         // 验证码图片地址
         url: string;
     }>;
+    // 文件上传事件
+    onUploaderUpload?: (filename: string, base64: string) => Promise<{
+        // 文件id
+        id: string,
+        // 文件名
+        name: string
+        // 文件地址
+        url: string;
+    }>
+    // 文件加载事件
+    onUploaderLoad?: (ids: string) => Promise<{
+        // 文件id
+        id: string,
+        // 文件名
+        name: string
+        // 文件地址
+        url: string;
+    }[]>
 
 }
 

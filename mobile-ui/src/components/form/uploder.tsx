@@ -1,8 +1,7 @@
 import React, {useEffect} from "react";
 import {FormItemProps} from "@/components/form/types";
-import {Form, Image, ImageUploader, ImageUploadItem, ImageViewer} from "antd-mobile";
+import {Form, Image, ImageUploader, ImageUploadItem as AntImageUploadItem, ImageViewer} from "antd-mobile";
 import formFieldInit from "@/components/form/common";
-import {loadFiles, upload} from "@/api/oss";
 import {FormAction} from "@/components/form";
 import {CloseCircleFill} from "antd-mobile-icons";
 import "./form.scss";
@@ -23,6 +22,29 @@ interface UploaderProps {
     uploaderMaxCount?: number;
     value?: any;
     onChange?: (value: any, form?: FormAction) => void;
+    // 文件上传事件
+    onUploaderUpload?: (filename: string, base64: string) => Promise<{
+        // 文件id
+        id: string,
+        // 文件名
+        name: string
+        // 文件地址
+        url: string;
+    }>
+    // 文件加载事件
+    onUploaderLoad?: (ids: string) => Promise<{
+        // 文件id
+        id: string,
+        // 文件名
+        name: string
+        // 文件地址
+        url: string;
+    }[]>
+}
+
+interface ImageUploadItem extends AntImageUploadItem{
+    id?:string;
+    name?:string;
 }
 
 const Uploader: React.FC<UploaderProps> = (props) => {
@@ -38,39 +60,29 @@ const Uploader: React.FC<UploaderProps> = (props) => {
     const handlerUploader = async (file: File) => {
         const base64 = await fileToBase64(file);
         const filename = file.name;
-        const response = await upload({
-            name: filename,
-            data: base64
-        })
-        if (response.success) {
-            const data = response.data;
-            const url = `/open/oss/${data.key}`;
+
+        if(props.onUploaderUpload ){
+            return await props.onUploaderUpload(filename, base64);
+        }else {
             return {
-                url: url,
-                id: data.id,
-                name: data.name
+                url: URL.createObjectURL(file)
             }
-        }
-        return {
-            url: URL.createObjectURL(file)
         }
     }
 
     const reloadFiles = () => {
         if (props.value) {
-            loadFiles(props.value).then(res => {
-                if (res.success) {
-                    const list = res.data.list;
-                    setFileList(list.map((item: any) => {
-                        const url = `/open/oss/${item.key}`;
+            if(props.onUploaderLoad ){
+                props.onUploaderLoad(props.value).then(res => {
+                    setFileList(res.map((item: any) => {
                         return {
-                            url: url,
+                            url: item.url,
                             id: item.id,
                             name: item.name
                         }
                     }))
-                }
-            });
+                });
+            }
         }
     }
 
