@@ -88,7 +88,6 @@ const Form:React.FC<FormProps> = (props)=>{
 
     const [form] = AntForm.useForm();
 
-
     const validateContext = new FormValidateContext();
     const reloadContext = new FormFieldReloadListenerContext();
     const optionContext = new FormFieldOptionListenerContext();
@@ -314,6 +313,7 @@ const Form:React.FC<FormProps> = (props)=>{
                 })}
 
                 {props.children}
+                
                 {props.footer}
             </AntForm>
         </FormContext.Provider>

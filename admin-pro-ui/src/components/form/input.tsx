@@ -23,8 +23,9 @@ const FormInput: React.FC<FormItemProps> = (props) => {
                 placeholder={props.placeholder}
                 maxLength={props.inputMaxLength}
                 onChange={(value) => {
-                    formAction?.setFieldValue(props.name, value);
-                    props.onChange && props.onChange(value, formAction);
+                    const currentValue = value.target.value;
+                    formAction?.setFieldValue(props.name, currentValue);
+                    props.onChange && props.onChange(currentValue, formAction);
                 }}
             />
         </Form.Item>
