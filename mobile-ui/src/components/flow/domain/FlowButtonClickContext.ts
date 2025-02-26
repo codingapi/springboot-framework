@@ -171,7 +171,7 @@ export class FlowButtonClickContext {
         }
 
         if (button.type === "CUSTOM") {
-            if (this.flowStateContext?.hasRecordId()) {
+            const customHandler = ()=>{
                 this.flowEventContext?.customFlow(button, (res) => {
                     const customMessage = res.data;
                     this.flowStateContext?.setResult({
@@ -179,17 +179,28 @@ export class FlowButtonClickContext {
                         ...customMessage
                     });
                 });
+            }
+            if (this.flowStateContext?.hasRecordId()) {
+                customHandler();
             } else {
-                Toast.show('流程尚未发起，无法操作');
+                this.flowEventContext?.trySubmitFlow((res) => {
+                    customHandler();
+                });
             }
         }
 
         if (button.type === 'VIEW') {
-            if (this.flowStateContext?.hasRecordId()) {
+            const viewHandler = ()=>{
                 const eventKey = button.eventKey;
                 this.flowEventContext?.triggerEvent(eventKey);
+            }
+
+            if (this.flowStateContext?.hasRecordId()) {
+                viewHandler();
             }else {
-                Toast.show('流程尚未发起，无法操作');
+                this.flowEventContext?.trySubmitFlow((res) => {
+                    viewHandler();
+                });
             }
         }
     }
