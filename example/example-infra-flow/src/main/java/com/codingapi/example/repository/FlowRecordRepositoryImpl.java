@@ -68,4 +68,9 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository {
     public void delete(List<FlowRecord> childrenRecords) {
         flowRecordEntityRepository.deleteAll(childrenRecords.stream().map(FlowRecordConvertor::convert).toList());
     }
+
+    @Override
+    public void deleteByProcessId(String processId) {
+        flowRecordEntityRepository.deleteByProcessId(processId);
+    }
 }

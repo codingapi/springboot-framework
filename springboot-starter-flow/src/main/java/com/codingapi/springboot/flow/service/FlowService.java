@@ -4,6 +4,7 @@ import com.codingapi.springboot.flow.bind.IBindData;
 import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.pojo.FlowDetail;
 import com.codingapi.springboot.flow.pojo.FlowResult;
+import com.codingapi.springboot.flow.pojo.FlowStepResult;
 import com.codingapi.springboot.flow.pojo.FlowSubmitResult;
 import com.codingapi.springboot.flow.repository.*;
 import com.codingapi.springboot.flow.result.MessageResult;
@@ -22,6 +23,7 @@ public class FlowService {
     private final FlowDetailService flowDetailService;
     private final FlowCustomEventService flowCustomEventService;
     private final FlowRecallService flowRecallService;
+    private final FlowRemoveService flowRemoveService;
     private final FlowSaveService flowSaveService;
     private final FlowTransferService flowTransferService;
     private final FlowPostponedService flowPostponedService;
@@ -38,12 +40,13 @@ public class FlowService {
                        FlowBackupRepository flowBackupRepository) {
         this.flowServiceRepositoryHolder = new FlowServiceRepositoryHolder(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowOperatorRepository, flowProcessRepository, flowBackupRepository);
         this.flowDetailService = new FlowDetailService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowOperatorRepository, flowProcessRepository);
-        this.flowCustomEventService = new FlowCustomEventService(flowWorkRepository,flowRecordRepository, flowProcessRepository);
-        this.flowRecallService = new FlowRecallService(flowWorkRepository,flowRecordRepository, flowProcessRepository);
-        this.flowSaveService = new FlowSaveService(flowWorkRepository,flowRecordRepository, flowBindDataRepository, flowProcessRepository);
-        this.flowTransferService = new FlowTransferService(flowWorkRepository,flowRecordRepository, flowBindDataRepository, flowProcessRepository);
-        this.flowPostponedService = new FlowPostponedService(flowWorkRepository,flowRecordRepository, flowProcessRepository);
-        this.flowUrgeService = new FlowUrgeService(flowWorkRepository,flowRecordRepository, flowProcessRepository);
+        this.flowCustomEventService = new FlowCustomEventService(flowWorkRepository, flowRecordRepository, flowProcessRepository);
+        this.flowRecallService = new FlowRecallService(flowWorkRepository, flowRecordRepository, flowProcessRepository);
+        this.flowRemoveService = new FlowRemoveService(flowWorkRepository, flowRecordRepository, flowProcessRepository);
+        this.flowSaveService = new FlowSaveService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowProcessRepository);
+        this.flowTransferService = new FlowTransferService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowProcessRepository);
+        this.flowPostponedService = new FlowPostponedService(flowWorkRepository, flowRecordRepository, flowProcessRepository);
+        this.flowUrgeService = new FlowUrgeService(flowWorkRepository, flowRecordRepository, flowProcessRepository);
     }
 
     /**
@@ -185,6 +188,18 @@ public class FlowService {
         return flowTrySubmitService.trySubmitFlow(recordId);
     }
 
+    /**
+     * 获取流程执行节点
+     *
+     * @param workCode
+     * @param currentOperator
+     * @return
+     */
+    public FlowStepResult getFlowStep(String workCode, IBindData bindData, IFlowOperator currentOperator) {
+        FlowStepService flowStepService = new FlowStepService(workCode, currentOperator, bindData, flowServiceRepositoryHolder);
+        return flowStepService.getFlowStep();
+    }
+
 
     /**
      * 尝试提交流程 (发起流程)
@@ -215,6 +230,17 @@ public class FlowService {
 
 
     /**
+     * 唤醒流程
+     * @param processId  流程实例id
+     * @param currentOperator 当前操作者
+     */
+    public void notifyFlow(String processId,IFlowOperator currentOperator) {
+        FlowNotifyService flowNotifyService = new FlowNotifyService(processId, currentOperator, flowServiceRepositoryHolder);
+        flowNotifyService.notifyFlow();
+    }
+
+
+    /**
      * 自定义事件
      *
      * @param recordId        流程记录id
@@ -238,5 +264,14 @@ public class FlowService {
         flowRecallService.recall(recordId, currentOperator);
     }
 
+    /**
+     * 删除流程
+     *
+     * @param recordId        流程记录id
+     * @param currentOperator 当前操作者
+     */
+    public void remove(long recordId, IFlowOperator currentOperator) {
+        flowRemoveService.remove(recordId, currentOperator);
+    }
 
 }

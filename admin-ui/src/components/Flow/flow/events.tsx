@@ -1,7 +1,18 @@
 import {useEffect} from "react";
 import {FormInstance} from "antd/es/form/hooks/useForm";
 import {FlowData, FlowSubmitResultBuilder, FlowTrySubmitResultBuilder} from "@/components/Flow/flow/data";
-import {custom, postponed, recall, saveFlow, startFlow, submitFlow, transfer, trySubmitFlow, urge} from "@/api/flow";
+import {
+    custom,
+    postponed,
+    recall,
+    removeFlow,
+    saveFlow,
+    startFlow,
+    submitFlow,
+    transfer,
+    trySubmitFlow,
+    urge
+} from "@/api/flow";
 import {message} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import {
@@ -132,59 +143,62 @@ export const registerEvents = (id: string,
 
     // 提交流程
     const handleSubmitFlow = (flowState: boolean, callback: (res: any) => void, operatorIds?: any[]) => {
-        const advice = adviceForm.getFieldValue('advice');
-        setRequestLoading(true);
+        adviceForm.validateFields().then((adviceData)=>{
+            const advice = adviceData.advice;
+            setRequestLoading(true);
+            form.validateFields().then((formData) => {
+                const flowData = data.getFlowData();
+                const body = {
+                    recordId,
+                    advice: advice,
+                    operatorIds: operatorIds,
+                    success: flowState,
+                    formData: {
+                        ...flowData,
+                        ...formData,
+                    }
+                }
 
-        form.validateFields().then((formData) => {
+                submitFlow(body).then(res => {
+                    if (res.success) {
+                        message.success('流程已提交').then();
+                        callback(res);
+                    }
+                }).finally(() => {
+                    setRequestLoading(false)
+                })
+            }).catch(e => {
+                console.log(e);
+                setRequestLoading(false);
+            })
+        }).catch((e)=>{});
+    }
+
+    // 自定义流程
+    const handleCustomFlow = (buttonId: string) => {
+        adviceForm.validateFields().then((adviceData)=> {
+            const advice = adviceData.advice;
+            const formData = form.getFieldsValue();
             const flowData = data.getFlowData();
             const body = {
                 recordId,
+                buttonId,
                 advice: advice,
-                operatorIds: operatorIds,
-                success: flowState,
                 formData: {
                     ...flowData,
                     ...formData,
                 }
             }
-
-            submitFlow(body).then(res => {
+            custom(body).then(res => {
                 if (res.success) {
-                    message.success('流程已提交').then();
-                    callback(res);
+                    const flowResult = res.data;
+                    dispatch(showResult({
+                        closeFlow: flowResult.closeable,
+                        result: flowResult
+                    }));
                 }
-            }).finally(() => {
-                setRequestLoading(false)
-            })
-        }).catch(e => {
-            console.log(e);
-            setRequestLoading(false);
-        })
-    }
-
-    // 自定义流程
-    const handleCustomFlow = (buttonId: string) => {
-        const advice = adviceForm.getFieldValue('advice');
-        const formData = form.getFieldsValue();
-        const flowData = data.getFlowData();
-        const body = {
-            recordId,
-            buttonId,
-            advice: advice,
-            formData: {
-                ...flowData,
-                ...formData,
-            }
-        }
-        custom(body).then(res => {
-            if (res.success) {
-                const flowResult = res.data;
-                dispatch(showResult({
-                    closeFlow: flowResult.closeable,
-                    result: flowResult
-                }));
-            }
-        })
+            });
+        }).catch((e)=>{});
     }
 
     // 预提交
@@ -230,6 +244,24 @@ export const registerEvents = (id: string,
             setRequestLoading(false)
         })
     }
+
+
+    // 删除流程
+    const handleRemoveFlow = () => {
+        const body = {
+            recordId,
+        }
+        setRequestLoading(true);
+        removeFlow(body).then(res => {
+            if (res.success) {
+                message.success('流程已删除').then();
+                closeFlow();
+            }
+        }).finally(() => {
+            setRequestLoading(false)
+        })
+    }
+
 
     // 延期流程
     const handlePostponedFlow = () => {
@@ -416,6 +448,10 @@ export const registerEvents = (id: string,
             }
             case 'RECALL': {
                 handleRecallFlow();
+                break;
+            }
+            case 'REMOVE': {
+                handleRemoveFlow();
                 break;
             }
             case 'URGE': {

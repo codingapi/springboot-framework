@@ -42,6 +42,15 @@ export async function startFlow(body:any) {
     return post('/api/cmd/flowRecord/startFlow', body);
 }
 
+export async function getFlowStep(body:any) {
+    return post('/api/cmd/flowRecord/getFlowStep', body);
+}
+
+export async function removeFlow(body:any) {
+    return post('/api/cmd/flowRecord/remove', body);
+}
+
+
 export async function detail(id?:any,workCode?:any) {
     return get('/api/query/flowRecord/detail', {id,workCode});
 }
@@ -89,6 +98,17 @@ export async function flowRecordList(params: any,
                                          type: string
                                      }[]) {
     return page('/api/query/flowRecord/list', params, sort, filter, match);
+}
+
+
+export async function findAllByOperatorId(params: any,
+                                     sort: any,
+                                     filter: any,
+                                     match: {
+                                         key: string,
+                                         type: string
+                                     }[]) {
+    return page('/api/query/flowRecord/findAllByOperatorId', params, sort, filter, match);
 }
 
 

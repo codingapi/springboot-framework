@@ -193,7 +193,7 @@ public class FlowSubmitService {
             flowNodeService.loadNextPassNode(flowNode);
             // 审批拒绝返回上一节点
         } else if (flowDirectionService.isDefaultBackRecord()) {
-            flowNodeService.loadDefaultBackNode(flowRecord.getPreId());
+            flowNodeService.loadDefaultBackNode(flowRecord);
         } else {
             // 审批拒绝，并且自定了返回节点
             flowNodeService.loadCustomBackNode(flowNode, flowRecord.getPreId());
@@ -208,7 +208,7 @@ public class FlowSubmitService {
     }
 
     // 保存流程记录
-    private void saveFlowRecords(List<FlowRecord> flowRecords) {
+    private void saveNextFlowRecords(List<FlowRecord> flowRecords) {
         flowServiceRepositoryHolder.getFlowRecordRepository().save(flowRecords);
     }
 
@@ -230,13 +230,13 @@ public class FlowSubmitService {
      */
     public FlowResult submitFlow() {
         FlowResult flowResult = this.submitCurrentFlow();
-        if (this.isSkipIfSameApprover()) {
+        if (this.isSkipIfSameApprover() && !flowResult.isOver()) {
             List<FlowRecord> flowRecords = flowResult.matchRecordByOperator(currentOperator);
             FlowResult result = flowResult;
             if (!flowRecords.isEmpty()) {
                 for (FlowRecord flowRecord : flowRecords) {
                     FlowSubmitService flowSubmitService = new FlowSubmitService(flowRecord.getId(), currentOperator, bindData, opinion, flowServiceRepositoryHolder);
-                    result = flowSubmitService.submitCurrentFlow();
+                    result = flowSubmitService.submitFlow();
                 }
             }
             return result;
@@ -283,7 +283,7 @@ public class FlowSubmitService {
                 if (record.isTodo() && record.getId() != flowRecord.getId()) {
                     record.autoPass(currentOperator, snapshot);
                     FlowRecordRepository flowRecordRepository = flowServiceRepositoryHolder.getFlowRecordRepository();
-                    flowRecordRepository.update(flowRecord);
+                    flowRecordRepository.update(record);
                 }
             }
         }
@@ -312,7 +312,7 @@ public class FlowSubmitService {
         }
 
         // 保存流程记录
-        this.saveFlowRecords(nextRecords);
+        this.saveNextFlowRecords(nextRecords);
 
         // 推送审批事件消息
         int eventState = flowSourceDirection == FlowSourceDirection.PASS ? FlowApprovalEvent.STATE_PASS : FlowApprovalEvent.STATE_REJECT;
@@ -320,7 +320,9 @@ public class FlowSubmitService {
 
         // 推送待办事件消息
         for (FlowRecord record : nextRecords) {
-            this.pushEvent(record, FlowApprovalEvent.STATE_TODO);
+            if(record.isTodo()) {
+                this.pushEvent(record, FlowApprovalEvent.STATE_TODO);
+            }
         }
 
         return new FlowResult(flowWork, nextRecords);

@@ -29,9 +29,22 @@ public class TableColumnAliasHolder {
      */
     public void holderAlias() {
         Select select = (Select) statement;
-        PlainSelect plainSelect = select.getPlainSelect();
-        this.searchSubSelect(null, plainSelect);
-        aliasContext.columnKeyToMap();
+        this.deepSearch(select);
+    }
+
+
+    private void deepSearch(Select select) {
+        if (select instanceof PlainSelect) {
+            PlainSelect plainSelect = select.getPlainSelect();
+            this.searchSubSelect(null, plainSelect);
+            aliasContext.columnKeyToMap();
+        } else if (select instanceof SetOperationList) {
+            SetOperationList setOperationList = select.getSetOperationList();
+            List<Select> selectList = setOperationList.getSelects();
+            for (Select selectItem : selectList) {
+                this.deepSearch(selectItem);
+            }
+        }
     }
 
 

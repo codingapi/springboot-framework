@@ -1,0 +1,35 @@
+@use "@/config/variables" as *;
+
+.form-info {
+  background-color: white;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 5px;
+  width: 100%;
+}
+
+.form-header-title {
+  width: 100%;
+  height: 20px;
+  border-left: 4px solid $theme-primary-color;
+  padding-left: 4px;
+  font-size: $content-font-size;
+  margin-bottom: 10px;
+}
+
+.form-content {
+  width: 100%;
+  border-bottom: 2px solid $body-background-color;
+
+  .label {
+    font-size: $content-font-size;
+    display: flex;
+    align-items: center;
+  }
+
+  .value {
+    font-size: $content-font-size;
+    display: flex;
+    align-items: center;
+  }
+}

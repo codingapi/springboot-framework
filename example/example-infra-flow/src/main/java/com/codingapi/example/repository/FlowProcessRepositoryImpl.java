@@ -40,4 +40,10 @@ public class FlowProcessRepositoryImpl implements FlowProcessRepository {
         }
         return null;
     }
+
+
+    @Override
+    public void deleteByProcessId(String processId) {
+        flowProcessEntityRepository.deleteByProcessId(processId);
+    }
 }

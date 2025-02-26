@@ -31,23 +31,30 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
     const [visible, setVisible] = React.useState(false);
 
     useEffect(() => {
-        if (eventKey ==='test') {
+        if (eventKey === 'test') {
             console.log("点击了自定义事件", eventKey);
             setVisible(true);
         }
 
         // 当流程审批反馈结果关闭时，重新加载数据
-        if (eventKey==EVENT_CLOSE_RESULT_VIEW && props.flowData?.getNodeCode() ==='start') {
+        if (eventKey == EVENT_CLOSE_RESULT_VIEW && props.flowData?.getNodeCode() === 'start') {
             // 重新加载数据
             console.log("重新加载数据");
             props.handlerClick && props.handlerClick({type: "RELOAD"});
         }
 
-        if (eventKey==EVENT_RELOAD_DATA) {
+        if (eventKey == EVENT_RELOAD_DATA) {
             props.form.resetFields();
             props.form.setFieldsValue(props.data);
         }
     }, [eventKey]);
+
+
+    useEffect(() => {
+        setTimeout(() => {
+            console.log('flowData recordId', props.flowData?.getRecordId());
+        }, 100)
+    }, [props.flowData]);
 
 
     return (
@@ -110,6 +117,14 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
                     }}
                 >点击了自定义事件</Button>
             )}
+
+            <Button
+                onClick={() => {
+                    const recordId = props.flowData?.getRecordId();
+                    alert(recordId);
+                }}
+            >getRecordId</Button>
+
 
         </ProForm>
     )

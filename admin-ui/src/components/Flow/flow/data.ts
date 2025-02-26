@@ -91,10 +91,20 @@ export class FlowTrySubmitResultBuilder {
 
 export class FlowData extends FlowWorkData {
     private readonly formParams?: FlowFormParams;
+    private recordId:string;
 
-    constructor(data: any, formParams?: FlowFormParams) {
+    constructor(recordId:string,data: any, formParams?: FlowFormParams) {
         super(data);
+        this.recordId = recordId;
         this.formParams = formParams;
+    }
+
+    setRecordId = (recordId:string)=>{
+        this.recordId = recordId;
+    }
+
+    getRecordId = ()=>{
+        return this.recordId;
     }
 
     // 是否可以审批

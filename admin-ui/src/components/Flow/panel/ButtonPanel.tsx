@@ -69,6 +69,10 @@ const buttonEventOptions = [
         label: "自定义事件",
         value: "VIEW"
     },
+    {
+        label: "删除",
+        value: "REMOVE"
+    },
 ] as {
     label: string;
     value: CustomButtonType;
@@ -231,7 +235,7 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
                             />
                         </Space>
                     )}
-                    normalize={(value) => {
+                    normalize={(value:any) => {
                         if (value) {
                             return {
                                 background: value.toHexString()
@@ -239,7 +243,7 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
                         }
                         return value;
                     }}
-                    getValueProps={(value) => {
+                    getValueProps={(value:any) => {
                         const color = value?.background;
                         if (color) {
                             return {

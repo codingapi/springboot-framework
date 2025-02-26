@@ -195,4 +195,30 @@ class SelectSQLAnalyzerTest {
         System.out.println(builder.getNewSQL());
         System.out.println(builder.getTableAlias());;
     }
+
+    @Test
+    @Order(8)
+    void test8() throws Exception{
+        String sql = "select ade1_0.id,ade1_0.ba_dept_name,ade1_0.ba_org_shortname,ade1_0.ba_dept_code,ade1_0.ba_code,ade1_0.ba_dept_property_code,ade1_0.ba_parent_type,ade1_0.ba_real_super_org_id,ade1_0.ba_org_is_avoidance_dept,ade1_0.ba_real_super_org_id,ade1_0.ba_super_org_name " +
+                "from ba04_administrative_department ade1_0 where ade1_0.ba_parent_type=0" +
+                " union all select ade2_0.id,ade2_0.ba_dept_name,ade2_0.ba_org_shortname,ade2_0.ba_dept_code,ade2_0.ba_code,ade2_0.ba_dept_property_code,ade2_0.ba_parent_type,ade2_0.ba_real_super_org_id,ade2_0.ba_org_is_avoidance_dept,ade3_0.ba_real_super_org_id,ade3_0.ba_super_org_name" +
+                " from ba04_administrative_department ade2_0 left join ba04_administrative_department ade3_0 on ade2_0.ba_real_super_org_id=ade3_0.id " +
+                "where ade2_0.ba_real_super_org_id=1";
+
+
+
+        RowHandler rowHandler = (subSql, tableName, tableAlias) -> {
+            if (tableName.equalsIgnoreCase("ba04_administrative_department")) {
+                String conditionTemplate = "%s.id < 100 ";
+                return Condition.formatCondition(conditionTemplate, tableAlias);
+            }
+            return null;
+        };
+        DataPermissionSQLEnhancer builder = new DataPermissionSQLEnhancer(sql, rowHandler);
+        String newSQL = builder.getNewSQL();
+        System.out.println(newSQL);
+        System.out.println(builder.getTableAlias());
+        assertEquals("SELECT ade1_0.id, ade1_0.ba_dept_name, ade1_0.ba_org_shortname, ade1_0.ba_dept_code, ade1_0.ba_code, ade1_0.ba_dept_property_code, ade1_0.ba_parent_type, ade1_0.ba_real_super_org_id, ade1_0.ba_org_is_avoidance_dept, ade1_0.ba_real_super_org_id, ade1_0.ba_super_org_name FROM ba04_administrative_department ade1_0 WHERE ade1_0.id < 100 AND ade1_0.ba_parent_type = 0 " +
+                "UNION ALL SELECT ade2_0.id, ade2_0.ba_dept_name, ade2_0.ba_org_shortname, ade2_0.ba_dept_code, ade2_0.ba_code, ade2_0.ba_dept_property_code, ade2_0.ba_parent_type, ade2_0.ba_real_super_org_id, ade2_0.ba_org_is_avoidance_dept, ade3_0.ba_real_super_org_id, ade3_0.ba_super_org_name FROM ba04_administrative_department ade2_0 LEFT JOIN ba04_administrative_department ade3_0 ON ade2_0.ba_real_super_org_id = ade3_0.id WHERE ade3_0.id < 100 AND ade2_0.id < 100 AND ade2_0.ba_real_super_org_id = 1", newSQL);
+    }
 }

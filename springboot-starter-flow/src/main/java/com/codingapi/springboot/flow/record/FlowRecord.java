@@ -322,6 +322,13 @@ public class FlowRecord {
     }
 
     /**
+     * 是否等待
+     */
+    public boolean isWaiting() {
+        return this.flowType == FlowType.WAITING;
+    }
+
+    /**
      * 是否是待办
      */
     public boolean isTodo() {
@@ -335,6 +342,13 @@ public class FlowRecord {
      */
     public boolean isTransfer() {
         return this.flowType == FlowType.TRANSFER;
+    }
+
+    /**
+     * 拒绝状态
+     */
+    public boolean isReject() {
+        return this.opinion != null && this.opinion.isReject() && isDone();
     }
 
     /**
@@ -431,5 +445,9 @@ public class FlowRecord {
      */
     public boolean isStartRecord() {
         return this.preId == 0;
+    }
+
+    public boolean isOverNode() {
+        return this.nodeCode.equals(FlowNode.CODE_OVER);
     }
 }

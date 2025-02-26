@@ -28,6 +28,22 @@ public class FlowCmd {
             return TokenContext.current().getUsername();
         }
     }
+    @Setter
+    @Getter
+    public static class FlowStep{
+        private String workCode;
+        private JSONObject formData;
+
+        @SneakyThrows
+        public IBindData getBindData() {
+            String clazzName = formData.getString("clazzName");
+            return (IBindData)formData.toJavaObject(Class.forName(clazzName));
+        }
+
+        public String getUserName() {
+            return TokenContext.current().getUsername();
+        }
+    }
 
     @Setter
     @Getter
@@ -180,13 +196,29 @@ public class FlowCmd {
         }
     }
 
+    @Setter
+    @Getter
+    public static class RemoveFlow {
+
+        private long recordId;
+
+        public String getUserName() {
+            return TokenContext.current().getUsername();
+        }
+    }
+
 
     @Setter
     @Getter
     public static class PostponedFlow {
         private long recordId;
 
+        // 单位小时
         private long timeOut;
+
+        public long getTimeOut() {
+            return timeOut * 60 * 60 * 1000;
+        }
 
         public String getUserName() {
             return TokenContext.current().getUsername();

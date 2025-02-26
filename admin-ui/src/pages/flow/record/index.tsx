@@ -1,12 +1,12 @@
 import React, {useEffect} from "react";
 import {ActionType, PageContainer, ProTable} from "@ant-design/pro-components";
 import {
+    findAllByOperatorId,
     findDoneByOperatorId,
     findInitiatedByOperatorId,
     findPostponedTodoByOperatorId,
     findTimeoutTodoByOperatorId,
     findTodoByOperatorId,
-    flowRecordList,
     urge
 } from "@/api/flow";
 import moment from "moment";
@@ -302,7 +302,7 @@ const FlowRecordPage = () => {
                                     return record.read?"record-read":"record-unread";
                                 }}
                                 request={async (params, sort, filter) => {
-                                    return flowRecordList(params, sort, filter, []);
+                                    return findAllByOperatorId(params, sort, filter, []);
                                 }}
                             />
                         )
