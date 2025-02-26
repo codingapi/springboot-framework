@@ -2,6 +2,7 @@ import React from "react";
 import {FormItemProps} from "@/components/form/types";
 import {Form, Rate} from "antd";
 import formFieldInit from "@/components/form/common";
+import "./form.scss";
 
 const FormRate: React.FC<FormItemProps> = (props) => {
     const {formAction} = formFieldInit(props);

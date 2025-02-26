@@ -2,6 +2,7 @@ import React, {useEffect} from "react";
 import {FormItemProps} from "@/components/form/types";
 import {Form, Radio, Space} from "antd";
 import formFieldInit from "@/components/form/common";
+import "./form.scss";
 
 const FormRadio: React.FC<FormItemProps> = (props) => {
     const [options, setOptions] = React.useState(props.options);

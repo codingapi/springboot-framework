@@ -6,7 +6,7 @@ import FormInput from "@/components/form/input";
 const CustomFormEditOption:React.FC<SelectOptionFormEditProps> = (props)=>{
     return (
         <Form
-            actionRef={props.formAction}
+            actionRef={props.currentAction}
         >
             <FormInput
                 name={"type"}

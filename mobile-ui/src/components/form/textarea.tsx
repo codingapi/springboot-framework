@@ -2,6 +2,7 @@ import React from "react";
 import {FormItemProps} from "@/components/form/types";
 import {Form, TextArea} from "antd-mobile";
 import formFieldInit from "@/components/form/common";
+import "./form.scss";
 
 const FormTextArea: React.FC<FormItemProps> = (props) => {
 

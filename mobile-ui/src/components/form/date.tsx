@@ -3,9 +3,8 @@ import {FormItemProps} from "@/components/form/types";
 import {DatePicker, Form} from "antd-mobile";
 import {RightOutline} from "antd-mobile-icons";
 import dayjs from "dayjs";
-import "./form.scss";
 import formFieldInit from "@/components/form/common";
-
+import "./form.scss";
 
 export const dateLabelRenderer = (type: string, data: number) => {
     switch (type) {

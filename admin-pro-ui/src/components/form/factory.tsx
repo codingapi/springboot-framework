@@ -13,6 +13,7 @@ import FormSwitch from "@/components/form/switch";
 import FormDate from "@/components/form/date";
 import FormCascader from "@/components/form/cascader";
 import FormSelect from "@/components/form/select";
+import FormSelector from "@/components/form/selector";
 
 
 class FormFactory {
@@ -130,7 +131,7 @@ class FormFactory {
 
         if (type === 'selector') {
             return (
-                <FormCheckbox
+                <FormSelector
                     {...props}
                     key={props.name}
                 />

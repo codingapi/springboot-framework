@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {FormItemProps} from "@/components/form/types";
 import {Form, Input} from "antd";
 import formFieldInit from "@/components/form/common";
+import "./form.scss";
 
 
 const FormCaptcha: React.FC<FormItemProps> = (props) => {

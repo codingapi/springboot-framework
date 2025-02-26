@@ -3,6 +3,7 @@ import {FormItemProps} from "@/components/form/types";
 import {Form, Switch as AntSwitch} from "antd-mobile";
 import {SwitchProps as AntdSwitchProps} from "antd-mobile/es/components/switch/switch";
 import formFieldInit from "@/components/form/common";
+import "./form.scss";
 
 interface SwitchProps extends AntdSwitchProps {
     value?: boolean;

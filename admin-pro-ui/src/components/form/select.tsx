@@ -2,7 +2,7 @@ import React, {useEffect} from "react";
 import {FormItemProps} from "@/components/form/types";
 import {Form, Select} from "antd";
 import formFieldInit from "@/components/form/common";
-
+import "./form.scss";
 
 const valueToForm = (value: string) => {
     if (value && value.length > 0) {

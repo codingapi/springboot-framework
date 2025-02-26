@@ -2,6 +2,7 @@ import React from "react";
 import {FormItemProps} from "@/components/form/types";
 import {Form, Input} from "antd";
 import formFieldInit from "@/components/form/common";
+import "./form.scss";
 
 const FormPassword: React.FC<FormItemProps> = (props) => {
 

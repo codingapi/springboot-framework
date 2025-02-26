@@ -5,6 +5,7 @@ import formFieldInit from "@/components/form/common";
 import {loadFiles, upload} from "@/api/oss";
 import {FormAction} from "@/components/form";
 import {CloseCircleFill} from "antd-mobile-icons";
+import "./form.scss";
 
 const fileToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {

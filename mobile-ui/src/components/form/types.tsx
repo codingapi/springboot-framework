@@ -133,10 +133,13 @@ export interface FormItemProps {
     selectorColumn?: number,
     // Captcha组件切换验证码事件
     onCaptchaChange?: (value: string) => void;
-
-    // 验证规则
-    rules?: any[],
-
+    // Captcha组件刷新验证码事件
+    onCaptchaRefresh?: () => Promise<{
+        // 验证码标志
+        code: string;
+        // 验证码图片地址
+        url: string;
+    }>;
 
 }
 

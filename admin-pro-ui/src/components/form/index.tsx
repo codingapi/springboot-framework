@@ -5,7 +5,7 @@ import {FormValidateContext} from "@/components/form/validate";
 import {FormFieldOptionListenerContext, FormFieldReloadListenerContext} from "@/components/form/listener";
 import {Form as AntForm} from "antd";
 import FormFactory from "@/components/form/factory";
-import "./index.scss";
+import "./form.scss";
 
 export interface FiledData {
     name: NamePath;
@@ -313,7 +313,7 @@ const Form:React.FC<FormProps> = (props)=>{
                 })}
 
                 {props.children}
-                
+
                 {props.footer}
             </AntForm>
         </FormContext.Provider>

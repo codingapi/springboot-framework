@@ -3,7 +3,7 @@ import {FormItemProps} from "@/components/form/types";
 import {DatePicker, Form} from "antd";
 import dayjs from "dayjs";
 import formFieldInit from "@/components/form/common";
-
+import "./form.scss";
 
 const datePrecisionConverter = (precision?: string) => {
     if (precision === "day") {

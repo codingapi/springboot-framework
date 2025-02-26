@@ -2,6 +2,7 @@ import React, {useEffect} from "react";
 import {FormItemProps} from "@/components/form/types";
 import {Checkbox, Form, Space} from "antd";
 import formFieldInit from "@/components/form/common";
+import "./form.scss";
 
 const valueToForm = (value: string) => {
     if (value && value.length > 0) {

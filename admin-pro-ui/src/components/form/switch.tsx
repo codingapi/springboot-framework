@@ -2,6 +2,7 @@ import React from "react";
 import {FormItemProps} from "@/components/form/types";
 import {Form, Switch as AntSwitch, SwitchProps as AntdSwitchProps} from "antd";
 import formFieldInit from "@/components/form/common";
+import "./form.scss";
 
 interface SwitchProps extends AntdSwitchProps {
     value?: boolean;
