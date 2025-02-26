@@ -4,7 +4,7 @@ import {Route} from "react-router";
 import {menus} from "@/config/menus";
 import RoleControl from "@/utils/RoleControl";
 import {cloneDeep} from 'lodash';
-import Icons from "@/components/Icons";
+import Icons from "@/components/icons";
 
 const accessFilter = (menu: Menu): boolean => {
     if (menu.roles) {
