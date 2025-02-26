@@ -65,6 +65,7 @@ export interface FormItemProps {
     radioDirection?: "vertical" | "horizontal",
     // 多选框方向
     checkboxDirection?: "vertical" | "horizontal",
+
     // TextArea输入行数
     textAreaRows?: number,
     // TextArea输入框最大值
@@ -133,6 +134,13 @@ export interface FormItemProps {
     selectorColumn?: number,
     // Captcha组件切换验证码事件
     onCaptchaChange?: (value: string) => void;
+    // Captcha组件刷新验证码事件
+    onCaptchaRefresh?: () => Promise<{
+        // 验证码标志
+        code: string;
+        // 验证码图片地址
+        url: string;
+    }>;
 
 
 }

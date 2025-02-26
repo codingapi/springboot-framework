@@ -6,6 +6,14 @@ import FormInput from "@/components/form/input";
 import {Button, Col, message, Row} from "antd";
 import {FormField} from "@/components/form/types";
 import FormPassword from "@/components/form/password";
+import FormCaptcha from "@/components/form/captcha";
+import FormCheckbox from "@/components/form/checkbox";
+import FormRadio from "@/components/form/radio";
+import FormRate from "@/components/form/rate";
+import FormSlider from "@/components/form/slider";
+import FormStepper from "@/components/form/stepper";
+import FormSwitch from "@/components/form/switch";
+import FormTextArea from "@/components/form/textarea";
 
 
 const FooterButtons: React.FC<{ formAction: React.RefObject<FormAction> }> = ({formAction}) => {
@@ -73,13 +81,22 @@ const WelcomePage = () => {
                 name: ['user', 'name'],
                 label: '姓名',
                 placeholder: '请输入姓名',
-                validateFunction:async (content)=>{
+                validateFunction: async (content) => {
                     const value = content.value;
-                    if(value){
+                    if (value) {
                         return []
                     }
                     return ['姓名不能为空']
                 }
+            }
+        },
+        {
+            type: 'stepper',
+            props: {
+                required: true,
+                name: ['user', 'age'],
+                label: '年龄',
+                placeholder: '请输入年龄',
             }
         },
         {
@@ -89,13 +106,88 @@ const WelcomePage = () => {
                 name: ['user', 'password'],
                 label: '银行卡密码',
                 placeholder: '请输入银行卡密码',
-                validateFunction:async (content)=>{
+                validateFunction: async (content) => {
                     const value = content.value;
-                    if(value){
+                    if (value) {
                         return []
                     }
                     return ['银行卡密码不能为空']
                 }
+            }
+        },
+        {
+            type: 'captcha',
+            props: {
+                required: true,
+                name: ['user', 'code'],
+                label: '银行卡验证码',
+                placeholder: '请输入银行卡验证码',
+                onCaptchaRefresh: async () => {
+                    console.log('refresh captcha')
+                    return {
+                        url: '/captcha.jpeg',
+                        code: '123'
+                    }
+                }
+            }
+        },
+        {
+            type: 'checkbox',
+            props: {
+                required: true,
+                name: ['user', 'checkbox'],
+                label: '复选框',
+                options: [
+                    {label: '选项1', value: '1'},
+                    {label: '选项2', value: '2'},
+                    {label: '选项3', value: '3'},
+                ]
+            }
+        },
+        {
+            type: 'radio',
+            props: {
+                required: true,
+                name: ['user', 'radio'],
+                label: '单选框',
+                options: [
+                    {label: '选项1', value: '1'},
+                    {label: '选项2', value: '2'},
+                    {label: '选项3', value: '3'},
+                ]
+            }
+        },
+        {
+            type: 'rate',
+            props: {
+                required: true,
+                name: ['user', 'rate'],
+                label: '评分',
+            }
+        },
+        {
+            type: 'slider',
+            props: {
+                required: true,
+                name: ['user', 'slider'],
+                label: '滑块',
+                sliderPopover:true
+            }
+        },
+        {
+            type: 'switch',
+            props: {
+                required: true,
+                name: ['user', 'switch'],
+                label: '开关',
+            }
+        },
+        {
+            type: 'textarea',
+            props: {
+                required: true,
+                name: ['user', 'textarea'],
+                label: '文本域',
             }
         }
     ] as FormField[];
@@ -119,11 +211,18 @@ const WelcomePage = () => {
                             placeholder={"请输入姓名"}
                             validateFunction={async (content) => {
                                 const value = content.value;
-                                if(value){
+                                if (value) {
                                     return []
                                 }
                                 return ['姓名不能为空']
                             }}
+                        />
+
+                        <FormStepper
+                            required={true}
+                            name={["user", "age"]}
+                            label={"年龄"}
+                            placeholder={"请输入年龄"}
                         />
 
                         <FormPassword
@@ -133,11 +232,72 @@ const WelcomePage = () => {
                             placeholder={"请输入银行卡密码"}
                             validateFunction={async (content) => {
                                 const value = content.value;
-                                if(value){
+                                if (value) {
                                     return []
                                 }
                                 return ['银行卡密码不能为空']
                             }}
+                        />
+
+                        <FormCaptcha
+                            required={true}
+                            name={["user", "code"]}
+                            label={"银行卡验证码"}
+                            placeholder={"请输入银行卡验证码"}
+                            onCaptchaRefresh={async () => {
+                                console.log('refresh captcha')
+                                return {
+                                    url: '/captcha.jpeg',
+                                    code: '123'
+                                }
+                            }}
+                        />
+
+                        <FormCheckbox
+                            required={true}
+                            name={["user", "checkbox"]}
+                            label={"复选框"}
+                            options={[
+                                {label: '选项1', value: '1'},
+                                {label: '选项2', value: '2'},
+                                {label: '选项3', value: '3'},
+                            ]}
+                        />
+
+                        <FormRadio
+                            required={true}
+                            name={["user", "radio"]}
+                            label={"单选框"}
+                            options={[
+                                {label: '选项1', value: '1'},
+                                {label: '选项2', value: '2'},
+                                {label: '选项3', value: '3'},
+                            ]}
+                        />
+
+                        <FormRate
+                            required={true}
+                            name={["user", "rate"]}
+                            label={"评分"}
+                        />
+
+                        <FormSlider
+                            required={true}
+                            name={["user", "slider"]}
+                            label={"滑块"}
+                            sliderPopover={true}
+                        />
+
+                        <FormSwitch
+                            required={true}
+                            name={["user", "switch"]}
+                            label={"开关"}
+                        />
+
+                        <FormTextArea
+                            required={true}
+                            name={["user", "textarea"]}
+                            label={"文本域"}
                         />
                     </Form>
                 </Col>
