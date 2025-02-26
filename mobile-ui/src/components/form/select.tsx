@@ -316,9 +316,9 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
                                             return false;
                                         }
                                         return true;
-                                    }).map((item) => {
+                                    }).map((item,index) => {
                                         return (
-                                            <CheckboxItem {...item}/>
+                                            <CheckboxItem key={index} {...item}/>
                                         )
                                     })}
                         </CheckList>
