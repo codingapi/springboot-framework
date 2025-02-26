@@ -5,6 +5,7 @@ import Form, {FormAction} from "@/components/form";
 import FormInput from "@/components/form/input";
 import {Button, Col, message, Row} from "antd";
 import {FormField} from "@/components/form/types";
+import FormPassword from "@/components/form/password";
 
 
 const FooterButtons: React.FC<{ formAction: React.RefObject<FormAction> }> = ({formAction}) => {
@@ -39,10 +40,22 @@ const FooterButtons: React.FC<{ formAction: React.RefObject<FormAction> }> = ({f
 
             <Button
                 onClick={async () => {
+                    formAction.current?.submit();
+                }}
+            >提交表单</Button>
+
+            <Button
+                onClick={async () => {
                     const values = formAction.current?.getFieldsValue();
                     message.success(JSON.stringify(values));
                 }}
             >获取表单值</Button>
+
+            <Button
+                onClick={async () => {
+                    formAction.current?.reset();
+                }}
+            >重置表单</Button>
         </div>
     )
 }
@@ -66,6 +79,22 @@ const WelcomePage = () => {
                         return []
                     }
                     return ['姓名不能为空']
+                }
+            }
+        },
+        {
+            type: 'password',
+            props: {
+                required: true,
+                name: ['user', 'password'],
+                label: '银行卡密码',
+                placeholder: '请输入银行卡密码',
+                validateFunction:async (content)=>{
+                    const value = content.value;
+                    if(value){
+                        return []
+                    }
+                    return ['银行卡密码不能为空']
                 }
             }
         }
@@ -94,6 +123,20 @@ const WelcomePage = () => {
                                     return []
                                 }
                                 return ['姓名不能为空']
+                            }}
+                        />
+
+                        <FormPassword
+                            required={true}
+                            name={["user", "password"]}
+                            label={"银行卡密码"}
+                            placeholder={"请输入银行卡密码"}
+                            validateFunction={async (content) => {
+                                const value = content.value;
+                                if(value){
+                                    return []
+                                }
+                                return ['银行卡密码不能为空']
                             }}
                         />
                     </Form>

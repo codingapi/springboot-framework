@@ -1,6 +1,7 @@
 import React from "react";
 import {FormField} from "@/components/form/types";
 import FormInput from "@/components/form/input";
+import FormPassword from "@/components/form/password";
 
 
 class FormFactory {
@@ -12,6 +13,15 @@ class FormFactory {
         if (type === 'input') {
             return (
                 <FormInput
+                    {...props}
+                    key={props.name}
+                />
+            )
+        }
+
+        if (type === 'password') {
+            return (
+                <FormPassword
                     {...props}
                     key={props.name}
                 />
