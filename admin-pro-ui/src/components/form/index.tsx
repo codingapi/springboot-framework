@@ -1,6 +1,10 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {NamePath} from "rc-field-form/es/interface";
 import {FormField} from "@/components/form/types";
+import {FormValidateContext} from "@/components/form/validate";
+import {FormFieldOptionListenerContext, FormFieldReloadListenerContext} from "@/components/form/listener";
+import {Form as AntForm} from "antd";
+import FormFactory from "@/components/form/factory";
 import "./index.scss";
 
 export interface FiledData {
@@ -49,10 +53,270 @@ export interface FormAction {
     validate: () => Promise<boolean>;
 }
 
-const Form = ()=>{
+export interface FormProps {
+    // 表单字段
+    loadFields?: ()=>Promise<FormField[]>;
+    // 表单提交事件
+    onFinish?: (values: any) => Promise<void>;
+    // 表单控制对象
+    actionRef?: React.Ref<FormAction>;
+    // form布局，默认vertical
+    layout?: 'horizontal' | 'vertical';
+    // children元素
+    children?: React.ReactNode;
+    // footer元素
+    footer?: React.ReactNode;
+    // 初始化值
+    initialValues?: any;
+}
+
+interface FormContextProps {
+    // form表单的控制对象
+    formAction: FormAction;
+    // 检验控制对象
+    validateContext: FormValidateContext;
+    // 表单刷新监听对象
+    reloadContext:FormFieldReloadListenerContext;
+    // 选项刷新监听对象
+    optionContext:FormFieldOptionListenerContext;
+}
+
+export const FormContext = React.createContext<FormContextProps | null>(null);
+
+
+const Form:React.FC<FormProps> = (props)=>{
+
+    const [form] = AntForm.useForm();
+
+
+    const validateContext = new FormValidateContext();
+    const reloadContext = new FormFieldReloadListenerContext();
+    const optionContext = new FormFieldOptionListenerContext();
+
+    const formAction = {
+        submit: async () => {
+            const res = await validateContext.validate(formAction);
+            if (res) {
+                form.submit();
+            }
+        },
+
+        reset: (values?: any) => {
+            reloadFields();
+            form.resetFields();
+            if (values) {
+                form.setFieldsValue(values);
+                reloadContext.notifyAll();
+            }
+        },
+
+        hidden: (name: NamePath) => {
+            setFields(prevFields => prevFields.map((field) => {
+                if (field.props.name === name) {
+                    return {
+                        ...field,
+                        props: {
+                            ...field.props,
+                            hidden: true,
+                            required: false
+                        }
+                    }
+                }
+                return field;
+            }));
+            validateContext.clear();
+        },
+
+        required:(name: NamePath,required:boolean) => {
+            setFields(prevFields => prevFields.map((field) => {
+                if (field.props.name === name) {
+                    return {
+                        ...field,
+                        props: {
+                            ...field.props,
+                            required: required
+                        }
+                    }
+                }
+                return field;
+            }));
+            validateContext.clear();
+        },
+
+        show: (name: NamePath) => {
+            setFields(prevFields => prevFields.map((field) => {
+                if (field.props.name === name) {
+                    return {
+                        ...field,
+                        props: {
+                            ...field.props,
+                            hidden: false
+                        }
+                    }
+                }
+                return field;
+            }));
+            validateContext.clear();
+        },
+
+        disable: (name: NamePath) => {
+            setFields(prevFields => prevFields.map((field) => {
+                if (field.props.name === name) {
+                    return {
+                        ...field,
+                        props: {
+                            ...field.props,
+                            disabled: true
+                        }
+                    }
+                }
+                return field;
+            }));
+            validateContext.clear();
+        },
+
+        disableAll:()=>{
+            setFields(prevFields => prevFields.map((field) => {
+                return {
+                    ...field,
+                    props: {
+                        ...field.props,
+                        disabled: true
+                    }
+                }
+            }));
+            validateContext.clear();
+        },
+
+        enable: (name: NamePath) => {
+            setFields(prevFields => prevFields.map((field) => {
+                if (field.props.name === name) {
+                    return {
+                        ...field,
+                        props: {
+                            ...field.props,
+                            disabled: false
+                        }
+                    }
+                }
+                return field;
+            }));
+            validateContext.clear();
+        },
+
+        enableAll:()=>{
+            setFields(prevFields => prevFields.map((field) => {
+                return {
+                    ...field,
+                    props: {
+                        ...field.props,
+                        disabled: false
+                    }
+                }
+            }));
+            validateContext.clear();
+        },
+
+        remove: (name: NamePath) => {
+            setFields(prevFields => prevFields.filter((field) => field.props.name !== name));
+            validateContext.clear();
+        },
+
+        create: (field: FormField, index?: number) => {
+            setFields(prevFields => {
+                const filteredFields = prevFields.filter((item) => item.props.name !== field.props.name);
+                if (index === undefined || index < 0) {
+                    return [...filteredFields, field];
+                } else {
+                    const newFields = [...filteredFields];
+                    newFields.splice(index, 0, field);
+                    return newFields;
+                }
+            });
+            validateContext.clear();
+        },
+
+        getFieldValue(name: NamePath): any {
+            return form.getFieldValue(name);
+        },
+
+        getFieldsValue(): any {
+            return form.getFieldsValue();
+        },
+
+        reloadOptions:(name: NamePath) => {
+            optionContext.notify(name);
+        },
+
+        reloadAllOptions:()=>{
+            optionContext.notifyAll();
+        },
+
+        setFieldValue(name: NamePath, value: any): void {
+            form.setFieldValue(name, value);
+            reloadContext.notify(name);
+            validateContext?.validateField(name, formAction);
+        },
+
+        setFieldsValue(values: any): void {
+            form.setFieldsValue(values);
+            reloadContext.notifyAll();
+        },
+
+        setFields(fields: FiledData[]): void {
+            form.setFields(fields);
+        },
+
+        validate(): Promise<boolean> {
+            return validateContext.validate(formAction);
+        }
+    }
+
+    const formContextProps = {
+        formAction: formAction,
+        validateContext: validateContext,
+        reloadContext:reloadContext,
+        optionContext:optionContext
+    }
+
+    const [fields, setFields] = React.useState<FormField[]>([]);
+
+    const reloadFields = ()=>{
+        if(props.loadFields){
+            props.loadFields().then(fields=>{
+                setFields(fields);
+            })
+        }
+    }
+
+    useEffect(() => {
+        reloadFields();
+    }, []);
+
+    React.useImperativeHandle(props.actionRef, () => {
+        return formAction
+    }, [fields]);
 
     return (
-        <></>
+        <FormContext.Provider
+            value={formContextProps}
+        >
+            <AntForm
+                form={form}
+                onFinish={(values) => {
+                    props.onFinish && props.onFinish(values);
+                }}
+                initialValues={props.initialValues}
+                layout={props.layout}
+            >
+                {fields.length > 0 && fields.map((field) => {
+                    return FormFactory.create(field) as React.ReactNode;
+                })}
+
+                {props.children}
+                {props.footer}
+            </AntForm>
+        </FormContext.Provider>
     )
 }
 
