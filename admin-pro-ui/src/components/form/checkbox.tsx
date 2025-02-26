@@ -62,9 +62,10 @@ const FormCheckbox: React.FC<FormItemProps> = (props) => {
                 }}
             >
                 <Space direction={props.checkboxDirection}>
-                    {options?.map(item => {
+                    {options?.map((item,index) => {
                         return (
                             <Checkbox
+                                key={index}
                                 disabled={item.disable}
                                 value={item.value}
                             >{item.label}</Checkbox>

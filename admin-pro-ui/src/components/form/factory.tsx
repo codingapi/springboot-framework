@@ -14,6 +14,7 @@ import FormDate from "@/components/form/date";
 import FormCascader from "@/components/form/cascader";
 import FormSelect from "@/components/form/select";
 import FormSelector from "@/components/form/selector";
+import FormUploader from "@/components/form/uploder";
 
 
 class FormFactory {
@@ -147,9 +148,14 @@ class FormFactory {
             )
         }
 
-        return (
-            <></>
-        )
+        if (type === 'uploader') {
+            return (
+                <FormUploader
+                    {...props}
+                    key={props.name}
+                />
+            )
+        }
     }
 
 }

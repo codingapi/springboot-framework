@@ -41,9 +41,10 @@ const FormRadio: React.FC<FormItemProps> = (props) => {
                 }}
             >
                 <Space direction={props.radioDirection}>
-                    {options?.map(item => {
+                    {options?.map((item,index) => {
                         return (
                             <Radio
+                                key={index}
                                 value={item.value}
                                 disabled={item.disable}
                             >{item.label}</Radio>

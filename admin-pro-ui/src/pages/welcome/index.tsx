@@ -17,9 +17,28 @@ import FormTextArea from "@/components/form/textarea";
 import FormDate from "@/components/form/date";
 import FormCascader from "@/components/form/cascader";
 import FormSelect from "@/components/form/select";
+import FormUploader from "@/components/form/uploder";
 
 
 const FooterButtons: React.FC<{ formAction: React.RefObject<FormAction> }> = ({formAction}) => {
+    const data = {
+        user: {
+            name: '张三',
+            age: 18,
+            password: '123456',
+            code: '123',
+            checkbox: '1,2',
+            radio: '1',
+            rate: 3,
+            slider: 50,
+            switch: true,
+            textarea: '这是一段文本',
+            date: '2021-08-01',
+            cascader: '1,1-1,1-1-1',
+            select: '1,2',
+            avatar: '1,2'
+        }
+    }
 
     return (
         <div
@@ -67,6 +86,12 @@ const FooterButtons: React.FC<{ formAction: React.RefObject<FormAction> }> = ({f
                     formAction.current?.reset();
                 }}
             >重置表单</Button>
+
+            <Button
+                onClick={async () => {
+                    formAction.current?.setFieldsValue(data);
+                }}
+            >表单赋值</Button>
         </div>
     )
 }
@@ -255,15 +280,24 @@ const WelcomePage = () => {
                 required: true,
                 name: ['user', 'select'],
                 label: '选择器',
-                selectMultiple:true,
+                selectMultiple: true,
                 options: [
                     {label: '选项1', value: '1'},
                     {label: '选项2', value: '2'},
                     {label: '选项3', value: '3'},
                 ]
             }
-        }
+        },
+        {
+            type: 'uploader',
+            props: {
+                required: true,
+                name: ['user', 'avatar'],
+                label: '头像',
+            }
+        },
     ] as FormField[];
+
 
     return (
         <PageContainer>
@@ -437,6 +471,11 @@ const WelcomePage = () => {
                             ]}
                         />
 
+                        <FormUploader
+                            required={true}
+                            name={["user", "avatar"]}
+                            label={"头像"}
+                        />
                     </Form>
                 </Col>
 
