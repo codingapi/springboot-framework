@@ -183,7 +183,7 @@ export class FlowButtonClickContext {
             if (this.flowStateContext?.hasRecordId()) {
                 customHandler();
             } else {
-                this.flowEventContext?.trySubmitFlow((res) => {
+                this.flowEventContext?.startFlow((res) => {
                     customHandler();
                 });
             }
@@ -198,7 +198,7 @@ export class FlowButtonClickContext {
             if (this.flowStateContext?.hasRecordId()) {
                 viewHandler();
             }else {
-                this.flowEventContext?.trySubmitFlow((res) => {
+                this.flowEventContext?.startFlow((res) => {
                     viewHandler();
                 });
             }
