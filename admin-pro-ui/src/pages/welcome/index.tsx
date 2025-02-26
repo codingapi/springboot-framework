@@ -14,6 +14,8 @@ import FormSlider from "@/components/form/slider";
 import FormStepper from "@/components/form/stepper";
 import FormSwitch from "@/components/form/switch";
 import FormTextArea from "@/components/form/textarea";
+import FormDate from "@/components/form/date";
+import FormCascader from "@/components/form/cascader";
 
 
 const FooterButtons: React.FC<{ formAction: React.RefObject<FormAction> }> = ({formAction}) => {
@@ -171,7 +173,7 @@ const WelcomePage = () => {
                 required: true,
                 name: ['user', 'slider'],
                 label: '滑块',
-                sliderPopover:true
+                sliderPopover: true
             }
         },
         {
@@ -188,6 +190,62 @@ const WelcomePage = () => {
                 required: true,
                 name: ['user', 'textarea'],
                 label: '文本域',
+            }
+        },
+        {
+            type: 'date',
+            props: {
+                required: true,
+                name: ['user', 'date'],
+                label: '日期',
+            }
+        },
+        {
+            type: 'cascader',
+            props: {
+                required: true,
+                name: ['user', 'cascader'],
+                label: '级联选择',
+                options: [
+                    {
+                        label: '选项1',
+                        value: '1',
+                        children: [
+                            {
+                                label: '选项1-1',
+                                value: '1-1',
+                                children: [
+                                    {
+                                        label: '选项1-1-1',
+                                        value: '1-1-1',
+                                    },
+                                    {
+                                        label: '选项1-1-2',
+                                        value: '1-1-2',
+                                    },
+                                ]
+                            },
+                            {
+                                label: '选项1-2',
+                                value: '1-2',
+                            },
+                        ]
+                    },
+                    {
+                        label: '选项2',
+                        value: '2',
+                        children: [
+                            {
+                                label: '选项2-1',
+                                value: '2-1',
+                            },
+                            {
+                                label: '选项2-2',
+                                value: '2-2',
+                            },
+                        ]
+                    },
+                ]
             }
         }
     ] as FormField[];
@@ -299,6 +357,59 @@ const WelcomePage = () => {
                             name={["user", "textarea"]}
                             label={"文本域"}
                         />
+
+                        <FormDate
+                            required={true}
+                            name={["user", "date"]}
+                            label={"日期"}
+                        />
+
+                        <FormCascader
+                            required={true}
+                            name={["user", "cascader"]}
+                            label={"级联选择"}
+                            options={[
+                                {
+                                    label: '选项1',
+                                    value: '1',
+                                    children: [
+                                        {
+                                            label: '选项1-1',
+                                            value: '1-1',
+                                            children: [
+                                                {
+                                                    label: '选项1-1-1',
+                                                    value: '1-1-1',
+                                                },
+                                                {
+                                                    label: '选项1-1-2',
+                                                    value: '1-1-2',
+                                                },
+                                            ]
+                                        },
+                                        {
+                                            label: '选项1-2',
+                                            value: '1-2',
+                                        },
+                                    ]
+                                },
+                                {
+                                    label: '选项2',
+                                    value: '2',
+                                    children: [
+                                        {
+                                            label: '选项2-1',
+                                            value: '2-1',
+                                        },
+                                        {
+                                            label: '选项2-2',
+                                            value: '2-2',
+                                        },
+                                    ]
+                                },
+                            ]}
+                        />
+
                     </Form>
                 </Col>
 

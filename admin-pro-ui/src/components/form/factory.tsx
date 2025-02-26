@@ -10,6 +10,8 @@ import FormSlider from "@/components/form/slider";
 import FormStepper from "@/components/form/stepper";
 import FormTextArea from "@/components/form/textarea";
 import FormSwitch from "@/components/form/switch";
+import FormDate from "@/components/form/date";
+import FormCascader from "@/components/form/cascader";
 
 
 class FormFactory {
@@ -101,6 +103,24 @@ class FormFactory {
         if (type === 'switch') {
             return (
                 <FormSwitch
+                    {...props}
+                    key={props.name}
+                />
+            )
+        }
+
+        if (type === 'date') {
+            return (
+                <FormDate
+                    {...props}
+                    key={props.name}
+                />
+            )
+        }
+
+        if (type === 'cascader') {
+            return (
+                <FormCascader
                     {...props}
                     key={props.name}
                 />
