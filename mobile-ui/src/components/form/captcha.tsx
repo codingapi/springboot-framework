@@ -10,8 +10,10 @@ const FormCaptcha: React.FC<FormItemProps> = (props) => {
 
     const reloadCaptcha = () => {
         props.onCaptchaRefresh && props.onCaptchaRefresh().then((res) => {
-            setCaptchaImg(res.url);
-            props.onCaptchaChange && props.onCaptchaChange(res.code);
+            if(res) {
+                setCaptchaImg(res.url);
+                props.onCaptchaChange && props.onCaptchaChange(res.code);
+            }
         });
     }
 
