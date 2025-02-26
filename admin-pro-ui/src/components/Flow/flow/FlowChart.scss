@@ -1,0 +1,19 @@
+.flow-chart-content {
+  border: 1px solid #ebeef5;
+  transition: 0.3s;
+  padding: 15px 16px;
+  border-radius: 12px;
+  position: relative;
+
+  .flow-view {
+    width: 100%;
+    height: 85vh;
+  }
+}
+
+
+
+.lf-mini-map {
+  border: none !important;
+  box-shadow: 3px 0 10px 1px rgb(228, 224, 219);
+}

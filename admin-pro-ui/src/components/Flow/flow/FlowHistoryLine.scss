@@ -1,0 +1,32 @@
+.UserOutlined {
+  padding: 10px;
+  color: #fff;
+  background: #1890ff;
+  border-radius: 50%;
+  font-size: 20px;
+}
+.ant-timeline .ant-timeline-item-content {
+  margin-inline-start: 33px;
+}
+
+.ant-timeline .ant-timeline-item {
+  padding-bottom: 50px;
+}
+.ant-timeline .ant-timeline-item-tail {
+  border-inline-start: 2px solid #ccc;
+}
+.title{
+font-size: 16px;
+font-weight: bold;
+}
+.opinion{
+    display: flex;
+    align-items: flex-start;
+    font-size: 15px;
+    &>div {
+        &:nth-child(2) {
+            width: 350px;
+        }
+    }
+}
+
