@@ -67,7 +67,7 @@ const FormCascader: React.FC<FormItemProps> = (props) => {
                 value={props.value}
                 options={options || []}
                 onChange={(value) => {
-                    formAction?.setFieldValue(props.name as string, formToValue(value as string[]));
+                    formAction?.setFieldValue(props.name, formToValue(value as string[]));
                     props.onChange && props.onChange(value, formAction);
                     setVisible(false);
                 }}

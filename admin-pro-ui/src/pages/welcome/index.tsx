@@ -36,7 +36,7 @@ const FooterButtons: React.FC<{ formAction: React.RefObject<FormAction> }> = ({f
             date: '2021-08-01',
             cascader: '1,1-1,1-1-1',
             select: '1,2',
-            avatar: '1,2'
+            avatar: 'c84fb304c180f61bb7db40efef7f85b7'
         }
     }
 

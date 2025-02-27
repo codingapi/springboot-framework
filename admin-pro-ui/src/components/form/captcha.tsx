@@ -5,14 +5,17 @@ import formFieldInit from "@/components/form/common";
 import "./form.scss";
 
 
-const FormCaptcha: React.FC<FormItemProps> = (props) => {
+const Captcha:React.FC<FormItemProps> = (props)=>{
+
     const [captchaImg, setCaptchaImg] = useState<string>('');
     const {formAction} = formFieldInit(props);
 
     const reloadCaptcha = () => {
         props.onCaptchaRefresh && props.onCaptchaRefresh().then((res) => {
-            setCaptchaImg(res.url);
-            props.onCaptchaChange && props.onCaptchaChange(res.code);
+            if(res) {
+                setCaptchaImg(res.url);
+                props.onCaptchaChange && props.onCaptchaChange(res.code);
+            }
         });
     }
 
@@ -21,35 +24,45 @@ const FormCaptcha: React.FC<FormItemProps> = (props) => {
     }, [])
 
     return (
+        <div className={"form-captcha"}>
+            <Input
+                className={"form-captcha-input"}
+                disabled={props.disabled}
+                value={props.value}
+                placeholder={props.placeholder}
+                onChange={(value) => {
+                    const currentValue = value.target.value;
+                    formAction?.setFieldValue(props.name, currentValue);
+                    props.onChange && props.onChange(currentValue,formAction);
+                }}
+            />
+
+            <img
+                className={"form-captcha-img"}
+                onClick={() => {
+                    reloadCaptcha();
+                }}
+                src={captchaImg}
+                alt="点击重置"
+            />
+        </div>
+    )
+}
+
+
+const FormCaptcha: React.FC<FormItemProps> = (props) => {
+
+    return (
         <Form.Item
             name={props.name}
             label={props.label}
+            required={props.required}
             hidden={props.hidden}
             help={props.help}
-            required={props.required}
         >
-           <div className={"form-captcha"}>
-               <Input
-                   className={"form-captcha-input"}
-                   disabled={props.disabled}
-                   value={props.value}
-                   placeholder={props.placeholder}
-                   onChange={(value) => {
-                       const currentValue = value.target.value;
-                       formAction?.setFieldValue(props.name, currentValue);
-                       props.onChange && props.onChange(currentValue,formAction);
-                   }}
-               />
-
-               <img
-                   className={"form-captcha-img"}
-                   onClick={() => {
-                       reloadCaptcha();
-                   }}
-                   src={captchaImg}
-                   alt="点击重置"
-               />
-           </div>
+            <Captcha
+                {...props}
+            />
         </Form.Item>
     )
 }

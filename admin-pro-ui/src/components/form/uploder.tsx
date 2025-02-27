@@ -25,6 +25,9 @@ const formToValue = (value: UploadFile[]) => {
             }
         }).join(',');
     }
+    if(value && value.length==0){
+        return '';
+    }
     return value;
 }
 
@@ -87,13 +90,16 @@ const Uploader: React.FC<UploaderProps> = (props) => {
                     const base64 = await fileToBase64(currentFile);
                     const filename = currentFile.name;
                     if (props.onUploaderUpload) {
-                        const {id, name, url} = await props.onUploaderUpload(filename, base64);
-                        // @ts-ignore
-                        onSuccess({
-                            url: url,
-                            id: id,
-                            name: name
-                        });
+                        const res = await props.onUploaderUpload(filename, base64);
+                        if(res) {
+                            const {url, id, name} = res;
+                            // @ts-ignore
+                            onSuccess({
+                                url: url,
+                                id: id,
+                                name: name
+                            });
+                        }
                     } else {
                         const url = URL.createObjectURL(currentFile);
                         // @ts-ignore
@@ -105,10 +111,13 @@ const Uploader: React.FC<UploaderProps> = (props) => {
                     }
                 }}
                 onChange={(info) => {
-                    const currentValue = formToValue(info.fileList);
-                    formAction?.setFieldValue(props.name, currentValue);
-                    props.onChange && props.onChange(currentValue, formAction);
-                    setFileList(info.fileList);
+                    const fileList = info.fileList;
+                    if(fileList.length>0 && fileList.every(item=>item.status==='done')) {
+                        const currentValue = formToValue(fileList);
+                        formAction?.setFieldValue(props.name, currentValue);
+                        props.onChange && props.onChange(currentValue, formAction);
+                    }
+                    setFileList(fileList);
                 }}
                 onPreview={isImage ? handlePreview : undefined}
             >
