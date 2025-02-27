@@ -3,11 +3,9 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.scss";
 import {CheckCircleFilled, SettingFilled} from "@ant-design/icons";
-import OverSettingPanel from "@/components/flow/panel/over";
-import FlowUtils from "@/components/flow/utils";
-import {NodeState} from "@/components/flow/nodes/states";
-import {Tag} from "antd";
-import StateLabel from "@/components/flow/nodes/StateLabel";
+import OverSettingPanel from "@/components/flow/nodes/panel/over";
+import StateTag from "@/components/flow/nodes/panel/StateTag";
+import {NodeState} from "@/components/flow/types";
 
 type OverProperties = {
     id:string;
@@ -62,7 +60,7 @@ export const OverView: React.FC<OverProps> = (props) => {
 
             {state && (
                 <div className={"state"}>
-                    <StateLabel
+                    <StateTag
                         state={state}/>
                 </div>
             )}

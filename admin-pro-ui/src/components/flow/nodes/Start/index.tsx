@@ -3,10 +3,9 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.scss";
 import {PlayCircleFilled, SettingFilled} from "@ant-design/icons";
-import StartSettingPanel from "@/components/flow/panel/start";
-import {NodeState} from "@/components/flow/nodes/states";
-import {Tag} from "antd";
-import StateLabel from "@/components/flow/nodes/StateLabel";
+import StartSettingPanel from "@/components/flow/nodes/panel/start";
+import StateTag from "@/components/flow/nodes/panel/StateTag";
+import {NodeState} from "@/components/flow/types";
 
 type StartProperties ={
     id:string;
@@ -61,7 +60,7 @@ export const StartView: React.FC<StartProps> = (props) => {
 
             {state && (
                 <div className={"state"}>
-                    <StateLabel
+                    <StateTag
                         state={state}/>
                 </div>
             )}

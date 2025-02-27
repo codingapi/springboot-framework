@@ -1,12 +1,12 @@
 import React from "react";
-import {NodeState} from "@/components/flow/nodes/states";
 import {Tag} from "antd";
+import {NodeState} from "@/components/flow/types";
 
 interface StateLabelProps {
     state:NodeState;
 }
 
-const StateLabel:React.FC<StateLabelProps> = (props)=>{
+const StateTag:React.FC<StateLabelProps> = (props)=>{
 
     const color = (state:NodeState) => {
         switch (state) {
@@ -43,4 +43,4 @@ const StateLabel:React.FC<StateLabelProps> = (props)=>{
     )
 }
 
-export default StateLabel
+export default StateTag

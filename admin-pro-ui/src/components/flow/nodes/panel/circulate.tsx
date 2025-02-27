@@ -1,9 +1,9 @@
 import React from "react";
 import {ProForm} from "@ant-design/pro-components";
 import {Button, Drawer, Space, Tabs} from "antd";
-import NodePanel from "@/components/flow/panel/NodePanel";
-import EdgePanel from "@/components/flow/panel/EdgePanel";
-import {SettingPanelProps} from "@/components/flow/panel/panel.types";
+import NodePanel from "@/components/flow/nodes/panel/NodePanel";
+import EdgePanel from "@/components/flow/nodes/panel/EdgePanel";
+import {SettingPanelProps} from "@/components/flow/nodes/panel/panel.types";
 
 const CirculateSettingPanel: React.FC<SettingPanelProps> = (props) => {
 

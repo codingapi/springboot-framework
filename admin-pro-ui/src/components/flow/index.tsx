@@ -7,8 +7,8 @@ import Start from "@/components/flow/nodes/Start";
 import Node from "@/components/flow/nodes/Node";
 import Over from "@/components/flow/nodes/Over";
 import Circulate from "@/components/flow/nodes/Circulate";
-import ControlPanel from "@/components/flow/layout/ControlPanel";
-import NodePanel from "@/components/flow/layout/NodePanel";
+import ControlPanel from "@/components/flow/panel/ControlPanel";
+import NodePanel from "@/components/flow/panel/NodePanel";
 import {EdgeType} from "@/components/flow/flow/types";
 
 import "./index.scss";

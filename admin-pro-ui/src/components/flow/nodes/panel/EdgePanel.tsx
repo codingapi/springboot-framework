@@ -3,7 +3,7 @@ import {ActionType, ProForm, ProTable} from "@ant-design/pro-components";
 import {Input, InputNumber, Popconfirm, Space} from "antd";
 import {CheckOutlined, EditOutlined, SettingOutlined} from "@ant-design/icons";
 import FlowUtils from "@/components/flow/utils";
-import ScriptModal from "@/components/flow/panel/ScriptModal";
+import ScriptModal from "@/components/flow/nodes/panel/ScriptModal";
 
 interface EdgePanelProps {
     id?: string;

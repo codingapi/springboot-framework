@@ -12,7 +12,7 @@ import {
 } from "@ant-design/pro-components";
 import {Button, ColorPicker, Popconfirm, Space} from "antd";
 import FlowUtils from "@/components/flow/utils";
-import ScriptModal from "@/components/flow/panel/ScriptModal";
+import ScriptModal from "@/components/flow/nodes/panel/ScriptModal";
 import {EyeOutlined, ReloadOutlined} from "@ant-design/icons";
 import {CustomButtonType} from "@/components/flow/flow/types";
 

@@ -1,18 +1,12 @@
 import React from "react";
-import {ProForm} from "@ant-design/pro-components";
 import {Button, Drawer, Space, Tabs} from "antd";
-import NodePanel from "@/components/flow/panel/NodePanel";
-import EdgePanel from "@/components/flow/panel/EdgePanel";
-import ButtonPanel from "@/components/flow/panel/ButtonPanel";
+import EdgePanel from "@/components/flow/nodes/panel/EdgePanel";
+import NodePanel from "@/components/flow/nodes/panel/NodePanel";
+import {ProForm} from "@ant-design/pro-components";
+import {SettingPanelProps} from "@/components/flow/nodes/panel/panel.types";
+import ButtonPanel from "@/components/flow/nodes/panel/ButtonPanel";
 
-interface SettingPanelProps {
-    visible: boolean;
-    setVisible: (visible: boolean) => void;
-    properties: any;
-    onSettingChange: (values: any) => void;
-}
-
-const NodeSettingPanel: React.FC<SettingPanelProps> = (props) => {
+const StartSettingPanel: React.FC<SettingPanelProps> = (props) => {
 
     const [form] = ProForm.useForm();
 
@@ -20,11 +14,11 @@ const NodeSettingPanel: React.FC<SettingPanelProps> = (props) => {
         <Drawer
             title={"节点设置"}
             width={"40%"}
-            destroyOnClose={true}
             onClose={() => {
                 props.setVisible(false);
             }}
             open={props.visible}
+            destroyOnClose={true}
             extra={(
                 <Space>
                     <Button
@@ -42,6 +36,7 @@ const NodeSettingPanel: React.FC<SettingPanelProps> = (props) => {
                     >关闭</Button>
                 </Space>
             )}
+
         >
             <Tabs
                 items={[
@@ -50,7 +45,7 @@ const NodeSettingPanel: React.FC<SettingPanelProps> = (props) => {
                         key: "nodes",
                         children: (
                             <NodePanel
-                                type={"node"}
+                                type={"start"}
                                 form={form}
                                 id={props.properties?.id}
                                 data={props.properties}
@@ -71,10 +66,10 @@ const NodeSettingPanel: React.FC<SettingPanelProps> = (props) => {
                         key: "edges",
                         children: (
                             <EdgePanel
-                                type={"node"}
+                                type={"start"}
                                 id={props.properties?.id}/>
                         )
-                    },
+                    }
                 ]}
             />
 
@@ -83,4 +78,4 @@ const NodeSettingPanel: React.FC<SettingPanelProps> = (props) => {
 
 }
 
-export default NodeSettingPanel;
+export default StartSettingPanel;
