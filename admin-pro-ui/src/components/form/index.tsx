@@ -83,6 +83,20 @@ interface FormContextProps {
 
 export const FormContext = React.createContext<FormContextProps | null>(null);
 
+const namePathEqual = (name1: NamePath, name2: NamePath): boolean => {
+    if (Array.isArray(name1) && Array.isArray(name2)) {
+        if (name1.length !== name2.length) {
+            return false;
+        }
+        for (let i = 0; i < name1.length; i++) {
+            if (name1[i] !== name2[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+    return name1 === name2;
+}
 
 const Form:React.FC<FormProps> = (props)=>{
 
@@ -111,7 +125,7 @@ const Form:React.FC<FormProps> = (props)=>{
 
         hidden: (name: NamePath) => {
             setFields(prevFields => prevFields.map((field) => {
-                if (field.props.name === name) {
+                if (namePathEqual(field.props.name,name)) {
                     return {
                         ...field,
                         props: {
@@ -128,7 +142,7 @@ const Form:React.FC<FormProps> = (props)=>{
 
         required:(name: NamePath,required:boolean) => {
             setFields(prevFields => prevFields.map((field) => {
-                if (field.props.name === name) {
+                if (namePathEqual(field.props.name,name)) {
                     return {
                         ...field,
                         props: {
@@ -144,7 +158,7 @@ const Form:React.FC<FormProps> = (props)=>{
 
         show: (name: NamePath) => {
             setFields(prevFields => prevFields.map((field) => {
-                if (field.props.name === name) {
+                if (namePathEqual(field.props.name,name)) {
                     return {
                         ...field,
                         props: {
@@ -160,7 +174,7 @@ const Form:React.FC<FormProps> = (props)=>{
 
         disable: (name: NamePath) => {
             setFields(prevFields => prevFields.map((field) => {
-                if (field.props.name === name) {
+                if (namePathEqual(field.props.name,name)) {
                     return {
                         ...field,
                         props: {
@@ -189,7 +203,7 @@ const Form:React.FC<FormProps> = (props)=>{
 
         enable: (name: NamePath) => {
             setFields(prevFields => prevFields.map((field) => {
-                if (field.props.name === name) {
+                if (namePathEqual(field.props.name,name)) {
                     return {
                         ...field,
                         props: {
@@ -217,7 +231,7 @@ const Form:React.FC<FormProps> = (props)=>{
         },
 
         remove: (name: NamePath) => {
-            setFields(prevFields => prevFields.filter((field) => field.props.name !== name));
+            setFields(prevFields => prevFields.filter((field) => !namePathEqual(field.props.name,name)));
             validateContext.clear();
         },
 

@@ -92,6 +92,60 @@ const FooterButtons: React.FC<{ formAction: React.RefObject<FormAction> }> = ({f
                     formAction.current?.setFieldsValue(data);
                 }}
             >表单赋值</Button>
+            <div></div>
+
+            <Button
+                onClick={async () => {
+                    formAction.current?.enable(["user", "name"]);
+                }}
+            >启用姓名字段</Button>
+
+            <Button
+                onClick={async () => {
+                    formAction.current?.disable(["user", "name"]);
+                }}
+            >禁用姓名字段</Button>
+
+
+            <Button
+                onClick={async () => {
+                    formAction.current?.hidden(["user", "name"]);
+                }}
+            >隐藏姓名字段</Button>
+
+            <Button
+                onClick={async () => {
+                    formAction.current?.show(["user", "name"]);
+                }}
+            >展示姓名字段</Button>
+
+            <Button
+                onClick={async () => {
+                    formAction.current?.remove(["user", "name"]);
+                }}
+            >删除姓名字段</Button>
+
+            <Button
+                onClick={async () => {
+                    formAction.current?.create({
+                       props:{
+                           required: true,
+                           name: ['user', 'name'],
+                           label: '姓名',
+                           placeholder: '请输入姓名',
+                           validateFunction: async (content) => {
+                               const value = content.value;
+                               if (value) {
+                                   return []
+                               }
+                               return ['姓名不能为空']
+                           }
+                       },
+                       type:'input'
+                    },0);
+                }}
+            >添加姓名字段</Button>
+
         </div>
     )
 }
@@ -305,6 +359,7 @@ const WelcomePage = () => {
                 <Col span={12}>
                     <Form
                         actionRef={leftFormAction}
+                        layout={"horizontal"}
                         footer={(
                             <FooterButtons
                                 formAction={leftFormAction}
