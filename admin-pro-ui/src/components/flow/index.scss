@@ -1,4 +1,4 @@
-.flow-content {
+.flow-design {
   border: 1px solid #ebeef5;
   transition: 0.3s;
   padding: 15px 16px;
@@ -8,26 +8,6 @@
   .flow-view {
     width: 100%;
     height: 85vh;
-  }
-
-  .flow-panel {
-    position: absolute;
-    left: 35px;
-    min-width: 180px;
-    margin-top: 10px;
-    background-color: white;
-    box-shadow: 0 0 10px 1px rgb(228, 224, 219);
-    border-radius: 6px;
-    z-index: 101;
-  }
-
-  .flow-control {
-    margin-top: 10px;
-    background-color: white;
-    box-shadow: 0 0 10px 1px rgb(228, 224, 219);
-    position: absolute;
-    right: 70px;
-    z-index: 101;
   }
 }
 .lf-mini-map {

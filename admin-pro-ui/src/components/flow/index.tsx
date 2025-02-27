@@ -9,12 +9,10 @@ import Over from "@/components/flow/nodes/Over";
 import Circulate from "@/components/flow/nodes/Circulate";
 import ControlPanel from "@/components/flow/layout/ControlPanel";
 import NodePanel from "@/components/flow/layout/NodePanel";
-import {message} from "antd";
-import {copy} from "@/components/flow/panel/shortcuts";
-import FlowUtils from "@/components/flow/utils";
 import {EdgeType} from "@/components/flow/flow/types";
 
 import "./index.scss";
+import FlowPanelContext from "@/components/flow/domain/FlowPanelContext";
 
 export interface FlowActionType {
     getData: () => any;
@@ -26,11 +24,18 @@ interface FlowProps {
     edgeType?: EdgeType;
 }
 
+interface FlowContextProps {
+    flowPanelContext: FlowPanelContext;
+}
+
+export const FlowContext = React.createContext<FlowContextProps | null>(null);
+
 const Flow: React.FC<FlowProps> = (props) => {
     const container = useRef<HTMLDivElement>(null);
     const lfRef = useRef<LogicFlow>(null);
     const edgeType = props.edgeType || 'polyline';
-    const [mapVisible, setMapVisible] = React.useState(false);
+
+    const flowPanelContext = new FlowPanelContext(lfRef);
 
     if (props.actionRef) {
         React.useImperativeHandle(props.actionRef, () => ({
@@ -65,11 +70,11 @@ const Flow: React.FC<FlowProps> = (props) => {
                 shortcuts: [
                     {
                         keys: ['ctrl + v', 'cmd + v'],
-                        callback: () => {
-                            // @ts-ignore
-                            return copy(lfRef.current);
+                        callback: (e) => {
+                            flowPanelContext.copyNode();
                         }
-                    }
+                    },
+
                 ]
             },
             edgeType: edgeType,
@@ -103,86 +108,22 @@ const Flow: React.FC<FlowProps> = (props) => {
     }, []);
 
 
+
     //@ts-ignore
     window.lfRef = lfRef;
 
 
-    const nodeVerify = async (type: string) => {
-        //@ts-ignore
-        const nodes = lfRef.current?.getGraphData().nodes;
-        if (type === 'start-node') {
-            for (let i = 0; i < nodes.length; i++) {
-                if (nodes[i].type === type) {
-                    message.error('开始节点只能有一个');
-                    return false;
-                }
-            }
-        }
-        if (type === 'over-node') {
-            for (let i = 0; i < nodes.length; i++) {
-                if (nodes[i].type === type) {
-                    message.error('结束节点只能有一个');
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     return (
-        <div className="flow-content">
-            <NodePanel
-                className={"flow-panel"}
-                onDrag={async (type, properties) => {
-                    if (await nodeVerify(type)) {
-                        const UUID = FlowUtils.generateUUID();
-                        lfRef.current?.dnd.startDrag({
-                            id: UUID,
-                            type: type,
-                            properties: {
-                                ...properties,
-                                id: UUID
-                            }
-                        });
-                    }
-                }}
-            />
-            <ControlPanel
-                className={"flow-control"}
-                onZoomIn={() => {
-                    lfRef.current?.zoom(true);
-                }}
-                onZoomOut={() => {
-                    lfRef.current?.zoom(false);
-                }}
-                onZoomReset={() => {
-                    lfRef.current?.resetZoom();
-                    lfRef.current?.resetTranslate();
-                }}
-                onRedo={() => {
-                    lfRef.current?.redo();
-                }}
-                onUndo={() => {
-                    lfRef.current?.undo();
-                }}
-                onMiniMap={() => {
-                    if (mapVisible) {
-                        //@ts-ignore
-                        lfRef.current?.extension.miniMap.hide();
-                    } else {
-                        const modelWidth = lfRef.current?.graphModel.width;
-                        //@ts-ignore
-                        lfRef.current?.extension.miniMap.show(modelWidth - 300, 200);
-                    }
-                    setMapVisible(!mapVisible);
-                }}
-                onDownload={() => {
-                    lfRef.current?.getSnapshot();
-                }}
+        <FlowContext.Provider value={{
+            flowPanelContext: flowPanelContext
+        }}>
+            <div className="flow-design">
+                <NodePanel/>
+                <ControlPanel/>
 
-            />
-            <div className={"flow-view"} ref={container}/>
-        </div>
+                <div className={"flow-view"} ref={container}/>
+            </div>
+        </FlowContext.Provider>
     )
 };
 

@@ -1,18 +1,30 @@
 
-.control-content{
-  width: 30px;
-  border-radius: 12px;
+.flow-panel-control {
+  margin-top: 10px;
   background-color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
+  box-shadow: 0 0 10px 1px rgb(228, 224, 219);
   position: absolute;
-  left: 10px;
-  padding: 4px 0;
-  box-shadow: 3px 0 2px 1px rgb(228, 224, 219);
-  .control-item{
-    margin-top: 10px;
-    margin-bottom: 10px;
+  right: 70px;
+  z-index: 101;
+
+  .flow-panel-control-content{
+    width: 30px;
+    border-radius: 12px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    position: absolute;
+    left: 10px;
+    padding: 4px 0;
+    box-shadow: 3px 0 2px 1px rgb(228, 224, 219);
+
+    .flow-panel-control-content-item{
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
   }
 }
+
+

@@ -1,13 +1,27 @@
-.panel-title{
-  text-align: center;
-}
-.node-content {
-  margin: 10px;
+.flow-panel-nodes {
+  position: absolute;
+  left: 35px;
+  min-width: 180px;
+  margin-top: 10px;
+  background-color: white;
+  box-shadow: 0 0 10px 1px rgb(228, 224, 219);
+  border-radius: 6px;
+  z-index: 101;
 
-  .node-item {
-    cursor: pointer;
-    user-select: none;
-    margin-top: 10px;
-    margin-bottom: 10px;
+  .flow-panel-nodes-title {
+    text-align: center;
   }
+
+  .flow-panel-nodes-content {
+    margin: 10px;
+
+    .flow-panel-nodes-content-item {
+      cursor: pointer;
+      user-select: none;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+  }
+
 }
+

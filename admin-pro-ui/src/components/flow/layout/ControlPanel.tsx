@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext, useEffect} from "react";
 import {
     ArrowDownOutlined,
     ArrowLeftOutlined,
@@ -8,80 +8,81 @@ import {
     ZoomInOutlined,
     ZoomOutOutlined
 } from "@ant-design/icons";
-import "./ControlPanel.scss";
 import {Tooltip} from "antd";
+import {FlowContext} from "@/components/flow";
+import "./ControlPanel.scss";
 
+const ControlPanel = () => {
+    const iconSize = 16;
 
-interface ControlProps {
-    className: string,
-    iconSize?: number,
-    onZoomIn?: () => void,
-    onZoomOut?: () => void,
-    onZoomReset?: () => void,
-    onUndo?: () => void,
-    onRedo?: () => void,
-    onMiniMap?: () => void,
-    onDownload?: () => void,
-}
+    const flowContext = useContext(FlowContext);
 
-const ControlPanel: React.FC<ControlProps> = (props) => {
-    const iconSize = props.iconSize || 16;
+    const [mapVisible, setMapVisible] = React.useState(false);
+
+    useEffect(() => {
+        if (mapVisible) {
+            flowContext?.flowPanelContext.showMap();
+        } else {
+            flowContext?.flowPanelContext.hiddenMap();
+        }
+    }, [mapVisible]);
+
     return (
-        <div className={props.className}>
-            <div className={"control-content"}>
-                <Tooltip className={"control-item"} placement="top" title={"放大"}>
+        <div className={"flow-panel-control"}>
+            <div className={"flow-panel-control-content"}>
+                <Tooltip className={"flow-panel-control-content-item"} placement="top" title={"放大"}>
                     <ZoomInOutlined
                         style={{fontSize: iconSize}}
                         onClick={() => {
-                            props.onZoomIn?.();
+                            flowContext?.flowPanelContext.zoom(true);
                         }}
                     />
                 </Tooltip>
-                <Tooltip className={"control-item"} placement="top" title={"缩小"}>
+                <Tooltip className={"flow-panel-control-content-item"} placement="top" title={"缩小"}>
                     <ZoomOutOutlined
                         style={{fontSize: iconSize}}
                         onClick={() => {
-                            props.onZoomOut?.();
+                            flowContext?.flowPanelContext.zoom(false);
                         }}
                     />
                 </Tooltip>
-                <Tooltip className={"control-item"} placement="top" title={"自适应"}>
+                <Tooltip className={"flow-panel-control-content-item"} placement="top" title={"自适应"}>
                     <MonitorOutlined
                         style={{fontSize: iconSize}}
                         onClick={() => {
-                            props.onZoomReset?.();
+                            flowContext?.flowPanelContext.resetZoom();
                         }}
                     />
                 </Tooltip>
-                <Tooltip className={"control-item"} placement="top" title={"上一步"}>
+                <Tooltip className={"flow-panel-control-content-item"} placement="top" title={"上一步"}>
                     <ArrowLeftOutlined
                         style={{fontSize: iconSize}}
                         onClick={() => {
-                            props.onUndo?.();
+                            flowContext?.flowPanelContext.undo();
                         }}
                     />
                 </Tooltip>
-                <Tooltip className={"control-item"} placement="top" title={"下一步"}>
+                <Tooltip className={"flow-panel-control-content-item"} placement="top" title={"下一步"}>
                     <ArrowRightOutlined
                         style={{fontSize: iconSize}}
                         onClick={() => {
-                            props.onRedo?.();
+                            flowContext?.flowPanelContext.redo();
                         }}
                     />
                 </Tooltip>
-                <Tooltip className={"control-item"} placement="top" title={"小地图"}>
+                <Tooltip className={"flow-panel-control-content-item"} placement="top" title={"小地图"}>
                     <EnvironmentOutlined
                         style={{fontSize: iconSize}}
                         onClick={() => {
-                            props.onMiniMap?.();
+                            setMapVisible(!mapVisible);
                         }}
                     />
                 </Tooltip>
-                <Tooltip className={"control-item"} placement="top" title={"下载图片"}>
+                <Tooltip className={"flow-panel-control-content-item"} placement="top" title={"下载图片"}>
                     <ArrowDownOutlined
                         style={{fontSize: iconSize}}
                         onClick={() => {
-                            props.onDownload?.();
+                            flowContext?.flowPanelContext.download();
                         }}
                     />
                 </Tooltip>
