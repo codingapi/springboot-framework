@@ -1,0 +1,47 @@
+$color: #b1ad30;
+
+.start-node {
+  display: flex;
+  align-items: center;
+  max-height: 40px;
+  border: 1px solid $color;
+  border-radius: 12px;
+  padding: 10px;
+  position: relative;
+
+  .icon {
+    margin-left: 10px;
+    position: absolute;
+    color: $color;
+    font-size: 16px;
+    left: 0;
+  }
+
+  .code {
+    margin-left: 20px;
+    font-size: 14px;
+    color: #4a5e63;
+  }
+
+  .title {
+    margin-left: 5px;
+    font-size: 14px;
+    color: black;
+  }
+
+  .setting {
+    margin-right: 10px;
+    font-size: 14px;
+    position: absolute;
+    color: $color;
+    right: 0;
+  }
+
+  .state {
+    margin-right: 10px;
+    font-size: 14px;
+    position: absolute;
+    right: 0;
+  }
+
+}

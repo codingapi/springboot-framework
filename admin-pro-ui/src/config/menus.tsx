@@ -14,6 +14,12 @@ export const menus = [
         name: '欢迎',
         icon: "SmileOutlined",
         page: 'welcome',
+    },
+    {
+        path: '/flow',
+        name: '流程',
+        icon: "SmileOutlined",
+        page: 'flow',
     }
 ]
 
