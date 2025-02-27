@@ -1,10 +1,12 @@
+@use "../index" as *;
+
 .flow-panel-nodes {
   position: absolute;
   left: 35px;
   min-width: 180px;
   margin-top: 10px;
-  background-color: white;
-  box-shadow: 0 0 10px 1px rgb(228, 224, 219);
+  background-color: $flow-background-color;
+  box-shadow: 0 0 10px 1px $flow-box-shadow-color;
   border-radius: 6px;
   z-index: 101;
 

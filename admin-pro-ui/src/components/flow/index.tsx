@@ -31,6 +31,14 @@ interface FlowContextProps {
 export const FlowContext = React.createContext<FlowContextProps | null>(null);
 
 const Flow: React.FC<FlowProps> = (props) => {
+
+    // 流程图背景颜色
+    const FLOW_BACKGROUND_COLOR = '#f3f5f8';
+    // 流程图的边颜色
+    const FLOW_EDGE_COLOR = '#8f94e3';
+    // 流程图的边宽度
+    const FLOW_EDGE_STROKE_WIDTH = 1;
+
     const container = useRef<HTMLDivElement>(null);
     const lfRef = useRef<LogicFlow>(null);
     const edgeType = props.edgeType || 'polyline';
@@ -61,7 +69,7 @@ const Flow: React.FC<FlowProps> = (props) => {
             container: container.current,
             ...SilentConfig,
             background: {
-                backgroundColor: '#f3f5f8'
+                backgroundColor: FLOW_BACKGROUND_COLOR
             },
             plugins: [Menu, DndPanel, MiniMap, Snapshot],
             grid: false,
@@ -82,16 +90,16 @@ const Flow: React.FC<FlowProps> = (props) => {
 
         lfRef.current.setTheme({
             bezier: {
-                stroke: '#8f94e3',
-                strokeWidth: 1,
+                stroke: FLOW_EDGE_COLOR,
+                strokeWidth: FLOW_EDGE_STROKE_WIDTH,
             },
             polyline: {
-                stroke: '#8f94e3',
-                strokeWidth: 1,
+                stroke: FLOW_EDGE_COLOR,
+                strokeWidth: FLOW_EDGE_STROKE_WIDTH,
             },
             line: {
-                stroke: '#8f94e3',
-                strokeWidth: 1,
+                stroke: FLOW_EDGE_COLOR,
+                strokeWidth: FLOW_EDGE_STROKE_WIDTH,
             },
         });
         lfRef.current.register(Start);

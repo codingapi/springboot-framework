@@ -1,7 +1,6 @@
 import {HtmlNode, HtmlNodeModel} from '@logicflow/core';
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.scss";
 import {CheckCircleFilled, SettingFilled} from "@ant-design/icons";
 import OverSettingPanel from "@/components/flow/nodes/panel/over";
 import StateTag from "@/components/flow/nodes/panel/StateTag";
@@ -37,7 +36,7 @@ export const OverView: React.FC<OverProps> = (props) => {
     const state = props.properties?.state;
 
     return (
-        <div className="over-node">
+        <div className="flow-node over-node">
             <CheckCircleFilled
                 className={"icon"}
             />

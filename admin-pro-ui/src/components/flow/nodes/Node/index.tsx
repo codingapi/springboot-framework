@@ -1,7 +1,6 @@
 import {HtmlNode, HtmlNodeModel} from '@logicflow/core';
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.scss";
 import {PlusCircleFilled, SettingFilled} from "@ant-design/icons";
 import NodeSettingPanel from "@/components/flow/nodes/panel/node";
 import StateTag from "@/components/flow/nodes/panel/StateTag";
@@ -38,7 +37,7 @@ export const NodeView: React.FC<NodeProps> = (props) => {
     const state = props.properties?.state;
 
     return (
-        <div className="node-node">
+        <div className="flow-node node-node">
             <PlusCircleFilled
                 className={"icon"}
             />

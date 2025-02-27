@@ -1,7 +1,6 @@
 import {HtmlNode, HtmlNodeModel} from '@logicflow/core';
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.scss";
 import {PlayCircleFilled, SettingFilled} from "@ant-design/icons";
 import StartSettingPanel from "@/components/flow/nodes/panel/start";
 import StateTag from "@/components/flow/nodes/panel/StateTag";
@@ -37,7 +36,7 @@ export const StartView: React.FC<StartProps> = (props) => {
     const state = props.properties?.state;
 
     return (
-        <div className="start-node">
+        <div className="flow-node start-node">
             <PlayCircleFilled
                 className={"icon"}
             />

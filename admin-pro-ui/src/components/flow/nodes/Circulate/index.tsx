@@ -1,7 +1,6 @@
 import {HtmlNode, HtmlNodeModel} from '@logicflow/core';
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.scss";
 import {InboxOutlined, SettingFilled} from "@ant-design/icons";
 import CirculateSettingPanel from "@/components/flow/nodes/panel/circulate";
 import StateTag from "@/components/flow/nodes/panel/StateTag";
@@ -37,7 +36,7 @@ export const CirculateView: React.FC<CirculateProps> = (props) => {
     const state = props.properties?.state;
 
     return (
-        <div className="circulate-node">
+        <div className="flow-node circulate-node">
             <InboxOutlined
                 className={"icon"}
             />
