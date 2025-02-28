@@ -25,9 +25,6 @@ interface FlowProps {
     edgeType?: EdgeType;
 }
 
-interface FlowContextProps {
-    flowPanelContext: FlowPanelContext;
-}
 
 const Flow: React.FC<FlowProps> = (props) => {
 
@@ -114,12 +111,6 @@ const Flow: React.FC<FlowProps> = (props) => {
         });
 
     }, []);
-
-
-
-    //@ts-ignore
-    window.lfRef = lfRef;
-
 
     return (
         <div className="flow-design">
