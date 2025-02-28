@@ -1,13 +1,13 @@
 import React from "react";
-import {ProForm} from "@ant-design/pro-components";
 import {Button, Drawer, Space, Tabs} from "antd";
 import NodePanel from "@/components/flow/nodes/panel/NodePanel";
 import EdgePanel from "@/components/flow/nodes/panel/EdgePanel";
 import {SettingPanelProps} from "@/components/flow/types";
+import {FormAction} from "@/components/form";
 
 const CirculateSettingPanel: React.FC<SettingPanelProps> = (props) => {
 
-    const [form] = ProForm.useForm();
+    const formAction = React.useRef<FormAction>(null);
 
     return (
         <Drawer
@@ -23,7 +23,7 @@ const CirculateSettingPanel: React.FC<SettingPanelProps> = (props) => {
                     <Button
                         type={"primary"}
                         onClick={() => {
-                            form.submit();
+                            formAction.current?.submit();
                             props.setVisible(false);
                         }}
                     >确认</Button>
@@ -44,7 +44,7 @@ const CirculateSettingPanel: React.FC<SettingPanelProps> = (props) => {
                         children: (
                             <NodePanel
                                 type={"circulate"}
-                                form={form}
+                                formAction={formAction}
                                 id={props.properties?.id}
                                 data={props.properties}
                                 onFinish={props.onSettingChange}

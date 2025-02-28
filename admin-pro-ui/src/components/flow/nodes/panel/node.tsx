@@ -1,15 +1,15 @@
 import React from "react";
-import {ProForm} from "@ant-design/pro-components";
 import {Button, Drawer, Space, Tabs} from "antd";
 import NodePanel from "@/components/flow/nodes/panel/NodePanel";
 import EdgePanel from "@/components/flow/nodes/panel/EdgePanel";
 import ButtonPanel from "@/components/flow/nodes/panel/ButtonPanel";
 import {SettingPanelProps} from "@/components/flow/types";
+import {FormAction} from "@/components/form";
 
 
 const NodeSettingPanel: React.FC<SettingPanelProps> = (props) => {
 
-    const [form] = ProForm.useForm();
+    const formAction = React.useRef<FormAction>(null);
 
     return (
         <Drawer
@@ -25,7 +25,7 @@ const NodeSettingPanel: React.FC<SettingPanelProps> = (props) => {
                     <Button
                         type={"primary"}
                         onClick={() => {
-                            form.submit();
+                            formAction.current?.submit();
                             props.setVisible(false);
                         }}
                     >确认</Button>
@@ -46,7 +46,7 @@ const NodeSettingPanel: React.FC<SettingPanelProps> = (props) => {
                         children: (
                             <NodePanel
                                 type={"node"}
-                                form={form}
+                                formAction={formAction}
                                 id={props.properties?.id}
                                 data={props.properties}
                                 onFinish={props.onSettingChange}

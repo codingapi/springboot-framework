@@ -1,12 +1,12 @@
 import React from "react";
-import {ProForm} from "@ant-design/pro-components";
 import {Button, Drawer, Space} from "antd";
 import NodePanel from "@/components/flow/nodes/panel/NodePanel";
 import {SettingPanelProps} from "@/components/flow/types";
+import {FormAction} from "@/components/form";
 
 const OverSettingPanel: React.FC<SettingPanelProps> = (props) => {
 
-    const [form] = ProForm.useForm();
+    const formAction = React.useRef<FormAction>(null);
 
     return (
         <Drawer
@@ -22,7 +22,7 @@ const OverSettingPanel: React.FC<SettingPanelProps> = (props) => {
                     <Button
                         type={"primary"}
                         onClick={() => {
-                            form.submit();
+                            formAction.current?.submit();
                             props.setVisible(false);
                         }}
                     >确认</Button>
@@ -36,7 +36,7 @@ const OverSettingPanel: React.FC<SettingPanelProps> = (props) => {
             )}
         >
             <NodePanel
-                form={form}
+                formAction={formAction}
                 type={"over"}
                 id={props.properties?.id}
                 data={props.properties}

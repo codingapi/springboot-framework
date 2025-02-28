@@ -1,17 +1,22 @@
 import React from "react";
 import {Button, Divider, Space} from "antd";
-import {ProForm, ProFormDigit, ProFormSelect, ProFormSwitch, ProFormText} from "@ant-design/pro-components";
+import {ProForm} from "@ant-design/pro-components";
 import {EyeOutlined, SettingOutlined} from "@ant-design/icons";
 import GroovyScript from "@/components/flow/utils/script";
 import ScriptModal from "@/components/flow/nodes/panel/ScriptModal";
 import {getComponent} from "@/framework/ComponentBus";
 import {UserSelectProps, UserSelectViewKey} from "@/components/flow/flow/types";
+import Form, {FormAction} from "@/components/form";
+import FormInput from "@/components/form/input";
+import ValidateUtils from "@/components/form/utils";
+import FormSelect from "@/components/form/select";
+import FormSwitch from "@/components/form/switch";
 
 interface NodePanelProps {
     id?: string,
     data?: any,
     onFinish: (values: any) => void,
-    form: any,
+    formAction: React.RefObject<FormAction>,
     type: string,
 }
 
@@ -31,69 +36,54 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
 
     return (
         <>
-            <ProForm
+            <Form
                 initialValues={{
                     ...props.data,
                     operatorMatcherType: GroovyScript.operatorMatcherType(props.data?.operatorMatcher),
                     errTriggerType: GroovyScript.errTriggerType(props.data?.errTrigger),
                     titleGeneratorType: GroovyScript.titleGeneratorType(props.data?.titleGenerator),
                 }}
-                form={props.form}
+                actionRef={props.formAction}
                 layout={"vertical"}
-                onFinish={props.onFinish}
-                submitter={false}
+                onFinish={async (values)=>{
+                    props.onFinish(values);
+                }}
             >
                 <Divider>
                     基本信息
                 </Divider>
-                <ProFormText
+                <FormInput
                     name={"name"}
                     label={"节点名称"}
-                    rules={[
-                        {
-                            required: true,
-                            message: "请输入节点名称"
-                        }
-                    ]}
+                    required={true}
+                    validateFunction={ValidateUtils.validateNotEmpty}
                 />
-                <ProFormText
+                <FormInput
                     name={"code"}
                     disabled={props.type === 'start' || props.type === 'over'}
                     label={"节点编码"}
-                    rules={[
-                        {
-                            required: true,
-                            message: "请输入节点编码"
-                        }
-                    ]}
+                    required={true}
+                    validateFunction={ValidateUtils.validateNotEmpty}
                 />
-                <ProFormText
+                <FormInput
                     name={"view"}
                     label={"视图名称"}
                     tooltip={"界面渲染视图的名称"}
-                    rules={[
-                        {
-                            required: true,
-                            message: "请输入视图名称"
-                        }
-                    ]}
+                    required={true}
+                    validateFunction={ValidateUtils.validateNotEmpty}
                 />
 
                 <Divider>
                     节点配置
                 </Divider>
 
-                <ProFormSelect
+                <FormSelect
                     name={"approvalType"}
                     label={"节点类型"}
                     hidden={props.type !== 'node'}
                     tooltip={"会签即多人审批以后再处理，非会签则是一个人处理以后即可响应"}
-                    rules={[
-                        {
-                            required: true,
-                            message: "请输入节点类型"
-                        }
-                    ]}
+                    required={true}
+                    validateFunction={ValidateUtils.validateNotEmpty}
                     options={[
                         {
                             label: "会签",
@@ -106,18 +96,17 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                     ]}
                 />
 
-                <ProFormText
+                <FormInput
                     tooltip={"操作人匹配脚本"}
                     name={"operatorMatcher"}
                     label={"操作人"}
                     hidden={true}
                 />
 
-                <ProFormSelect
+                <FormSelect
                     tooltip={"操作人匹配脚本"}
                     name={"operatorMatcherType"}
                     label={"操作人"}
-                    width={"lg"}
                     options={[
                         {
                             label: "任意人",
@@ -134,7 +123,7 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                     ]}
                     onChange={(value) => {
                         setOperatorMatcherType(value as string);
-                        props.form.setFieldsValue({
+                        props.formAction.current?.setFieldsValue({
                             operatorMatcher: GroovyScript.operatorMatcher(value as string)
                         })
                     }}
@@ -153,7 +142,7 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
 
                             <EyeOutlined
                                 onClick={() => {
-                                    const value = props.form.getFieldValue("operatorMatcher");
+                                    const value = props.formAction.current?.getFieldValue("operatorMatcher");
                                     form.setFieldValue("type", "operatorMatcher");
                                     form.setFieldValue("script", value);
                                     setVisible(true);
@@ -163,33 +152,30 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                     )}
                 />
 
-                <ProFormDigit
+                <FormInput
+                    inputType={"number"}
                     tooltip={"超时提醒时间，单位毫米。为0时则为无超时设置"}
-                    fieldProps={{
-                        step: 1
-                    }}
                     name={"timeout"}
                     hidden={props.type === 'circulate'}
                     label={"超时时间"}
                 />
 
-                <ProFormSwitch
+                <FormSwitch
                     tooltip={"关闭编辑以后在当前节点下的流程表单无法修改数据"}
                     name={"editable"}
                     label={"是否编辑"}
                 />
 
-                <ProFormText
+                <FormInput
                     name={"titleGenerator"}
                     label={"自定义标题"}
                     hidden={true}
                 />
 
-                <ProFormSelect
+                <FormSelect
                     tooltip={"待办记录中的标题生成器脚本"}
                     name={"titleGeneratorType"}
                     label={"自定义标题"}
-                    width={"lg"}
                     options={[
                         {
                             label: "默认",
@@ -202,7 +188,7 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                     ]}
                     onChange={(value) => {
                         if (value === "default") {
-                            props.form.setFieldsValue({
+                            props.formAction.current?.setFieldsValue({
                                 titleGenerator: GroovyScript.defaultTitleGenerator
                             })
                         }
@@ -210,7 +196,7 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                     addonAfter={(
                         <EyeOutlined
                             onClick={() => {
-                                const value = props.form.getFieldValue("titleGenerator");
+                                const value = props.formAction.current?.getFieldValue("titleGenerator");
                                 form.setFieldValue("type", "titleGenerator");
                                 form.setFieldValue("script", value);
                                 setVisible(true);
@@ -222,17 +208,16 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                     异常配置
                 </Divider>
 
-                <ProFormText
+                <FormInput
                     name={"errTrigger"}
                     label={"异常配置"}
                     hidden={true}
                 />
 
-                <ProFormSelect
+                <FormSelect
                     tooltip={"当节点无人员匹配时的异常补偿脚本，可以指定人员或节点处理"}
                     name={"errTriggerType"}
                     label={"异常配置"}
-                    width={"lg"}
                     options={[
                         {
                             label: "默认",
@@ -245,7 +230,7 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                     ]}
                     onChange={(value) => {
                         if (value === "default") {
-                            props.form.setFieldsValue({
+                            props.formAction.current?.setFieldsValue({
                                 errTrigger: GroovyScript.defaultOutTrigger
                             })
                         }
@@ -253,7 +238,7 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                     addonAfter={(
                         <EyeOutlined
                             onClick={() => {
-                                const value = props.form.getFieldValue("errTrigger");
+                                const value = props.formAction.current?.getFieldValue("errTrigger");
                                 form.setFieldValue("type", "errTrigger");
                                 form.setFieldValue("script", value);
                                 setVisible(true);
@@ -261,12 +246,12 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                     )}
                 />
 
-            </ProForm>
+            </Form>
 
             <ScriptModal
                 onFinish={(values) => {
                     const type = values.type;
-                    props.form.setFieldsValue({
+                    props.formAction.current?.setFieldsValue({
                         [type]: values.script
                     });
                 }}
@@ -279,12 +264,12 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                     visible={userSelectVisible}
                     setVisible={setUserSelectVisible}
                     userSelectType={"users"}
-                    specifyUserIds={GroovyScript.getOperatorUsers(props.form.getFieldValue("operatorMatcher"))}
+                    specifyUserIds={GroovyScript.getOperatorUsers(props.formAction.current?.getFieldValue("operatorMatcher"))}
                     mode={"multiple"}
                     onFinish={(values) => {
                         setUserSelectVisible(false);
                         const script = GroovyScript.specifyOperatorMatcher.replaceAll("%s", values.map((item: any) => item.id).join(","));
-                        props.form.setFieldsValue({
+                        props.formAction.current?.setFieldsValue({
                             operatorMatcher: script
                         });
                     }}
