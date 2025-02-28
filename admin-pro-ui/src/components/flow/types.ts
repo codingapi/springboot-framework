@@ -135,10 +135,6 @@ export interface FlowFormView {
 export interface FlowViewProps {
     // 流程编号
     id?: string;
-    // 是否展示
-    visible: boolean;
-    // 设置展示
-    setVisible:(visible:boolean)=>void;
     // 流程的设计编号
     workCode?: string;
     // 流程的视图数据

@@ -2,8 +2,8 @@ import React from "react";
 import {ActionType, PageContainer, ProTable} from "@ant-design/pro-components";
 import {list} from "@/api/leave";
 import {Button} from "antd";
-import FlowView from "@/components/flow/view";
 import LeaveForm from "@/pages/flow/leave/LeaveForm";
+import FlowModelView from "@/components/flow/view/FlowModelView";
 
 const LeavePage = () => {
 
@@ -53,7 +53,7 @@ const LeavePage = () => {
                 }}
             />
 
-            <FlowView
+            <FlowModelView
                 visible={visible}
                 setVisible={setVisible}
                 view={LeaveForm}

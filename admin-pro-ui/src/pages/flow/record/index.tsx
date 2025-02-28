@@ -12,8 +12,8 @@ import {
 import moment from "moment";
 import {message, Tabs} from "antd";
 import "./index.scss";
-import FlowView from "@/components/flow/view";
 import LeaveForm from "@/pages/flow/leave/LeaveForm";
+import FlowModelView from "@/components/flow/view/FlowModelView";
 
 const FlowRecordPage = () => {
 
@@ -31,7 +31,7 @@ const FlowRecordPage = () => {
     const allTodoActionRef = React.useRef<ActionType>();
 
 
-    const handlerUrgeFlow = (recordId:any) => {
+    const handlerUrgeFlow = (recordId: any) => {
         const body = {
             recordId,
         }
@@ -61,9 +61,9 @@ const FlowRecordPage = () => {
         {
             title: '标题',
             dataIndex: 'title',
-            render:(value:any,record:any)=>{
+            render: (value: any, record: any) => {
                 return (
-                    <div dangerouslySetInnerHTML={{ __html: value }}></div>
+                    <div dangerouslySetInnerHTML={{__html: value}}></div>
                 );
             }
         },
@@ -171,7 +171,7 @@ const FlowRecordPage = () => {
     ] as any[];
 
 
-    const reloadTable = ()=>{
+    const reloadTable = () => {
         if (key === 'todo') {
             todoActionRef.current?.reload();
         }
@@ -213,7 +213,7 @@ const FlowRecordPage = () => {
                                 search={false}
                                 columns={columns}
                                 rowClassName={(record) => {
-                                    return record.read?"record-read":"record-unread";
+                                    return record.read ? "record-read" : "record-unread";
                                 }}
                                 request={async (params, sort, filter) => {
                                     return findTodoByOperatorId(params, sort, filter, []);
@@ -230,7 +230,7 @@ const FlowRecordPage = () => {
                                 search={false}
                                 columns={columns}
                                 rowClassName={(record) => {
-                                    return record.read?"record-read":"record-unread";
+                                    return record.read ? "record-read" : "record-unread";
                                 }}
                                 request={async (params, sort, filter) => {
                                     return findDoneByOperatorId(params, sort, filter, []);
@@ -247,7 +247,7 @@ const FlowRecordPage = () => {
                                 search={false}
                                 columns={columns}
                                 rowClassName={(record) => {
-                                    return record.read?"record-read":"record-unread";
+                                    return record.read ? "record-read" : "record-unread";
                                 }}
                                 request={async (params, sort, filter) => {
                                     return findInitiatedByOperatorId(params, sort, filter, []);
@@ -264,7 +264,7 @@ const FlowRecordPage = () => {
                                 search={false}
                                 columns={columns}
                                 rowClassName={(record) => {
-                                    return record.read?"record-read":"record-unread";
+                                    return record.read ? "record-read" : "record-unread";
                                 }}
                                 request={async (params, sort, filter) => {
                                     return findTimeoutTodoByOperatorId(params, sort, filter, []);
@@ -282,7 +282,7 @@ const FlowRecordPage = () => {
                                 search={false}
                                 columns={columns}
                                 rowClassName={(record) => {
-                                    return record.read?"record-read":"record-unread";
+                                    return record.read ? "record-read" : "record-unread";
                                 }}
                                 request={async (params, sort, filter) => {
                                     return findPostponedTodoByOperatorId(params, sort, filter, []);
@@ -299,7 +299,7 @@ const FlowRecordPage = () => {
                                 search={false}
                                 columns={columns}
                                 rowClassName={(record) => {
-                                    return record.read?"record-read":"record-unread";
+                                    return record.read ? "record-read" : "record-unread";
                                 }}
                                 request={async (params, sort, filter) => {
                                     return findAllByOperatorId(params, sort, filter, []);
@@ -310,15 +310,15 @@ const FlowRecordPage = () => {
                 ]}
             />
 
-            <FlowView
-                id={currentId}
+
+            <FlowModelView
                 visible={flowViewVisible}
                 setVisible={setFlowViewVisible}
+                id={currentId}
                 view={{
                     'default': LeaveForm
                 }}
             />
-
 
         </PageContainer>
     )
