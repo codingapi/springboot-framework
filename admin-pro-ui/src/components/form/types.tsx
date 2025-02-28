@@ -49,6 +49,10 @@ export interface FormItemProps {
     label?: React.ReactNode;
     // 帮助提示信息
     help?: string;
+    // 前缀
+    addonBefore?:React.ReactNode;
+    // 后缀
+    addonAfter?:React.ReactNode;
     // 表单值
     value?: any;
     // 输入提示

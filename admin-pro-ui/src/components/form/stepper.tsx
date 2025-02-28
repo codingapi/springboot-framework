@@ -20,6 +20,8 @@ const FormStepper: React.FC<FormItemProps> = (props) => {
                 style={{
                     width:"100%"
                 }}
+                addonBefore={props.addonBefore}
+                addonAfter={props.addonAfter}
                 disabled={props.disabled}
                 value={props.value}
                 max={props.stepperMaxNumber}

@@ -23,6 +23,8 @@ const FormInput: React.FC<FormItemProps> = (props) => {
                 type={inputType}
                 placeholder={props.placeholder}
                 maxLength={props.inputMaxLength}
+                addonAfter={props.addonAfter}
+                addonBefore={props.addonBefore}
                 onChange={(value) => {
                     const currentValue = value.target.value;
                     formAction?.setFieldValue(props.name, currentValue);

@@ -4,13 +4,8 @@ import {Button, Drawer, Space, Tabs} from "antd";
 import NodePanel from "@/components/flow/nodes/panel/NodePanel";
 import EdgePanel from "@/components/flow/nodes/panel/EdgePanel";
 import ButtonPanel from "@/components/flow/nodes/panel/ButtonPanel";
+import {SettingPanelProps} from "@/components/flow/types";
 
-interface SettingPanelProps {
-    visible: boolean;
-    setVisible: (visible: boolean) => void;
-    properties: any;
-    onSettingChange: (values: any) => void;
-}
 
 const NodeSettingPanel: React.FC<SettingPanelProps> = (props) => {
 

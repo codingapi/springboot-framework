@@ -19,6 +19,8 @@ const FormPassword: React.FC<FormItemProps> = (props) => {
             <Input.Password
                 disabled={props.disabled}
                 value={props.value}
+                addonAfter={props.addonAfter}
+                addonBefore={props.addonBefore}
                 placeholder={props.placeholder}
                 onChange={(value) => {
                     const currentValue = value.target.value;

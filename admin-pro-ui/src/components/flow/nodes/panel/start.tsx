@@ -3,8 +3,8 @@ import {Button, Drawer, Space, Tabs} from "antd";
 import EdgePanel from "@/components/flow/nodes/panel/EdgePanel";
 import NodePanel from "@/components/flow/nodes/panel/NodePanel";
 import {ProForm} from "@ant-design/pro-components";
-import {SettingPanelProps} from "@/components/flow/nodes/panel/panel.types";
 import ButtonPanel from "@/components/flow/nodes/panel/ButtonPanel";
+import {SettingPanelProps} from "@/components/flow/types";
 
 const StartSettingPanel: React.FC<SettingPanelProps> = (props) => {
 

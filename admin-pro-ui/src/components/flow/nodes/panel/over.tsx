@@ -2,7 +2,7 @@ import React from "react";
 import {ProForm} from "@ant-design/pro-components";
 import {Button, Drawer, Space} from "antd";
 import NodePanel from "@/components/flow/nodes/panel/NodePanel";
-import {SettingPanelProps} from "@/components/flow/nodes/panel/panel.types";
+import {SettingPanelProps} from "@/components/flow/types";
 
 const OverSettingPanel: React.FC<SettingPanelProps> = (props) => {
 

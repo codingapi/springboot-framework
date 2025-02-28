@@ -29,6 +29,8 @@ const Captcha:React.FC<FormItemProps> = (props)=>{
                 className={"form-captcha-input"}
                 disabled={props.disabled}
                 value={props.value}
+                addonAfter={props.addonAfter}
+                addonBefore={props.addonBefore}
                 placeholder={props.placeholder}
                 onChange={(value) => {
                     const currentValue = value.target.value;
