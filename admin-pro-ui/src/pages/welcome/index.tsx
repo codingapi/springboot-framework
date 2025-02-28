@@ -18,6 +18,8 @@ import FormDate from "@/components/form/date";
 import FormCascader from "@/components/form/cascader";
 import FormSelect from "@/components/form/select";
 import FormUploader from "@/components/form/uploder";
+import FormColor from "@/components/form/color";
+import FormCode from "@/components/form/code";
 
 
 const FooterButtons: React.FC<{ formAction: React.RefObject<FormAction> }> = ({formAction}) => {
@@ -36,7 +38,9 @@ const FooterButtons: React.FC<{ formAction: React.RefObject<FormAction> }> = ({f
             date: '2021-08-01',
             cascader: '1,1-1,1-1-1',
             select: '1,2',
-            avatar: 'c84fb304c180f61bb7db40efef7f85b7'
+            avatar: 'c84fb304c180f61bb7db40efef7f85b7',
+            color: '#000000',
+            ideCode:'console.log("hello world")'
         }
     }
 
@@ -350,6 +354,22 @@ const WelcomePage = () => {
                 label: '头像',
             }
         },
+        {
+            type: 'color',
+            props: {
+                required: true,
+                name: ['user', 'color'],
+                label: '颜色',
+            }
+        },
+        {
+            type: 'code',
+            props: {
+                required: true,
+                name: ['user', 'ideCode'],
+                label: '代码',
+            }
+        },
     ] as FormField[];
 
 
@@ -530,6 +550,18 @@ const WelcomePage = () => {
                             required={true}
                             name={["user", "avatar"]}
                             label={"头像"}
+                        />
+
+                        <FormColor
+                            required={true}
+                            name={["user", "color"]}
+                            label={"颜色"}
+                        />
+
+                        <FormCode
+                            required={true}
+                            name={["user", "ideCode"]}
+                            label={"代码"}
                         />
                     </Form>
                 </Col>

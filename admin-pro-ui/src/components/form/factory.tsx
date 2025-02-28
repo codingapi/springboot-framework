@@ -15,6 +15,8 @@ import FormCascader from "@/components/form/cascader";
 import FormSelect from "@/components/form/select";
 import FormSelector from "@/components/form/selector";
 import FormUploader from "@/components/form/uploder";
+import FormColor from "@/components/form/color";
+import FormCode from "@/components/form/code";
 
 
 class FormFactory {
@@ -151,6 +153,24 @@ class FormFactory {
         if (type === 'uploader') {
             return (
                 <FormUploader
+                    {...props}
+                    key={props.name}
+                />
+            )
+        }
+
+        if (type === 'color') {
+            return (
+                <FormColor
+                    {...props}
+                    key={props.name}
+                />
+            )
+        }
+
+        if (type === 'code') {
+            return (
+                <FormCode
                     {...props}
                     key={props.name}
                 />

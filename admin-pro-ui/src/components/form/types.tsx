@@ -2,6 +2,7 @@ import {FormValidateContent} from "@/components/form/validate";
 import {FormAction} from "@/components/form";
 import React from "react";
 import {NamePath} from "rc-field-form/es/interface";
+import {CodeEditorAction} from "@/components/CodeEditor";
 
 // Form表单选项类型
 export interface FormOption {
@@ -15,7 +16,8 @@ export interface FormOption {
 type FormFieldType =
     "input" | "cascader" | "select" | "password" | "date" |
     "radio" | "textarea" | "checkbox" | "uploader" | "switch" |
-    "stepper" | "slider" | "rate" | "selector" | "captcha";
+    "stepper" | "slider" | "rate" | "selector" | "captcha" |
+    "code" | "color";
 
 // FormField
 export interface FormField {
@@ -132,6 +134,19 @@ export interface FormItemProps {
     selectorMultiple?: boolean,
     // selector组件每行展示数量
     selectorColumn?: number,
+    // code组件的语言，默认为javascript
+    codeLanguage?: string,
+    // code组件的主题，默认为vs-dark
+    codeTheme?: string,
+    // code组件的字体大小，默认为14
+    codeFontSize?: number,
+    // code组件的操作Action
+    codeActionRef?: React.RefObject<CodeEditorAction>,
+    // code组件的样式
+    codeStyle?: React.CSSProperties,
+    // code组件的选中运行事件
+    onCodeSelectedRun?: (value: string) => void,
+
     // Captcha组件切换验证码事件
     onCaptchaChange?: (value: string) => void;
     // Captcha组件刷新验证码事件
