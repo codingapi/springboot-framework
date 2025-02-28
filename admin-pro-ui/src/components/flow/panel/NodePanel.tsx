@@ -1,5 +1,4 @@
-import React, {useContext} from "react";
-import {FlowContext} from "@/components/flow";
+import React from "react";
 import {StartView} from "@/components/flow/nodes/Start";
 import GroovyScript from "@/components/flow/utils/script";
 import {NodeView} from "@/components/flow/nodes/Node";
@@ -7,12 +6,12 @@ import {OverView} from "@/components/flow/nodes/Over";
 import {CirculateView} from "@/components/flow/nodes/Circulate";
 import {NodeType} from "@/components/flow/types";
 import "./NodePanel.scss";
-
+import FlowContext from "@/components/flow/domain/FlowContext";
 
 
 const NodePanel = () => {
 
-    const flowContext = useContext(FlowContext);
+    const flowContext = FlowContext.getInstance();
 
     const items = [
         {
@@ -89,7 +88,7 @@ const NodePanel = () => {
                     return (
                         <div className={"flow-panel-nodes-content-item"}
                              onMouseDown={()=>{
-                                 flowContext?.flowPanelContext.addNode(item.type as NodeType,item.properties);
+                                 flowContext.getFlowPanelContext()?.addNode(item.type as NodeType,item.properties);
                              }}
                         >
                             {item.view}

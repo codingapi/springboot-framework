@@ -13,6 +13,7 @@ import {EdgeType} from "@/components/flow/flow/types";
 
 import "./index.scss";
 import FlowPanelContext from "@/components/flow/domain/FlowPanelContext";
+import FlowContext from "@/components/flow/domain/FlowContext";
 
 export interface FlowActionType {
     getData: () => any;
@@ -28,8 +29,6 @@ interface FlowContextProps {
     flowPanelContext: FlowPanelContext;
 }
 
-export const FlowContext = React.createContext<FlowContextProps | null>(null);
-
 const Flow: React.FC<FlowProps> = (props) => {
 
     // 流程图背景颜色
@@ -44,11 +43,12 @@ const Flow: React.FC<FlowProps> = (props) => {
     const edgeType = props.edgeType || 'polyline';
 
     const flowPanelContext = new FlowPanelContext(lfRef);
+    FlowContext.getInstance().setFlowPanelContext(flowPanelContext);
 
     if (props.actionRef) {
         React.useImperativeHandle(props.actionRef, () => ({
             getData: () => {
-                return lfRef.current?.getGraphData();
+                return flowPanelContext.getGraphData();
             }
         }), [props]);
     }
@@ -102,12 +102,12 @@ const Flow: React.FC<FlowProps> = (props) => {
                 strokeWidth: FLOW_EDGE_STROKE_WIDTH,
             },
         });
-        lfRef.current.register(Start);
-        lfRef.current.register(Node);
-        lfRef.current.register(Over);
-        lfRef.current.register(Circulate);
 
-        lfRef.current.render(data);
+        flowPanelContext.register(Start);
+        flowPanelContext.register(Node);
+        flowPanelContext.register(Over);
+        flowPanelContext.register(Circulate);
+        flowPanelContext.render(data);
 
         lfRef.current.on('node:add', (data) => {
             console.log('node:add', data);
@@ -122,16 +122,12 @@ const Flow: React.FC<FlowProps> = (props) => {
 
 
     return (
-        <FlowContext.Provider value={{
-            flowPanelContext: flowPanelContext
-        }}>
-            <div className="flow-design">
-                <NodePanel/>
-                <ControlPanel/>
+        <div className="flow-design">
+            <NodePanel/>
+            <ControlPanel/>
 
-                <div className={"flow-view"} ref={container}/>
-            </div>
-        </FlowContext.Provider>
+            <div className={"flow-view"} ref={container}/>
+        </div>
     )
 };
 

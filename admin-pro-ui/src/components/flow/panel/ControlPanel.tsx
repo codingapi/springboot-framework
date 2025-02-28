@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from "react";
+import React, {useEffect} from "react";
 import {
     ArrowDownOutlined,
     ArrowLeftOutlined,
@@ -9,21 +9,21 @@ import {
     ZoomOutOutlined
 } from "@ant-design/icons";
 import {Tooltip} from "antd";
-import {FlowContext} from "@/components/flow";
 import "./ControlPanel.scss";
+import FlowContext from "@/components/flow/domain/FlowContext";
 
 const ControlPanel = () => {
     const iconSize = 16;
 
-    const flowContext = useContext(FlowContext);
+    const flowContext = FlowContext.getInstance();
 
     const [mapVisible, setMapVisible] = React.useState(false);
 
     useEffect(() => {
         if (mapVisible) {
-            flowContext?.flowPanelContext.showMap();
+            flowContext.getFlowPanelContext()?.showMap();
         } else {
-            flowContext?.flowPanelContext.hiddenMap();
+            flowContext.getFlowPanelContext()?.hiddenMap();
         }
     }, [mapVisible]);
 
@@ -34,7 +34,7 @@ const ControlPanel = () => {
                     <ZoomInOutlined
                         style={{fontSize: iconSize}}
                         onClick={() => {
-                            flowContext?.flowPanelContext.zoom(true);
+                            flowContext?.getFlowPanelContext()?.zoom(true);
                         }}
                     />
                 </Tooltip>
@@ -42,7 +42,7 @@ const ControlPanel = () => {
                     <ZoomOutOutlined
                         style={{fontSize: iconSize}}
                         onClick={() => {
-                            flowContext?.flowPanelContext.zoom(false);
+                            flowContext?.getFlowPanelContext()?.zoom(false);
                         }}
                     />
                 </Tooltip>
@@ -50,7 +50,7 @@ const ControlPanel = () => {
                     <MonitorOutlined
                         style={{fontSize: iconSize}}
                         onClick={() => {
-                            flowContext?.flowPanelContext.resetZoom();
+                            flowContext?.getFlowPanelContext()?.resetZoom();
                         }}
                     />
                 </Tooltip>
@@ -58,7 +58,7 @@ const ControlPanel = () => {
                     <ArrowLeftOutlined
                         style={{fontSize: iconSize}}
                         onClick={() => {
-                            flowContext?.flowPanelContext.undo();
+                            flowContext?.getFlowPanelContext()?.undo();
                         }}
                     />
                 </Tooltip>
@@ -66,7 +66,7 @@ const ControlPanel = () => {
                     <ArrowRightOutlined
                         style={{fontSize: iconSize}}
                         onClick={() => {
-                            flowContext?.flowPanelContext.redo();
+                            flowContext?.getFlowPanelContext()?.redo();
                         }}
                     />
                 </Tooltip>
@@ -82,7 +82,7 @@ const ControlPanel = () => {
                     <ArrowDownOutlined
                         style={{fontSize: iconSize}}
                         onClick={() => {
-                            flowContext?.flowPanelContext.download();
+                            flowContext?.getFlowPanelContext()?.download();
                         }}
                     />
                 </Tooltip>

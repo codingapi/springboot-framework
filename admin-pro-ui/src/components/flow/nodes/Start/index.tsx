@@ -91,25 +91,25 @@ class StartModel extends HtmlNodeModel {
             // [0, -this.height / 2],
         ];
     }
-
 }
 
+
 class StartNode extends HtmlNode {
+
     setHtml(rootEl: SVGForeignObjectElement) {
         const {properties} = this.props.model as HtmlNodeModel<StartProperties>;
         const div = document.createElement('div');
-
         const settingVisible = properties.settingVisible !== false;
 
         ReactDOM.createRoot(div).render(
-            <StartView
-                name={properties.name}
-                code={properties.code}
-                properties={properties}
-                settingVisible={settingVisible}
-                update={async (values) => {
-                    this.props.model.setProperties(values);
-                }}/>,
+              <StartView
+                  name={properties.name}
+                  code={properties.code}
+                  properties={properties}
+                  settingVisible={settingVisible}
+                  update={async (values) => {
+                      this.props.model.setProperties(values);
+                  }}/>
         );
         //需要清空
         rootEl.innerHTML = '';

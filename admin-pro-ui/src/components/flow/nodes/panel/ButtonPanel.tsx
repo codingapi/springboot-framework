@@ -15,6 +15,7 @@ import FlowUtils from "@/components/flow/utils";
 import ScriptModal from "@/components/flow/nodes/panel/ScriptModal";
 import {EyeOutlined, ReloadOutlined} from "@ant-design/icons";
 import {CustomButtonType} from "@/components/flow/flow/types";
+import FlowContext from "@/components/flow/domain/FlowContext";
 
 interface ButtonPanelProps {
     id: string;
@@ -93,6 +94,8 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
 
     const [type, setType] = React.useState<string>();
 
+    const flowContext = FlowContext.getInstance();
+
     const columns = [
         {
             title: 'id',
@@ -166,7 +169,7 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
                 options={false}
                 pagination={false}
                 request={async () => {
-                    const buttons = FlowUtils.getButtons(props.id);
+                    const buttons = flowContext?.getFlowPanelContext()?.getButtons(props.id) || [];
                     return {
                         data: buttons,
                         total: buttons.length,

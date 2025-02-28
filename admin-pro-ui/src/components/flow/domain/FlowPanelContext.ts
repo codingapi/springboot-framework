@@ -4,10 +4,13 @@ import {NodeProperties, NodeType} from "@/components/flow/types";
 import {message} from "antd";
 import {isEmpty} from "lodash-es";
 import NodeData = LogicFlow.NodeData;
+import RegisterConfig = LogicFlow.RegisterConfig;
+import GraphConfigData = LogicFlow.GraphConfigData;
 
-
+// 节点移动距离
 const TRANSLATION_DISTANCE = 40
 
+// 逻辑面板上下文
 class FlowPanelContext {
 
     private readonly lfRef: React.RefObject<LogicFlow>;
@@ -16,6 +19,9 @@ class FlowPanelContext {
         this.lfRef = lfRef;
     }
 
+    /**
+     * 生成uuid
+     */
     private generateUUID() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
             const r = (Math.random() * 16) | 0;
@@ -23,6 +29,60 @@ class FlowPanelContext {
             return v.toString(16);
         });
     }
+
+    /**
+     * 注册节点
+     * @param node
+     */
+    register(node: RegisterConfig) {
+        this.lfRef.current?.register(node);
+    }
+
+    /**
+     * 渲染数据
+     * @param data
+     */
+    render(data: GraphConfigData) {
+        this.lfRef.current?.render(data);
+    }
+
+    /**
+     * 获取节点信息
+     * @param nodeId 节点id
+     */
+    getNode(nodeId: string) {
+        const data = this.getGraphData();
+        if (data) {
+            //@ts-ignore
+            const nodes = data.nodes;
+            const getNode = (nodeId: string) => {
+                for (const node of nodes) {
+                    if (node.id === nodeId) {
+                        return node;
+                    }
+                }
+            }
+            return getNode(nodeId);
+        }
+        return null;
+    }
+
+    /**
+     * 获取节点按钮
+     * @param nodeId 节点id
+     */
+    getButtons(nodeId: string) {
+        const node = this.getNode(nodeId);
+        if (node) {
+            const buttons = node.properties.buttons || [];
+            buttons.sort((a: any, b: any) => {
+                return a.order - b.order;
+            })
+            return buttons;
+        }
+        return []
+    }
+
 
     /**
      * 添加节点
@@ -107,7 +167,7 @@ class FlowPanelContext {
      */
     private nodeVerify = (type: NodeType) => {
         // @ts-ignore
-        const nodes = this.lfRef.current?.getGraphData().nodes;
+        const nodes = this.getGraphData().nodes;
         if (type === 'start-node') {
             for (let i = 0; i < nodes.length; i++) {
                 if (nodes[i].type === type) {
@@ -132,14 +192,14 @@ class FlowPanelContext {
      * 缩放
      * @param flag true为放大 false为缩小
      */
-    zoom = (flag:boolean) => {
+    zoom = (flag: boolean) => {
         this.lfRef.current?.zoom(flag);
     }
 
     /**
      * 重置缩放
      */
-    resetZoom = ()=>{
+    resetZoom = () => {
         this.lfRef.current?.resetZoom();
         this.lfRef.current?.resetTranslate();
     }
@@ -147,21 +207,21 @@ class FlowPanelContext {
     /**
      * 恢复 下一步
      */
-    redo = ()=>{
+    redo = () => {
         this.lfRef.current?.redo();
     }
 
     /**
      * 撤销 上一步
      */
-    undo = ()=> {
+    undo = () => {
         this.lfRef.current?.undo();
     }
 
     /**
      * 隐藏地图
      */
-    hiddenMap = ()=>{
+    hiddenMap = () => {
         // @ts-ignore
         this.lfRef.current?.extension.miniMap.hide();
     }
@@ -169,7 +229,7 @@ class FlowPanelContext {
     /**
      * 显示地图
      */
-    showMap = ()=>{
+    showMap = () => {
         const modelWidth = this.lfRef.current?.graphModel.width;
         // @ts-ignore
         this.lfRef.current?.extension.miniMap.show(modelWidth - 300, 200);
@@ -178,10 +238,16 @@ class FlowPanelContext {
     /**
      * 下载图片
      */
-    download = ()=>{
+    download = () => {
         this.lfRef.current?.getSnapshot();
     }
 
+    /**
+     * 获取流程设计的数据
+     */
+    getGraphData() {
+        return this.lfRef.current?.getGraphData();
+    }
 }
 
 export default FlowPanelContext;
