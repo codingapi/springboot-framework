@@ -18,8 +18,14 @@ export const menus = [
     {
         path: '/flow',
         name: '流程',
-        icon: "SmileOutlined",
+        icon: "CiOutlined",
         page: 'flow',
+    },
+    {
+        path: '/form',
+        name: '表单',
+        icon: "FormOutlined",
+        page: 'form',
     }
 ]
 
