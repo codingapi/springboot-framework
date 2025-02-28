@@ -4,13 +4,13 @@ import {EyeOutlined, SettingOutlined} from "@ant-design/icons";
 import GroovyScript from "@/components/flow/utils/script";
 import ScriptModal from "@/components/flow/nodes/panel/ScriptModal";
 import {getComponent} from "@/framework/ComponentBus";
-import {UserSelectProps, UserSelectViewKey} from "@/components/flow/flow/types";
 import ValidateUtils from "@/components/form/utils";
 import FormSelect from "@/components/form/select";
 import FormSwitch from "@/components/form/switch";
 import {ProForm} from "@ant-design/pro-components";
 import FormInput from "@/components/form/input";
 import {FormInstance} from "antd/es/form/hooks/useForm";
+import {UserSelectFormProps, UserSelectFormViewKey} from "@/components/flow/types";
 
 interface NodePanelProps {
     id?: string,
@@ -31,7 +31,7 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
     const [operatorMatcherType, setOperatorMatcherType] = React.useState(props.data?.operatorMatcherType);
 
     // 用户选人视图
-    const UserSelectView = getComponent(UserSelectViewKey) as React.ComponentType<UserSelectProps>;
+    const UserSelectView = getComponent(UserSelectFormViewKey) as React.ComponentType<UserSelectFormProps>;
 
 
     return (
@@ -265,7 +265,7 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                     setVisible={setUserSelectVisible}
                     userSelectType={"users"}
                     specifyUserIds={GroovyScript.getOperatorUsers(props.form.getFieldValue("operatorMatcher"))}
-                    mode={"multiple"}
+                    multiple={true}
                     onFinish={(values) => {
                         setUserSelectVisible(false);
                         const script = GroovyScript.specifyOperatorMatcher.replaceAll("%s", values.map((item: any) => item.id).join(","));
