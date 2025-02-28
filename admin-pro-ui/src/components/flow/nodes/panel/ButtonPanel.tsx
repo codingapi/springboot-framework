@@ -21,9 +21,7 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
 
     const formAction = React.useRef<FormAction>(null);
 
-    const [form] = ProForm.useForm();
-
-    const [groovyForm] = ProForm.useForm();
+    const groovyFormAction = React.useRef<FormAction>(null);
 
     const [visible, setVisible] = React.useState(false);
 
@@ -74,8 +72,8 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
                     <a
                         key={"edit"}
                         onClick={() => {
-                            form.resetFields();
-                            form.setFieldsValue(record);
+                            groovyFormAction.current?.reset();
+                            groovyFormAction.current?.setFieldsValue(record);
                             setType(record.type);
                             setVisible(true);
                         }}
@@ -117,7 +115,7 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
                         <Button
                             type={"primary"}
                             onClick={() => {
-                                form.resetFields();
+                                groovyFormAction.current?.reset();
                                 setVisible(true);
                             }}
                         >添加按钮</Button>
@@ -171,9 +169,9 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
                                 {type === 'CUSTOM' && (
                                     <EyeOutlined
                                         onClick={() => {
-                                            groovyForm.resetFields();
-                                            const script = form.getFieldValue('groovy') || 'def run(content){\n  //你的代码 \n  return content.createMessageResult(\'我是自定义标题\');\n}';
-                                            groovyForm.setFieldsValue({
+                                            groovyFormAction.current?.reset();
+                                            const script = groovyFormAction.current?.getFieldValue('groovy') || 'def run(content){\n  //你的代码 \n  return content.createMessageResult(\'我是自定义标题\');\n}';
+                                            groovyFormAction.current?.setFieldsValue({
                                                 'script': script
                                             });
                                             setScriptVisible(!scriptVisible);
@@ -215,11 +213,11 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
 
                 <ScriptModal
                     onFinish={(values) => {
-                        form.setFieldsValue({
+                        groovyFormAction.current?.setFieldsValue({
                             'groovy': values.script
                         });
                     }}
-                    form={groovyForm}
+                    formAction={groovyFormAction}
                     setVisible={setScriptVisible}
                     visible={scriptVisible}/>
 

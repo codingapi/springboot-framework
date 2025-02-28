@@ -1,9 +1,10 @@
 import React from "react";
-import {ActionType, ProForm, ProTable} from "@ant-design/pro-components";
+import {ActionType, ProTable} from "@ant-design/pro-components";
 import {Input, InputNumber, Popconfirm, Space} from "antd";
 import {CheckOutlined, EditOutlined, SettingOutlined} from "@ant-design/icons";
 import FlowUtils from "@/components/flow/utils";
 import ScriptModal from "@/components/flow/nodes/panel/ScriptModal";
+import {FormAction} from "@/components/form";
 
 interface EdgePanelProps {
     id?: string;
@@ -17,7 +18,7 @@ const EdgePanel: React.FC<EdgePanelProps> = (props) => {
     const [name, setName] = React.useState("");
     const [order, setOrder] = React.useState(0);
 
-    const [form] = ProForm.useForm();
+    const groovyFormAction = React.useRef<FormAction>(null);
     const actionRef = React.useRef<ActionType>();
 
     const handlerChangeName = (id: any) => {
@@ -94,8 +95,8 @@ const EdgePanel: React.FC<EdgePanelProps> = (props) => {
                     <Space>
                         <SettingOutlined
                             onClick={() => {
-                                form.setFieldValue("script", record.outTrigger);
-                                form.setFieldValue("type", record.id);
+                                groovyFormAction.current?.setFieldValue("script", record.outTrigger);
+                                groovyFormAction.current?.setFieldValue("type", record.id);
                                 setVisible(true);
                             }}/>
                         {record.outTrigger ? (<CheckOutlined/>) : null}
@@ -183,7 +184,7 @@ const EdgePanel: React.FC<EdgePanelProps> = (props) => {
                 onFinish={(values) => {
                     handlerChangeOutTrigger(values.type, values.script);
                 }}
-                form={form}
+                formAction={groovyFormAction}
                 setVisible={setVisible}
                 visible={visible}/>
         </>

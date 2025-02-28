@@ -1,6 +1,5 @@
 import React from "react";
 import {Button, Divider, Space} from "antd";
-import {ProForm} from "@ant-design/pro-components";
 import {EyeOutlined, SettingOutlined} from "@ant-design/icons";
 import GroovyScript from "@/components/flow/utils/script";
 import ScriptModal from "@/components/flow/nodes/panel/ScriptModal";
@@ -22,7 +21,7 @@ interface NodePanelProps {
 
 const NodePanel: React.FC<NodePanelProps> = (props) => {
 
-    const [form] = ProForm.useForm();
+    const groovyFormAction = React.useRef<FormAction>(null);
 
     const [visible, setVisible] = React.useState(false);
 
@@ -143,8 +142,8 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                             <EyeOutlined
                                 onClick={() => {
                                     const value = props.formAction.current?.getFieldValue("operatorMatcher");
-                                    form.setFieldValue("type", "operatorMatcher");
-                                    form.setFieldValue("script", value);
+                                    groovyFormAction.current?.setFieldValue("type", "operatorMatcher");
+                                    groovyFormAction.current?.setFieldValue("script", value);
                                     setVisible(true);
                                 }}/>
 
@@ -197,8 +196,8 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                         <EyeOutlined
                             onClick={() => {
                                 const value = props.formAction.current?.getFieldValue("titleGenerator");
-                                form.setFieldValue("type", "titleGenerator");
-                                form.setFieldValue("script", value);
+                                groovyFormAction.current?.setFieldValue("type", "titleGenerator");
+                                groovyFormAction.current?.setFieldValue("script", value);
                                 setVisible(true);
                             }}/>
                     )}
@@ -239,8 +238,8 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                         <EyeOutlined
                             onClick={() => {
                                 const value = props.formAction.current?.getFieldValue("errTrigger");
-                                form.setFieldValue("type", "errTrigger");
-                                form.setFieldValue("script", value);
+                                groovyFormAction.current?.setFieldValue("type", "errTrigger");
+                                groovyFormAction.current?.setFieldValue("script", value);
                                 setVisible(true);
                             }}/>
                     )}
@@ -255,7 +254,7 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                         [type]: values.script
                     });
                 }}
-                form={form}
+                formAction={groovyFormAction}
                 setVisible={setVisible}
                 visible={visible}/>
 
