@@ -1,12 +1,12 @@
 import React from "react";
 import {LogicFlow} from "@logicflow/core";
-import {NodeButtonProperties, NodeProperties, NodeType} from "@/components/flow/types";
+import {CustomButtonType, NodeButtonProperties, NodeProperties, NodeType} from "@/components/flow/types";
 import {message} from "antd";
 import {isEmpty} from "lodash-es";
-import {CustomButtonType} from "@/components/flow/flow/types";
 import NodeData = LogicFlow.NodeData;
 import RegisterConfig = LogicFlow.RegisterConfig;
 import GraphConfigData = LogicFlow.GraphConfigData;
+import GroovyScript from "@/components/flow/utils/script";
 
 // 节点移动距离
 const TRANSLATION_DISTANCE = 40
@@ -87,6 +87,9 @@ class FlowPanelContext {
         return this.buttonEventOptions.find(item => item.value === value)?.label;
     }
 
+    /**
+     * 获取按钮事件选项
+     */
     getButtonEventOptions() {
         return this.buttonEventOptions;
     }
@@ -155,6 +158,31 @@ class FlowPanelContext {
         return []
     }
 
+
+    /**
+     * 删除节点按钮
+     * @param nodeId 节点id
+     * @param buttonId 按钮id
+     */
+    deleteButton(nodeId:string,buttonId:string){
+        const data = this.getGraphData();
+        if(data) {
+            //@ts-ignore
+            const nodes = data.nodes;
+            const getNode = (nodeId: String) => {
+                for (const node of nodes) {
+                    if (node.id === nodeId) {
+                        return node;
+                    }
+                }
+            }
+            const node = getNode(nodeId);
+            const buttons = node.properties.buttons || [];
+            node.properties.buttons = buttons.filter((item: any) => item.id !== buttonId);
+            this.render(data as GraphConfigData);
+        }
+    }
+
     /**
      * 更新节点按钮数据
      */
@@ -209,6 +237,144 @@ class FlowPanelContext {
                     id: uid
                 }
             })
+        }
+    }
+
+
+    /**
+     * 获取节点下的边
+     * @param nodeId 节点id
+     */
+    getEdges(nodeId: String) {
+        const data = this.getGraphData() as any;
+        const list = []
+        if(data) {
+            const nodes = data.nodes;
+            const getNodeProperties = (nodeId: String) => {
+                for (const node of nodes) {
+                    if (node.id === nodeId) {
+                        return node.properties;
+                    }
+                }
+            }
+
+            let update = false;
+
+            let order = 0;
+            if (data && data.edges) {
+                const edges = data.edges;
+                for (const index in edges) {
+                    const edge = edges[index];
+                    if (edge.sourceNodeId === nodeId) {
+                        order++;
+                        if (!edge.properties.outTrigger) {
+                            edge.properties = {
+                                ...edge.properties,
+                                outTrigger: GroovyScript.defaultOutTrigger,
+                                order: order,
+                                back: false
+                            }
+                            update = true;
+                        }
+
+                        list.push({
+                            id: edge.id,
+                            name: edge.properties.name,
+                            source: getNodeProperties(edge.sourceNodeId),
+                            target: getNodeProperties(edge.targetNodeId),
+                            outTrigger: edge.properties.outTrigger,
+                            back: edge.properties.back,
+                            order: edge.properties.order,
+                            edge
+                        });
+                    }
+                }
+            }
+
+            if (update) {
+                this.render(data);
+            }
+        }
+
+        return list;
+    }
+
+
+    /**
+     * 修改边的名称
+     * @param edgeId 边id
+     * @param name 名称
+     */
+    changeEdgeName(edgeId:string,name:string){
+        const data = this.getGraphData() as any;
+        if (data && data.edges) {
+            const edges = data.edges;
+            for (const index in edges) {
+                const edge = edges[index];
+                if (edge.id === edgeId) {
+                    edge.properties.name = name;
+                    this.render(data);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * 修改边的排序
+     * @param edgeId 边id
+     * @param order 排序
+     */
+    changeEdgeOrder(edgeId:string,order:number){
+        const data = this.getGraphData() as any;
+        if (data && data.edges) {
+            const edges = data.edges;
+            for (const index in edges) {
+                const edge = edges[index];
+                if (edge.id === edgeId) {
+                    edge.properties.order = order;
+                    this.render(data);
+                }
+            }
+        }
+    }
+
+    /**
+     * 修改边的退回属性
+     * @param edgeId 边id
+     * @param back 是否退回
+     */
+    changeEdgeBack(edgeId:string,back:boolean){
+        const data = this.getGraphData() as any;
+        if (data && data.edges) {
+            const edges = data.edges;
+            for (const index in edges) {
+                const edge = edges[index];
+                if (edge.id === edgeId) {
+                    edge.properties.back = back;
+                    this.render(data);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * 修改边的触发器
+     * @param edgeId 边id
+     * @param outTrigger 触发器
+     */
+    changeEdgeOutTrigger(edgeId:string,outTrigger:string){
+        const data = this.getGraphData() as any;
+        if (data && data.edges) {
+            const edges = data.edges;
+            for (const index in edges) {
+                const edge = edges[index];
+                if (edge.id === edgeId) {
+                    edge.properties.outTrigger = outTrigger;
+                    this.render(data);
+                }
+            }
         }
     }
 

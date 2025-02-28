@@ -1,7 +1,6 @@
 import React from "react";
 import {ActionType, ModalForm, ProColumns, ProForm, ProFormText, ProTable} from "@ant-design/pro-components";
 import {Button, ColorPicker, Popconfirm, Space} from "antd";
-import FlowUtils from "@/components/flow/utils";
 import ScriptModal from "@/components/flow/nodes/panel/ScriptModal";
 import {EyeOutlined} from "@ant-design/icons";
 import FlowContext from "@/components/flow/domain/FlowContext";
@@ -83,7 +82,7 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
                         key={"delete"}
                         title={"确认要删除吗？"}
                         onConfirm={() => {
-                            FlowUtils.deleteButton(props.id, record.id);
+                            flowContext.getFlowPanelContext()?.deleteButton(props.id, record.id);
                             actionRef.current?.reload();
                         }}>
                         <a>删除</a>
@@ -218,7 +217,6 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
 
                 <ScriptModal
                     onFinish={(values) => {
-                        console.log('values', values);
                         form.setFieldsValue({
                             'groovy': values.script
                         });

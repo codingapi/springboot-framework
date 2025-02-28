@@ -2,8 +2,8 @@ import React from "react";
 import {ActionType, ProForm, ProTable} from "@ant-design/pro-components";
 import {Input, InputNumber, Popconfirm, Space} from "antd";
 import {CheckOutlined, EditOutlined, SettingOutlined} from "@ant-design/icons";
-import FlowUtils from "@/components/flow/utils";
 import ScriptModal from "@/components/flow/nodes/panel/ScriptModal";
+import FlowContext from "@/components/flow/domain/FlowContext";
 
 interface EdgePanelProps {
     id?: string;
@@ -20,23 +20,25 @@ const EdgePanel: React.FC<EdgePanelProps> = (props) => {
     const [groovyForm] = ProForm.useForm();
     const actionRef = React.useRef<ActionType>();
 
+    const flowContext = FlowContext.getInstance();
+
     const handlerChangeName = (id: any) => {
-        FlowUtils.changeEdgeName(id, name);
+        flowContext.getFlowPanelContext()?.changeEdgeName(id, name);
         actionRef.current?.reload();
     }
 
     const handlerChangeOrder = (id: any) => {
-        FlowUtils.changeEdgeOrder(id, order);
+        flowContext.getFlowPanelContext()?.changeEdgeOrder(id, order);
         actionRef.current?.reload();
     }
 
     const handlerChangeBack = (id: any, back: boolean) => {
-        FlowUtils.changeEdgeBack(id, back);
+        flowContext.getFlowPanelContext()?.changeEdgeBack(id, back);
         actionRef.current?.reload();
     }
 
     const handlerChangeOutTrigger = (id: any, outTrigger: string) => {
-        FlowUtils.changeEdgeOutTrigger(id, outTrigger);
+        flowContext.getFlowPanelContext()?.changeEdgeOutTrigger(id, outTrigger);
         actionRef.current?.reload();
     }
 
@@ -169,7 +171,7 @@ const EdgePanel: React.FC<EdgePanelProps> = (props) => {
                 options={false}
                 pagination={false}
                 request={async () => {
-                    const data = props.id ? FlowUtils.getEdges(props.id) : [];
+                    const data = props.id ? flowContext.getFlowPanelContext()?.getEdges(props.id) as any[] : [];
                     return {
                         data: data.sort((a: any, b: any) => {
                             return a.order - b.order;

@@ -1,5 +1,3 @@
-
-
 class GroovyScript {
 
     public static defaultOutTrigger = "def run(content) {return true;}";
