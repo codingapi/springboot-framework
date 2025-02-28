@@ -49,6 +49,8 @@ export interface FormAction {
     setFieldsValue: (values: any) => void;
     // 设置Field字段
     setFields: (fields: FiledData[]) => void;
+    // 获取Field属性
+    getFieldProps: (name: NamePath) => FormField | null;
     // 校验表单
     validate: () => Promise<boolean>;
 }
@@ -255,6 +257,15 @@ const Form:React.FC<FormProps> = (props)=>{
 
         getFieldsValue(): any {
             return form.getFieldsValue();
+        },
+
+        getFieldProps(name: NamePath): FormField | null {
+            for (const field of fields) {
+                if (namePathEqual(field.props.name,name)) {
+                    return field;
+                }
+            }
+            return null;
         },
 
         reloadOptions:(name: NamePath) => {

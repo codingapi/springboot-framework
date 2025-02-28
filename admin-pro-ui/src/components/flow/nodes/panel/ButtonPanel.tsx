@@ -14,71 +14,11 @@ import {Button, ColorPicker, Popconfirm, Space} from "antd";
 import FlowUtils from "@/components/flow/utils";
 import ScriptModal from "@/components/flow/nodes/panel/ScriptModal";
 import {EyeOutlined, ReloadOutlined} from "@ant-design/icons";
-import {CustomButtonType} from "@/components/flow/flow/types";
 import FlowContext from "@/components/flow/domain/FlowContext";
 
 interface ButtonPanelProps {
     id: string;
 }
-
-const buttonEventOptions = [
-    {
-        label: "保存",
-        value: "SAVE"
-    },
-    {
-        label: "发起",
-        value: "START"
-    },
-    {
-        label: "提交",
-        value: "SUBMIT"
-    },
-    {
-        label: "预提交",
-        value: "TRY_SUBMIT"
-    },
-    {
-        label: "指定人员提交",
-        value: "SPECIFY_SUBMIT"
-    },
-    {
-        label: "驳回",
-        value: "REJECT"
-    },
-    {
-        label: "转办",
-        value: "TRANSFER"
-    },
-    {
-        label: "撤销",
-        value: "RECALL"
-    },
-    {
-        label: "延期",
-        value: "POSTPONED"
-    },
-    {
-        label: "催办",
-        value: "URGE"
-    },
-    {
-        label: "自定义接口",
-        value: "CUSTOM"
-    },
-    {
-        label: "自定义事件",
-        value: "VIEW"
-    },
-    {
-        label: "删除",
-        value: "REMOVE"
-    },
-] as {
-    label: string;
-    value: CustomButtonType;
-}[];
-
 
 const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
 
@@ -113,7 +53,7 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
             dataIndex: 'type',
             key: 'type',
             render: (value: string) => {
-                return buttonEventOptions.find((item: any) => item.value == value)?.label;
+                return flowContext.getFlowPanelContext()?.convertButtonValue(value);
             }
         },
         {
@@ -202,7 +142,7 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
                     destroyOnClose: true
                 }}
                 onFinish={async (values) => {
-                    FlowUtils.updateButton(props.id, values);
+                    flowContext.getFlowPanelContext()?.updateButton(props.id, values);
                     setVisible(false);
                     actionRef.current?.reload();
                 }}
@@ -238,7 +178,7 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
                             />
                         </Space>
                     )}
-                    normalize={(value:any) => {
+                    normalize={(value: any) => {
                         if (value) {
                             return {
                                 background: value.toHexString()
@@ -246,7 +186,7 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
                         }
                         return value;
                     }}
-                    getValueProps={(value:any) => {
+                    getValueProps={(value: any) => {
                         const color = value?.background;
                         if (color) {
                             return {
@@ -285,7 +225,7 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
                             message: '请输入按钮类型'
                         }
                     ]}
-                    options={buttonEventOptions}
+                    options={flowContext.getFlowPanelContext()?.getButtonEventOptions()}
                     onChange={(value: string) => {
                         setType(value);
                     }}

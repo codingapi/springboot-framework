@@ -3,12 +3,19 @@ import {FormAction} from "@/components/form";
 
 // 流程表单验证内容
 export class FormValidateContent {
+
     readonly value: any;
+    readonly name: NamePath;
     readonly form: FormAction;
 
-    constructor(value: any, form: FormAction) {
+    constructor(value: any, name: NamePath, form: FormAction) {
         this.value = value;
+        this.name = name;
         this.form = form;
+    }
+
+    getFieldProps = () => {
+        return this.form.getFieldProps(this.name);
     }
 }
 
@@ -21,25 +28,25 @@ export class FormValidateContext {
         this.map = new Map<NamePath, (content: FormValidateContent) => Promise<string[]>>();
     }
 
-    public addValidateFunction(name:NamePath,validateFunction: (content: FormValidateContent) => Promise<string[]>) {
+    public addValidateFunction(name: NamePath, validateFunction: (content: FormValidateContent) => Promise<string[]>) {
         this.map.set(name, validateFunction);
     }
 
-    public clear(){
+    public clear() {
         this.map.clear();
     }
 
-    public getValidate(name:NamePath){
+    public getValidate(name: NamePath) {
         return this.map.get(name);
     }
 
 
-    public validateField =  (name:NamePath,form: FormAction) => {
-        return new Promise((resolve,reject)=>{
+    public validateField = (name: NamePath, form: FormAction) => {
+        return new Promise((resolve, reject) => {
             const value = form.getFieldValue(name);
-            const content = new FormValidateContent(value, form);
+            const content = new FormValidateContent(value, name, form);
             const validateFunction = this.getValidate(name);
-            if(validateFunction) {
+            if (validateFunction) {
                 validateFunction(content)
                     .then((res) => {
                         form.setFields(
@@ -74,7 +81,7 @@ export class FormValidateContext {
 
     public validate = async (form: FormAction) => {
         const list = Array.from(this.map.keys().map(item => {
-           return this.validateField(item,form);
+            return this.validateField(item, form);
         }));
 
         const results = await Promise.all(list);

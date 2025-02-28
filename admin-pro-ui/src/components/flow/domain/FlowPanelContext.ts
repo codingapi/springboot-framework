@@ -1,8 +1,11 @@
 import React from "react";
 import {LogicFlow} from "@logicflow/core";
-import {NodeProperties, NodeType} from "@/components/flow/types";
+import {NodeButtonProperties, NodeProperties, NodeType} from "@/components/flow/types";
 import {message} from "antd";
 import {isEmpty} from "lodash-es";
+import {CustomButtonType} from "@/components/flow/flow/types";
+import {FormField} from "@/components/form/types";
+import ValidateUtils from "@/components/form/utils";
 import NodeData = LogicFlow.NodeData;
 import RegisterConfig = LogicFlow.RegisterConfig;
 import GraphConfigData = LogicFlow.GraphConfigData;
@@ -15,8 +18,101 @@ class FlowPanelContext {
 
     private readonly lfRef: React.RefObject<LogicFlow>;
 
+    // 按钮事件选项
+    private readonly buttonEventOptions = [
+        {
+            label: "保存",
+            value: "SAVE"
+        },
+        {
+            label: "发起",
+            value: "START"
+        },
+        {
+            label: "提交",
+            value: "SUBMIT"
+        },
+        {
+            label: "预提交",
+            value: "TRY_SUBMIT"
+        },
+        {
+            label: "指定人员提交",
+            value: "SPECIFY_SUBMIT"
+        },
+        {
+            label: "驳回",
+            value: "REJECT"
+        },
+        {
+            label: "转办",
+            value: "TRANSFER"
+        },
+        {
+            label: "撤销",
+            value: "RECALL"
+        },
+        {
+            label: "延期",
+            value: "POSTPONED"
+        },
+        {
+            label: "催办",
+            value: "URGE"
+        },
+        {
+            label: "自定义接口",
+            value: "CUSTOM"
+        },
+        {
+            label: "自定义事件",
+            value: "VIEW"
+        },
+        {
+            label: "删除",
+            value: "REMOVE"
+        },
+    ] as {
+        label: string;
+        value: CustomButtonType;
+    }[];
+
+
+    private readonly defaultNodeButtons = [
+        {
+            type: "input",
+            props: {
+                name: "id",
+                hidden: true
+            }
+        },
+        {
+            type: "input",
+            props: {
+                label: "按钮名称",
+                name: "name",
+                required: true,
+                placeholder: "请输入按钮名称",
+                validateFunction: ValidateUtils.validateNotEmpty
+            }
+        }
+    ] as FormField[];
+
+
     constructor(lfRef: React.RefObject<LogicFlow>) {
         this.lfRef = lfRef;
+    }
+
+    /**
+     * 获取按钮事件选项
+     * @param value 事件值
+     */
+    convertButtonValue = (value: string) => {
+        return this.buttonEventOptions.find(item => item.value === value)?.label;
+    }
+
+    getButtonEventOptions() {
+        return this.buttonEventOptions;
     }
 
     /**
@@ -81,6 +177,43 @@ class FlowPanelContext {
             return buttons;
         }
         return []
+    }
+
+    /**
+     * 更新节点按钮数据
+     */
+    updateButton(nodeId: string, button: NodeButtonProperties) {
+        const data = this.getGraphData();
+        if (data) {
+            //@ts-ignore
+            const nodes = data.nodes;
+            const getNode = (nodeId: String) => {
+                for (const node of nodes) {
+                    if (node.id === nodeId) {
+                        return node;
+                    }
+                }
+            }
+            const node = getNode(nodeId);
+            const buttons = node.properties.buttons || [];
+            let update = false;
+            for (const item of buttons) {
+                if (item.id == button.id) {
+                    item.name = button.name;
+                    item.style = button.style;
+                    item.type = button.type;
+                    item.order = button.order;
+                    item.groovy = button.groovy;
+                    item.eventKey = button.eventKey;
+                    update = true;
+                }
+            }
+            if (!update) {
+                button.id = this.generateUUID();
+                node.properties.buttons = [...buttons, button];
+            }
+            this.render(data as GraphConfigData);
+        }
     }
 
 
