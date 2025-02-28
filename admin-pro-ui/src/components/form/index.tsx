@@ -3,7 +3,7 @@ import {NamePath} from "rc-field-form/es/interface";
 import {FormField} from "@/components/form/types";
 import {FormValidateContext} from "@/components/form/validate";
 import {FormFieldOptionListenerContext, FormFieldReloadListenerContext} from "@/components/form/listener";
-import {Form as AntForm} from "antd";
+import {Form as AntForm, message} from "antd";
 import FormFactory from "@/components/form/factory";
 import "./form.scss";
 
@@ -28,13 +28,13 @@ export interface FormAction {
     // 禁用表单项，禁用后的表单项还会被提交
     disable: (name: NamePath) => void;
     // 全部禁用，禁用后的表单项还会被提交
-    disableAll:()=>void;
+    disableAll: () => void;
     // 启用表单项，启用后的表单项还会被提交
     enable: (name: NamePath) => void;
     // 全部启用，启用后的表单项还会被提交
-    enableAll:()=>void;
+    enableAll: () => void;
     // 必填选项控制,true为必填false为非必填提示
-    required: (name: NamePath,required:boolean) => void;
+    required: (name: NamePath, required: boolean) => void;
     // 获取字段的值
     getFieldValue: (name: NamePath) => any;
     // 重新加载选项
@@ -57,7 +57,7 @@ export interface FormAction {
 
 export interface FormProps {
     // 表单字段
-    loadFields?: ()=>Promise<FormField[]>;
+    loadFields?: () => Promise<FormField[]>;
     // 表单提交事件
     onFinish?: (values: any) => Promise<void>;
     // 表单控制对象
@@ -78,9 +78,9 @@ interface FormContextProps {
     // 检验控制对象
     validateContext: FormValidateContext;
     // 表单刷新监听对象
-    reloadContext:FormFieldReloadListenerContext;
+    reloadContext: FormFieldReloadListenerContext;
     // 选项刷新监听对象
-    optionContext:FormFieldOptionListenerContext;
+    optionContext: FormFieldOptionListenerContext;
 }
 
 export const FormContext = React.createContext<FormContextProps | null>(null);
@@ -100,7 +100,7 @@ const namePathEqual = (name1: NamePath, name2: NamePath): boolean => {
     return name1 === name2;
 }
 
-const Form:React.FC<FormProps> = (props)=>{
+const Form: React.FC<FormProps> = (props) => {
 
     const [form] = AntForm.useForm();
 
@@ -126,8 +126,12 @@ const Form:React.FC<FormProps> = (props)=>{
         },
 
         hidden: (name: NamePath) => {
+            if (fields.length == 0) {
+                message.error("表单项未加载").then();
+                return;
+            }
             setFields(prevFields => prevFields.map((field) => {
-                if (namePathEqual(field.props.name,name)) {
+                if (namePathEqual(field.props.name, name)) {
                     return {
                         ...field,
                         props: {
@@ -142,9 +146,13 @@ const Form:React.FC<FormProps> = (props)=>{
             validateContext.clear();
         },
 
-        required:(name: NamePath,required:boolean) => {
+        required: (name: NamePath, required: boolean) => {
+            if (fields.length == 0) {
+                message.error("表单项未加载").then();
+                return;
+            }
             setFields(prevFields => prevFields.map((field) => {
-                if (namePathEqual(field.props.name,name)) {
+                if (namePathEqual(field.props.name, name)) {
                     return {
                         ...field,
                         props: {
@@ -159,8 +167,12 @@ const Form:React.FC<FormProps> = (props)=>{
         },
 
         show: (name: NamePath) => {
+            if (fields.length == 0) {
+                message.error("表单项未加载").then();
+                return;
+            }
             setFields(prevFields => prevFields.map((field) => {
-                if (namePathEqual(field.props.name,name)) {
+                if (namePathEqual(field.props.name, name)) {
                     return {
                         ...field,
                         props: {
@@ -175,8 +187,12 @@ const Form:React.FC<FormProps> = (props)=>{
         },
 
         disable: (name: NamePath) => {
+            if (fields.length == 0) {
+                message.error("表单项未加载").then();
+                return;
+            }
             setFields(prevFields => prevFields.map((field) => {
-                if (namePathEqual(field.props.name,name)) {
+                if (namePathEqual(field.props.name, name)) {
                     return {
                         ...field,
                         props: {
@@ -190,7 +206,11 @@ const Form:React.FC<FormProps> = (props)=>{
             validateContext.clear();
         },
 
-        disableAll:()=>{
+        disableAll: () => {
+            if (fields.length == 0) {
+                message.error("表单项未加载").then();
+                return;
+            }
             setFields(prevFields => prevFields.map((field) => {
                 return {
                     ...field,
@@ -204,8 +224,12 @@ const Form:React.FC<FormProps> = (props)=>{
         },
 
         enable: (name: NamePath) => {
+            if (fields.length == 0) {
+                message.error("表单项未加载").then();
+                return;
+            }
             setFields(prevFields => prevFields.map((field) => {
-                if (namePathEqual(field.props.name,name)) {
+                if (namePathEqual(field.props.name, name)) {
                     return {
                         ...field,
                         props: {
@@ -219,7 +243,11 @@ const Form:React.FC<FormProps> = (props)=>{
             validateContext.clear();
         },
 
-        enableAll:()=>{
+        enableAll: () => {
+            if (fields.length == 0) {
+                message.error("表单项未加载").then();
+                return;
+            }
             setFields(prevFields => prevFields.map((field) => {
                 return {
                     ...field,
@@ -233,11 +261,19 @@ const Form:React.FC<FormProps> = (props)=>{
         },
 
         remove: (name: NamePath) => {
-            setFields(prevFields => prevFields.filter((field) => !namePathEqual(field.props.name,name)));
+            if (fields.length == 0) {
+                message.error("表单项未加载").then();
+                return;
+            }
+            setFields(prevFields => prevFields.filter((field) => !namePathEqual(field.props.name, name)));
             validateContext.clear();
         },
 
         create: (field: FormField, index?: number) => {
+            if (fields.length == 0) {
+                message.error("表单项未加载").then();
+                return;
+            }
             setFields(prevFields => {
                 const filteredFields = prevFields.filter((item) => item.props.name !== field.props.name);
                 if (index === undefined || index < 0) {
@@ -261,18 +297,18 @@ const Form:React.FC<FormProps> = (props)=>{
 
         getFieldProps(name: NamePath): FormField | null {
             for (const field of fields) {
-                if (namePathEqual(field.props.name,name)) {
+                if (namePathEqual(field.props.name, name)) {
                     return field;
                 }
             }
             return null;
         },
 
-        reloadOptions:(name: NamePath) => {
+        reloadOptions: (name: NamePath) => {
             optionContext.notify(name);
         },
 
-        reloadAllOptions:()=>{
+        reloadAllOptions: () => {
             optionContext.notifyAll();
         },
 
@@ -299,15 +335,15 @@ const Form:React.FC<FormProps> = (props)=>{
     const formContextProps = {
         formAction: formAction,
         validateContext: validateContext,
-        reloadContext:reloadContext,
-        optionContext:optionContext
+        reloadContext: reloadContext,
+        optionContext: optionContext
     }
 
     const [fields, setFields] = React.useState<FormField[]>([]);
 
-    const reloadFields = ()=>{
-        if(props.loadFields){
-            props.loadFields().then(fields=>{
+    const reloadFields = () => {
+        if (props.loadFields) {
+            props.loadFields().then(fields => {
                 setFields(fields);
             })
         }

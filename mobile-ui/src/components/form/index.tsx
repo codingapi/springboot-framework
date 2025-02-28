@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {Form as MobileForm} from "antd-mobile";
+import {Form as MobileForm, Toast} from "antd-mobile";
 import FormFactory from "@/components/form/factory";
 import {FormField} from "@/components/form/types";
 import {FormValidateContext} from "@/components/form/validate";
@@ -128,6 +128,10 @@ const Form: React.FC<FormProps> = (props) => {
         },
 
         hidden: (name: NamePath) => {
+            if(fields.length==0){
+                Toast.show('表单项未加载');
+                return;
+            }
             setFields(prevFields => prevFields.map((field) => {
                 if (namePathEqual(field.props.name,name)) {
                     return {
@@ -145,6 +149,10 @@ const Form: React.FC<FormProps> = (props) => {
         },
 
         required:(name: NamePath,required:boolean) => {
+            if(fields.length==0){
+                Toast.show('表单项未加载');
+                return;
+            }
             setFields(prevFields => prevFields.map((field) => {
                 if (namePathEqual(field.props.name,name)) {
                     return {
@@ -161,6 +169,10 @@ const Form: React.FC<FormProps> = (props) => {
         },
 
         show: (name: NamePath) => {
+            if(fields.length==0){
+                Toast.show('表单项未加载');
+                return;
+            }
             setFields(prevFields => prevFields.map((field) => {
                 if (namePathEqual(field.props.name,name)) {
                     return {
@@ -177,6 +189,10 @@ const Form: React.FC<FormProps> = (props) => {
         },
 
         disable: (name: NamePath) => {
+            if(fields.length==0){
+                Toast.show('表单项未加载');
+                return;
+            }
             setFields(prevFields => prevFields.map((field) => {
                 if (namePathEqual(field.props.name,name)) {
                     return {
@@ -193,6 +209,10 @@ const Form: React.FC<FormProps> = (props) => {
         },
 
         disableAll:()=>{
+            if(fields.length==0){
+                Toast.show('表单项未加载');
+                return;
+            }
             setFields(prevFields => prevFields.map((field) => {
                 return {
                     ...field,
@@ -206,6 +226,10 @@ const Form: React.FC<FormProps> = (props) => {
         },
 
         enable: (name: NamePath) => {
+            if(fields.length==0){
+                Toast.show('表单项未加载');
+                return;
+            }
             setFields(prevFields => prevFields.map((field) => {
                 if (namePathEqual(field.props.name,name)) {
                     return {
@@ -222,6 +246,10 @@ const Form: React.FC<FormProps> = (props) => {
         },
 
         enableAll:()=>{
+            if(fields.length==0){
+                Toast.show('表单项未加载');
+                return;
+            }
             setFields(prevFields => prevFields.map((field) => {
                 return {
                     ...field,
@@ -235,11 +263,19 @@ const Form: React.FC<FormProps> = (props) => {
         },
 
         remove: (name: NamePath) => {
+            if(fields.length==0){
+                Toast.show('表单项未加载');
+                return;
+            }
             setFields(prevFields => prevFields.filter((field) => !namePathEqual(field.props.name,name)));
             validateContext.clear();
         },
 
         create: (field: FormField, index?: number) => {
+            if(fields.length==0){
+                Toast.show('表单项未加载');
+                return;
+            }
             setFields(prevFields => {
                 const filteredFields = prevFields.filter((item) => item.props.name !== field.props.name);
                 if (index === undefined || index < 0) {

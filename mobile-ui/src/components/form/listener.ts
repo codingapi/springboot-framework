@@ -3,19 +3,21 @@ import {NamePath} from "antd-mobile/es/components/form";
 // Form字段组件刷新控制监听上下文对象
 export class FormFieldReloadListenerContext {
 
-    private readonly map:Map<NamePath,()=>void>;
+    private readonly map:Map<string,()=>void>;
 
     constructor() {
         this.map = new Map();
     }
 
     public addListener(name:NamePath,listener:()=>void){
-        this.map.set(name, listener);
+        const key = Array.isArray(name)?name.join("."):name;
+        this.map.set(key, listener);
     }
 
 
     public notify(name:NamePath){
-        const listener = this.map.get(name);
+        const key = Array.isArray(name)?name.join("."):name;
+        const listener = this.map.get(key);
         if(listener){
             listener();
         }
@@ -32,19 +34,21 @@ export class FormFieldReloadListenerContext {
 // Form字段组件选项刷新控制监听上下文对象
 export class FormFieldOptionListenerContext {
 
-    private readonly map:Map<NamePath,()=>void>;
+    private readonly map:Map<string,()=>void>;
 
     constructor() {
         this.map = new Map();
     }
 
     public addListener(name:NamePath,listener:()=>void){
-        this.map.set(name, listener);
+        const key = Array.isArray(name)?name.join("."):name;
+        this.map.set(key, listener);
     }
 
 
     public notify(name:NamePath){
-        const listener = this.map.get(name);
+        const key = Array.isArray(name)?name.join("."):name;
+        const listener = this.map.get(key);
         if(listener){
             listener();
         }
