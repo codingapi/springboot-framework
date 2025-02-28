@@ -1,27 +1,28 @@
 import React from "react";
-import {Button, Divider, Space} from "antd";
+import {Button, Divider, Form, Space} from "antd";
 import {EyeOutlined, SettingOutlined} from "@ant-design/icons";
 import GroovyScript from "@/components/flow/utils/script";
 import ScriptModal from "@/components/flow/nodes/panel/ScriptModal";
 import {getComponent} from "@/framework/ComponentBus";
 import {UserSelectProps, UserSelectViewKey} from "@/components/flow/flow/types";
-import Form, {FormAction} from "@/components/form";
-import FormInput from "@/components/form/input";
 import ValidateUtils from "@/components/form/utils";
 import FormSelect from "@/components/form/select";
 import FormSwitch from "@/components/form/switch";
+import {ProForm} from "@ant-design/pro-components";
+import FormInput from "@/components/form/input";
+import {FormInstance} from "antd/es/form/hooks/useForm";
 
 interface NodePanelProps {
     id?: string,
     data?: any,
     onFinish: (values: any) => void,
-    formAction: React.RefObject<FormAction>,
+    form: FormInstance,
     type: string,
 }
 
 const NodePanel: React.FC<NodePanelProps> = (props) => {
 
-    const groovyFormAction = React.useRef<FormAction>(null);
+    const [groovyForm] = ProForm.useForm();
 
     const [visible, setVisible] = React.useState(false);
 
@@ -36,13 +37,13 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
     return (
         <>
             <Form
+                form={props.form}
                 initialValues={{
                     ...props.data,
                     operatorMatcherType: GroovyScript.operatorMatcherType(props.data?.operatorMatcher),
                     errTriggerType: GroovyScript.errTriggerType(props.data?.errTrigger),
                     titleGeneratorType: GroovyScript.titleGeneratorType(props.data?.titleGenerator),
                 }}
-                actionRef={props.formAction}
                 layout={"vertical"}
                 onFinish={async (values)=>{
                     props.onFinish(values);
@@ -122,7 +123,7 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                     ]}
                     onChange={(value) => {
                         setOperatorMatcherType(value as string);
-                        props.formAction.current?.setFieldsValue({
+                        props.form.setFieldsValue({
                             operatorMatcher: GroovyScript.operatorMatcher(value as string)
                         })
                     }}
@@ -141,9 +142,9 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
 
                             <EyeOutlined
                                 onClick={() => {
-                                    const value = props.formAction.current?.getFieldValue("operatorMatcher");
-                                    groovyFormAction.current?.setFieldValue("type", "operatorMatcher");
-                                    groovyFormAction.current?.setFieldValue("script", value);
+                                    const value = props.form.getFieldValue("operatorMatcher");
+                                    groovyForm.setFieldValue("type", "operatorMatcher");
+                                    groovyForm.setFieldValue("script", value);
                                     setVisible(true);
                                 }}/>
 
@@ -187,7 +188,7 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                     ]}
                     onChange={(value) => {
                         if (value === "default") {
-                            props.formAction.current?.setFieldsValue({
+                            props.form.setFieldsValue({
                                 titleGenerator: GroovyScript.defaultTitleGenerator
                             })
                         }
@@ -195,9 +196,9 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                     addonAfter={(
                         <EyeOutlined
                             onClick={() => {
-                                const value = props.formAction.current?.getFieldValue("titleGenerator");
-                                groovyFormAction.current?.setFieldValue("type", "titleGenerator");
-                                groovyFormAction.current?.setFieldValue("script", value);
+                                const value = props.form.getFieldValue("titleGenerator");
+                                groovyForm.setFieldValue("type", "titleGenerator");
+                                groovyForm.setFieldValue("script", value);
                                 setVisible(true);
                             }}/>
                     )}
@@ -229,7 +230,7 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                     ]}
                     onChange={(value) => {
                         if (value === "default") {
-                            props.formAction.current?.setFieldsValue({
+                            props.form.setFieldsValue({
                                 errTrigger: GroovyScript.defaultOutTrigger
                             })
                         }
@@ -237,9 +238,9 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                     addonAfter={(
                         <EyeOutlined
                             onClick={() => {
-                                const value = props.formAction.current?.getFieldValue("errTrigger");
-                                groovyFormAction.current?.setFieldValue("type", "errTrigger");
-                                groovyFormAction.current?.setFieldValue("script", value);
+                                const value = props.form.getFieldValue("errTrigger");
+                                groovyForm.setFieldValue("type", "errTrigger");
+                                groovyForm.setFieldValue("script", value);
                                 setVisible(true);
                             }}/>
                     )}
@@ -250,11 +251,11 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
             <ScriptModal
                 onFinish={(values) => {
                     const type = values.type;
-                    props.formAction.current?.setFieldsValue({
+                    props.form.setFieldsValue({
                         [type]: values.script
                     });
                 }}
-                formAction={groovyFormAction}
+                form={groovyForm}
                 setVisible={setVisible}
                 visible={visible}/>
 
@@ -263,12 +264,12 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
                     visible={userSelectVisible}
                     setVisible={setUserSelectVisible}
                     userSelectType={"users"}
-                    specifyUserIds={GroovyScript.getOperatorUsers(props.formAction.current?.getFieldValue("operatorMatcher"))}
+                    specifyUserIds={GroovyScript.getOperatorUsers(props.form.getFieldValue("operatorMatcher"))}
                     mode={"multiple"}
                     onFinish={(values) => {
                         setUserSelectVisible(false);
                         const script = GroovyScript.specifyOperatorMatcher.replaceAll("%s", values.map((item: any) => item.id).join(","));
-                        props.formAction.current?.setFieldsValue({
+                        props.form.setFieldsValue({
                             operatorMatcher: script
                         });
                     }}

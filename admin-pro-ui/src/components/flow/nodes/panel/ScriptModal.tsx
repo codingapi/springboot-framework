@@ -1,15 +1,15 @@
 import React from "react";
-import {Modal} from "antd";
 import Markdown from "react-markdown";
 import {markdown} from "@/components/flow/nodes/panel/help";
 import remarkGfm from 'remark-gfm'
 import FormInput from "@/components/form/input";
 import FormCode from "@/components/form/code";
-import Form, {FormAction} from "@/components/form";
+import {ModalForm} from "@ant-design/pro-components";
+import {FormInstance} from "antd/es/form/hooks/useForm";
 import "./ScriptModal.scss";
 
 interface ScriptModalProps {
-    formAction: React.RefObject<FormAction>;
+    form: FormInstance;
     visible: boolean;
     setVisible: (visible: boolean) => void;
     onFinish: (values: any) => void;
@@ -18,15 +18,24 @@ interface ScriptModalProps {
 const ScriptModal: React.FC<ScriptModalProps> = (props) => {
 
     return (
-        <Modal
+        <ModalForm
+            form={props.form}
+            width={"85vw"}
             className={"flow-script-modal"}
             title={"脚本预览"}
             open={props.visible}
-            onCancel={() => {
-                props.setVisible(false);
+            modalProps={{
+                onCancel: () => {
+                    props.setVisible(false);
+                },
+                onClose: () => {
+                    props.setVisible(false);
+                },
+                destroyOnClose: true
             }}
-            onOk={() => {
-                props.formAction.current?.submit();
+            onFinish={async (values) => {
+                props.onFinish(values);
+                props.setVisible(false);
             }}
         >
             <div className={"flow-script-content"}>
@@ -40,13 +49,6 @@ const ScriptModal: React.FC<ScriptModalProps> = (props) => {
                     </div>
                 </div>
                 <div className={"flow-script-form"}>
-                    <Form
-                        onFinish={async (values) => {
-                            props.onFinish(values);
-                            props.setVisible(false);
-                        }}
-                        actionRef={props.formAction}
-                    >
                         <FormInput
                             name={"type"}
                             hidden={true}
@@ -58,10 +60,9 @@ const ScriptModal: React.FC<ScriptModalProps> = (props) => {
                                 height: '65vh',
                             }}
                         />
-                    </Form>
                 </div>
             </div>
-        </Modal>
+        </ModalForm>
     )
 }
 

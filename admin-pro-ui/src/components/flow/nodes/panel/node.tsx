@@ -4,12 +4,12 @@ import NodePanel from "@/components/flow/nodes/panel/NodePanel";
 import EdgePanel from "@/components/flow/nodes/panel/EdgePanel";
 import ButtonPanel from "@/components/flow/nodes/panel/ButtonPanel";
 import {SettingPanelProps} from "@/components/flow/types";
-import {FormAction} from "@/components/form";
+import {ProForm} from "@ant-design/pro-components";
 
 
 const NodeSettingPanel: React.FC<SettingPanelProps> = (props) => {
 
-    const formAction = React.useRef<FormAction>(null);
+    const [form] = ProForm.useForm();
 
     return (
         <Drawer
@@ -25,7 +25,7 @@ const NodeSettingPanel: React.FC<SettingPanelProps> = (props) => {
                     <Button
                         type={"primary"}
                         onClick={() => {
-                            formAction.current?.submit();
+                            form.submit();
                             props.setVisible(false);
                         }}
                     >确认</Button>
@@ -46,7 +46,7 @@ const NodeSettingPanel: React.FC<SettingPanelProps> = (props) => {
                         children: (
                             <NodePanel
                                 type={"node"}
-                                formAction={formAction}
+                                form={form}
                                 id={props.properties?.id}
                                 data={props.properties}
                                 onFinish={props.onSettingChange}
