@@ -15,6 +15,7 @@ const FormStepper: React.FC<FormItemProps> = (props) => {
             hidden={props.hidden}
             help={props.help}
             required={props.required}
+            tooltip={props.tooltip}
         >
             <InputNumber
                 style={{
@@ -22,6 +23,8 @@ const FormStepper: React.FC<FormItemProps> = (props) => {
                 }}
                 addonBefore={props.addonBefore}
                 addonAfter={props.addonAfter}
+                prefix={props.prefix}
+                suffix={props.suffix}
                 disabled={props.disabled}
                 value={props.value}
                 max={props.stepperMaxNumber}

@@ -155,6 +155,7 @@ const FormUploader: React.FC<FormItemProps> = (props) => {
             required={props.required}
             hidden={props.hidden}
             help={props.help}
+            tooltip={props.tooltip}
         >
             <Uploader
                 formAction={formAction}

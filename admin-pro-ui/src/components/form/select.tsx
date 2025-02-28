@@ -1,8 +1,9 @@
 import React, {useEffect} from "react";
 import {FormItemProps} from "@/components/form/types";
-import {Form, Select} from "antd";
+import {Button, Form, Select, Space} from "antd";
 import formFieldInit from "@/components/form/common";
 import "./form.scss";
+import {FormAction} from "@/components/form/index";
 
 const valueToForm = (value: string) => {
     if (value && value.length > 0) {
@@ -18,6 +19,39 @@ const formToValue = (value: string[] |string) => {
         }
     }
     return value;
+}
+
+interface $SelectProps extends FormItemProps{
+    formAction?:FormAction;
+}
+
+const $Select: React.FC<$SelectProps> = (props) => {
+    const formAction = props.formAction;
+
+    return (
+        <Space.Compact
+            style={{
+                width:"100%"
+            }}
+        >
+            {props.addonBefore}
+            <Select
+                prefix={props.prefix}
+                suffixIcon={props.suffix}
+                disabled={props.disabled}
+                value={props.value}
+                mode={props.selectMultiple ? "multiple" : undefined}
+                placeholder={props.placeholder}
+                showSearch={true}
+                options={props.options}
+                onChange={(value,option) => {
+                    formAction?.setFieldValue(props.name, formToValue(value as string[]));
+                    props.onChange && props.onChange(value, formAction);
+                }}
+            />
+            {props.addonAfter}
+        </Space.Compact>
+    )
 }
 
 const FormSelect: React.FC<FormItemProps> = (props) => {
@@ -47,6 +81,7 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
             required={props.required}
             hidden={props.hidden}
             help={props.help}
+            tooltip={props.tooltip}
             getValueProps={(value) => {
                 if (value) {
                     return {
@@ -56,18 +91,12 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
                 return value
             }}
         >
-            <Select
-                disabled={props.disabled}
-                value={props.value}
-                mode={props.selectMultiple ? "multiple" : undefined}
-                placeholder={props.placeholder}
-                showSearch={true}
+            <$Select
+                {...props}
                 options={options}
-                onChange={(value,option) => {
-                    formAction?.setFieldValue(props.name, formToValue(value as string[]));
-                    props.onChange && props.onChange(value, formAction);
-                }}
+                formAction={formAction}
             />
+
         </Form.Item>
     )
 }

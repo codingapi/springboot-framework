@@ -44,6 +44,7 @@ const FormCheckbox: React.FC<FormItemProps> = (props) => {
             required={props.required}
             hidden={props.hidden}
             help={props.help}
+            tooltip={props.tooltip}
             getValueProps={(value) => {
                 if (value) {
                     return {

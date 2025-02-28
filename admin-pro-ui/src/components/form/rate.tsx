@@ -14,6 +14,7 @@ const FormRate: React.FC<FormItemProps> = (props) => {
             hidden={props.hidden}
             help={props.help}
             required={props.required}
+            tooltip={props.tooltip}
         >
             <Rate
                 disabled={props.disabled}

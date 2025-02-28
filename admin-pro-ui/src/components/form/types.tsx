@@ -47,11 +47,17 @@ export interface FormItemProps {
     name?: NamePath;
     // 表单字段标签
     label?: React.ReactNode;
-    // 帮助提示信息
+    // 帮助提示信息,出现组件的底部
     help?: string;
-    // 前缀
+    // 字段提示信息，出现在字段上
+    tooltip?: string;
+    // 组件内的前缀
+    prefix?: React.ReactNode;
+    // 组件内的后缀
+    suffix?: React.ReactNode;
+    // 组件前的前缀
     addonBefore?:React.ReactNode;
-    // 后缀
+    // 组件后的后缀
     addonAfter?:React.ReactNode;
     // 表单值
     value?: any;

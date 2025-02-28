@@ -17,6 +17,7 @@ const FormCode: React.FC<FormItemProps> = (props) => {
             hidden={props.hidden}
             help={props.help}
             required={props.required}
+            tooltip={props.tooltip}
         >
             <CodeEditor
                 readonly={props.disabled}

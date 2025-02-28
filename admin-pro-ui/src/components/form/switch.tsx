@@ -25,6 +25,7 @@ const FormSwitch: React.FC<FormItemProps> = (props) => {
             hidden={props.hidden}
             required={props.required}
             help={props.help}
+            tooltip={props.tooltip}
         >
             <Switch
                 disabled={props.disabled}

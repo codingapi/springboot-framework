@@ -16,6 +16,7 @@ const FormInput: React.FC<FormItemProps> = (props) => {
             hidden={props.hidden}
             help={props.help}
             required={props.required}
+            tooltip={props.tooltip}
         >
             <Input
                 disabled={props.disabled}

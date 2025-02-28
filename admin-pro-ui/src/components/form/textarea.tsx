@@ -15,6 +15,7 @@ const FormTextArea: React.FC<FormItemProps> = (props) => {
             required={props.required}
             hidden={props.hidden}
             help={props.help}
+            tooltip={props.tooltip}
         >
             <Input.TextArea
                 disabled={props.disabled}

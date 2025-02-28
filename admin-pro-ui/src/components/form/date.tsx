@@ -1,9 +1,10 @@
 import React from "react";
 import {FormItemProps} from "@/components/form/types";
-import {DatePicker, Form} from "antd";
+import {DatePicker, Form, Space} from "antd";
 import dayjs from "dayjs";
 import formFieldInit from "@/components/form/common";
 import "./form.scss";
+import {FormAction} from "@/components/form/index";
 
 const datePrecisionConverter = (precision?: string) => {
     if (precision === "day") {
@@ -62,14 +63,49 @@ const showTime = (precision?: string) => {
     return null;
 }
 
-const FormDate: React.FC<FormItemProps> = (props) => {
+interface $DatePicker extends FormItemProps{
+    formAction?:FormAction;
+}
 
-    const {formAction} = formFieldInit(props);
+const $DatePicker:React.FC<$DatePicker> = (props)=>{
+
+    const formAction = props.formAction;
 
     const format = props.dateFormat || 'YYYY-MM-DD';
     const precision = datePrecisionConverter(props.datePrecision) || "date";
     const showTimeConfig = showTime(props.datePrecision);
 
+    return (
+      <Space.Compact
+          style={{
+              width:"100%"
+          }}
+      >
+          {props.addonBefore}
+          <DatePicker
+              style={{
+                  width:"100%"
+              }}
+              disabled={props.disabled}
+              value={props.value}
+              prefix={props.prefix}
+              suffixIcon={props.suffix}
+              picker={precision}
+              showTime={showTimeConfig?{format: showTimeConfig.format}:false}
+              onChange={(date, dateString) => {
+                  const currentDate = dayjs(date).format(format);
+                  formAction?.setFieldValue(props.name, currentDate);
+                  props.onChange && props.onChange(currentDate, formAction);
+              }}
+          />
+          {props.addonAfter}
+      </Space.Compact>
+    )
+}
+
+const FormDate: React.FC<FormItemProps> = (props) => {
+
+    const {formAction} = formFieldInit(props);
 
     return (
         <Form.Item
@@ -78,6 +114,7 @@ const FormDate: React.FC<FormItemProps> = (props) => {
             hidden={props.hidden}
             help={props.help}
             required={props.required}
+            tooltip={props.tooltip}
             getValueProps={(value) => {
                 if (value) {
                     return {
@@ -87,20 +124,11 @@ const FormDate: React.FC<FormItemProps> = (props) => {
                 return value;
             }}
         >
-            <DatePicker
-                style={{
-                    width:"100%"
-                }}
-                disabled={props.disabled}
-                value={props.value}
-                picker={precision}
-                showTime={showTimeConfig?{format: showTimeConfig.format}:false}
-                onChange={(date, dateString) => {
-                    const currentDate = dayjs(date).format(format);
-                    formAction?.setFieldValue(props.name, currentDate);
-                    props.onChange && props.onChange(currentDate, formAction);
-                }}
+            <$DatePicker
+                {...props}
+                formAction={formAction}
             />
+
         </Form.Item>
     )
 }

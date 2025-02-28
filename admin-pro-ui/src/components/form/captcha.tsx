@@ -31,6 +31,8 @@ const Captcha:React.FC<FormItemProps> = (props)=>{
                 value={props.value}
                 addonAfter={props.addonAfter}
                 addonBefore={props.addonBefore}
+                prefix={props.prefix}
+                suffix={props.suffix}
                 placeholder={props.placeholder}
                 onChange={(value) => {
                     const currentValue = value.target.value;
@@ -61,6 +63,7 @@ const FormCaptcha: React.FC<FormItemProps> = (props) => {
             required={props.required}
             hidden={props.hidden}
             help={props.help}
+            tooltip={props.tooltip}
         >
             <Captcha
                 {...props}
