@@ -44,7 +44,7 @@ export interface FormItemProps {
     // 表单字段名
     name?: NamePath;
     // 表单字段标签
-    label?: string;
+    label?: React.ReactNode;
     // 帮助提示信息
     help?: string;
     // 表单值

@@ -92,7 +92,6 @@ const FormDate: React.FC<FormItemProps> = (props) => {
                     width:"100%"
                 }}
                 disabled={props.disabled}
-                title={props.label}
                 value={props.value}
                 picker={precision}
                 showTime={showTimeConfig?{format: showTimeConfig.format}:false}

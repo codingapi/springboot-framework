@@ -15,6 +15,8 @@ class ValidateUtils {
             if (Array.isArray(value)) {
                 if (value.length === 0) {
                     return [errorMessage];
+                }else {
+                    return [];
                 }
             } else {
                 return [];

@@ -4,8 +4,6 @@ import {NodeButtonProperties, NodeProperties, NodeType} from "@/components/flow/
 import {message} from "antd";
 import {isEmpty} from "lodash-es";
 import {CustomButtonType} from "@/components/flow/flow/types";
-import {FormField} from "@/components/form/types";
-import ValidateUtils from "@/components/form/utils";
 import NodeData = LogicFlow.NodeData;
 import RegisterConfig = LogicFlow.RegisterConfig;
 import GraphConfigData = LogicFlow.GraphConfigData;
@@ -76,28 +74,6 @@ class FlowPanelContext {
         label: string;
         value: CustomButtonType;
     }[];
-
-
-    private readonly defaultNodeButtons = [
-        {
-            type: "input",
-            props: {
-                name: "id",
-                hidden: true
-            }
-        },
-        {
-            type: "input",
-            props: {
-                label: "按钮名称",
-                name: "name",
-                required: true,
-                placeholder: "请输入按钮名称",
-                validateFunction: ValidateUtils.validateNotEmpty
-            }
-        }
-    ] as FormField[];
-
 
     constructor(lfRef: React.RefObject<LogicFlow>) {
         this.lfRef = lfRef;

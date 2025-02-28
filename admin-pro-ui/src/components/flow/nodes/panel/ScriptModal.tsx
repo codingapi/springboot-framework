@@ -46,7 +46,10 @@ const ScriptModal: React.FC<ScriptModalProps> = (props) => {
             }}><EyeOutlined /> 查看帮助</a>
 
             {show && (
-                <div>
+                <div style={{
+                    height:200,
+                    overflow:'auto'
+                }}>
                     <pre>
                         脚本说明：
                         函数的定义必须为
