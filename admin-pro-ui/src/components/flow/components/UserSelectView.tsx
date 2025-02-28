@@ -1,10 +1,10 @@
 import React, {useEffect} from "react";
-import {UserSelectProps} from "@/components/flow/flow/types";
+import {UserSelectFormProps} from "@/components/flow/types";
 import {ModalForm, ProForm, ProFormSelect} from "@ant-design/pro-components";
 import {users} from "@/api/user";
 
 
-const UserSelectView: React.FC<UserSelectProps> = (props) => {
+const UserSelectView: React.FC<UserSelectFormProps> = (props) => {
 
     const [form] = ProForm.useForm();
 

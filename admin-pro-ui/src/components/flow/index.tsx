@@ -9,7 +9,7 @@ import Over from "@/components/flow/nodes/Over";
 import Circulate from "@/components/flow/nodes/Circulate";
 import ControlPanel from "@/components/flow/panel/ControlPanel";
 import NodePanel from "@/components/flow/panel/NodePanel";
-import {EdgeType} from "@/components/flow/flow/types";
+import {EdgeType} from "@/components/flow/types";
 
 import "./index.scss";
 import FlowPanelContext from "@/components/flow/domain/FlowPanelContext";

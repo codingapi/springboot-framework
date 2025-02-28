@@ -1,16 +1,30 @@
 // 节点状态
+import {FormAction} from "@/components/form";
+
 export type NodeState = "done" | "wait" | "undone" | "current";
 
 // 节点类型
 export type NodeType = 'start-node' | 'node-node' | 'over-node' | 'circulate-node';
+
+// 流程图中线的类型
+export type EdgeType = 'line' | 'polyline' | 'bezier';
+
 
 // 延期表单视图Key
 export const PostponedFormViewKey = 'PostponedFormView';
 // 选人表单视图Key
 export const UserSelectFormViewKey = 'UserSelectFormViewKey';
 
-// 选人表单 【拓展视图】
 
+// 延期表单 【拓展视图】
+export interface PostponedFormProps {
+    visible: boolean;
+    setVisible: (visible: boolean) => void;
+    onFinish: (timeout: number) => void;
+}
+
+
+// 选人表单 【拓展视图】
 export type UserSelectFormType =
 // 选择下级流程节点的人员，约定人员id范围
     'nextNodeUser'
@@ -96,3 +110,39 @@ export interface SettingPanelProps {
     onSettingChange: (values: any) => void;
 }
 
+// 表单参数
+export interface FlowFormParams {
+    clazzName: string;
+
+    [key: string]: any;
+}
+
+// 流程表单数据
+export interface FlowFormViewProps {
+    // 表单数据
+    data: FlowFormParams;
+    // 表单控制对象
+    formAction: React.RefObject<FormAction>;
+    // 数据版本
+    dataVersion?: number;
+}
+
+// 表单视图
+export interface FlowFormView {
+    [key: string]: React.ComponentType<FlowFormViewProps>;
+}
+
+export interface FlowViewProps {
+    // 流程编号
+    id?: string;
+    // 是否展示
+    visible: boolean;
+    // 设置展示
+    setVisible:(visible:boolean)=>void;
+    // 流程的设计编号
+    workCode?: string;
+    // 流程的视图数据
+    view: React.ComponentType<FlowFormViewProps> | FlowFormView;
+    // 表单参数，参数仅当在发起节点时才会传递
+    formParams?: FlowFormParams;
+}

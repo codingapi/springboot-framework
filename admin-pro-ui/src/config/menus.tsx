@@ -16,17 +16,38 @@ export const menus = [
         page: 'welcome',
     },
     {
-        path: '/flow',
-        name: '流程',
-        icon: "CiOutlined",
-        page: 'flow',
-    },
-    {
         path: '/form',
         name: '表单',
         icon: "FormOutlined",
         page: 'form',
-    }
+    },
+    {
+        path: '/flow',
+        name: '流程',
+        icon: "CiOutlined",
+        routes: [
+            {
+                path: '/flow/work',
+                name: '流程管理',
+                page: 'flow/work',
+            },
+            {
+                path: '/flow/record',
+                name: '办理中心',
+                page: 'flow/record',
+            },
+            {
+                path: '/flow/leave',
+                name: '请假管理',
+                page: 'flow/leave',
+            },
+            {
+                path: '/flow/user',
+                name: '流程用户',
+                page: 'flow/user',
+            },
+        ]
+    },
 ]
 
 

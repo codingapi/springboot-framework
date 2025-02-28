@@ -1,6 +1,6 @@
 import React from "react";
 import {ModalForm, ProFormDigit} from "@ant-design/pro-components";
-import {PostponedFormProps} from "@/components/flow/flow/types";
+import {PostponedFormProps} from "@/components/flow/types";
 
 
 const PostponedFormView:React.FC<PostponedFormProps> = (props)=>{
@@ -19,7 +19,7 @@ const PostponedFormView:React.FC<PostponedFormProps> = (props)=>{
                 destroyOnClose:true,
             }}
             onFinish={async (values) => {
-                props.onFinish(values);
+                props.onFinish(values.hours);
             }}
         >
             <ProFormDigit
