@@ -353,7 +353,7 @@ const Form: React.FC<FormProps> = (props) => {
 
     useEffect(() => {
         reloadFields();
-    }, []);
+    }, [props.loadFields]);
 
 
     React.useImperativeHandle(props.actionRef, () => {
