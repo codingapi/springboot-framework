@@ -57,6 +57,44 @@ public class DemoRepositoryTest {
     }
 
     @Test
+    void pageRequestIsNull() {
+        demoRepository.deleteAll();
+        Demo demo1 = new Demo();
+        demo1.setName("123");
+        demo1 = demoRepository.save(demo1);
+
+        Demo demo2 = new Demo();
+        demoRepository.save(demo2);
+
+        PageRequest request = new PageRequest();
+        request.setCurrent(1);
+        request.setPageSize(10);
+        request.addFilter("name", Relation.IS_NULL);
+
+        Page<Demo> page = demoRepository.pageRequest(request);
+        assertEquals(1, page.getTotalElements());
+    }
+
+    @Test
+    void pageRequestIsNotNull() {
+        demoRepository.deleteAll();
+        Demo demo1 = new Demo();
+        demo1.setName("123");
+        demo1 = demoRepository.save(demo1);
+
+        Demo demo2 = new Demo();
+        demoRepository.save(demo2);
+
+        PageRequest request = new PageRequest();
+        request.setCurrent(1);
+        request.setPageSize(10);
+        request.addFilter("name", Relation.IS_NOT_NULL);
+
+        Page<Demo> page = demoRepository.pageRequest(request);
+        assertEquals(1, page.getTotalElements());
+    }
+
+    @Test
     void pageRequestNotEqual() {
         demoRepository.deleteAll();
         Demo demo1 = new Demo();
@@ -74,6 +112,7 @@ public class DemoRepositoryTest {
 
         Page<Demo> page = demoRepository.pageRequest(request);
         assertEquals(1, page.getTotalElements());
+
     }
 
 
@@ -116,8 +155,28 @@ public class DemoRepositoryTest {
         request.addFilter("id", Relation.IN, 1, 2, 3);
 
         Page<Demo> page = demoRepository.pageRequest(request);
-        log.info("demo:{}", page.getContent());
-//        assertEquals(2, page.getTotalElements());
+        assertEquals(2, page.getTotalElements());
+    }
+
+    @Test
+    void customNotInSearch() {
+        demoRepository.deleteAll();
+        Demo demo1 = new Demo();
+        demo1.setName("123");
+        demoRepository.save(demo1);
+
+        Demo demo2 = new Demo();
+        demo2.setName("456");
+        demoRepository.save(demo2);
+
+        PageRequest request = new PageRequest();
+        request.setCurrent(1);
+        request.setPageSize(10);
+
+        request.addFilter("id", Relation.NOT_IN, 3);
+
+        Page<Demo> page = demoRepository.pageRequest(request);
+        assertEquals(2, page.getTotalElements());
     }
 
 
