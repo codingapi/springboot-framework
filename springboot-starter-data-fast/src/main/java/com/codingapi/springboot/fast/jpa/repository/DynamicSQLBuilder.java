@@ -99,6 +99,14 @@ class DynamicSQLBuilder {
             paramIndex++;
         }
 
+        if (filter.isNull()) {
+            hql.append(filter.getKey()).append(" IS NULL ");
+        }
+
+        if (filter.isNotNull()) {
+            hql.append(filter.getKey()).append(" IS NOT NULL ");
+        }
+
         if (filter.isNotEqual()) {
             hql.append(filter.getKey()).append(" != ?").append(paramIndex);
             params.add(filter.getValue()[0]);
@@ -125,6 +133,13 @@ class DynamicSQLBuilder {
             params.add(Arrays.asList(filter.getValue()));
             paramIndex++;
         }
+
+        if (filter.isNotIn()) {
+            hql.append(filter.getKey()).append(" NOT IN (").append("?").append(paramIndex).append(")");
+            params.add(Arrays.asList(filter.getValue()));
+            paramIndex++;
+        }
+
         if (filter.isGreaterThan()) {
             hql.append(filter.getKey()).append(" > ?").append(paramIndex);
             params.add(filter.getValue()[0]);

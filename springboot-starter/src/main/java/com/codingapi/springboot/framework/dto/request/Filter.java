@@ -48,6 +48,18 @@ public class Filter {
         return relation == Relation.EQUAL;
     }
 
+    public boolean isNull() {
+        return relation == Relation.IS_NULL;
+    }
+
+    public boolean isNotNull() {
+        return relation == Relation.IS_NOT_NULL;
+    }
+
+    public boolean isNotIn() {
+        return relation == Relation.NOT_IN;
+    }
+
     public boolean isNotEqual() {
         return relation == Relation.NOT_EQUAL;
     }
