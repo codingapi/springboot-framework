@@ -1,0 +1,29 @@
+@use "../index" as *;
+
+.flow-panel-nodes {
+  position: absolute;
+  left: 35px;
+  min-width: 180px;
+  margin-top: 10px;
+  background-color: $flow-background-color;
+  box-shadow: 0 0 10px 1px $flow-box-shadow-color;
+  border-radius: 6px;
+  z-index: 101;
+
+  .flow-panel-nodes-title {
+    text-align: center;
+  }
+
+  .flow-panel-nodes-content {
+    margin: 10px;
+
+    .flow-panel-nodes-content-item {
+      cursor: pointer;
+      user-select: none;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+  }
+
+}
+

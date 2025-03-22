@@ -44,7 +44,7 @@ export interface FormItemProps {
     // 表单字段名
     name?: NamePath;
     // 表单字段标签
-    label?: string;
+    label?: React.ReactNode;
     // 帮助提示信息
     help?: string;
     // 表单值
@@ -133,10 +133,31 @@ export interface FormItemProps {
     selectorColumn?: number,
     // Captcha组件切换验证码事件
     onCaptchaChange?: (value: string) => void;
-
-    // 验证规则
-    rules?: any[],
-
+    // Captcha组件刷新验证码事件
+    onCaptchaRefresh?: () => Promise<{
+        // 验证码标志
+        code: string;
+        // 验证码图片地址
+        url: string;
+    } | null>;
+    // 文件上传事件
+    onUploaderUpload?: (filename: string, base64: string) => Promise<{
+        // 文件id
+        id: string,
+        // 文件名
+        name: string
+        // 文件地址
+        url: string;
+    }>
+    // 文件加载事件
+    onUploaderLoad?: (ids: string) => Promise<{
+        // 文件id
+        id: string,
+        // 文件名
+        name: string
+        // 文件地址
+        url: string;
+    }[]>
 
 }
 

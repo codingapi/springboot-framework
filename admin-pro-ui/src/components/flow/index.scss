@@ -1,0 +1,115 @@
+/* 流程的背景色 */
+$flow-background-color: white;
+/* 流程的边框颜色 */
+$flow-box-shadow-color: rgb(228, 224, 219);
+
+/* 抄送节点的颜色 */
+$flow-circulate-color: #61aa1f;
+/* 流程节点的颜色 */
+$flow-node-color: #6855ef;
+/* 结束节点的颜色 */
+$flow-over-color: #ea3f21;
+/* 开始节点的颜色 */
+$flow-start-color: #b1ad30;
+
+/* 流程设计器的样式 */
+.flow-design {
+  border: 1px solid $flow-box-shadow-color;
+  transition: 0.3s;
+  padding: 15px 16px;
+  border-radius: 12px;
+  position: relative;
+
+  .flow-view {
+    width: 100%;
+    height: 85vh;
+  }
+}
+
+
+/* 流程节点的样式 */
+.flow-node {
+  display: flex;
+  align-items: center;
+  max-height: 40px;
+  border-radius: 12px;
+  padding: 10px;
+  position: relative;
+
+  .icon {
+    margin-left: 10px;
+    position: absolute;
+    font-size: 16px;
+    left: 0;
+  }
+
+  .code {
+    margin-left: 20px;
+    font-size: 14px;
+    color: #4a5e63;
+  }
+
+  .title {
+    margin-left: 5px;
+    font-size: 14px;
+    color: black;
+  }
+
+
+  .setting {
+    margin-right: 10px;
+    font-size: 14px;
+    position: absolute;
+    right: 0;
+  }
+
+
+  .state {
+    margin-right: 10px;
+    font-size: 14px;
+    position: absolute;
+    right: 0;
+  }
+}
+
+
+.circulate-node {
+  border: 1px solid $flow-circulate-color;
+  .icon {
+    color: $flow-circulate-color;
+  }
+  .setting {
+    color: $flow-circulate-color;
+  }
+}
+
+
+.node-node {
+  border: 1px solid $flow-node-color;
+  .icon {
+    color: $flow-node-color;
+  }
+  .setting {
+    color: $flow-node-color;
+  }
+}
+
+.over-node {
+  border: 1px solid $flow-over-color;
+  .icon {
+    color: $flow-over-color;
+  }
+  .setting {
+    color: $flow-over-color;
+  }
+}
+
+.start-node {
+  border: 1px solid $flow-start-color;
+  .icon {
+    color: $flow-start-color;
+  }
+  .setting {
+    color: $flow-start-color;
+  }
+}

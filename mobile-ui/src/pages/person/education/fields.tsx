@@ -1,5 +1,6 @@
 import {FormField} from "@/components/form/types";
 import CustomFormEditOption from "@/pages/person/education/custom";
+import OSSUtils from "@/utils/oss";
 
 export const loadFields = async (state: any, setState: (state: any) => void) => {
     return [
@@ -35,6 +36,8 @@ export const loadFields = async (state: any, setState: (state: any) => void) => 
                 label: '头像',
                 placeholder: '请输入头像',
                 help: '上传头像信息',
+                onUploaderLoad:OSSUtils.loadFile,
+                onUploaderUpload:OSSUtils.uploadFile
             },
         },
         {

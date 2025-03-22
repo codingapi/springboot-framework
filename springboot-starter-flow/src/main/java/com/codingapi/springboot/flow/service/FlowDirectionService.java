@@ -55,7 +55,8 @@ public class FlowDirectionService {
      */
     public FlowSourceDirection reloadFlowSourceDirection() {
         if (flowNode.isSign()) {
-            boolean allPass = historyRecords.stream().filter(item -> !item.isTransfer()).allMatch(FlowRecord::isPass);
+            boolean allPass = historyRecords.stream().filter(item -> !item.isTransfer())
+                    .allMatch(item-> item.isPass() || item.getOpinion().isWaiting());
             if (!allPass) {
                 flowSourceDirection = FlowSourceDirection.REJECT;
             }

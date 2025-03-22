@@ -3,6 +3,7 @@ import {FormItemProps} from "@/components/form/types";
 import {Form, Input} from "antd-mobile";
 import {EyeInvisibleOutline, EyeOutline} from "antd-mobile-icons";
 import formFieldInit from "@/components/form/common";
+import "./form.scss";
 
 const FormPassword: React.FC<FormItemProps> = (props) => {
 

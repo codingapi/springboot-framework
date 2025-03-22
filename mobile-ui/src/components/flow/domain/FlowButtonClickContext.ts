@@ -55,6 +55,18 @@ export class FlowButtonClickContext {
     }
 
     /**
+     * 指定人提交流程
+     * @param approvalState 审批状态 同意为true 驳回为false
+     * @param operatorIds 流程操作人员id
+     */
+    handlerSpecifyOperatorSubmit(approvalState:boolean,operatorIds:number[]){
+        this.flowEventContext?.submitFlow(true, (res) => {
+            const flowSubmitResultParser = new FlowSubmitResultParser(res.data);
+            this.flowStateContext.setResult(flowSubmitResultParser.parser());
+        }, operatorIds);
+    }
+
+    /**
      * 触发指定人提交动作
      */
     handlerSpecifySubmit(){
@@ -251,11 +263,11 @@ export class FlowButtonClickContext {
         }
 
         if (button.type === 'SAVE') {
-           this.handlerSave();
+            this.handlerSave();
         }
 
         if (button.type === "START") {
-           this.handlerStart();
+            this.handlerStart();
         }
         if (button.type === 'SPECIFY_SUBMIT') {
             this.handlerSpecifySubmit();
@@ -266,31 +278,31 @@ export class FlowButtonClickContext {
         }
 
         if (button.type === 'REJECT') {
-           this.handlerReject();
+            this.handlerReject();
         }
 
         if (button.type === 'TRY_SUBMIT') {
-           this.handlerTrySubmit();
+            this.handlerTrySubmit();
         }
 
         if (button.type === 'RECALL') {
-           this.handlerRecall();
+            this.handlerRecall();
         }
 
         if (button.type === 'REMOVE') {
-           this.handlerRemove();
+            this.handlerRemove();
         }
 
         if (button.type === 'URGE') {
-          this.handlerUrge()
+            this.handlerUrge()
         }
 
         if (button.type === 'POSTPONED') {
-           this.handlerPostponed();
+            this.handlerPostponed();
         }
 
         if (button.type === 'TRANSFER') {
-           this.handlerTransfer();
+            this.handlerTransfer();
         }
 
         if (button.type === "CUSTOM") {
@@ -298,7 +310,7 @@ export class FlowButtonClickContext {
         }
 
         if (button.type === 'VIEW') {
-           this.handlerView(button.eventKey);
+            this.handlerView(button.eventKey);
         }
     }
 }

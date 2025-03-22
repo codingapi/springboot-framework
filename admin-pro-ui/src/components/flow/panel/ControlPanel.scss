@@ -1,0 +1,35 @@
+@use "../index" as *;
+
+.flow-panel-control {
+  margin-top: 10px;
+  background-color: $flow-background-color;
+  box-shadow: 0 0 10px 1px $flow-box-shadow-color;
+  position: absolute;
+  right: 70px;
+  z-index: 101;
+
+  .flow-panel-control-content{
+    width: 30px;
+    border-radius: 12px;
+    background-color: $flow-background-color;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    position: absolute;
+    left: 10px;
+    padding: 4px 0;
+    box-shadow: 3px 0 2px 1px $flow-box-shadow-color;
+
+    .flow-panel-control-content-item{
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+  }
+}
+
+
+.lf-mini-map {
+  border: none !important;
+  box-shadow: 3px 0 10px 1px $flow-box-shadow-color;
+}

@@ -1,19 +1,18 @@
 import React, {useEffect, useState} from "react";
 import {FormItemProps} from "@/components/form/types";
 import {Form, Input} from "antd-mobile";
-import {captcha} from "@/api/account";
 import formFieldInit from "@/components/form/common";
-
+import "./form.scss";
 
 const FormCaptcha: React.FC<FormItemProps> = (props) => {
     const [captchaImg, setCaptchaImg] = useState<string>('');
     const {formAction,rules} = formFieldInit(props);
 
     const reloadCaptcha = () => {
-        captcha().then((res) => {
-            if (res.success) {
-                setCaptchaImg(res.data.captcha);
-                props.onCaptchaChange && props.onCaptchaChange(res.data.key);
+        props.onCaptchaRefresh && props.onCaptchaRefresh().then((res) => {
+            if(res) {
+                setCaptchaImg(res.url);
+                props.onCaptchaChange && props.onCaptchaChange(res.code);
             }
         });
     }

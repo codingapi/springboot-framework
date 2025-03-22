@@ -127,11 +127,13 @@ public class FlowTest2 {
                 .title("请假流程")
                 .nodes()
                 .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
-                .node("老板审批", "boss", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
+                .node("老板审批", "boss", "default", ApprovalType.SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
+                .node("老板审批", "boss1", "default", ApprovalType.SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
                 .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .relations()
                 .relation("老板审批", "start", "boss")
-                .relation("结束节点", "boss", "over")
+                .relation("老板审批1", "boss", "boss1")
+                .relation("结束节点", "boss1", "over")
                 .build();
 
         flowWorkRepository.save(flowWork);
@@ -151,11 +153,17 @@ public class FlowTest2 {
         String processId = userTodos.get(0).getProcessId();
 
         FlowRecord userTodo = userTodos.get(0);
-        flowService.submitFlow(userTodo.getId(), lorne, leave, Opinion.waiting("自己先提交"));
+        flowService.submitFlow(userTodo.getId(), lorne, leave, Opinion.pass("我提交了"));
 
         // 查看boss的待办
         List<FlowRecord> bossTodos = flowRecordRepository.findTodoByOperatorId(boss.getUserId(), pageRequest).getContent();
-        assertEquals(0, bossTodos.size());
+        assertEquals(1, bossTodos.size());
+
+        FlowRecord bossTodo = bossTodos.get(0);
+        flowService.submitFlow(bossTodo.getId(), boss, leave, Opinion.waiting("我等待提交"));
+
+        userTodos = flowRecordRepository.findTodoByOperatorId(lorne.getUserId(), pageRequest).getContent();
+        assertEquals(0, userTodos.size());
 
         // 通知流程
         flowService.notifyFlow(processId,boss);
@@ -164,14 +172,14 @@ public class FlowTest2 {
         bossTodos = flowRecordRepository.findTodoByOperatorId(boss.getUserId(), pageRequest).getContent();
         assertEquals(1, bossTodos.size());
 
-        FlowRecord bossTodo = bossTodos.get(0);
+        bossTodo = bossTodos.get(0);
         flowService.submitFlow(bossTodo.getId(), boss, leave, Opinion.pass("领导审批通过"));
 
         bossTodos = flowRecordRepository.findTodoByOperatorId(lorne.getUserId(), pageRequest).getContent();
         assertEquals(0, bossTodos.size());
 
         List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
-        assertEquals(2, records.size());
+        assertEquals(3, records.size());
 
         // 查看所有流程是否都已经结束
         assertTrue(records.stream().allMatch(FlowRecord::isFinish));

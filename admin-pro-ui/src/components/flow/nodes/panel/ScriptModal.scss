@@ -1,0 +1,33 @@
+.flow-script-modal {
+  height: 70vh !important;
+  width: 80vw !important;
+
+  .flow-script-content {
+    display: flex;
+    height: 100%;
+
+    .flow-script-help {
+      flex: 1;
+
+      .flow-script-help-markdown {
+        height: 65vh;
+        overflow: auto;
+        *{
+            white-space: pre-wrap;
+        }
+
+        pre{
+          background-color: #1e2022;
+          code{
+            padding: 2px;
+            border-radius: 2px;
+            color: #8df823;
+          }
+        }
+      }
+    }
+    .flow-script-form {
+      flex: 2;
+    }
+  }
+}

@@ -4,11 +4,17 @@ import {FormAction} from "@/components/form";
 // 流程表单验证内容
 export class FormValidateContent {
     readonly value: any;
+    readonly name: NamePath;
     readonly form: FormAction;
 
-    constructor(value: any, form: FormAction) {
+    constructor(value: any,name: NamePath, form: FormAction) {
         this.value = value;
+        this.name = name;
         this.form = form;
+    }
+
+    getFieldProps = () => {
+        return this.form.getFieldProps(this.name);
     }
 }
 
@@ -37,7 +43,7 @@ export class FormValidateContext {
     public validateField =  (name:NamePath,form: FormAction) => {
         return new Promise((resolve,reject)=>{
             const value = form.getFieldValue(name);
-            const content = new FormValidateContent(value, form);
+            const content = new FormValidateContent(value,name,form);
             const validateFunction = this.getValidate(name);
             if(validateFunction) {
                 validateFunction(content)
