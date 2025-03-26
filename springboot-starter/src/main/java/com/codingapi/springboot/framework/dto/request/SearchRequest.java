@@ -11,11 +11,12 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 
 /**
  * HttpServletRequest 请求参数解析成 PageRequest对象
@@ -57,7 +58,21 @@ public class SearchRequest {
         pageRequest.removeFilter(key);
         this.removeKeys.add(key);
     }
-
+    //get requestBody support post request
+    public String getBody() {
+        StringBuilder sb = new StringBuilder();
+        try {
+            InputStream inputStream = request.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return sb.toString();
+    }
     public String getParameter(String key) {
         return request.getParameter(key);
     }
