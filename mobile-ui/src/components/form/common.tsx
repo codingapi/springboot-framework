@@ -4,8 +4,8 @@ import {FormItemProps} from "@/components/form/types";
 
 const formFieldInit = (props: FormItemProps,reloadOption?:()=>void) => {
     const formContext = React.useContext(FormContext) || undefined;
-    const formAction = formContext?.formAction;
-    const validateContext = formContext?.validateContext;
+    const formAction = formContext?.getFormAction();
+    const validateContext = formContext?.getFormValidateContext();
     const [random, setRandom] = React.useState(0);
 
     const rules= props.required?[{required: true}]:[];
@@ -20,14 +20,14 @@ const formFieldInit = (props: FormItemProps,reloadOption?:()=>void) => {
                 }
             }
         }
-        const reloadContext = formContext?.reloadContext;
+        const reloadContext = formContext?.getFormFieldReloadListenerContext();
         if (reloadContext) {
             reloadContext.addListener(props.name, () => {
                 setRandom(Math.random);
             });
         }
 
-        const optionContext = formContext?.optionContext;
+        const optionContext = formContext?.getFormFieldOptionListenerContext();
         if (optionContext) {
             optionContext.addListener(props.name, () => {
                 if(reloadOption){

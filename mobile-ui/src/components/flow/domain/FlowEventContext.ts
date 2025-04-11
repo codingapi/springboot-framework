@@ -7,6 +7,7 @@ import {FlowUser} from "@/components/flow/types";
 import {FlowSubmitResultParser} from "@/components/flow/domain/FlowResultParser";
 import {UserSelectMode} from "@/components/flow/store/FlowSlice";
 import {FlowTriggerContext} from "@/components/flow/domain/FlowTriggerContext";
+import FormInstance from "@/components/form/domain/FormInstance";
 
 /**
  * 流程的事件控制上下文对象
@@ -15,28 +16,28 @@ export class FlowEventContext {
 
     private readonly flowRecordContext: FlowRecordContext;
     private readonly flowTriggerContext: FlowTriggerContext;
-    private readonly flowAction: React.RefObject<FormAction>;
-    private readonly opinionAction: React.RefObject<FormAction>;
+    private readonly flowInstance: FormInstance;
+    private readonly opinionInstance: FormInstance;
     private readonly flowStateContext: FlowStateContext;
 
     constructor(flowViewContext: FlowRecordContext,
                 flowTriggerContext:FlowTriggerContext,
-                flowAction: React.RefObject<FormAction>,
-                opinionAction: React.RefObject<FormAction>,
+                flowInstance: FormInstance,
+                opinionInstance: FormInstance,
                 flowStateContext: FlowStateContext) {
         this.flowRecordContext = flowViewContext;
         this.flowTriggerContext = flowTriggerContext;
-        this.flowAction = flowAction;
-        this.opinionAction = opinionAction;
+        this.flowInstance = flowInstance;
+        this.opinionInstance = opinionInstance;
         this.flowStateContext = flowStateContext;
     }
 
     private getRequestBody = () => {
-        const formData = this.flowAction.current?.getFieldsValue();
+        const formData = this.opinionInstance.getFieldsValue();
         const flowData = this.flowRecordContext.getFlowFormParams();
         const workCode = this.flowRecordContext.getWorkCode();
         const recordId = this.flowStateContext.getRecordId();
-        const advice = this.opinionAction.current?.getFieldsValue();
+        const advice = this.opinionInstance.getFieldsValue();
 
         return {
             recordId,
@@ -51,8 +52,8 @@ export class FlowEventContext {
 
 
     private validateForm = async () => {
-        const formState = await this.flowAction.current?.validate();
-        const opinionState = await this.opinionAction.current?.validate();
+        const formState = await this.flowInstance.validate();
+        const opinionState = await this.opinionInstance.validate();
         return formState && opinionState;
     }
 

@@ -10,7 +10,7 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import {FlowReduxState, updateState} from "@/components/flow/store/FlowSlice";
 import {FlowRecordContext} from "@/components/flow/domain/FlowRecordContext";
-import {FormAction} from "@/components/form";
+import Form from "@/components/form";
 import {FlowStateContext} from "@/components/flow/domain/FlowStateContext";
 import {FlowEventContext} from "@/components/flow/domain/FlowEventContext";
 import FlowResult from "@/components/flow/components/FlowResult";
@@ -34,8 +34,8 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
 
     const currentState = useSelector((state: FlowReduxState) => state.flow);
     const flowRecordContext = new FlowRecordContext(props, props.flowData);
-    const formAction = React.useRef<FormAction>(null);
-    const opinionAction = React.useRef<FormAction>(null);
+    const formInstance = Form.useForm();
+    const opinionInstance = Form.useForm();
 
     const flowStateContext = new FlowStateContext(currentState, (state: any) => {
         dispatch(updateState({
@@ -43,7 +43,7 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
         }));
     });
     const flowTriggerContext = new FlowTriggerContext();
-    const flowEvenContext = new FlowEventContext(flowRecordContext, flowTriggerContext, formAction, opinionAction, flowStateContext);
+    const flowEvenContext = new FlowEventContext(flowRecordContext, flowTriggerContext, formInstance, opinionInstance, flowStateContext);
     const flowButtonClickContext = new FlowButtonClickContext(flowEvenContext, flowStateContext);
     const FlowFormView = flowRecordContext.getFlowFormView() as React.ComponentType<FlowFormViewProps>;
 
@@ -70,8 +70,8 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
                 flowTriggerContext: flowTriggerContext,
                 flowButtonClickContext: flowButtonClickContext,
 
-                formAction: formAction,
-                opinionAction: opinionAction
+                formInstance: formInstance,
+                opinionInstance: opinionInstance
             }}>
                 <div className={"flow-view"}>
                     {currentState.result && (

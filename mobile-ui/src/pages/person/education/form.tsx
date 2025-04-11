@@ -5,7 +5,7 @@ import BasicInfo from "@/components/info/BasicInfo";
 import FormInfo from "@/components/info/FormInfo";
 import {Button, Toast} from "antd-mobile";
 import {loadFields} from "@/pages/person/education/fields";
-import {FormAction} from "@/components/form";
+import Form from "@/components/form";
 import {Grid} from "antd-mobile/es/components/grid/grid";
 
 const EducationForm = () => {
@@ -13,7 +13,7 @@ const EducationForm = () => {
     const item = location.state;
     // console.log('items:', item);
 
-    const formAction = React.useRef<FormAction>(null);
+    const formInstance = Form.useForm();
 
     const [state,setState] = React.useState({
         name:"",
@@ -22,12 +22,11 @@ const EducationForm = () => {
 
     return (
         <>
-
             <Header>教育信息维护 {state.name} | {state.age}</Header>
             <BasicInfo/>
             <FormInfo
                 layout={"vertical"}
-                actionRef={formAction}
+                form={formInstance}
                 title={"教育信息"}
                 loadFields={async ()=>{
                     return loadFields(state,setState);
@@ -40,89 +39,89 @@ const EducationForm = () => {
 
             <Grid columns={2} gap={[8, 8]}>
                 <Button
-                    onClick={() => {
-                        formAction.current?.submit();
+                    onClick={async () => {
+                        await formInstance.submit();
                     }}
                 >提交</Button>
 
                 <Button
                     onClick={() => {
-                        formAction.current?.reset();
+                        formInstance.reset();
                     }}
                 >重置</Button>
 
                 <Button
                     onClick={() => {
-                        const values = formAction.current?.getFieldsValue();
+                        const values = formInstance.getFieldsValue();
                         console.log(values);
                     }}
                 >获取所有值</Button>
 
                 <Button
                     onClick={() => {
-                        formAction.current?.validate();
+                        formInstance.validate();
                     }}
                 >校验字段</Button>
 
                 <Button
                     onClick={() => {
-                        formAction.current?.required("type",true);
+                        formInstance.required("type",true);
                     }}
                 >学科类别必填</Button>
 
                 <Button
                     onClick={() => {
-                        formAction.current?.required("type",false);
+                        formInstance.required("type",false);
                     }}
                 >学科类别非必填</Button>
 
                 <Button
                     onClick={() => {
-                        formAction.current?.hidden("name");
+                        formInstance.hidden("name");
                     }}
                 >隐藏姓名</Button>
 
 
                 <Button
                     onClick={() => {
-                        formAction.current?.show("name");
+                        formInstance.show("name");
                     }}
                 >展示姓名</Button>
 
                 <Button
                     onClick={() => {
-                        formAction.current?.disable("name");
+                        formInstance.disable("name");
                     }}
                 >禁用姓名</Button>
 
                 <Button
                     onClick={() => {
-                        formAction.current?.enable("name");
+                        formInstance.enable("name");
                     }}
                 >启用姓名</Button>
 
                 <Button
                     onClick={() => {
-                        const name = formAction.current?.getFieldValue('name');
+                        const name = formInstance.getFieldValue('name');
                         Toast.show(name);
                     }}
                 >获取姓名</Button>
 
                 <Button
                     onClick={() => {
-                        formAction.current?.setFieldValue('name', '123123');
+                        formInstance.setFieldValue('name', '123123');
                     }}
                 >设置姓名</Button>
 
                 <Button
                     onClick={() => {
-                        formAction.current?.remove("name");
+                        formInstance.remove("name");
                     }}
                 >删除姓名</Button>
 
                 <Button
                     onClick={() => {
-                        formAction.current?.create({
+                        formInstance.create({
                             type: 'input',
                             props: {
                                 name: 'name',
@@ -144,7 +143,7 @@ const EducationForm = () => {
 
                 <Button
                     onClick={() => {
-                        formAction.current?.reset({
+                        formInstance.reset({
                             name: '张三',
                             avatar: 'c84fb304c180f61bb7db40efef7f85b7,c84fb304c180f61bb7db40efef7f85b7',
                             type: 'Zhexue',
@@ -166,7 +165,7 @@ const EducationForm = () => {
 
                 <Button
                     onClick={() => {
-                        formAction.current?.validate().then(flag => {
+                        formInstance.validate().then(flag => {
                             Toast.show(flag ? "校验成功" : "校验失败");
                         });
                     }}

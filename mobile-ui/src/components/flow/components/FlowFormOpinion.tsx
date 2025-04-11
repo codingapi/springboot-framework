@@ -6,17 +6,17 @@ import {FlowViewReactContext} from "@/components/flow/view";
 const FlowFormOpinion = ()=>{
 
     const flowViewReactContext = useContext(FlowViewReactContext);
-    const opinionAction = flowViewReactContext?.opinionAction;
+    const opinionInstance = flowViewReactContext?.opinionInstance;
     const flowRecordContext = flowViewReactContext?.flowRecordContext;
 
     useEffect(() => {
-        opinionAction?.current?.setFieldValue("advice", flowRecordContext?.getOpinionAdvice());
+        opinionInstance?.setFieldValue("advice", flowRecordContext?.getOpinionAdvice());
     }, []);
 
     return (
         <>
             <Form
-                actionRef={opinionAction}
+                form={opinionInstance}
                 loadFields={async ()=>{
                     return [
                         {
