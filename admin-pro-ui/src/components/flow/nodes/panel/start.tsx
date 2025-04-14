@@ -2,13 +2,13 @@ import React from "react";
 import {Button, Drawer, Space, Tabs} from "antd";
 import EdgePanel from "@/components/flow/nodes/panel/EdgePanel";
 import NodePanel from "@/components/flow/nodes/panel/NodePanel";
-import {ProForm} from "@ant-design/pro-components";
 import ButtonPanel from "@/components/flow/nodes/panel/ButtonPanel";
 import {SettingPanelProps} from "@/components/flow/types";
+import Form from "@/components/form";
 
 const StartSettingPanel: React.FC<SettingPanelProps> = (props) => {
 
-    const [form] = ProForm.useForm();
+    const form = Form.useForm();
 
     return (
         <Drawer
@@ -23,8 +23,8 @@ const StartSettingPanel: React.FC<SettingPanelProps> = (props) => {
                 <Space>
                     <Button
                         type={"primary"}
-                        onClick={() => {
-                            form.submit();
+                        onClick={async () => {
+                            await form.submit();
                             props.setVisible(false);
                         }}
                     >确认</Button>

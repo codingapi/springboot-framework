@@ -4,6 +4,7 @@ import {Input, InputNumber, Popconfirm, Space} from "antd";
 import {CheckOutlined, EditOutlined, SettingOutlined} from "@ant-design/icons";
 import ScriptModal from "@/components/flow/nodes/panel/ScriptModal";
 import FlowContext from "@/components/flow/domain/FlowContext";
+import Form from "@/components/form";
 
 interface EdgePanelProps {
     id?: string;
@@ -17,7 +18,7 @@ const EdgePanel: React.FC<EdgePanelProps> = (props) => {
     const [name, setName] = React.useState("");
     const [order, setOrder] = React.useState(0);
 
-    const [groovyForm] = ProForm.useForm();
+    const groovyForm = Form.useForm();
     const actionRef = React.useRef<ActionType>();
 
     const flowContext = FlowContext.getInstance();

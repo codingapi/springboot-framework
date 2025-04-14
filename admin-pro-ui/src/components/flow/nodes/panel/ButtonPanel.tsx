@@ -1,6 +1,6 @@
 import React from "react";
-import {ActionType, ModalForm, ProColumns, ProForm, ProFormText, ProTable} from "@ant-design/pro-components";
-import {Button, ColorPicker, Popconfirm, Space} from "antd";
+import {ActionType, ProColumns, ProTable} from "@ant-design/pro-components";
+import {Button, ColorPicker, Modal, Popconfirm, Space} from "antd";
 import ScriptModal from "@/components/flow/nodes/panel/ScriptModal";
 import {EyeOutlined} from "@ant-design/icons";
 import FlowContext from "@/components/flow/domain/FlowContext";
@@ -8,6 +8,7 @@ import FormInput from "@/components/form/input";
 import ValidateUtils from "@/components/form/utils";
 import FormSelect from "@/components/form/select";
 import FormColor from "@/components/form/color";
+import Form from "@/components/form";
 
 interface ButtonPanelProps {
     id: string;
@@ -17,9 +18,8 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
 
     const actionRef = React.useRef<ActionType>();
 
-    const [form] = ProForm.useForm();
-    const [groovyForm] = ProForm.useForm();
-
+    const form = Form.useForm();
+    const groovyForm = Form.useForm();
 
     const [visible, setVisible] = React.useState(false);
 
@@ -70,7 +70,7 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
                     <a
                         key={"edit"}
                         onClick={() => {
-                            groovyForm.resetFields();
+                            groovyForm.reset();
                             form.setFieldsValue(record);
                             setType(record.type);
                             setVisible(true);
@@ -113,7 +113,7 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
                         <Button
                             type={"primary"}
                             onClick={() => {
-                                groovyForm.resetFields();
+                                groovyForm.reset();
                                 setVisible(true);
                             }}
                         >添加按钮</Button>
@@ -121,111 +121,111 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (props) => {
                 }}
             />
 
-            <ModalForm
+            <Modal
                 title={"添加节点按钮"}
                 open={visible}
-                form={form}
-                onFinish={async (values) => {
-                    flowContext.getFlowPanelContext()?.updateButton(props.id, values as any);
+                onCancel={()=>{
                     setVisible(false);
-                    actionRef.current?.reload();
                 }}
-                modalProps={{
-                    onCancel: () => {
-                        setVisible(false);
-                    },
-                    onClose:()=>{
-                        setVisible(false);
-                    },
-                    destroyOnClose:true
+                onClose={()=>{
+                    setVisible(false);
                 }}
+                onOk={async ()=>{
+                    await form.submit();
+                }}
+                destroyOnClose={true}
             >
-                <FormInput
-                    name={"id"}
-                    hidden={true}
-                />
 
-                <ProFormText
-                    name={"name"}
-                    label={"按钮名称"}
-                    placeholder={"请输入按钮名称"}
-                    required={true}
-                    rules={[
-                        {
-                            required: true,
-                            message: '请输入按钮名称',
-                        },
-                    ]}
-                />
-
-                <FormColor
-                    name={["style","background"]}
-                    label={"按钮颜色"}
-                    placeholder={"请输入按钮颜色"}
-                    required={true}
-                    validateFunction={ValidateUtils.validateNotEmpty}
-                />
-
-                <FormSelect
-                    name={"type"}
-                    label={(
-                        <Space>
-                            按钮类型
-
-                            {type === 'CUSTOM' && (
-                                <EyeOutlined
-                                    onClick={() => {
-                                        groovyForm.resetFields();
-                                        const script = form.getFieldValue('groovy') || 'def run(content){\n  //你的代码 \n  return content.createMessageResult(\'我是自定义标题\');\n}';
-                                        groovyForm.setFieldsValue({
-                                            'script': script
-                                        });
-                                        setScriptVisible(!scriptVisible);
-                                    }}/>
-                            )}
-
-                        </Space>
-                    )}
-                    placeholder={"请输入按钮类型"}
-                    required={true}
-                    options={flowContext.getFlowPanelContext()?.getButtonEventOptions()}
-                    onChange={(value: string) => {
-                        setType(value);
+                <Form
+                    layout={"vertical"}
+                    form={form}
+                    onFinish={async (values) => {
+                        flowContext.getFlowPanelContext()?.updateButton(props.id, values as any);
+                        setVisible(false);
+                        actionRef.current?.reload();
                     }}
-                />
+                >
 
-                {type === 'VIEW' && (
                     <FormInput
-                        name={"eventKey"}
-                        label={"事件Key"}
-                        help={"事件Key用于流程Form的事件触发"}
-                        required={true}
+                        name={"id"}
+                        hidden={true}
                     />
-                )}
 
-                <FormInput
-                    name={"groovy"}
-                    hidden={true}
-                />
+                    <FormInput
+                        name={"name"}
+                        label={"按钮名称"}
+                        placeholder={"请输入按钮名称"}
+                        required={true}
+                        validateFunction={ValidateUtils.validateNotEmpty}
+                    />
 
-                <FormInput
-                    name={"order"}
-                    label={"排序"}
-                    inputType={"number"}
-                    placeholder={"请输入排序"}
-                />
+                    <FormColor
+                        name={["style","background"]}
+                        label={"按钮颜色"}
+                        placeholder={"请输入按钮颜色"}
+                    />
 
-                <ScriptModal
-                    onFinish={(values) => {
-                        form.setFieldsValue({
-                            'groovy': values.script
-                        });
-                    }}
-                    form={groovyForm}
-                    setVisible={setScriptVisible}
-                    visible={scriptVisible}/>
+                    <FormSelect
+                        name={"type"}
+                        label={(
+                            <Space>
+                                按钮类型
 
-            </ModalForm>
+                                {type === 'CUSTOM' && (
+                                    <EyeOutlined
+                                        onClick={() => {
+                                            groovyForm.reset();
+                                            const script = form.getFieldValue('groovy') || 'def run(content){\n  //你的代码 \n  return content.createMessageResult(\'我是自定义标题\');\n}';
+                                            groovyForm.setFieldsValue({
+                                                'script': script
+                                            });
+                                            setScriptVisible(!scriptVisible);
+                                        }}/>
+                                )}
+
+                            </Space>
+                        )}
+                        placeholder={"请输入按钮类型"}
+                        required={true}
+                        options={flowContext.getFlowPanelContext()?.getButtonEventOptions()}
+                        onChange={(value: string) => {
+                            setType(value);
+                        }}
+                    />
+
+                    {type === 'VIEW' && (
+                        <FormInput
+                            name={"eventKey"}
+                            label={"事件Key"}
+                            help={"事件Key用于流程Form的事件触发"}
+                            required={true}
+                        />
+                    )}
+
+                    <FormInput
+                        name={"groovy"}
+                        hidden={true}
+                    />
+
+                    <FormInput
+                        name={"order"}
+                        label={"排序"}
+                        inputType={"number"}
+                        placeholder={"请输入排序"}
+                    />
+
+                    <ScriptModal
+                        onFinish={(values) => {
+                            form.setFieldsValue({
+                                'groovy': values.script
+                            });
+                        }}
+                        form={groovyForm}
+                        setVisible={setScriptVisible}
+                        visible={scriptVisible}/>
+
+                </Form>
+            </Modal>
         </>
     )
 }

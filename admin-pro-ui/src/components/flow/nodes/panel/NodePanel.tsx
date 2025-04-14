@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Divider, Form, Space} from "antd";
+import {Button, Divider, Space} from "antd";
 import {EyeOutlined, SettingOutlined} from "@ant-design/icons";
 import GroovyScript from "@/components/flow/utils/script";
 import ScriptModal from "@/components/flow/nodes/panel/ScriptModal";
@@ -7,10 +7,10 @@ import {getComponent} from "@/framework/ComponentBus";
 import ValidateUtils from "@/components/form/utils";
 import FormSelect from "@/components/form/select";
 import FormSwitch from "@/components/form/switch";
-import {ProForm} from "@ant-design/pro-components";
 import FormInput from "@/components/form/input";
-import {FormInstance} from "antd/es/form/hooks/useForm";
 import {UserSelectFormProps, UserSelectFormViewKey} from "@/components/flow/types";
+import FormInstance from "@/components/form/domain/FormInstance";
+import Form from "@/components/form";
 
 interface NodePanelProps {
     id?: string,
@@ -22,7 +22,7 @@ interface NodePanelProps {
 
 const NodePanel: React.FC<NodePanelProps> = (props) => {
 
-    const [groovyForm] = ProForm.useForm();
+    const groovyForm = Form.useForm();
 
     const [visible, setVisible] = React.useState(false);
 
@@ -32,7 +32,6 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
 
     // 用户选人视图
     const UserSelectView = getComponent(UserSelectFormViewKey) as React.ComponentType<UserSelectFormProps>;
-
 
     return (
         <>

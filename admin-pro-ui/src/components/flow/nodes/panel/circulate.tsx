@@ -3,11 +3,11 @@ import {Button, Drawer, Space, Tabs} from "antd";
 import NodePanel from "@/components/flow/nodes/panel/NodePanel";
 import EdgePanel from "@/components/flow/nodes/panel/EdgePanel";
 import {SettingPanelProps} from "@/components/flow/types";
-import {ProForm} from "@ant-design/pro-components";
+import Form from "@/components/form";
 
 const CirculateSettingPanel: React.FC<SettingPanelProps> = (props) => {
 
-    const [form] = ProForm.useForm();
+    const form = Form.useForm();
 
     return (
         <Drawer
@@ -22,8 +22,8 @@ const CirculateSettingPanel: React.FC<SettingPanelProps> = (props) => {
                 <Space>
                     <Button
                         type={"primary"}
-                        onClick={() => {
-                            form.submit();
+                        onClick={async () => {
+                            await form.submit();
                             props.setVisible(false);
                         }}
                     >确认</Button>

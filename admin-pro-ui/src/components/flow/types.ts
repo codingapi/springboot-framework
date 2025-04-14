@@ -1,5 +1,5 @@
 // 节点状态
-import {FormAction} from "@/components/form";
+import FormInstance from "@/components/form/domain/FormInstance";
 
 export type NodeState = "done" | "wait" | "undone" | "current";
 
@@ -122,7 +122,7 @@ export interface FlowFormViewProps {
     // 表单数据
     data: FlowFormParams;
     // 表单控制对象
-    formAction: React.RefObject<FormAction>;
+    formInstance: FormInstance;
     // 数据版本
     dataVersion?: number;
 }
