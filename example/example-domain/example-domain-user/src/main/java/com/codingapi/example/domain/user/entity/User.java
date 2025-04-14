@@ -10,32 +10,46 @@ import lombok.Setter;
 @NoArgsConstructor
 public class User {
 
+    public final static String USER_ADMIN_USERNAME = "admin";
+    public final static String USER_ADMIN_PASSWORD = "admin";
+    public final static String USER_ADMIN_NAME = "admin";
+
     private long id;
-    private String name;
-    private String username;
-    private String password;
+    private UserMetric userMetric;
     private boolean isFlowManager;
     private User entrustOperator;
     private long createTime;
 
-    public User(String name, PasswordEncoder passwordEncoder) {
-        this.name = name;
-        this.username = name;
-        this.password = passwordEncoder.encode(name);
-    }
-
-
     public static User admin(PasswordEncoder passwordEncoder) {
+        UserMetric metric = UserMetric.createAdmin();
+
         User user = new User();
-        user.setName("admin");
-        user.setUsername("admin");
-        user.setPassword("admin");
+        user.setUserMetric(metric);
         user.encodePassword(passwordEncoder);
         return user;
     }
 
+    public String getName(){
+        return userMetric.getName();
+    }
+
+    public String getUsername(){
+        return userMetric.getUsername();
+    }
+
+    public String getPassword(){
+        return userMetric.getPassword();
+    }
+
+    public void removeEntrust() {
+        this.entrustOperator = null;
+    }
+
+    public void changeManager() {
+        this.isFlowManager = !this.isFlowManager;
+    }
 
     public void encodePassword(PasswordEncoder passwordEncoder) {
-        this.password = passwordEncoder.encode(this.password);
+        this.userMetric.encodePassword(passwordEncoder);
     }
 }

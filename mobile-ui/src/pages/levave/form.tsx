@@ -6,7 +6,7 @@ import {FlowViewReactContext} from "@/components/flow/view";
 import {fields} from "@/pages/levave/fields";
 
 const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
-    const formAction = props.formAction;
+    const formInstance = props.form;
     const flowViewReactContext = useContext(FlowViewReactContext);
 
     console.log('LeaveForm init:', props);
@@ -22,7 +22,7 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
     useEffect(() => {
         // 设置表单数据
         if (props.dataVersion && props.data) {
-            formAction.current?.setFieldsValue({
+            formInstance?.setFieldsValue({
                 ...props.data
             });
         }
@@ -32,7 +32,7 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
 
     return (
         <Form
-            actionRef={formAction}
+            form={formInstance}
             loadFields={async () => {
                 return fields;
             }}
@@ -51,7 +51,7 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
                             margin: 5
                         }}
                         onClick={async () => {
-                            formAction.current && await formAction.current.validate();
+                            formInstance?.validate();
                         }}
                     >校验表单</Button>
 

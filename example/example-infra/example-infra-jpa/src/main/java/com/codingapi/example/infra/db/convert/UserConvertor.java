@@ -12,9 +12,7 @@ public class UserConvertor {
         }
         User user = new User();
         user.setId(entity.getId());
-        user.setName(entity.getName());
-        user.setUsername(entity.getUsername());
-        user.setPassword(entity.getPassword());
+        user.setUserMetric(entity.getUserMetric());
         user.setFlowManager(entity.isFlowManager());
         user.setCreateTime(entity.getCreateTime());
         if (entity.getEntrustOperatorId() != 0) {

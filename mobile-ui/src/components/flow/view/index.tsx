@@ -6,12 +6,12 @@ import {Skeleton} from "antd-mobile";
 import {FlowRecordContext} from "@/components/flow/domain/FlowRecordContext";
 import {FlowEventContext} from "@/components/flow/domain/FlowEventContext";
 import {detail} from "@/api/flow";
-import {FormAction} from "@/components/form";
 import {FlowStateContext} from "@/components/flow/domain/FlowStateContext";
 import FlowPage from "@/components/flow/components/FlowPage";
 import {FlowTriggerContext} from "@/components/flow/domain/FlowTriggerContext";
 import {FlowButtonClickContext} from "@/components/flow/domain/FlowButtonClickContext";
 import "./index.scss";
+import FormInstance from "@/components/form/domain/FormInstance";
 
 // 流程视图上下文属性
 interface FlowViewReactContextProps {
@@ -26,9 +26,9 @@ interface FlowViewReactContextProps {
     // 流程按钮点击触发控制器上下文对象
     flowButtonClickContext: FlowButtonClickContext;
     // 表单操作对象
-    formAction: React.RefObject<FormAction>;
+    formInstance: FormInstance;
     // 审批意见操作对象
-    opinionAction: React.RefObject<FormAction>;
+    opinionInstance: FormInstance;
 }
 
 export const FlowViewReactContext = createContext<FlowViewReactContextProps | null>(null);

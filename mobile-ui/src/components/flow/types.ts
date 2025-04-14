@@ -1,5 +1,5 @@
 import React from "react";
-import {FormAction} from "@/components/form";
+import FormInstance from "@/components/form/domain/FormInstance";
 
 
 // 流程图中线的类型
@@ -106,7 +106,7 @@ export interface FlowFormViewProps {
     // 表单数据
     data: FlowFormParams;
     // 表单控制对象
-    formAction: React.RefObject<FormAction>;
+    form: FormInstance;
     // 数据版本
     dataVersion?: number;
 }

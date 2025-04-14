@@ -1,75 +1,78 @@
-import React, {useImperativeHandle} from "react";
-import {Button} from "antd-mobile";
-
-export const MyContext = React.createContext<string|null>(null);
-
-interface ChildAction{
-    getValue:()=>string;
-}
-
-interface ChildProps {
-    title: string;
-    onFinish?:(values:string)=>void;
-    childAction?:React.Ref<ChildAction>;
-}
-
-const Child: React.FC<ChildProps> = (props) => {
-
-    const myContext = React.useContext(MyContext);
-
-    const [value,setValue] = React.useState('');
-
-    useImperativeHandle(props.childAction,()=> {
-        return {
-            getValue:()=>{
-                return value;
-            }
-        }
-    },[value]);
-
-    return (
-        <>
-            <div>{props.title}</div>
-            <div>{myContext}</div>
-            <input value={value} onChange={(e)=>{
-                setValue(e.target.value);
-            }}/>
-            <Button
-                onClick={()=>{
-                    props.onFinish && props.onFinish(value);
-                }}
-            >ok</Button>
-        </>
-
-    )
-}
+import React from "react";
+import Form from "@/components/form";
+import {Button, Modal} from "antd-mobile";
+import {FormField} from "@/components/form/types";
 
 const Test = () => {
-    const value = 'Hello, Context!';
 
-    const childAction = React.useRef<ChildAction>(null);
+    const [visible, setVisible] = React.useState(false);
+    const fields = [
+        {
+            type: "input",
+            props: {
+                label: "请假天数",
+                name: "days",
+                required: true,
+                validateFunction: async (content) => {
+                    if (content.value <= 0) {
+                        return ["请假天数不能小于0"];
+                    }
+                    return []
+                }
+            }
+        },
+        {
+            type: "textarea",
+            props: {
+                label: "请假理由",
+                name: "desc",
+                required: true,
+                validateFunction: async (content) => {
+                    if (content.value && content.value.length > 0) {
+                        return []
+                    }
+                    return ["请假理由不能为空"];
+                }
+            }
+        }
+    ] as FormField[];
+
+    const formInstance = Form.useForm();
+
 
     return (
-        <MyContext.Provider value={value}>
+        <div>
+            <div style={{
+                display:'flex',
+                justifyItems:'center',
+                justifyContent:'center',
+            }}>
+                <Button
+                    onClick={()=>{
+                        formInstance.setFieldValue('desc','123');
+                        setVisible(true);
+                    }}
+                >show form</Button>
+            </div>
 
-           <div>
-               <Child
-                   childAction={childAction}
-                   title={"title"}
-                   onFinish={(values)=>{
-                       console.log(values);
-                   }}
-               />
-           </div>
-
-            <Button
-                onClick={()=>{
-                    const value = childAction.current?.getValue();
-                    console.log(value);
+            <Modal
+                visible={visible}
+                closeOnMaskClick={true}
+                title={"Form表单测试"}
+                onClose={() => {
+                    setVisible(false)
                 }}
-            >test</Button>
-        </MyContext.Provider>
-
+                closeOnAction={true}
+                content={(
+                    <Form
+                        form={formInstance}
+                        loadFields={async ()=>{
+                            return fields
+                        }}
+                    />
+                )}
+            />
+        </div>
     )
 }
 

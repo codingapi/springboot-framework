@@ -28,6 +28,10 @@ public class FlowUser implements IFlowOperator {
 
     @Override
     public IFlowOperator entrustOperator() {
-        return new FlowUser(user.getEntrustOperator());
+        if(user.getEntrustOperator()!=null) {
+            return new FlowUser(user.getEntrustOperator());
+        }else {
+            return null;
+        }
     }
 }

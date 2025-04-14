@@ -14,7 +14,7 @@ const FlowContent= () => {
     const flowViewReactContext = useContext(FlowViewReactContext);
 
     const flowRecordContext = flowViewReactContext?.flowRecordContext;
-    const formAction = flowViewReactContext?.formAction;
+    const formInstance = flowViewReactContext?.formInstance;
 
     const FlowFormView = flowRecordContext?.getFlowFormView() as React.ComponentType<FlowFormViewProps>;
 
@@ -27,7 +27,7 @@ const FlowContent= () => {
     useEffect(() => {
         if(!flowRecordContext?.isEditable()){
             setTimeout(()=>{
-                formAction?.current?.disableAll();
+                formInstance?.disableAll();
             },100);
         }
     }, []);
@@ -37,10 +37,10 @@ const FlowContent= () => {
         <div className={"flow-view-content"} style={style}>
             <Tabs>
                 <Tabs.Tab title='流程详情' key='detail'>
-                    {formAction && (
+                    {formInstance && (
                         <FlowFormView
                             data={formParams}
-                            formAction={formAction}
+                            form={formInstance}
                             dataVersion={dataVersion}
                         />
                     )}
