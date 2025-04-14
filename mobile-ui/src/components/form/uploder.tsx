@@ -2,9 +2,9 @@ import React, {useEffect} from "react";
 import {FormItemProps} from "@/components/form/types";
 import {Form, Image, ImageUploader, ImageUploadItem as AntImageUploadItem, ImageViewer} from "antd-mobile";
 import formFieldInit from "@/components/form/common";
-import {FormAction} from "@/components/form";
 import {CloseCircleFill} from "antd-mobile-icons";
 import "./form.scss";
+import FormInstance from "@/components/form/domain/FormInstance";
 
 const fileToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -17,11 +17,11 @@ const fileToBase64 = (file: File): Promise<string> => {
 
 interface UploaderProps {
     name: string;
-    formAction?: FormAction;
+    formInstance?: FormInstance;
     uploaderAccept?: string;
     uploaderMaxCount?: number;
     value?: any;
-    onChange?: (value: any, form?: FormAction) => void;
+    onChange?: (value: any, form?: FormInstance) => void;
     // 文件上传事件
     onUploaderUpload?: (filename: string, base64: string) => Promise<{
         // 文件id
@@ -51,7 +51,7 @@ const Uploader: React.FC<UploaderProps> = (props) => {
     const accept = props.uploaderAccept || "image/*";
 
     const [visible, setVisible] = React.useState(false);
-    const formAction = props.formAction;
+    const formInstance = props.formInstance;
 
     const [fileList, setFileList] = React.useState<ImageUploadItem[]>([]);
 
@@ -74,13 +74,15 @@ const Uploader: React.FC<UploaderProps> = (props) => {
         if (props.value) {
             if(props.onUploaderLoad ){
                 props.onUploaderLoad(props.value).then(res => {
-                    setFileList(res.map((item: any) => {
-                        return {
-                            url: item.url,
-                            id: item.id,
-                            name: item.name
-                        }
-                    }))
+                    if(res) {
+                        setFileList(res.map((item: any) => {
+                            return {
+                                url: item.url,
+                                id: item.id,
+                                name: item.name
+                            }
+                        }))
+                    }
                 });
             }
         }
@@ -97,8 +99,8 @@ const Uploader: React.FC<UploaderProps> = (props) => {
 
         // 更新表单字段
         const currentValue = updatedFileList?.map((item: any) => item.id).join(",");
-        formAction?.setFieldValue(props.name, currentValue);
-        props.onChange && props.onChange(currentValue, formAction);
+        formInstance?.setFieldValue(props.name, currentValue);
+        props.onChange && props.onChange(currentValue, formInstance);
     };
 
     return (
@@ -116,8 +118,8 @@ const Uploader: React.FC<UploaderProps> = (props) => {
                 value={fileList}
                 onChange={(fileList) => {
                     const currentValue = fileList?.map((item: any) => item.id).join(",");
-                    formAction && formAction?.setFieldValue(props.name, currentValue);
-                    props.onChange && props.onChange(currentValue, formAction);
+                    formInstance && formInstance?.setFieldValue(props.name, currentValue);
+                    props.onChange && props.onChange(currentValue, formInstance);
                     setFileList(fileList);
                 }}
                 upload={handlerUploader as any}
@@ -156,7 +158,7 @@ const Uploader: React.FC<UploaderProps> = (props) => {
 }
 
 const FormUploader: React.FC<FormItemProps> = (props) => {
-    const {formAction, rules} = formFieldInit(props);
+    const {formContext, rules} = formFieldInit(props);
 
     return (
         <Form.Item
@@ -170,7 +172,7 @@ const FormUploader: React.FC<FormItemProps> = (props) => {
             <Uploader
                 name={props.name}
                 value={props.value}
-                formAction={formAction}
+                formInstance={formContext}
                 {...props}
             />
         </Form.Item>

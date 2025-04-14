@@ -5,7 +5,7 @@ import formFieldInit from "@/components/form/common";
 import "./form.scss";
 
 const FormRate: React.FC<FormItemProps> = (props) => {
-    const {formAction, rules} = formFieldInit(props);
+    const {formContext, rules} = formFieldInit(props);
 
     return (
         <Form.Item
@@ -21,8 +21,8 @@ const FormRate: React.FC<FormItemProps> = (props) => {
                 allowHalf={props.rateAllowHalf}
                 value={props.value}
                 onChange={(value) => {
-                    formAction?.setFieldValue(props.name, value);
-                    props.onChange && props.onChange(value, formAction);
+                    formContext?.setFieldValue(props.name, value);
+                    props.onChange && props.onChange(value, formContext);
                 }}
             />
         </Form.Item>

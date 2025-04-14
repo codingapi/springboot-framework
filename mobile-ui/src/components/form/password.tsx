@@ -9,7 +9,7 @@ const FormPassword: React.FC<FormItemProps> = (props) => {
 
     const [visible, setVisible] = React.useState(false);
 
-    const {formAction, rules} = formFieldInit(props);
+    const {formContext, rules} = formFieldInit(props);
 
     return (
         <Form.Item
@@ -26,8 +26,8 @@ const FormPassword: React.FC<FormItemProps> = (props) => {
                     value={props.value}
                     placeholder={props.placeholder}
                     onChange={(value) => {
-                        formAction?.setFieldValue(props.name, value);
-                        props.onChange && props.onChange(value, formAction);
+                        formContext?.setFieldValue(props.name, value);
+                        props.onChange && props.onChange(value, formContext);
                     }}
                 />
                 <div className={"form-password-eye"}>

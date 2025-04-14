@@ -4,7 +4,6 @@ import {FormItemProps} from "@/components/form/types";
 
 const formFieldInit = (props: FormItemProps,reloadOption?:()=>void) => {
     const formContext = React.useContext(FormContext) || undefined;
-    const formAction = formContext?.getFormAction();
     const validateContext = formContext?.getFormValidateContext();
     const [random, setRandom] = React.useState(0);
 
@@ -37,7 +36,7 @@ const formFieldInit = (props: FormItemProps,reloadOption?:()=>void) => {
         }
     }, [formContext]);
 
-    return {formAction, validateContext, rules};
+    return {formContext, validateContext, rules};
 }
 
 export default formFieldInit;

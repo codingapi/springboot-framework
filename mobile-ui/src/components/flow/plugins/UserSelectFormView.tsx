@@ -1,17 +1,17 @@
 import React, {useEffect} from "react";
 import {UserSelectFormProps} from "@/components/flow/types";
 import Popup from "@/components/popup";
-import Form, {FormAction} from "@/components/form";
+import Form from "@/components/form";
 import FormInput from "@/components/form/input";
 
 const UserSelectFormView: React.FC<UserSelectFormProps> = (props) => {
 
-    const formAction = React.useRef<FormAction>(null);
+    const formInstance = Form.useForm();
 
     useEffect(() => {
         if(props.visible){
             if(props.specifyUserIds){
-                formAction.current?.setFieldValue("users", props.specifyUserIds.join(","));
+                formInstance.setFieldValue("users", props.specifyUserIds.join(","));
             }
         }
     }, [props.visible]);
@@ -24,7 +24,7 @@ const UserSelectFormView: React.FC<UserSelectFormProps> = (props) => {
             title={"选人人员"}
             bodyStyle={{height: '50vh'}}
             onOk={() => {
-                const users = formAction.current?.getFieldValue("users");
+                const users = formInstance.getFieldValue("users");
                 if(users){
                     const userIds = Array.of(...users.split(",")).map(item =>{
                         return {
@@ -38,7 +38,7 @@ const UserSelectFormView: React.FC<UserSelectFormProps> = (props) => {
         >
             <div>
                 <Form
-                    actionRef={formAction}
+                    form={formInstance}
                 >
                     <FormInput
                         name={"users"}

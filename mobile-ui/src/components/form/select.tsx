@@ -1,9 +1,9 @@
 import React, {useEffect} from "react";
 import {FormItemProps, FormOption} from "@/components/form/types";
-import {Button, CheckList, Form, InfiniteScroll, Popup, PullToRefresh, SearchBar} from "antd-mobile";
+import {Button, CheckList, Form as AntdForm, InfiniteScroll, Popup, PullToRefresh, SearchBar} from "antd-mobile";
 import {RightOutline, SetOutline} from "antd-mobile-icons";
 import formFieldInit from "@/components/form/common";
-import {FormAction} from "@/components/form/index";
+import Form from "@/components/form";
 import "./form.scss";
 
 
@@ -142,11 +142,11 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
     const [visible, setVisible] = React.useState(false);
     const [searchText, setSearchText] = React.useState('');
 
-    const {formAction, rules} = formFieldInit(props, () => {
+    const {formContext, rules} = formFieldInit(props, () => {
         reloadOptions();
     });
 
-    const currentValue = valueToForm(formAction?.getFieldValue(props.name)) as string[] || valueToForm(props.value) as string[] || [];
+    const currentValue = valueToForm(formContext?.getFieldValue(props.name)) as string[] || valueToForm(props.value) as string[] || [];
 
     const [selected, setSelected] = React.useState<string[]>(currentValue);
 
@@ -161,7 +161,7 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
     const [paths, setPaths] = React.useState<FormOption[]>([]);
 
     const CheckBoxValueText = () => {
-        const currentValue = valueToForm(formAction?.getFieldValue(props.name)) as string[] || valueToForm(props.value) as string[] || [];
+        const currentValue = valueToForm(formContext?.getFieldValue(props.name)) as string[] || valueToForm(props.value) as string[] || [];
         const optionLabelFetch = (value: string) => {
             let label = value;
             let fetchState = false;
@@ -215,7 +215,7 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
 
     const reloadOptions = () => {
         if (props.loadOptions) {
-            props.loadOptions(formAction).then(list => {
+            props.loadOptions(formContext).then(list => {
                 setOptions(list);
                 setOptionCaches(list);
             });
@@ -237,14 +237,14 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
         }
     }, [visible]);
 
-    const selectOptionFormEditAction = React.useRef<FormAction>(null);
+    const selectOptionFormEditInstance = Form.useForm();
 
 
     const handlerOptionFormFinish = () => {
-        if (props.onSelectOptionFormFinish && selectOptionFormEditAction.current && formAction) {
+        if (props.onSelectOptionFormFinish && selectOptionFormEditInstance && formContext) {
             props.onSelectOptionFormFinish(
-                formAction,
-                selectOptionFormEditAction.current,
+                formContext,
+                selectOptionFormEditInstance,
                 reloadOptions,
                 () => {
                     setSettingOptionVisible(false);
@@ -255,7 +255,7 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
     }
 
     return (
-        <Form.Item
+        <AntdForm.Item
             name={props.name}
             label={props.label}
             rules={rules}
@@ -304,8 +304,8 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
                             if (props.selectOptionFormEditable) {
                                 handlerOptionFormFinish();
                             } else {
-                                formAction?.setFieldValue(props.name, formToValue(selected));
-                                props.onChange && props.onChange(selected, formAction);
+                                formContext?.setFieldValue(props.name, formToValue(selected));
+                                props.onChange && props.onChange(selected, formContext);
                                 setVisible(false);
                             }
                         }}
@@ -355,10 +355,10 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
 
                     {settingOptionVisible && (
                         <div className={"select-popup-content-custom-form"}>
-                            {formAction && props.selectOptionFormEditView && (
+                            {formContext && props.selectOptionFormEditView && (
                                 <props.selectOptionFormEditView
-                                    currentAction={selectOptionFormEditAction}
-                                    formAction={formAction}/>
+                                    currentInstance={selectOptionFormEditInstance}
+                                    formInstance={formContext}/>
                             )}
                             <div className={"select-popup-content-custom-footer"}>
                                 <Button
@@ -388,8 +388,8 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
                                 setSelected(currentValue);
                                 // 单选时，选中即关闭弹框
                                 if (!props.selectMultiple) {
-                                    formAction?.setFieldValue(props.name, formToValue(currentValue));
-                                    props.onChange && props.onChange(formToValue(currentValue), formAction);
+                                    formContext?.setFieldValue(props.name, formToValue(currentValue));
+                                    props.onChange && props.onChange(formToValue(currentValue), formContext);
 
                                     setVisible(false);
                                 }
@@ -419,7 +419,7 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
                     )}
                 </div>
             </Popup>
-        </Form.Item>
+        </AntdForm.Item>
     )
 }
 

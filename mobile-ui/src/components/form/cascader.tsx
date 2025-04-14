@@ -25,13 +25,13 @@ const FormCascader: React.FC<FormItemProps> = (props) => {
     const [visible, setVisible] = React.useState(false);
     const [options, setOptions] = React.useState(props.options);
 
-    const {formAction, rules} = formFieldInit(props, () => {
+    const {formContext, rules} = formFieldInit(props, () => {
         reloadOptions();
     });
 
     const reloadOptions = () => {
         if (props.loadOptions) {
-            props.loadOptions(formAction).then(res => {
+            props.loadOptions(formContext).then(res => {
                 setOptions(res);
             });
         }
@@ -79,8 +79,8 @@ const FormCascader: React.FC<FormItemProps> = (props) => {
                     setVisible(false)
                 }}
                 onConfirm={(value) => {
-                    formAction?.setFieldValue(props.name as string, formToValue(value as string[]));
-                    props.onChange && props.onChange(value, formAction);
+                    formContext?.setFieldValue(props.name as string, formToValue(value as string[]));
+                    props.onChange && props.onChange(value, formContext);
                     setVisible(false);
                 }}
             >

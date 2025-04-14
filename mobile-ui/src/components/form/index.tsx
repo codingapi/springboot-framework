@@ -67,8 +67,6 @@ export interface FormProps {
     footer?: React.ReactNode;
     // 初始化值
     initialValues?: any;
-    // 表单控制对象
-    actionRef?: React.Ref<FormAction>;
     // 表单实例
     form?: FormInstance;
 }
