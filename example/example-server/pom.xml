@@ -19,14 +19,29 @@
 
     <dependencies>
 
-
-
         <dependency>
             <groupId>com.codingapi.springboot</groupId>
-            <artifactId>example-application</artifactId>
+            <artifactId>example-interface</artifactId>
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.codingapi.springboot</groupId>
+            <artifactId>example-infra-jpa</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.codingapi.springboot</groupId>
+            <artifactId>example-infra-flow</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.codingapi.springboot</groupId>
+            <artifactId>example-infra-security</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
     </dependencies>
 

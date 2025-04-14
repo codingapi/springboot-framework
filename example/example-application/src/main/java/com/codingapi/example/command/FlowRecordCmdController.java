@@ -1,8 +1,8 @@
 package com.codingapi.example.command;
 
-import com.codingapi.example.domain.User;
+import com.codingapi.example.domain.user.entity.User;
+import com.codingapi.example.domain.user.repository.UserRepository;
 import com.codingapi.example.pojo.cmd.FlowCmd;
-import com.codingapi.example.repository.UserRepository;
 import com.codingapi.springboot.flow.pojo.FlowResult;
 import com.codingapi.springboot.flow.pojo.FlowStepResult;
 import com.codingapi.springboot.flow.pojo.FlowSubmitResult;
