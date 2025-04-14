@@ -1,5 +1,6 @@
 package com.codingapi.example.infra.db.entity;
 
+import com.codingapi.example.domain.user.entity.UserMetric;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,4 +28,8 @@ public class UserEntity {
     private String entrustOperatorName;
 
     private long createTime;
+
+    public UserMetric getUserMetric() {
+        return new UserMetric(name,username,password);
+    }
 }
