@@ -34,6 +34,13 @@ public class User {
         return user;
     }
 
+    public void removeEntrust() {
+        this.entrustOperator = null;
+    }
+
+    public void changeManager() {
+        this.isFlowManager = !this.isFlowManager;
+    }
 
     public void encodePassword(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(this.password);

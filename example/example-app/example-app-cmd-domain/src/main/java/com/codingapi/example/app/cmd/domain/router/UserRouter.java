@@ -14,7 +14,7 @@ public class UserRouter {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void save(UserCmd.UpdateRequest request){
+    public void createOrUpdate(UserCmd.UpdateRequest request){
         if(request.hasId()){
             User user = userRepository.getUserById(request.getId());
             user.setName(request.getName());
@@ -31,4 +31,37 @@ public class UserRouter {
             userRepository.save(user);
         }
     }
+
+    public void removeEntrust(long id) {
+        User user = userRepository.getUserById(id);
+        if(user!=null){
+            user.removeEntrust();
+            userRepository.save(user);
+        }
+    }
+
+    public void createEntrust(UserCmd.EntrustRequest request){
+        User user = userRepository.getUserById(request.getId());
+        if(user!=null){
+            User entrustOperator = userRepository.getUserById(request.getEntrustUserId());
+            user.setEntrustOperator(entrustOperator);
+            userRepository.save(user);
+        }
+    }
+
+    public void changeManager(long id){
+        User user = userRepository.getUserById(id);
+        if(user!=null){
+            user.changeManager();
+            userRepository.save(user);
+        }
+    }
+
+    public void removeUser(long id){
+        User user = userRepository.getUserById(id);
+        if(user!=null){
+            userRepository.delete(id);
+        }
+    }
+
 }

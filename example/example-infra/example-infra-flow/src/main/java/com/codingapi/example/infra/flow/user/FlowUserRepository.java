@@ -23,4 +23,9 @@ public class FlowUserRepository implements FlowOperatorRepository {
     public IFlowOperator getFlowOperatorById(long id) {
         return new FlowUser(userRepository.getUserById(id));
     }
+
+
+    public IFlowOperator getUserByUsername(String username) {
+        return new FlowUser(userRepository.getUserByUsername(username));
+    }
 }

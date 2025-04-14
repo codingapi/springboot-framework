@@ -20,18 +20,6 @@
     <dependencies>
         <dependency>
             <groupId>com.codingapi.springboot</groupId>
-            <artifactId>example-domain-user</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.codingapi.springboot</groupId>
-            <artifactId>example-domain-leave</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.codingapi.springboot</groupId>
             <artifactId>springboot-starter-flow</artifactId>
         </dependency>
 
