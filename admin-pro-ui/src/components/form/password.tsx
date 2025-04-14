@@ -6,7 +6,7 @@ import "./form.scss";
 
 const FormPassword: React.FC<FormItemProps> = (props) => {
 
-    const {formAction} = formFieldInit(props);
+    const {formContext} = formFieldInit(props);
 
     return (
         <Form.Item
@@ -27,8 +27,8 @@ const FormPassword: React.FC<FormItemProps> = (props) => {
                 placeholder={props.placeholder}
                 onChange={(value) => {
                     const currentValue = value.target.value;
-                    formAction?.setFieldValue(props.name, currentValue);
-                    props.onChange && props.onChange(currentValue, formAction);
+                    formContext?.setFieldValue(props.name, currentValue);
+                    props.onChange && props.onChange(currentValue, formContext);
                 }}
             />
         </Form.Item>

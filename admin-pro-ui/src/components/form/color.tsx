@@ -4,7 +4,7 @@ import {ColorPicker, Form, Space} from "antd";
 import formFieldInit from "@/components/form/common";
 import "./form.scss";
 import type {AggregationColor} from "antd/es/color-picker/color";
-import {FormAction} from "@/components/form/index";
+import FormInstance from "@/components/form/domain/FormInstance";
 
 const formToValue = (value: AggregationColor) => {
     if (value) {
@@ -14,11 +14,11 @@ const formToValue = (value: AggregationColor) => {
 }
 
 interface $ColorPickerProps extends FormItemProps{
-    formAction?:FormAction;
+    formInstance?:FormInstance;
 }
 
 const $ColorPicker:React.FC<$ColorPickerProps> = (props)=>{
-    const formAction = props.formAction;
+    const formInstance = props.formInstance;
 
     return (
        <Space.Compact
@@ -32,8 +32,8 @@ const $ColorPicker:React.FC<$ColorPickerProps> = (props)=>{
                value={props.value}
                onChange={(value) => {
                    const currentValue = formToValue(value);
-                   formAction?.setFieldValue(props.name, currentValue);
-                   props.onChange && props.onChange(currentValue, formAction);
+                   formInstance?.setFieldValue(props.name, currentValue);
+                   props.onChange && props.onChange(currentValue, formInstance);
                }}
            />
            {props.addonAfter}
@@ -43,7 +43,7 @@ const $ColorPicker:React.FC<$ColorPickerProps> = (props)=>{
 
 const FormColor: React.FC<FormItemProps> = (props) => {
 
-    const {formAction} = formFieldInit(props);
+    const {formContext} = formFieldInit(props);
 
     return (
         <Form.Item
@@ -56,7 +56,7 @@ const FormColor: React.FC<FormItemProps> = (props) => {
         >
             <$ColorPicker
                 {...props}
-                formAction={formAction}
+                formInstance={formContext}
             />
 
         </Form.Item>

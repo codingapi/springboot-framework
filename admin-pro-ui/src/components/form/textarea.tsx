@@ -6,7 +6,7 @@ import "./form.scss";
 
 const FormTextArea: React.FC<FormItemProps> = (props) => {
 
-    const {formAction} = formFieldInit(props);
+    const {formContext} = formFieldInit(props);
 
     return (
         <Form.Item
@@ -26,8 +26,8 @@ const FormTextArea: React.FC<FormItemProps> = (props) => {
                 rows={props.textAreaRows}
                 onChange={(value) => {
                     const currentValue = value.target.value;
-                    formAction?.setFieldValue(props.name, currentValue);
-                    props.onChange && props.onChange(currentValue, formAction);
+                    formContext?.setFieldValue(props.name, currentValue);
+                    props.onChange && props.onChange(currentValue, formContext);
                 }}
             />
         </Form.Item>

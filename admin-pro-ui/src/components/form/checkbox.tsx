@@ -21,13 +21,13 @@ const formToValue = (value: string[]) => {
 const FormCheckbox: React.FC<FormItemProps> = (props) => {
     const [options, setOptions] = React.useState(props.options);
 
-    const {formAction} = formFieldInit(props, () => {
+    const {formContext} = formFieldInit(props, () => {
         reloadOptions();
     });
 
     const reloadOptions = () => {
         if (props.loadOptions) {
-            props.loadOptions(formAction).then(res => {
+            props.loadOptions(formContext).then(res => {
                 setOptions(res);
             });
         }
@@ -58,8 +58,8 @@ const FormCheckbox: React.FC<FormItemProps> = (props) => {
                 disabled={props.disabled}
                 value={props.value}
                 onChange={(e) => {
-                    formAction?.setFieldValue(props.name, formToValue(e as string[]));
-                    props.onChange && props.onChange(e, formAction)
+                    formContext?.setFieldValue(props.name, formToValue(e as string[]));
+                    props.onChange && props.onChange(e, formContext)
                 }}
             >
                 <Space direction={props.checkboxDirection}>

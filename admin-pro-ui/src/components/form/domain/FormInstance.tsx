@@ -44,7 +44,7 @@ class FormInstance {
     }
 
     public submit = async () => {
-        const res = await this.validateContext.validate(this.formAction);
+        const res = await this.validateContext.validate(this);
         if (res) {
             this.formInstance.submit();
         }
@@ -248,7 +248,7 @@ class FormInstance {
     public setFieldValue = (name: NamePath, value: any) => {
         this.formInstance.setFieldValue(name, value);
         this.reloadContext.notify(name);
-        this.validateContext?.validateField(name, this.formAction);
+        this.validateContext?.validateField(name, this);
     }
 
     public setFieldsValue = (values: any) => {
@@ -261,7 +261,7 @@ class FormInstance {
     }
 
     public validate = () => {
-        return this.validateContext.validate(this.formAction);
+        return this.validateContext.validate(this);
     }
 
     public resetFields = (fields: FormField[]) => {

@@ -35,7 +35,7 @@ const formFieldInit = (props: FormItemProps,reloadOption?:()=>void) => {
         }
     }, [formContext]);
 
-    return {formAction, validateContext};
+    return {formContext, validateContext};
 }
 
 export default formFieldInit;
