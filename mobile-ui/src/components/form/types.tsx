@@ -2,6 +2,7 @@ import {NamePath} from "antd-mobile/es/components/form";
 import {FormValidateContent} from "@/components/form/validate";
 import {FormAction} from "@/components/form";
 import React from "react";
+import FormInstance from "@/components/form/domain/FormInstance";
 
 // Form表单选项类型
 export interface FormOption {
@@ -28,9 +29,9 @@ export interface FormField {
 // 自定义Select组件选项维护视图
 export interface SelectOptionFormEditProps {
     // 当前表单操作对象
-    currentAction?: React.RefObject<FormAction>;
+    currentInstance?: FormInstance;
     // 父级表单操作对象
-    formAction?: FormAction;
+    formInstance?: FormInstance;
 }
 
 // Form表单字段属性
@@ -52,11 +53,11 @@ export interface FormItemProps {
     // 输入提示
     placeholder?: string;
     // 变更事件
-    onChange?: (value: any, form?: FormAction) => void;
+    onChange?: (value: any, form?: FormInstance) => void;
     // 静态选项，对应loadOptions的动态选项，仅限于select、radio等组件有效
     options?: FormOption[],
     // 动态加载选项,仅限于select、radio等组件有效
-    loadOptions?: (form?: FormAction) => Promise<FormOption[]>,
+    loadOptions?: (form?: FormInstance) => Promise<FormOption[]>,
     // 动态校验函数,尽在fields模式下生效
     validateFunction?: (content: FormValidateContent) => Promise<string[]>,
 
@@ -82,8 +83,8 @@ export interface FormItemProps {
     // select组件添加的视图footer取消按钮文字，默认取消添加
     selectOptionFormEditFooterCancelText?: string,
     // Select组件添加数据事件
-    onSelectOptionFormFinish?: (formAction: FormAction,
-                                selectOptionFormEditFormAction: FormAction,
+    onSelectOptionFormFinish?: (formInstance: FormInstance,
+                                selectOptionFormEditFormInstance: FormInstance,
                                 reloadOption?: () => void,
                                 close?: () => void) => void;
 

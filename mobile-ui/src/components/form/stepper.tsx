@@ -6,7 +6,7 @@ import "./form.scss";
 
 const FormStepper: React.FC<FormItemProps> = (props) => {
 
-    const {formAction, rules} = formFieldInit(props);
+    const {formContext, rules} = formFieldInit(props);
 
     return (
         <Form.Item
@@ -23,8 +23,8 @@ const FormStepper: React.FC<FormItemProps> = (props) => {
                 min={props.stepperMinNumber}
                 digits={props.stepperDecimalLength}
                 onChange={(value) => {
-                    formAction?.setFieldValue(props.name, value);
-                    props.onChange && props.onChange(value, formAction);
+                    formContext?.setFieldValue(props.name, value);
+                    props.onChange && props.onChange(value, formContext);
                 }}
             />
         </Form.Item>

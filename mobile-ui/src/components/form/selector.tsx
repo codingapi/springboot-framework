@@ -23,13 +23,13 @@ const FormSelector: React.FC<FormItemProps> = (props) => {
 
     const [options, setOptions] = React.useState(props.options);
 
-    const {formAction, rules} = formFieldInit(props, () => {
+    const {formContext, rules} = formFieldInit(props, () => {
         reloadOptions();
     });
 
     const reloadOptions = () => {
         if (props.loadOptions) {
-            props.loadOptions(formAction).then(res => {
+            props.loadOptions(formContext).then(res => {
                 setOptions(res);
             });
         }
@@ -62,8 +62,8 @@ const FormSelector: React.FC<FormItemProps> = (props) => {
                 options={options || []}
                 value={props.value}
                 onChange={(e) => {
-                    formAction?.setFieldValue(props.name, formToValue(e));
-                    props.onChange && props.onChange(e, formAction);
+                    formContext?.setFieldValue(props.name, formToValue(e));
+                    props.onChange && props.onChange(e, formContext);
                 }}
             />
         </Form.Item>

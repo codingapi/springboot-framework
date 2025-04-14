@@ -1,13 +1,13 @@
 import {NamePath} from "rc-field-form/es/interface";
-import {FormAction} from "@/components/form";
+import FormInstance from "@/components/form/domain/FormInstance";
 
 // 流程表单验证内容
 export class FormValidateContent {
     readonly value: any;
     readonly name: NamePath;
-    readonly form: FormAction;
+    readonly form: FormInstance;
 
-    constructor(value: any,name: NamePath, form: FormAction) {
+    constructor(value: any,name: NamePath, form: FormInstance) {
         this.value = value;
         this.name = name;
         this.form = form;
@@ -40,7 +40,7 @@ export class FormValidateContext {
     }
 
 
-    public validateField =  (name:NamePath,form: FormAction) => {
+    public validateField =  (name:NamePath,form: FormInstance) => {
         return new Promise((resolve,reject)=>{
             const value = form.getFieldValue(name);
             const content = new FormValidateContent(value,name,form);
@@ -78,7 +78,7 @@ export class FormValidateContext {
         });
     }
 
-    public validate = async (form: FormAction) => {
+    public validate = async (form: FormInstance) => {
         const list = Array.from(this.map.keys().map(item => {
            return this.validateField(item,form);
         }));

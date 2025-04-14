@@ -7,7 +7,7 @@ import "./form.scss";
 const FormInput: React.FC<FormItemProps> = (props) => {
 
     const inputType = props.inputType || "text";
-    const {formAction, rules} = formFieldInit(props);
+    const {formContext, rules} = formFieldInit(props);
 
     return (
         <Form.Item
@@ -25,8 +25,8 @@ const FormInput: React.FC<FormItemProps> = (props) => {
                 placeholder={props.placeholder}
                 maxLength={props.inputMaxLength}
                 onChange={(value) => {
-                    formAction?.setFieldValue(props.name, value);
-                    props.onChange && props.onChange(value, formAction);
+                    formContext?.setFieldValue(props.name, value);
+                    props.onChange && props.onChange(value, formContext);
                 }}
             />
         </Form.Item>

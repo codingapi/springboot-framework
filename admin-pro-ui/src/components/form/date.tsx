@@ -4,7 +4,7 @@ import {DatePicker, Form, Space} from "antd";
 import dayjs from "dayjs";
 import formFieldInit from "@/components/form/common";
 import "./form.scss";
-import {FormAction} from "@/components/form/index";
+import FormInstance from "@/components/form/domain/FormInstance";
 
 const datePrecisionConverter = (precision?: string) => {
     if (precision === "day") {
@@ -64,12 +64,12 @@ const showTime = (precision?: string) => {
 }
 
 interface $DatePicker extends FormItemProps{
-    formAction?:FormAction;
+    formInstance?:FormInstance;
 }
 
 const $DatePicker:React.FC<$DatePicker> = (props)=>{
 
-    const formAction = props.formAction;
+    const formInstance = props.formInstance;
 
     const format = props.dateFormat || 'YYYY-MM-DD';
     const precision = datePrecisionConverter(props.datePrecision) || "date";
@@ -94,8 +94,8 @@ const $DatePicker:React.FC<$DatePicker> = (props)=>{
               showTime={showTimeConfig?{format: showTimeConfig.format}:false}
               onChange={(date, dateString) => {
                   const currentDate = dayjs(date).format(format);
-                  formAction?.setFieldValue(props.name, currentDate);
-                  props.onChange && props.onChange(currentDate, formAction);
+                  formInstance?.setFieldValue(props.name, currentDate);
+                  props.onChange && props.onChange(currentDate, formInstance);
               }}
           />
           {props.addonAfter}
@@ -105,7 +105,7 @@ const $DatePicker:React.FC<$DatePicker> = (props)=>{
 
 const FormDate: React.FC<FormItemProps> = (props) => {
 
-    const {formAction} = formFieldInit(props);
+    const {formContext} = formFieldInit(props);
 
     return (
         <Form.Item
@@ -126,7 +126,7 @@ const FormDate: React.FC<FormItemProps> = (props) => {
         >
             <$DatePicker
                 {...props}
-                formAction={formAction}
+                formInstance={formContext}
             />
 
         </Form.Item>

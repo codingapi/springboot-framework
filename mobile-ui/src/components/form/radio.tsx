@@ -7,13 +7,13 @@ import "./form.scss";
 const FormRadio: React.FC<FormItemProps> = (props) => {
     const [options, setOptions] = React.useState(props.options);
 
-    const {formAction, rules} = formFieldInit(props, () => {
+    const {formContext, rules} = formFieldInit(props, () => {
         reloadOptions();
     });
 
     const reloadOptions = () => {
         if (props.loadOptions) {
-            props.loadOptions(formAction).then(res => {
+            props.loadOptions(formContext).then(res => {
                 setOptions(res);
             });
         }
@@ -35,8 +35,8 @@ const FormRadio: React.FC<FormItemProps> = (props) => {
             <Radio.Group
                 value={props.value}
                 onChange={(value) => {
-                    formAction?.setFieldValue(props.name, value);
-                    props.onChange && props.onChange(value, formAction);
+                    formContext?.setFieldValue(props.name, value);
+                    props.onChange && props.onChange(value, formContext);
                 }}
             >
                 <Space direction={props.radioDirection}>

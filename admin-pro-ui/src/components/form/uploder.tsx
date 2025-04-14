@@ -5,8 +5,8 @@ import formFieldInit from "@/components/form/common";
 import {PlusOutlined, UploadOutlined} from "@ant-design/icons";
 import {RcFile} from "antd/es/upload";
 import {UploadFile} from "antd/lib";
-import {FormAction} from "@/components/form/index";
 import "./form.scss";
+import FormInstance from "@/components/form/domain/FormInstance";
 
 const fileToBase64 = (file: RcFile): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -32,13 +32,13 @@ const formToValue = (value: UploadFile[]) => {
 }
 
 interface UploaderProps extends FormItemProps {
-    formAction?: FormAction;
+    formInstance?: FormInstance;
     uploaderAccept: string
 }
 
 
 const Uploader: React.FC<UploaderProps> = (props) => {
-    const formAction = props.formAction;
+    const formInstance = props.formInstance;
     const isImage = props.uploaderAccept === 'image/*';
 
     const [fileList, setFileList] = React.useState<UploadFile[]>([]);
@@ -114,8 +114,8 @@ const Uploader: React.FC<UploaderProps> = (props) => {
                     const fileList = info.fileList;
                     if(fileList.length>0 && fileList.every(item=>item.status==='done')) {
                         const currentValue = formToValue(fileList);
-                        formAction?.setFieldValue(props.name, currentValue);
-                        props.onChange && props.onChange(currentValue, formAction);
+                        formInstance?.setFieldValue(props.name, currentValue);
+                        props.onChange && props.onChange(currentValue, formInstance);
                     }
                     setFileList(fileList);
                 }}
@@ -146,7 +146,7 @@ const Uploader: React.FC<UploaderProps> = (props) => {
 }
 
 const FormUploader: React.FC<FormItemProps> = (props) => {
-    const {formAction} = formFieldInit(props);
+    const {formContext} = formFieldInit(props);
     const accept = props.uploaderAccept || "image/*";
     return (
         <Form.Item
@@ -158,7 +158,7 @@ const FormUploader: React.FC<FormItemProps> = (props) => {
             tooltip={props.tooltip}
         >
             <Uploader
-                formAction={formAction}
+                formInstance={formContext}
                 value={props.value}
                 onChange={props.onChange}
                 uploaderAccept={accept}

@@ -16,7 +16,7 @@ const Switch: React.FC<SwitchProps> = ({value, ...props}) => {
 
 const FormSwitch: React.FC<FormItemProps> = (props) => {
 
-    const {formAction} = formFieldInit(props);
+    const {formContext} = formFieldInit(props);
 
     return (
         <Form.Item
@@ -33,8 +33,8 @@ const FormSwitch: React.FC<FormItemProps> = (props) => {
                 checkedChildren={props.switchCheckText}
                 unCheckedChildren={props.switchUnCheckText}
                 onChange={(value) => {
-                    formAction?.setFieldValue(props.name, value);
-                    props.onChange && props.onChange(value, formAction);
+                    formContext?.setFieldValue(props.name, value);
+                    props.onChange && props.onChange(value, formContext);
                 }}
             />
         </Form.Item>

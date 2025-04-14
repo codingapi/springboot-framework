@@ -27,7 +27,7 @@ export const dateLabelRenderer = (type: string, data: number) => {
 
 const FormDate: React.FC<FormItemProps> = (props) => {
 
-    const {formAction, rules} = formFieldInit(props);
+    const {formContext, rules} = formFieldInit(props);
 
     const format = props.dateFormat || 'YYYY-MM-DD';
     const precision = props.datePrecision || "day";
@@ -68,8 +68,8 @@ const FormDate: React.FC<FormItemProps> = (props) => {
                 }}
                 onConfirm={value => {
                     const currentDate = dayjs(value).format(format);
-                    formAction?.setFieldValue(props.name as string, currentDate);
-                    props.onChange && props.onChange(currentDate, formAction);
+                    formContext?.setFieldValue(props.name as string, currentDate);
+                    props.onChange && props.onChange(currentDate, formContext);
                     setVisible(false)
                 }}
             >

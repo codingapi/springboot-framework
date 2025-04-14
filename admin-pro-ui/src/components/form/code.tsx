@@ -8,7 +8,7 @@ import CodeEditor from "@/components/CodeEditor";
 
 const FormCode: React.FC<FormItemProps> = (props) => {
 
-    const {formAction} = formFieldInit(props);
+    const {formContext} = formFieldInit(props);
 
     return (
         <Form.Item
@@ -23,8 +23,8 @@ const FormCode: React.FC<FormItemProps> = (props) => {
                 readonly={props.disabled}
                 value={props.value}
                 onChange={(value) => {
-                    formAction?.setFieldValue(props.name, value);
-                    props.onChange && props.onChange(value, formAction);
+                    formContext?.setFieldValue(props.name, value);
+                    props.onChange && props.onChange(value, formContext);
                 }}
                 theme={props.codeTheme}
                 language={props.codeLanguage}

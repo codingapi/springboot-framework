@@ -7,7 +7,7 @@ import "./form.scss";
 const FormInput: React.FC<FormItemProps> = (props) => {
 
     const inputType = props.inputType || "text";
-    const {formAction} = formFieldInit(props);
+    const {formContext} = formFieldInit(props);
 
     return (
         <Form.Item
@@ -28,8 +28,8 @@ const FormInput: React.FC<FormItemProps> = (props) => {
                 addonBefore={props.addonBefore}
                 onChange={(value) => {
                     const currentValue = value.target.value;
-                    formAction?.setFieldValue(props.name, currentValue);
-                    props.onChange && props.onChange(currentValue, formAction);
+                    formContext?.setFieldValue(props.name, currentValue);
+                    props.onChange && props.onChange(currentValue, formContext);
                 }}
             />
         </Form.Item>

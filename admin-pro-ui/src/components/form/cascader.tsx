@@ -3,7 +3,7 @@ import {FormItemProps} from "@/components/form/types";
 import {Cascader, Form, Space} from "antd";
 import formFieldInit from "@/components/form/common";
 import "./form.scss";
-import {FormAction} from "@/components/form/index";
+import FormInstance from "@/components/form/domain/FormInstance";
 
 const valueToForm = (value: string) => {
     if (value && value.length > 0) {
@@ -20,11 +20,11 @@ const formToValue = (value: string[]) => {
 }
 
 interface $CascaderProps extends FormItemProps{
-    formAction?:FormAction;
+    formInstance?:FormInstance;
 }
 
 const $Cascader:React.FC<$CascaderProps> = (props)=>{
-    const formAction = props.formAction;
+    const formInstance = props.formInstance;
     return (
        <Space.Compact
            style={{
@@ -39,8 +39,8 @@ const $Cascader:React.FC<$CascaderProps> = (props)=>{
                prefix={props.prefix}
                options={props.options}
                onChange={(value) => {
-                   formAction?.setFieldValue(props.name, formToValue(value as string[]));
-                   props.onChange && props.onChange(value, formAction);
+                   formInstance?.setFieldValue(props.name, formToValue(value as string[]));
+                   props.onChange && props.onChange(value, formInstance);
                }}
            />
            {props.addonAfter}
@@ -52,13 +52,13 @@ const FormCascader: React.FC<FormItemProps> = (props) => {
 
     const [options, setOptions] = React.useState(props.options);
 
-    const {formAction} = formFieldInit(props, () => {
+    const {formContext} = formFieldInit(props, () => {
         reloadOptions();
     });
 
     const reloadOptions = () => {
         if (props.loadOptions) {
-            props.loadOptions(formAction).then(res => {
+            props.loadOptions(formContext).then(res => {
                 setOptions(res);
             });
         }
@@ -90,7 +90,7 @@ const FormCascader: React.FC<FormItemProps> = (props) => {
             <$Cascader
                 {...props}
                 options={options}
-                formAction={formAction}
+                formInstance={formContext}
             />
 
         </Form.Item>

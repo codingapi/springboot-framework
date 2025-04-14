@@ -1,9 +1,9 @@
 import React, {useEffect} from "react";
 import {FormItemProps} from "@/components/form/types";
-import {Button, Form, Select, Space} from "antd";
+import {Form, Select, Space} from "antd";
 import formFieldInit from "@/components/form/common";
 import "./form.scss";
-import {FormAction} from "@/components/form/index";
+import FormInstance from "@/components/form/domain/FormInstance";
 
 const valueToForm = (value: string) => {
     if (value && value.length > 0) {
@@ -22,11 +22,11 @@ const formToValue = (value: string[] |string) => {
 }
 
 interface $SelectProps extends FormItemProps{
-    formAction?:FormAction;
+    formInstance?:FormInstance;
 }
 
 const $Select: React.FC<$SelectProps> = (props) => {
-    const formAction = props.formAction;
+    const formInstance = props.formInstance;
 
     return (
         <Space.Compact
@@ -45,8 +45,8 @@ const $Select: React.FC<$SelectProps> = (props) => {
                 showSearch={true}
                 options={props.options}
                 onChange={(value,option) => {
-                    formAction?.setFieldValue(props.name, formToValue(value as string[]));
-                    props.onChange && props.onChange(value, formAction);
+                    formInstance?.setFieldValue(props.name, formToValue(value as string[]));
+                    props.onChange && props.onChange(value, formInstance);
                 }}
             />
             {props.addonAfter}
@@ -58,13 +58,13 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
 
     const [options, setOptions] = React.useState(props.options);
 
-    const {formAction} = formFieldInit(props, () => {
+    const {formContext} = formFieldInit(props, () => {
         reloadOptions();
     });
 
     const reloadOptions = () => {
         if (props.loadOptions) {
-            props.loadOptions(formAction).then(list => {
+            props.loadOptions(formContext).then(list => {
                 setOptions(list);
             });
         }
@@ -94,7 +94,7 @@ const FormSelect: React.FC<FormItemProps> = (props) => {
             <$Select
                 {...props}
                 options={options}
-                formAction={formAction}
+                formInstance={formContext}
             />
 
         </Form.Item>

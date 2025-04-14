@@ -1,11 +1,10 @@
 import React, {useEffect} from "react";
 import {NamePath} from "rc-field-form/es/interface";
 import {FormField} from "@/components/form/types";
-import {FormValidateContext} from "@/components/form/validate";
-import {FormFieldOptionListenerContext, FormFieldReloadListenerContext} from "@/components/form/listener";
-import {Form as AntForm, message} from "antd";
+import {Form as AntForm} from "antd";
 import FormFactory from "@/components/form/factory";
 import "./form.scss";
+import FormInstance from "@/components/form/domain/FormInstance";
 
 export interface FiledData {
     name: NamePath;
@@ -60,8 +59,6 @@ export interface FormProps {
     loadFields?: () => Promise<FormField[]>;
     // 表单提交事件
     onFinish?: (values: any) => Promise<void>;
-    // 表单控制对象
-    actionRef?: React.Ref<FormAction>;
     // form布局，默认vertical
     layout?: 'horizontal' | 'vertical';
     // children元素
@@ -70,299 +67,41 @@ export interface FormProps {
     footer?: React.ReactNode;
     // 初始化值
     initialValues?: any;
+    // 表单实例
+    form?: FormInstance;
 }
 
-interface FormContextProps {
-    // form表单的控制对象
-    formAction: FormAction;
-    // 检验控制对象
-    validateContext: FormValidateContext;
-    // 表单刷新监听对象
-    reloadContext: FormFieldReloadListenerContext;
-    // 选项刷新监听对象
-    optionContext: FormFieldOptionListenerContext;
-}
+export const FormContext = React.createContext<FormInstance | null>(null);
 
-export const FormContext = React.createContext<FormContextProps | null>(null);
 
-const namePathEqual = (name1: NamePath, name2: NamePath): boolean => {
-    if (Array.isArray(name1) && Array.isArray(name2)) {
-        if (name1.length !== name2.length) {
-            return false;
-        }
-        for (let i = 0; i < name1.length; i++) {
-            if (name1[i] !== name2[i]) {
-                return false;
-            }
-        }
-        return true;
-    }
-    return name1 === name2;
-}
+const FormComponent: React.FC<FormProps> = (props) => {
 
-const Form: React.FC<FormProps> = (props) => {
-
-    const [form] = AntForm.useForm();
-
-    const validateContext = new FormValidateContext();
-    const reloadContext = new FormFieldReloadListenerContext();
-    const optionContext = new FormFieldOptionListenerContext();
-
-    const formAction = {
-        submit: async () => {
-            const res = await validateContext.validate(formAction);
-            if (res) {
-                form.submit();
-            }
-        },
-
-        reset: (values?: any) => {
-            reloadFields();
-            form.resetFields();
-            if (values) {
-                form.setFieldsValue(values);
-                reloadContext.notifyAll();
-            }
-        },
-
-        hidden: (name: NamePath) => {
-            if (fields.length == 0) {
-                message.error("表单项未加载").then();
-                return;
-            }
-            setFields(prevFields => prevFields.map((field) => {
-                if (namePathEqual(field.props.name, name)) {
-                    return {
-                        ...field,
-                        props: {
-                            ...field.props,
-                            hidden: true,
-                            required: false
-                        }
-                    }
-                }
-                return field;
-            }));
-            validateContext.clear();
-        },
-
-        required: (name: NamePath, required: boolean) => {
-            if (fields.length == 0) {
-                message.error("表单项未加载").then();
-                return;
-            }
-            setFields(prevFields => prevFields.map((field) => {
-                if (namePathEqual(field.props.name, name)) {
-                    return {
-                        ...field,
-                        props: {
-                            ...field.props,
-                            required: required
-                        }
-                    }
-                }
-                return field;
-            }));
-            validateContext.clear();
-        },
-
-        show: (name: NamePath) => {
-            if (fields.length == 0) {
-                message.error("表单项未加载").then();
-                return;
-            }
-            setFields(prevFields => prevFields.map((field) => {
-                if (namePathEqual(field.props.name, name)) {
-                    return {
-                        ...field,
-                        props: {
-                            ...field.props,
-                            hidden: false
-                        }
-                    }
-                }
-                return field;
-            }));
-            validateContext.clear();
-        },
-
-        disable: (name: NamePath) => {
-            if (fields.length == 0) {
-                message.error("表单项未加载").then();
-                return;
-            }
-            setFields(prevFields => prevFields.map((field) => {
-                if (namePathEqual(field.props.name, name)) {
-                    return {
-                        ...field,
-                        props: {
-                            ...field.props,
-                            disabled: true
-                        }
-                    }
-                }
-                return field;
-            }));
-            validateContext.clear();
-        },
-
-        disableAll: () => {
-            if (fields.length == 0) {
-                message.error("表单项未加载").then();
-                return;
-            }
-            setFields(prevFields => prevFields.map((field) => {
-                return {
-                    ...field,
-                    props: {
-                        ...field.props,
-                        disabled: true
-                    }
-                }
-            }));
-            validateContext.clear();
-        },
-
-        enable: (name: NamePath) => {
-            if (fields.length == 0) {
-                message.error("表单项未加载").then();
-                return;
-            }
-            setFields(prevFields => prevFields.map((field) => {
-                if (namePathEqual(field.props.name, name)) {
-                    return {
-                        ...field,
-                        props: {
-                            ...field.props,
-                            disabled: false
-                        }
-                    }
-                }
-                return field;
-            }));
-            validateContext.clear();
-        },
-
-        enableAll: () => {
-            if (fields.length == 0) {
-                message.error("表单项未加载").then();
-                return;
-            }
-            setFields(prevFields => prevFields.map((field) => {
-                return {
-                    ...field,
-                    props: {
-                        ...field.props,
-                        disabled: false
-                    }
-                }
-            }));
-            validateContext.clear();
-        },
-
-        remove: (name: NamePath) => {
-            if (fields.length == 0) {
-                message.error("表单项未加载").then();
-                return;
-            }
-            setFields(prevFields => prevFields.filter((field) => !namePathEqual(field.props.name, name)));
-            validateContext.clear();
-        },
-
-        create: (field: FormField, index?: number) => {
-            if (fields.length == 0) {
-                message.error("表单项未加载").then();
-                return;
-            }
-            setFields(prevFields => {
-                const filteredFields = prevFields.filter((item) => item.props.name !== field.props.name);
-                if (index === undefined || index < 0) {
-                    return [...filteredFields, field];
-                } else {
-                    const newFields = [...filteredFields];
-                    newFields.splice(index, 0, field);
-                    return newFields;
-                }
-            });
-            validateContext.clear();
-        },
-
-        getFieldValue(name: NamePath): any {
-            return form.getFieldValue(name);
-        },
-
-        getFieldsValue(): any {
-            return form.getFieldsValue();
-        },
-
-        getFieldProps(name: NamePath): FormField | null {
-            for (const field of fields) {
-                if (namePathEqual(field.props.name, name)) {
-                    return field;
-                }
-            }
-            return null;
-        },
-
-        reloadOptions: (name: NamePath) => {
-            optionContext.notify(name);
-        },
-
-        reloadAllOptions: () => {
-            optionContext.notifyAll();
-        },
-
-        setFieldValue(name: NamePath, value: any): void {
-            form.setFieldValue(name, value);
-            reloadContext.notify(name);
-            validateContext?.validateField(name, formAction);
-        },
-
-        setFieldsValue(values: any): void {
-            form.setFieldsValue(values);
-            reloadContext.notifyAll();
-        },
-
-        setFields(fields: FiledData[]): void {
-            form.setFields(fields);
-        },
-
-        validate(): Promise<boolean> {
-            return validateContext.validate(formAction);
-        }
-    }
-
-    const formContextProps = {
-        formAction: formAction,
-        validateContext: validateContext,
-        reloadContext: reloadContext,
-        optionContext: optionContext
-    }
+    const formInstance = props.form? props.form : new FormInstance();
 
     const [fields, setFields] = React.useState<FormField[]>([]);
+    formInstance.setFieldsUpdateDispatch(setFields);
+
+    const formControl = formInstance.getFormControlInstance();
 
     const reloadFields = () => {
         if (props.loadFields) {
             props.loadFields().then(fields => {
                 setFields(fields);
+                formInstance.resetFields(fields);
             })
         }
     }
 
     useEffect(() => {
         reloadFields();
-    }, []);
-
-    React.useImperativeHandle(props.actionRef, () => {
-        return formAction
-    }, [fields]);
+    }, [props.loadFields]);
 
     return (
         <FormContext.Provider
-            value={formContextProps}
+            value={formInstance}
         >
             <AntForm
-                form={form}
+                form={formControl}
                 onFinish={(values) => {
                     props.onFinish && props.onFinish(values);
                 }}
@@ -380,5 +119,15 @@ const Form: React.FC<FormProps> = (props) => {
         </FormContext.Provider>
     )
 }
+
+type FormType = typeof FormComponent;
+type FormComponentType = FormType & {
+    useForm: ()=>FormInstance;
+};
+
+const Form = FormComponent as FormComponentType;
+Form.useForm = ()=>{
+    return new FormInstance();
+};
 
 export default Form;

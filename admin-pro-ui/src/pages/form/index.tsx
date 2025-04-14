@@ -1,6 +1,6 @@
 import React from 'react';
 import {PageContainer} from "@ant-design/pro-components";
-import Form, {FormAction} from "@/components/form";
+import Form from "@/components/form";
 import FormInput from "@/components/form/input";
 import {Button, Col, message, Row} from "antd";
 import {FormField} from "@/components/form/types";
@@ -19,9 +19,10 @@ import FormSelect from "@/components/form/select";
 import FormUploader from "@/components/form/uploder";
 import FormColor from "@/components/form/color";
 import FormCode from "@/components/form/code";
+import FormInstance from "@/components/form/domain/FormInstance";
 
 
-const FooterButtons: React.FC<{ formAction: React.RefObject<FormAction> }> = ({formAction}) => {
+const FooterButtons: React.FC<{ formInstance: FormInstance }> = ({formInstance}) => {
     const data = {
         user: {
             name: '张三',
@@ -54,83 +55,83 @@ const FooterButtons: React.FC<{ formAction: React.RefObject<FormAction> }> = ({f
         >
             <Button
                 onClick={async () => {
-                    const name = formAction.current?.getFieldValue(["user", "name"])
+                    const name = formInstance.getFieldValue(["user", "name"])
                     message.success(name);
                 }}
             >获取姓名</Button>
 
             <Button
                 onClick={async () => {
-                    formAction.current?.setFieldValue(["user", "name"], "123")
+                    formInstance.setFieldValue(["user", "name"], "123")
                 }}
             >设置姓名</Button>
 
             <Button
                 onClick={async () => {
-                    formAction.current?.validate();
+                    await formInstance.validate();
                 }}
             >验证表单</Button>
 
             <Button
                 onClick={async () => {
-                    formAction.current?.submit();
+                    await formInstance.submit();
                 }}
             >提交表单</Button>
 
             <Button
                 onClick={async () => {
-                    const values = formAction.current?.getFieldsValue();
+                    const values = formInstance.getFieldsValue();
                     message.success(JSON.stringify(values));
                 }}
             >获取表单值</Button>
 
             <Button
                 onClick={async () => {
-                    formAction.current?.reset();
+                    formInstance.reset();
                 }}
             >重置表单</Button>
 
             <Button
                 onClick={async () => {
-                    formAction.current?.setFieldsValue(data);
+                    formInstance.setFieldsValue(data);
                 }}
             >表单赋值</Button>
             <div></div>
 
             <Button
                 onClick={async () => {
-                    formAction.current?.enable(["user", "name"]);
+                    formInstance.enable(["user", "name"]);
                 }}
             >启用姓名字段</Button>
 
             <Button
                 onClick={async () => {
-                    formAction.current?.disable(["user", "name"]);
+                    formInstance.disable(["user", "name"]);
                 }}
             >禁用姓名字段</Button>
 
 
             <Button
                 onClick={async () => {
-                    formAction.current?.hidden(["user", "name"]);
+                    formInstance.hidden(["user", "name"]);
                 }}
             >隐藏姓名字段</Button>
 
             <Button
                 onClick={async () => {
-                    formAction.current?.show(["user", "name"]);
+                    formInstance.show(["user", "name"]);
                 }}
             >展示姓名字段</Button>
 
             <Button
                 onClick={async () => {
-                    formAction.current?.remove(["user", "name"]);
+                    formInstance.remove(["user", "name"]);
                 }}
             >删除姓名字段</Button>
 
             <Button
                 onClick={async () => {
-                    formAction.current?.create({
+                    formInstance.create({
                         props:{
                             required: true,
                             name: ['user', 'name'],
@@ -154,9 +155,8 @@ const FooterButtons: React.FC<{ formAction: React.RefObject<FormAction> }> = ({f
 }
 
 const FormPage = () => {
-
-    const leftFormAction = React.useRef<FormAction>(null);
-    const rightFormAction = React.useRef<FormAction>(null);
+    const leftFormInstance = Form.useForm();
+    const rightFormInstance = Form.useForm();
 
     const fields = [
         {
@@ -371,17 +371,16 @@ const FormPage = () => {
         },
     ] as FormField[];
 
-
     return (
         <PageContainer>
             <Row gutter={[24, 24]}>
                 <Col span={12}>
                     <Form
-                        actionRef={leftFormAction}
+                        form={leftFormInstance}
                         layout={"horizontal"}
                         footer={(
                             <FooterButtons
-                                formAction={leftFormAction}
+                                formInstance={leftFormInstance}
                             />
                         )}
                     >
@@ -567,10 +566,10 @@ const FormPage = () => {
 
                 <Col span={12}>
                     <Form
-                        actionRef={rightFormAction}
+                        form={rightFormInstance}
                         footer={(
                             <FooterButtons
-                                formAction={rightFormAction}
+                                formInstance={rightFormInstance}
                             />
                         )}
                         loadFields={async () => {

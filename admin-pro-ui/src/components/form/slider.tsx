@@ -6,7 +6,7 @@ import "./form.scss";
 
 const FormSlider: React.FC<FormItemProps> = (props) => {
 
-    const {formAction} = formFieldInit(props);
+    const {formContext} = formFieldInit(props);
 
     return (
         <Form.Item
@@ -35,8 +35,8 @@ const FormSlider: React.FC<FormItemProps> = (props) => {
                 }}
                 marks={props.sliderMarks}
                 onChange={(value:any) => {
-                    formAction?.setFieldValue(props.name, value);
-                    props.onChange && props.onChange(value, formAction);
+                    formContext?.setFieldValue(props.name, value);
+                    props.onChange && props.onChange(value, formContext);
                 }}
             />
         </Form.Item>

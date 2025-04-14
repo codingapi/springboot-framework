@@ -1,17 +1,17 @@
 import {FormValidateContext} from "@/components/form/validate";
 import {FormFieldOptionListenerContext, FormFieldReloadListenerContext} from "@/components/form/listener";
-import {FormInstance as MobileFormInstance} from "rc-field-form/es/interface";
+import {NamePath} from "rc-field-form/es/interface";
 import {FormField} from "@/components/form/types";
-import {NamePath} from "antd-mobile/es/components/form";
-import {Form as MobileForm, Toast} from "antd-mobile";
+import {Form as AntdForm, message} from "antd";
 import {FiledData, FormAction} from "@/components/form";
+import {FormInstance as AntdFormInstance} from "antd/es/form/hooks/useForm";
 import React from "react";
 
 class FormInstance {
     private readonly validateContext: FormValidateContext;
     private readonly reloadContext: FormFieldReloadListenerContext;
     private readonly optionContext: FormFieldOptionListenerContext;
-    private readonly formInstance: MobileFormInstance;
+    private readonly formInstance: AntdFormInstance;
     private readonly formAction: FormAction;
     private fields: FormField[];
 
@@ -21,7 +21,7 @@ class FormInstance {
         this.fieldsUpdateDispatch = fieldsUpdateDispatch;
     }
 
-    private updateFields = (resetFields:(prevState: FormField[]) => FormField[]) => {
+    private updateFields = (resetFields: (prevState: FormField[]) => FormField[]) => {
         this.fields = resetFields(this.fields);
         if (this.fieldsUpdateDispatch) {
             this.fieldsUpdateDispatch(resetFields);
@@ -60,7 +60,7 @@ class FormInstance {
 
     public hidden = (name: NamePath) => {
         if (this.fields.length == 0) {
-            Toast.show('表单项未加载');
+            message.error('表单项未加载').then();
             return;
         }
         this.updateFields(prevFields => prevFields.map((field) => {
@@ -81,11 +81,11 @@ class FormInstance {
 
     public required = (name: NamePath, required: boolean) => {
         if (this.fields.length == 0) {
-            Toast.show('表单项未加载');
+            message.error('表单项未加载').then();
             return;
         }
         this.updateFields(prevFields => prevFields.map((field) => {
-            if (this.namePathEqual(field.props.name,name)) {
+            if (this.namePathEqual(field.props.name, name)) {
                 return {
                     ...field,
                     props: {
@@ -101,11 +101,11 @@ class FormInstance {
 
     public show = (name: NamePath) => {
         if (this.fields.length == 0) {
-            Toast.show('表单项未加载');
+            message.error('表单项未加载').then();
             return;
         }
         this.updateFields(prevFields => prevFields.map((field) => {
-            if (this.namePathEqual(field.props.name,name)) {
+            if (this.namePathEqual(field.props.name, name)) {
                 return {
                     ...field,
                     props: {
@@ -121,11 +121,11 @@ class FormInstance {
 
     public disable = (name: NamePath) => {
         if (this.fields.length == 0) {
-            Toast.show('表单项未加载');
+            message.error('表单项未加载').then();
             return;
         }
         this.updateFields(prevFields => prevFields.map((field) => {
-            if (this.namePathEqual(field.props.name,name)) {
+            if (this.namePathEqual(field.props.name, name)) {
                 return {
                     ...field,
                     props: {
@@ -141,7 +141,7 @@ class FormInstance {
 
     public disableAll = () => {
         if (this.fields.length == 0) {
-            Toast.show('表单项未加载');
+            message.error('表单项未加载').then();
             return;
         }
         this.updateFields(prevFields => prevFields.map((field) => {
@@ -158,11 +158,11 @@ class FormInstance {
 
     public enable = (name: NamePath) => {
         if (this.fields.length == 0) {
-            Toast.show('表单项未加载');
+            message.error('表单项未加载').then();
             return;
         }
         this.updateFields(prevFields => prevFields.map((field) => {
-            if (this.namePathEqual(field.props.name,name)) {
+            if (this.namePathEqual(field.props.name, name)) {
                 return {
                     ...field,
                     props: {
@@ -178,7 +178,7 @@ class FormInstance {
 
     public enableAll = () => {
         if (this.fields.length == 0) {
-            Toast.show('表单项未加载');
+            message.error('表单项未加载').then();
             return;
         }
         this.updateFields(prevFields => prevFields.map((field) => {
@@ -195,16 +195,16 @@ class FormInstance {
 
     public remove = (name: NamePath) => {
         if (this.fields.length == 0) {
-            Toast.show('表单项未加载');
+            message.error('表单项未加载').then();
             return;
         }
-        this.updateFields(prevFields => prevFields.filter((field) => !this.namePathEqual(field.props.name,name)));
+        this.updateFields(prevFields => prevFields.filter((field) => !this.namePathEqual(field.props.name, name)));
         this.validateContext.clear();
     }
 
     public create = (field: FormField, index?: number) => {
         if (this.fields.length == 0) {
-            Toast.show('表单项未加载');
+            message.error('表单项未加载').then();
             return;
         }
         this.updateFields(prevFields => {
@@ -264,7 +264,7 @@ class FormInstance {
         return this.validateContext.validate(this);
     }
 
-    public resetFields = (fields:FormField[]) => {
+    public resetFields = (fields: FormField[]) => {
         this.fields = fields;
     }
 
@@ -272,7 +272,7 @@ class FormInstance {
         this.validateContext = new FormValidateContext();
         this.reloadContext = new FormFieldReloadListenerContext();
         this.optionContext = new FormFieldOptionListenerContext();
-        this.formInstance = MobileForm.useForm()[0];
+        this.formInstance = AntdForm.useForm()[0];
         this.fields = [];
         this.formAction = {
             submit: this.submit,
@@ -314,7 +314,7 @@ class FormInstance {
         return this.optionContext;
     }
 
-    public getFormControlInstance = ():MobileFormInstance => {
+    public getFormControlInstance = (): AntdFormInstance => {
         return this.formInstance;
     }
 
