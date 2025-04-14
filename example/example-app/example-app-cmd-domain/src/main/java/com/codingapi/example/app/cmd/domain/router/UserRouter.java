@@ -13,9 +13,9 @@ public class UserRouter {
 
     public void createOrUpdate(UserCmd.UpdateRequest request) {
         if (request.hasId()) {
-            userService.update(request.getId(), request.toMetric());
+            userService.update(request.getId(), request.toMetric(),request.isFlowManager());
         } else {
-            userService.create(request.toMetric());
+            userService.create(request.toMetric(),request.isFlowManager());
         }
     }
 

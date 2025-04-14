@@ -1,52 +1,47 @@
-import React from "react";
-import {ProForm, ProFormDigit, ProFormText, ProFormTextArea} from "@ant-design/pro-components";
+import React, {useEffect} from "react";
 import {FlowFormViewProps} from "@/components/flow/types";
-
+import Form from "@/components/form";
+import FormInput from "@/components/form/input";
+import ValidateUtils from "@/components/form/utils";
+import FormTextArea from "@/components/form/textarea";
 
 const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
 
+    useEffect(() => {
+        props.formInstance.setFieldsValue(props.data)
+    }, [props.dataVersion]);
+
     return (
-        <ProForm
-            submitter={false}
+        <Form
+            form={props.formInstance}
         >
 
-            <ProFormText
+            <FormInput
                 name={"id"}
                 hidden={true}
             />
 
-            <ProFormText
+            <FormInput
                 name={"username"}
                 hidden={true}
             />
 
-            <ProFormDigit
+            <FormInput
                 name={"days"}
                 label={"请假天数"}
-                fieldProps={{
-                    step: 1
-                }}
-                rules={[
-                    {
-                        required: true,
-                        message: "请输入请假天数"
-                    }
-                ]}
+               inputType={"number"}
+               required={true}
+                validateFunction={ValidateUtils.validateNotEmpty}
             />
 
-            <ProFormTextArea
+            <FormTextArea
                 name={"desc"}
                 label={"请假原因"}
-                rules={[
-                    {
-                        required: true,
-                        message: "请输入请假原因"
-                    }
-                ]}
+                required={true}
+                validateFunction={ValidateUtils.validateNotEmpty}
             />
 
-
-        </ProForm>
+        </Form>
     )
 }
 
