@@ -9,7 +9,7 @@ import {FlowRecordContext} from "@/components/flow/domain/FlowRecordContext";
 import {FlowReduxState, flowStore, initState, updateState} from "@/components/flow/store/FlowSlice";
 import {detail} from "@/api/flow";
 import {Provider, useDispatch, useSelector} from "react-redux";
-import { Skeleton } from "antd";
+import {Skeleton} from "antd";
 import FlowPage from "@/components/flow/components/FlowPage";
 import "./index.scss";
 
@@ -34,7 +34,7 @@ interface FlowViewReactContextProps {
 export const FlowViewReactContext = createContext<FlowViewReactContextProps | null>(null);
 
 
-const $FlowView:React.FC<FlowViewProps> = (props)=>{
+const $FlowView: React.FC<FlowViewProps> = (props) => {
 
     const [data, setData] = React.useState<any>(null);
 
@@ -63,14 +63,14 @@ const $FlowView:React.FC<FlowViewProps> = (props)=>{
     }
 
     useEffect(() => {
-        if(data){
+        if (data) {
             const dataVersion = Math.random();
-            dispatch(updateState({dataVersion:dataVersion}));
+            dispatch(updateState({dataVersion: dataVersion}));
         }
     }, [data]);
 
     useEffect(() => {
-        return ()=>{
+        return () => {
             dispatch(initState());
         }
     }, []);
@@ -83,8 +83,8 @@ const $FlowView:React.FC<FlowViewProps> = (props)=>{
         <>
             {!data && (
                 <>
-                    <Skeleton  active={true} className={"flow-skeleton-header"}/>
-                    <Skeleton paragraph={{rows:4}} active={true} className={"flow-skeleton-body"}/>
+                    <Skeleton active={true} className={"flow-skeleton-header"}/>
+                    <Skeleton paragraph={{rows: 4}} active={true} className={"flow-skeleton-body"}/>
                 </>
             )}
             {data && (

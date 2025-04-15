@@ -166,6 +166,10 @@ export interface FlowViewProps {
     // 流程的设计编号
     workCode?: string;
 
+    visible:boolean;
+
+    setVisible:(visible:boolean)=>void;
+
     // 预览模式
     review?: boolean;
 

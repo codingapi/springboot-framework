@@ -4,12 +4,7 @@ import {Modal} from "antd";
 import FlowView from "@/components/flow/view/index";
 import "./FlowModelView.scss";
 
-interface FlowModelViewProps extends FlowViewProps{
-    visible:boolean;
-    setVisible:(visible:boolean)=>void;
-}
-
- const FlowModelView:React.FC<FlowModelViewProps> = (props)=>{
+ const FlowModelView:React.FC<FlowViewProps> = (props)=>{
     return (
         <Modal
             className={"flow-modal"}
