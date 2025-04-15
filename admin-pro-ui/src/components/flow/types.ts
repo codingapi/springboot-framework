@@ -150,7 +150,7 @@ export interface FlowFormViewProps {
     // 表单数据
     data: FlowFormParams;
     // 表单控制对象
-    formInstance: FormInstance;
+    form: FormInstance;
     // 数据版本
     dataVersion?: number;
 }

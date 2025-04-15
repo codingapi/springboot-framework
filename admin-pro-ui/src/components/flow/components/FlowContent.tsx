@@ -3,7 +3,12 @@ import {FlowFormViewProps} from "@/components/flow/types";
 import {FlowViewReactContext} from "@/components/flow/view";
 import {useSelector} from "react-redux";
 import {FlowReduxState} from "@/components/flow/store/FlowSlice";
-import {Tabs, TabsProps} from "antd";
+import {Divider, Tabs, TabsProps} from "antd";
+import FlowFormOpinion from "@/components/flow/components/FlowFormOpinion";
+import FlowHistory from "@/components/flow/components/FlowHistory";
+import FlowOpinion from "@/components/flow/components/FlowOpinion";
+import FlowChart from "@/components/flow/components/FlowChart";
+import FlowHistoryLine from "@/components/flow/components/FlowHistoryLine";
 
 const FlowContent = () => {
     const flowViewReactContext = useContext(FlowViewReactContext);
@@ -18,6 +23,7 @@ const FlowContent = () => {
     const opinionVisible = useSelector((state: FlowReduxState) => state.flow.opinionVisible);
     const dataVersion = useSelector((state: FlowReduxState) => state.flow.dataVersion);
     const contentHiddenVisible = useSelector((state: FlowReduxState) => state.flow.contentHiddenVisible);
+    const [currentTab, setCurrentTab] = React.useState('detail');
 
     useEffect(() => {
         if (!flowRecordContext?.isEditable()) {
@@ -46,7 +52,44 @@ const FlowContent = () => {
 
     return (
         <div className={"flow-view-content"} style={style}>
-            <Tabs items={items}/>
+            <Tabs
+                items={items}
+                activeKey={currentTab}
+                onChange={(value) => {
+                    setCurrentTab(value)
+                }}/>
+
+            {currentTab ==='detail' && (
+                <>
+                    {formInstance && (
+                        <FlowFormView
+                            data={formParams}
+                            form={formInstance}
+                            dataVersion={dataVersion}
+                        />
+                    )}
+
+                    {opinionVisible && (
+                        <FlowFormOpinion/>
+                    )}
+                </>
+            )}
+
+            {currentTab ==='record' && (
+                <>
+                    <FlowHistory/>
+                    <Divider>审批记录</Divider>
+                    <FlowOpinion/>
+                </>
+            )}
+
+            {currentTab ==='chart' && (
+                <>
+                    <FlowChart/>
+                    <Divider>流转历史</Divider>
+                    <FlowHistoryLine/>
+                </>
+            )}
         </div>
     )
 }

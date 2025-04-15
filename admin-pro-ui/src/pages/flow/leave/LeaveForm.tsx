@@ -8,12 +8,16 @@ import FormTextArea from "@/components/form/textarea";
 const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
 
     useEffect(() => {
-        props.formInstance.setFieldsValue(props.data)
+        if (props.dataVersion && props.data) {
+            props.form?.setFieldsValue({
+                ...props.data
+            });
+        }
     }, [props.dataVersion]);
 
     return (
         <Form
-            form={props.formInstance}
+            form={props.form}
         >
 
             <FormInput
