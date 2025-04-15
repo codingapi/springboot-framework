@@ -55,9 +55,8 @@ export interface FlowUser {
     [key: string]: any;
 }
 
-
 // 自定义按钮类型
-export type CustomButtonType =
+export type ButtonType =
     | 'RELOAD'  // 重新加载
     | 'SAVE'    // 保存
     | 'START'   // 发起
@@ -72,6 +71,18 @@ export type CustomButtonType =
     | 'CUSTOM'  // 自定义后端接口
     | 'VIEW'    // 自定义前端事件
     | 'REMOVE'; // 删除
+
+
+// 流程自定义按钮
+export interface FlowButton {
+    id: string;
+    eventKey: string;
+    groovy: string;
+    name: string;
+    order: number;
+    style: any;
+    type: ButtonType;
+}
 
 // 节点属性
 export interface NodeProperties {
@@ -94,7 +105,7 @@ export interface NodeProperties {
 export interface NodeButtonProperties {
     id:string;
     name:string;
-    type:CustomButtonType;
+    type:ButtonType;
     style:string;
     order:number;
     groovy:string;
@@ -108,6 +119,23 @@ export interface SettingPanelProps {
     setVisible: (visible: boolean) => void;
     properties: any;
     onSettingChange: (values: any) => void;
+}
+
+// 结果展示数据项目
+export interface FlowResultItem {
+    label: string,
+    value: string
+}
+
+
+type FlowResultMessageState = 'success'|'info'|'warning';
+
+// 结果展示数据信息
+export interface FlowResultMessage {
+    title: string,
+    closeable: boolean,
+    state: FlowResultMessageState,
+    items?: FlowResultItem[]
 }
 
 // 表单参数
@@ -137,6 +165,10 @@ export interface FlowViewProps {
     id?: string;
     // 流程的设计编号
     workCode?: string;
+
+    // 预览模式
+    review?: boolean;
+
     // 流程的视图数据
     view: React.ComponentType<FlowFormViewProps> | FlowFormView;
     // 表单参数，参数仅当在发起节点时才会传递

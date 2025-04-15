@@ -1,6 +1,6 @@
 import React from "react";
 import {LogicFlow} from "@logicflow/core";
-import {CustomButtonType, NodeButtonProperties, NodeProperties, NodeType} from "@/components/flow/types";
+import {ButtonType, NodeButtonProperties, NodeProperties, NodeType} from "@/components/flow/types";
 import {message} from "antd";
 import {isEmpty} from "lodash-es";
 import NodeData = LogicFlow.NodeData;
@@ -72,7 +72,7 @@ class FlowPanelContext {
         },
     ] as {
         label: string;
-        value: CustomButtonType;
+        value: ButtonType;
     }[];
 
     constructor(lfRef: React.RefObject<LogicFlow>) {
