@@ -1,5 +1,3 @@
-import React from "react";
-import {FormAction} from "@/components/form";
 import {FlowRecordContext} from "@/components/flow/domain/FlowRecordContext";
 import {FlowStateContext} from "@/components/flow/domain/FlowStateContext";
 import * as flowApi from "@/api/flow";
@@ -33,7 +31,7 @@ export class FlowEventContext {
     }
 
     private getRequestBody = () => {
-        const formData = this.opinionInstance.getFieldsValue();
+        const formData = this.flowInstance.getFieldsValue();
         const flowData = this.flowRecordContext.getFlowFormParams();
         const workCode = this.flowRecordContext.getWorkCode();
         const recordId = this.flowStateContext.getRecordId();

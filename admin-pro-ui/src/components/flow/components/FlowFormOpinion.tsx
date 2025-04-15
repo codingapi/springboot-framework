@@ -16,6 +16,7 @@ const FlowFormOpinion = ()=>{
         <>
             <Form
                 form={opinionInstance}
+                layout={"vertical"}
                 loadFields={async ()=>{
                     return [
                         {

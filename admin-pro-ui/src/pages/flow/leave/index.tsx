@@ -59,7 +59,7 @@ const LeavePage = () => {
                 view={LeaveForm}
                 workCode={"leave"}
                 formParams={{
-                    clazzName: 'com.codingapi.example.domain.Leave',
+                    clazzName: 'com.codingapi.example.infra.flow.form.LeaveForm',
                     username: username
                 }}
             />

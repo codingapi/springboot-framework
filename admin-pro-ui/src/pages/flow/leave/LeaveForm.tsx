@@ -9,6 +9,7 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
 
     useEffect(() => {
         if (props.dataVersion && props.data) {
+            console.log('data',props.data);
             props.form?.setFieldsValue({
                 ...props.data
             });
@@ -18,6 +19,7 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
     return (
         <Form
             form={props.form}
+            layout={"vertical"}
         >
 
             <FormInput
