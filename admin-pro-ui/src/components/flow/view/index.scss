@@ -16,19 +16,30 @@ $flow-footer-height: 80px;
   width: 100%;
 }
 
-
-.flow-view-header {
-  height: $flow-footer-height;
+.flow-header{
   display: flex;
+  justify-content: space-between;
   align-items: center;
+
+  .flow-header-left{
+    font-size: 16pt;
+  }
+
+  .flow-header-right{
+
+  }
+
+}
+
+.flow-buttons-content {
+  display: flex;
   justify-content: center;
 
-  .flow-view-header-button {
-    margin: 10px;
+  .flow-buttons-item {
     font-size: 14px;
-    padding: 8px 8px;
-    width: 100%;
-    border-color: $theme-primary-color;
+    margin: 5px 5px;
+    padding-left: 20px;
+    padding-right: 20px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

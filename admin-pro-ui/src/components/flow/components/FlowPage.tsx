@@ -7,7 +7,7 @@ import {
     UserSelectFormProps,
     UserSelectFormViewKey
 } from "@/components/flow/types";
-import FlowHeader from "@/components/flow/components/FlowHeader";
+import FlowButton from "@/components/flow/components/FlowButton";
 import {FlowReduxState, updateState} from "@/components/flow/store/FlowSlice";
 import {FlowTriggerContext} from "@/components/flow/domain/FlowTriggerContext";
 import {FlowStateContext} from "@/components/flow/domain/FlowStateContext";
@@ -21,6 +21,7 @@ import {FlowViewReactContext} from "../view";
 import FlowResult from "@/components/flow/components/FlowResult";
 import FlowContent from "@/components/flow/components/FlowContent";
 import FlowForm404 from "@/components/flow/components/FlowForm404";
+import FlowHeader from "@/components/flow/components/FlowHeader";
 
 
 interface FlowPageProps extends FlowViewProps {
@@ -75,6 +76,7 @@ const FlowPage:React.FC<FlowPageProps> = (props)=>{
             }}>
                 <div className={"flow-view"}>
                     <FlowHeader setVisible={props.setVisible}/>
+
                     {currentState.result && (
                         <FlowResult/>
                     )}

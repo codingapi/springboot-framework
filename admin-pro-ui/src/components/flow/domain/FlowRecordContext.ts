@@ -42,6 +42,12 @@ export class FlowRecordContext {
         return null;
     }
 
+    // 获取当前的节点信息
+    getCurrentNode=()=>{
+        const currentNodeCode = this.getNodeCode();
+        return this.getNode(currentNodeCode);
+    }
+
     // 获取当前节点的表单数据 （内部使用）
     private getNodeState = (code: string) => {
         const historyRecords = this.data.historyRecords || [];

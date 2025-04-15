@@ -3,9 +3,9 @@ import {FlowFormViewProps} from "@/components/flow/types";
 import {FlowViewReactContext} from "@/components/flow/view";
 import {useSelector} from "react-redux";
 import {FlowReduxState} from "@/components/flow/store/FlowSlice";
-import {Tabs} from "antd";
+import {Tabs, TabsProps} from "antd";
 
-const FlowContent= () => {
+const FlowContent = () => {
     const flowViewReactContext = useContext(FlowViewReactContext);
 
     const flowRecordContext = flowViewReactContext?.flowRecordContext;
@@ -20,19 +20,33 @@ const FlowContent= () => {
     const contentHiddenVisible = useSelector((state: FlowReduxState) => state.flow.contentHiddenVisible);
 
     useEffect(() => {
-        if(!flowRecordContext?.isEditable()){
-            setTimeout(()=>{
+        if (!flowRecordContext?.isEditable()) {
+            setTimeout(() => {
                 formInstance?.disableAll();
-            },100);
+            }, 100);
         }
     }, []);
 
-    const style = contentHiddenVisible ? {"display":"none"} : {};
+    const style = contentHiddenVisible ? {"display": "none"} : {};
+
+    const items = [
+        {
+            label: '流程详情',
+            key: 'detail'
+        },
+        {
+            label: '流程记录',
+            key: 'record'
+        },
+        {
+            label: '流程图',
+            key: 'chart'
+        }
+    ] as TabsProps['items'];
+
     return (
         <div className={"flow-view-content"} style={style}>
-            <Tabs>
-
-            </Tabs>
+            <Tabs items={items}/>
         </div>
     )
 }
