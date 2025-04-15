@@ -2,7 +2,7 @@ import {FormValidateContext} from "@/components/form/validate";
 import {FormFieldOptionListenerContext, FormFieldReloadListenerContext} from "@/components/form/listener";
 import {NamePath} from "rc-field-form/es/interface";
 import {FormField} from "@/components/form/types";
-import {Form as AntdForm, message} from "antd";
+import {Form as AntdForm} from "antd";
 import {FiledData, FormAction} from "@/components/form";
 import {FormInstance as AntdFormInstance} from "antd/es/form/hooks/useForm";
 import React from "react";
@@ -60,7 +60,6 @@ class FormInstance {
 
     public hidden = (name: NamePath) => {
         if (this.fields.length == 0) {
-            message.error('表单项未加载').then();
             return;
         }
         this.updateFields(prevFields => prevFields.map((field) => {
@@ -81,7 +80,6 @@ class FormInstance {
 
     public required = (name: NamePath, required: boolean) => {
         if (this.fields.length == 0) {
-            message.error('表单项未加载').then();
             return;
         }
         this.updateFields(prevFields => prevFields.map((field) => {
@@ -101,7 +99,6 @@ class FormInstance {
 
     public show = (name: NamePath) => {
         if (this.fields.length == 0) {
-            message.error('表单项未加载').then();
             return;
         }
         this.updateFields(prevFields => prevFields.map((field) => {
@@ -121,7 +118,6 @@ class FormInstance {
 
     public disable = (name: NamePath) => {
         if (this.fields.length == 0) {
-            message.error('表单项未加载').then();
             return;
         }
         this.updateFields(prevFields => prevFields.map((field) => {
@@ -141,7 +137,6 @@ class FormInstance {
 
     public disableAll = () => {
         if (this.fields.length == 0) {
-            message.error('表单项未加载').then();
             return;
         }
         this.updateFields(prevFields => prevFields.map((field) => {
@@ -158,7 +153,6 @@ class FormInstance {
 
     public enable = (name: NamePath) => {
         if (this.fields.length == 0) {
-            message.error('表单项未加载').then();
             return;
         }
         this.updateFields(prevFields => prevFields.map((field) => {
@@ -178,7 +172,6 @@ class FormInstance {
 
     public enableAll = () => {
         if (this.fields.length == 0) {
-            message.error('表单项未加载').then();
             return;
         }
         this.updateFields(prevFields => prevFields.map((field) => {
@@ -195,7 +188,6 @@ class FormInstance {
 
     public remove = (name: NamePath) => {
         if (this.fields.length == 0) {
-            message.error('表单项未加载').then();
             return;
         }
         this.updateFields(prevFields => prevFields.filter((field) => !this.namePathEqual(field.props.name, name)));
@@ -204,7 +196,6 @@ class FormInstance {
 
     public create = (field: FormField, index?: number) => {
         if (this.fields.length == 0) {
-            message.error('表单项未加载').then();
             return;
         }
         this.updateFields(prevFields => {

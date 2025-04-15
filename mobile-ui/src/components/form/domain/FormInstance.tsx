@@ -3,7 +3,7 @@ import {FormFieldOptionListenerContext, FormFieldReloadListenerContext} from "@/
 import {FormInstance as MobileFormInstance} from "rc-field-form/es/interface";
 import {FormField} from "@/components/form/types";
 import {NamePath} from "antd-mobile/es/components/form";
-import {Form as MobileForm, Toast} from "antd-mobile";
+import {Form as MobileForm} from "antd-mobile";
 import {FiledData, FormAction} from "@/components/form";
 import React from "react";
 
@@ -60,7 +60,6 @@ class FormInstance {
 
     public hidden = (name: NamePath) => {
         if (this.fields.length == 0) {
-            Toast.show('表单项未加载');
             return;
         }
         this.updateFields(prevFields => prevFields.map((field) => {
@@ -81,7 +80,6 @@ class FormInstance {
 
     public required = (name: NamePath, required: boolean) => {
         if (this.fields.length == 0) {
-            Toast.show('表单项未加载');
             return;
         }
         this.updateFields(prevFields => prevFields.map((field) => {
@@ -101,7 +99,6 @@ class FormInstance {
 
     public show = (name: NamePath) => {
         if (this.fields.length == 0) {
-            Toast.show('表单项未加载');
             return;
         }
         this.updateFields(prevFields => prevFields.map((field) => {
@@ -121,7 +118,6 @@ class FormInstance {
 
     public disable = (name: NamePath) => {
         if (this.fields.length == 0) {
-            Toast.show('表单项未加载');
             return;
         }
         this.updateFields(prevFields => prevFields.map((field) => {
@@ -141,7 +137,6 @@ class FormInstance {
 
     public disableAll = () => {
         if (this.fields.length == 0) {
-            Toast.show('表单项未加载');
             return;
         }
         this.updateFields(prevFields => prevFields.map((field) => {
@@ -158,7 +153,6 @@ class FormInstance {
 
     public enable = (name: NamePath) => {
         if (this.fields.length == 0) {
-            Toast.show('表单项未加载');
             return;
         }
         this.updateFields(prevFields => prevFields.map((field) => {
@@ -178,7 +172,6 @@ class FormInstance {
 
     public enableAll = () => {
         if (this.fields.length == 0) {
-            Toast.show('表单项未加载');
             return;
         }
         this.updateFields(prevFields => prevFields.map((field) => {
@@ -195,7 +188,6 @@ class FormInstance {
 
     public remove = (name: NamePath) => {
         if (this.fields.length == 0) {
-            Toast.show('表单项未加载');
             return;
         }
         this.updateFields(prevFields => prevFields.filter((field) => !this.namePathEqual(field.props.name,name)));
@@ -204,7 +196,6 @@ class FormInstance {
 
     public create = (field: FormField, index?: number) => {
         if (this.fields.length == 0) {
-            Toast.show('表单项未加载');
             return;
         }
         this.updateFields(prevFields => {
