@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Button, Space} from "antd";
+import {Button, message, Space} from "antd";
 import ComponentBus from "@/framework/ComponentBus";
 import {HeaderProps} from "@/gateway";
 import HeaderDefault from "@/gateway/default/Header";
@@ -22,6 +22,10 @@ const MircoPage = () => {
         const {remoteUrl, scope, module} = values;
         ComponentBus.getInstance()
             .registerRemoteComponent(HeaderKey, remoteUrl, scope, module)
+            .catch(error=>{
+                console.error("load remote component error", error);
+                message.error('load remote component error');
+            })
             .finally(() => {
                 setVisible(false);
             });
@@ -35,8 +39,8 @@ const MircoPage = () => {
                 <Space>
                     <Button onClick={() => {
                         form.setFieldsValue({
-                            remoteUrl: "http://localhost:4000/remoteEntry.js",
-                            scope: "MircoApp2",
+                            remoteUrl: "http://localhost:3000/remoteEntry.js",
+                            scope: "MircoApp",
                             module: "./Header"
                         })
                         setVisible(true);
