@@ -18,6 +18,10 @@ const MircoPage = () => {
 
     const [form] = ProForm.useForm();
 
+    const refreshPage = ()=>{
+        setPageVersion(Math.random());
+    }
+
     const handlerLoadComponent = async (values: any) => {
         const {remoteUrl, scope, module} = values;
         ComponentBus.getInstance()
@@ -28,6 +32,7 @@ const MircoPage = () => {
             })
             .finally(() => {
                 setVisible(false);
+                refreshPage();
             });
     }
 
@@ -48,7 +53,7 @@ const MircoPage = () => {
 
                     <Button onClick={() => {
                         ComponentBus.getInstance().removeComponent(HeaderKey);
-                        setPageVersion(Math.random());
+                        refreshPage();
                     }}>remove remote component</Button>
                 </Space>
             </div>
