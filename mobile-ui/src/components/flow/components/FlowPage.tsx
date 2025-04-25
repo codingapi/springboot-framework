@@ -18,7 +18,7 @@ import FlowContent from "@/components/flow/components/FlowContent";
 import FlowFooter from "@/components/flow/components/FlowFooter";
 import {FlowViewReactContext} from "@/components/flow/view";
 import FlowForm404 from "@/components/flow/components/FlowForm404";
-import {getComponent} from "@/framework/ComponentBus";
+import ComponentBus from "@/framework/ComponentBus";
 import {FlowTriggerContext} from "@/components/flow/domain/FlowTriggerContext";
 import {FlowButtonClickContext} from "@/components/flow/domain/FlowButtonClickContext";
 
@@ -48,9 +48,9 @@ const FlowPage: React.FC<FlowPageProps> = (props) => {
     const FlowFormView = flowRecordContext.getFlowFormView() as React.ComponentType<FlowFormViewProps>;
 
     // 延期表单视图
-    const PostponedFormView = getComponent(PostponedFormViewKey) as React.ComponentType<PostponedFormProps>;
+    const PostponedFormView = ComponentBus.getInstance().getComponent<PostponedFormProps>(PostponedFormViewKey);
     // 选人表单视图
-    const UserSelectFormView = getComponent(UserSelectFormViewKey) as React.ComponentType<UserSelectFormProps>;
+    const UserSelectFormView = ComponentBus.getInstance().getComponent<UserSelectFormProps>(UserSelectFormViewKey);
 
     const version = useSelector((state: FlowReduxState) => state.flow.version);
 
