@@ -7,7 +7,6 @@ import {
     UserSelectFormProps,
     UserSelectFormViewKey
 } from "@/components/flow/types";
-import FlowButton from "@/components/flow/components/FlowButton";
 import {FlowReduxState, updateState} from "@/components/flow/store/FlowSlice";
 import {FlowTriggerContext} from "@/components/flow/domain/FlowTriggerContext";
 import {FlowStateContext} from "@/components/flow/domain/FlowStateContext";
@@ -16,12 +15,12 @@ import {FlowRecordContext} from "@/components/flow/domain/FlowRecordContext";
 import {useDispatch, useSelector} from "react-redux";
 import {FlowEventContext} from "@/components/flow/domain/FlowEventContext";
 import {FlowButtonClickContext} from "@/components/flow/domain/FlowButtonClickContext";
-import {getComponent} from "@/framework/ComponentBus";
 import {FlowViewReactContext} from "../view";
 import FlowResult from "@/components/flow/components/FlowResult";
 import FlowContent from "@/components/flow/components/FlowContent";
 import FlowForm404 from "@/components/flow/components/FlowForm404";
 import FlowHeader from "@/components/flow/components/FlowHeader";
+import ComponentBus from "@/framework/ComponentBus";
 
 
 interface FlowPageProps extends FlowViewProps {
@@ -49,9 +48,9 @@ const FlowPage:React.FC<FlowPageProps> = (props)=>{
     const FlowFormView = flowRecordContext.getFlowFormView() as React.ComponentType<FlowFormViewProps>;
 
     // 延期表单视图
-    const PostponedFormView = getComponent(PostponedFormViewKey) as React.ComponentType<PostponedFormProps>;
+    const PostponedFormView = ComponentBus.getInstance().getComponent<PostponedFormProps>(PostponedFormViewKey);
     // 选人表单视图
-    const UserSelectFormView = getComponent(UserSelectFormViewKey) as React.ComponentType<UserSelectFormProps>;
+    const UserSelectFormView = ComponentBus.getInstance().getComponent<UserSelectFormProps>(UserSelectFormViewKey);
 
     const version = useSelector((state: FlowReduxState) => state.flow.version);
 

@@ -3,7 +3,7 @@ import {Button, Divider, Space} from "antd";
 import {EyeOutlined, SettingOutlined} from "@ant-design/icons";
 import GroovyScript from "@/components/flow/utils/script";
 import ScriptModal from "@/components/flow/nodes/panel/ScriptModal";
-import {getComponent} from "@/framework/ComponentBus";
+import ComponentBus from "@/framework/ComponentBus";
 import ValidateUtils from "@/components/form/utils";
 import FormSelect from "@/components/form/select";
 import FormSwitch from "@/components/form/switch";
@@ -31,7 +31,7 @@ const NodePanel: React.FC<NodePanelProps> = (props) => {
     const [operatorMatcherType, setOperatorMatcherType] = React.useState(props.data?.operatorMatcherType);
 
     // 用户选人视图
-    const UserSelectView = getComponent(UserSelectFormViewKey) as React.ComponentType<UserSelectFormProps>;
+    const UserSelectView = ComponentBus.getInstance().getComponent<UserSelectFormProps>(UserSelectFormViewKey);
 
     return (
         <>

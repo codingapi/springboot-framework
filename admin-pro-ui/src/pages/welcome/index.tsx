@@ -14,7 +14,6 @@ const WelcomePage = () => {
             <ul>3. 管理权限</ul>
             <ul>4. 动态菜单</ul>
             <ul>5. 动态加载组件</ul>
-
         </PageContainer>
     );
 }

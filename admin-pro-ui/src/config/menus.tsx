@@ -22,6 +22,12 @@ export const menus = [
         page: 'form',
     },
     {
+        path: '/mirco',
+        name: '微前端',
+        icon: "FormOutlined",
+        page: 'mirco',
+    },
+    {
         path: '/flow',
         name: '流程',
         icon: "CiOutlined",
