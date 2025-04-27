@@ -1,6 +1,6 @@
 import React from "react";
 import {ModalForm, ProFormDigit} from "@ant-design/pro-components";
-import {PostponedFormProps} from "@/components/flow/types";
+import {PostponedFormProps} from "@codingapi/ui-framework";
 
 
 const PostponedFormView:React.FC<PostponedFormProps> = (props)=>{

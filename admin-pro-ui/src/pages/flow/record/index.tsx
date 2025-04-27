@@ -13,7 +13,7 @@ import moment from "moment";
 import {message, Tabs} from "antd";
 import "./index.scss";
 import LeaveForm from "@/pages/flow/leave/LeaveForm";
-import FlowModelView from "@/components/flow/view/FlowModelView";
+import {FlowModelView} from "@codingapi/flow-pc";
 
 const FlowRecordPage = () => {
 

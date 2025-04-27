@@ -1,8 +1,7 @@
 import React, {useEffect} from "react";
-import {UserSelectFormProps} from "@/components/flow/types";
+import {UserSelectFormProps} from "@codingapi/ui-framework";
 import {ModalForm, ProForm, ProFormSelect} from "@ant-design/pro-components";
 import {users} from "@/api/user";
-
 
 const UserSelectView: React.FC<UserSelectFormProps> = (props) => {
 

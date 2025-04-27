@@ -1,5 +1,5 @@
 import React from "react";
-import Flow, {FlowActionType} from "@/components/flow";
+import {Flow,FlowActionType} from "@codingapi/flow-pc";
 import {ActionType, PageContainer, ProTable} from "@ant-design/pro-components";
 import {changeState, copy, list, remove, save, schema} from "@/api/flow";
 import {Button, Drawer, message, Modal, Popconfirm, Space} from "antd";
