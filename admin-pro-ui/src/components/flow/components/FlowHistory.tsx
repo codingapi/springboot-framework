@@ -1,7 +1,7 @@
 import React, {useContext} from "react";
 import {FlowViewReactContext} from "@/components/flow/view";
 import Descriptions from "@/components/descriptions";
-import {FormField} from "@/components/form/types";
+import {FormField} from "@codingapi/ui-framework";
 import moment from "moment";
 import {Tag} from "antd";
 

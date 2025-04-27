@@ -3,11 +3,8 @@ import Flow, {FlowActionType} from "@/components/flow";
 import {ActionType, PageContainer, ProTable} from "@ant-design/pro-components";
 import {changeState, copy, list, remove, save, schema} from "@/api/flow";
 import {Button, Drawer, message, Modal, Popconfirm, Space} from "antd";
-import Form from "@/components/form";
-import FormInput from "@/components/form/input";
-import ValidateUtils from "@/components/form/utils";
-import FormTextArea from "@/components/form/textarea";
-import FormSwitch from "@/components/form/switch";
+import {Form,FormInput,FormTextArea,FormSwitch} from "@codingapi/form-pc";
+import {ValidateUtils} from "@codingapi/ui-framework";
 
 const FlowPage = () => {
 

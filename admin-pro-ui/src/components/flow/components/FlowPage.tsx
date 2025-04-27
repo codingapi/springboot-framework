@@ -10,7 +10,7 @@ import {
 import {FlowReduxState, updateState} from "@/components/flow/store/FlowSlice";
 import {FlowTriggerContext} from "@/components/flow/domain/FlowTriggerContext";
 import {FlowStateContext} from "@/components/flow/domain/FlowStateContext";
-import Form from "@/components/form";
+import {Form} from "@codingapi/form-pc";
 import {FlowRecordContext} from "@/components/flow/domain/FlowRecordContext";
 import {useDispatch, useSelector} from "react-redux";
 import {FlowEventContext} from "@/components/flow/domain/FlowEventContext";
@@ -20,7 +20,7 @@ import FlowResult from "@/components/flow/components/FlowResult";
 import FlowContent from "@/components/flow/components/FlowContent";
 import FlowForm404 from "@/components/flow/components/FlowForm404";
 import FlowHeader from "@/components/flow/components/FlowHeader";
-import ComponentBus from "@/framework/ComponentBus";
+import {ComponentBus} from "@codingapi/ui-framework";
 
 
 interface FlowPageProps extends FlowViewProps {

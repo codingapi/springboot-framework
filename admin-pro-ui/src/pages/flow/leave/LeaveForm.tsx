@@ -1,9 +1,7 @@
 import React, {useEffect} from "react";
 import {FlowFormViewProps} from "@/components/flow/types";
-import Form from "@/components/form";
-import FormInput from "@/components/form/input";
-import ValidateUtils from "@/components/form/utils";
-import FormTextArea from "@/components/form/textarea";
+import {Form,FormInput,FormTextArea} from "@codingapi/form-pc";
+import {ValidateUtils} from "@codingapi/ui-framework";
 
 const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
 

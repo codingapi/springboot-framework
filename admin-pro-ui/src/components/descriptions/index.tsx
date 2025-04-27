@@ -1,5 +1,5 @@
 import React, {useEffect, useImperativeHandle} from "react";
-import {FormField} from "@/components/form/types";
+import {FormField} from "@codingapi/ui-framework";
 import "./index.scss";
 
 export interface DescriptionsAction {
@@ -36,7 +36,7 @@ const Descriptions: React.FC<DescriptionsProps> = (props) => {
                     props.columns?.map(item => {
                         promise.push(new Promise<any>((resolve, reject) => {
                             props.dataConvert?.(item, data).then(value => {
-                                data[item.props.name] = value;
+                                data[item.props.name as string] = value;
                                 resolve(value);
                             }).catch(reject);
                         }));
@@ -73,7 +73,7 @@ const Descriptions: React.FC<DescriptionsProps> = (props) => {
                 .map((item) => {
                     const key = item.props.name;
                     const label = item.props.label as string || "";
-                    const value = data[key];
+                    const value = data[key as string];
                     const valueType = typeof value === 'object' ? 'object' : 'string';
                     return (
                         <div className={"descriptions-list-item"}>

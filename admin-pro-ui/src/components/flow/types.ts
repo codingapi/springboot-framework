@@ -1,5 +1,4 @@
-// 节点状态
-import FormInstance from "@/components/form/domain/FormInstance";
+import {FormInstance} from "@codingapi/ui-framework";
 
 export type NodeState = "done" | "wait" | "undone" | "current";
 

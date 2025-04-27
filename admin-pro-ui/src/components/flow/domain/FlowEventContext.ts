@@ -5,7 +5,7 @@ import {FlowUser} from "@/components/flow/types";
 import {FlowSubmitResultParser} from "@/components/flow/domain/FlowResultParser";
 import {UserSelectMode} from "@/components/flow/store/FlowSlice";
 import {FlowTriggerContext} from "@/components/flow/domain/FlowTriggerContext";
-import FormInstance from "@/components/form/domain/FormInstance";
+import {FormInstance} from "@codingapi/ui-framework";
 
 /**
  * 流程的事件控制上下文对象

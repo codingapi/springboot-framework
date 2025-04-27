@@ -4,10 +4,8 @@ import {changeManager, entrust, list, remove, removeEntrust, save} from "@/api/u
 import {Button, message, Modal, Popconfirm, Space} from "antd";
 import {DeleteOutlined, SettingOutlined} from "@ant-design/icons";
 import UserSelect from "@/pages/flow/user/select";
-import Form from "@/components/form";
-import FormInput from "@/components/form/input";
-import ValidateUtils from "@/components/form/utils";
-import FormSwitch from "@/components/form/switch";
+import {Form,FormInput,FormSwitch} from "@codingapi/form-pc";
+import {ValidateUtils} from "@codingapi/ui-framework";
 
 const UserPage = () => {
 

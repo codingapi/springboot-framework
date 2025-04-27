@@ -4,11 +4,8 @@ import {Button, ColorPicker, Modal, Popconfirm, Space} from "antd";
 import ScriptModal from "@/components/flow/nodes/panel/ScriptModal";
 import {EyeOutlined} from "@ant-design/icons";
 import FlowContext from "@/components/flow/domain/FlowContext";
-import FormInput from "@/components/form/input";
-import ValidateUtils from "@/components/form/utils";
-import FormSelect from "@/components/form/select";
-import FormColor from "@/components/form/color";
-import Form from "@/components/form";
+import {Form,FormInput,FormSelect,FormColor} from "@codingapi/form-pc";
+import {ValidateUtils} from "@codingapi/ui-framework";
 
 interface ButtonPanelProps {
     id: string;

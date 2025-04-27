@@ -1,10 +1,10 @@
 import React from "react";
-import {ActionType, ProForm, ProTable} from "@ant-design/pro-components";
+import {ActionType, ProTable} from "@ant-design/pro-components";
 import {Input, InputNumber, Popconfirm, Space} from "antd";
 import {CheckOutlined, EditOutlined, SettingOutlined} from "@ant-design/icons";
 import ScriptModal from "@/components/flow/nodes/panel/ScriptModal";
 import FlowContext from "@/components/flow/domain/FlowContext";
-import Form from "@/components/form";
+import {Form} from "@codingapi/form-pc";
 
 interface EdgePanelProps {
     id?: string;

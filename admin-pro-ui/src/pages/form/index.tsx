@@ -1,25 +1,26 @@
 import React from 'react';
 import {PageContainer} from "@ant-design/pro-components";
-import Form from "@/components/form";
-import FormInput from "@/components/form/input";
 import {Button, Col, message, Row} from "antd";
-import {FormField} from "@/components/form/types";
-import FormPassword from "@/components/form/password";
-import FormCaptcha from "@/components/form/captcha";
-import FormCheckbox from "@/components/form/checkbox";
-import FormRadio from "@/components/form/radio";
-import FormRate from "@/components/form/rate";
-import FormSlider from "@/components/form/slider";
-import FormStepper from "@/components/form/stepper";
-import FormSwitch from "@/components/form/switch";
-import FormTextArea from "@/components/form/textarea";
-import FormDate from "@/components/form/date";
-import FormCascader from "@/components/form/cascader";
-import FormSelect from "@/components/form/select";
-import FormUploader from "@/components/form/uploder";
-import FormColor from "@/components/form/color";
-import FormCode from "@/components/form/code";
-import FormInstance from "@/components/form/domain/FormInstance";
+import {
+    FormCascader,
+    FormCode,
+    FormColor,
+    FormDate,
+    FormRadio,
+    FormRate,
+    FormSelect,
+    FormSlider,
+    FormStepper,
+    FormSwitch,
+    FormTextArea,
+    FormUploader,
+    FormCheckbox,
+    FormCaptcha,
+    FormPassword,
+    FormInput,
+    Form
+} from "@codingapi/form-pc";
+import {FormInstance,FormField} from "@codingapi/ui-framework";
 
 
 const FooterButtons: React.FC<{ formInstance: FormInstance }> = ({formInstance}) => {
@@ -40,7 +41,7 @@ const FooterButtons: React.FC<{ formInstance: FormInstance }> = ({formInstance})
             select: '1,2',
             avatar: 'c84fb304c180f61bb7db40efef7f85b7',
             color: '#000000',
-            ideCode:'console.log("hello world")'
+            ideCode: 'console.log("hello world")'
         }
     }
 
@@ -132,7 +133,7 @@ const FooterButtons: React.FC<{ formInstance: FormInstance }> = ({formInstance})
             <Button
                 onClick={async () => {
                     formInstance.create({
-                        props:{
+                        props: {
                             required: true,
                             name: ['user', 'name'],
                             label: '姓名',
@@ -145,8 +146,8 @@ const FooterButtons: React.FC<{ formInstance: FormInstance }> = ({formInstance})
                                 return ['姓名不能为空']
                             }
                         },
-                        type:'input'
-                    },0);
+                        type: 'input'
+                    }, 0);
                 }}
             >添加姓名字段</Button>
 

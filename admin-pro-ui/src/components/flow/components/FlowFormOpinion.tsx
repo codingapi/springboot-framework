@@ -1,5 +1,5 @@
 import React, {useContext, useEffect} from "react";
-import Form from "@/components/form";
+import {Form} from "@codingapi/form-pc";
 import {FlowViewReactContext} from "@/components/flow/view";
 
 const FlowFormOpinion = ()=>{

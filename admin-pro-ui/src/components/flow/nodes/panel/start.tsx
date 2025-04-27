@@ -4,7 +4,7 @@ import EdgePanel from "@/components/flow/nodes/panel/EdgePanel";
 import NodePanel from "@/components/flow/nodes/panel/NodePanel";
 import ButtonPanel from "@/components/flow/nodes/panel/ButtonPanel";
 import {SettingPanelProps} from "@/components/flow/types";
-import Form from "@/components/form";
+import {Form} from "@codingapi/form-pc";
 
 const StartSettingPanel: React.FC<SettingPanelProps> = (props) => {
 

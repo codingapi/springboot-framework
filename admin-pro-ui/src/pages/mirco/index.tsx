@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {Button, message, Space} from "antd";
-import ComponentBus from "@/framework/ComponentBus";
+import {Access, ComponentBus} from "@codingapi/ui-framework";
 import {HeaderProps} from "@/gateway";
 import HeaderDefault from "@/gateway/default/Header";
 import {ModalForm, ProForm, ProFormText} from "@ant-design/pro-components";
@@ -51,10 +51,12 @@ const MircoPage = () => {
                         setVisible(true);
                     }}>load remote component</Button>
 
-                    <Button onClick={() => {
-                        ComponentBus.getInstance().removeComponent(HeaderKey);
-                        refreshPage();
-                    }}>remove remote component</Button>
+                    <Access hasRoles={['admin']}>
+                        <Button onClick={() => {
+                            ComponentBus.getInstance().removeComponent(HeaderKey);
+                            refreshPage();
+                        }}>remove remote component</Button>
+                    </Access>
                 </Space>
             </div>
 

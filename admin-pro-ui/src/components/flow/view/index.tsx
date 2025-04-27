@@ -1,6 +1,6 @@
 import React, {createContext, useEffect} from "react";
 import {FlowViewProps} from "@/components/flow/types";
-import FormInstance from "@/components/form/domain/FormInstance";
+import {FormInstance} from "@codingapi/ui-framework";
 import {FlowButtonClickContext} from "@/components/flow/domain/FlowButtonClickContext";
 import {FlowTriggerContext} from "@/components/flow/domain/FlowTriggerContext";
 import {FlowStateContext} from "@/components/flow/domain/FlowStateContext";

@@ -2,12 +2,10 @@ import React from "react";
 import Markdown from "react-markdown";
 import {markdown} from "@/components/flow/nodes/panel/help";
 import remarkGfm from 'remark-gfm'
-import FormInput from "@/components/form/input";
-import FormCode from "@/components/form/code";
 import "./ScriptModal.scss";
-import FormInstance from "@/components/form/domain/FormInstance";
+import {FormInstance} from "@codingapi/ui-framework";
 import {Modal} from "antd";
-import Form from "@/components/form";
+import {Form,FormInput,FormCode} from "@codingapi/form-pc";
 
 interface ScriptModalProps {
     form: FormInstance;

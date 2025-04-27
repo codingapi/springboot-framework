@@ -3,14 +3,9 @@ import {Button, Divider, Space} from "antd";
 import {EyeOutlined, SettingOutlined} from "@ant-design/icons";
 import GroovyScript from "@/components/flow/utils/script";
 import ScriptModal from "@/components/flow/nodes/panel/ScriptModal";
-import ComponentBus from "@/framework/ComponentBus";
-import ValidateUtils from "@/components/form/utils";
-import FormSelect from "@/components/form/select";
-import FormSwitch from "@/components/form/switch";
-import FormInput from "@/components/form/input";
+import {ValidateUtils,ComponentBus,FormInstance} from "@codingapi/ui-framework";
+import {FormSelect,FormSwitch,FormInput,Form} from "@codingapi/form-pc";
 import {UserSelectFormProps, UserSelectFormViewKey} from "@/components/flow/types";
-import FormInstance from "@/components/form/domain/FormInstance";
-import Form from "@/components/form";
 
 interface NodePanelProps {
     id?: string,
