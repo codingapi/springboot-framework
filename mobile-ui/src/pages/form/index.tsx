@@ -1,11 +1,14 @@
-import React from 'react';
-import {PageContainer} from "@ant-design/pro-components";
-import {Button, Col, message, Row} from "antd";
+import React from "react";
+import Header from "@/layout/Header";
+import {Button, Tabs, Toast} from "antd-mobile";
 import {
+    Form,
+    FormCaptcha,
     FormCascader,
-    FormCode,
-    FormColor,
+    FormCheckbox,
     FormDate,
+    FormInput,
+    FormPassword,
     FormRadio,
     FormRate,
     FormSelect,
@@ -13,14 +16,10 @@ import {
     FormStepper,
     FormSwitch,
     FormTextArea,
-    FormUploader,
-    FormCheckbox,
-    FormCaptcha,
-    FormPassword,
-    FormInput,
-    Form
-} from "@codingapi/form-pc";
-import {FormInstance,FormField} from "@codingapi/ui-framework";
+    FormUploader
+} from "@codingapi/form-mobile";
+import {FormField, FormInstance} from "@codingapi/ui-framework";
+
 
 
 const FooterButtons: React.FC<{ formInstance: FormInstance }> = ({formInstance}) => {
@@ -40,8 +39,6 @@ const FooterButtons: React.FC<{ formInstance: FormInstance }> = ({formInstance})
             cascader: '1,1-1,1-1-1',
             select: '1,2',
             avatar: 'c84fb304c180f61bb7db40efef7f85b7',
-            color: '#000000',
-            ideCode: 'console.log("hello world")'
         }
     }
 
@@ -57,7 +54,7 @@ const FooterButtons: React.FC<{ formInstance: FormInstance }> = ({formInstance})
             <Button
                 onClick={async () => {
                     const name = formInstance.getFieldValue(["user", "name"])
-                    message.success(name);
+                    Toast.show(name);
                 }}
             >获取姓名</Button>
 
@@ -82,7 +79,7 @@ const FooterButtons: React.FC<{ formInstance: FormInstance }> = ({formInstance})
             <Button
                 onClick={async () => {
                     const values = formInstance.getFieldsValue();
-                    message.success(JSON.stringify(values));
+                    Toast.show(JSON.stringify(values));
                 }}
             >获取表单值</Button>
 
@@ -155,7 +152,10 @@ const FooterButtons: React.FC<{ formInstance: FormInstance }> = ({formInstance})
     )
 }
 
-const FormPage = () => {
+const FormPage = ()=>{
+
+    const [activeKey, setActiveKey] = React.useState("property");
+
     const leftFormInstance = Form.useForm();
     const rightFormInstance = Form.useForm();
 
@@ -354,28 +354,39 @@ const FormPage = () => {
                 label: '头像',
             }
         },
-        {
-            type: 'color',
-            props: {
-                required: true,
-                name: ['user', 'color'],
-                label: '颜色',
-            }
-        },
-        {
-            type: 'code',
-            props: {
-                required: true,
-                name: ['user', 'ideCode'],
-                label: '代码',
-            }
-        },
     ] as FormField[];
 
     return (
-        <PageContainer>
-            <Row gutter={[24, 24]}>
-                <Col span={12}>
+        <>
+            <Header>Form表单</Header>
+            <Tabs
+                activeKey={activeKey}
+                onChange={(value)=>{
+                    setActiveKey(value);
+                }}
+            >
+                <Tabs.Tab title={"属性表单"} key={"property"}/>
+                <Tabs.Tab title={"字段表单"} key={"field"}/>
+            </Tabs>
+
+            {activeKey ==='field' && (
+                <>
+                    <Form
+                        layout={"horizontal"}
+                        form={rightFormInstance}
+                        footer={(
+                            <FooterButtons formInstance={rightFormInstance}/>
+                        )}
+                        loadFields={async () => {
+                            return fields;
+                        }}
+                    >
+                    </Form>
+                </>
+            )}
+
+            {activeKey ==='property' && (
+                <>
                     <Form
                         form={leftFormInstance}
                         layout={"horizontal"}
@@ -551,38 +562,11 @@ const FormPage = () => {
                             label={"头像"}
                         />
 
-                        <FormColor
-                            required={true}
-                            name={["user", "color"]}
-                            label={"颜色"}
-                        />
-
-                        <FormCode
-                            required={true}
-                            name={["user", "ideCode"]}
-                            label={"代码"}
-                        />
                     </Form>
-                </Col>
-
-                <Col span={12}>
-                    <Form
-                        form={rightFormInstance}
-                        footer={(
-                            <FooterButtons
-                                formInstance={rightFormInstance}
-                            />
-                        )}
-                        loadFields={async () => {
-                            return fields;
-                        }}
-                    >
-                    </Form>
-                </Col>
-            </Row>
-
-        </PageContainer>
-    );
+                </>
+            )}
+        </>
+    )
 }
 
 export default FormPage;

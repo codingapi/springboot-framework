@@ -2,7 +2,7 @@ import React, {createContext, lazy, Suspense, useContext, useState} from 'react'
 import {createHashRouter, RouterProvider} from 'react-router-dom';
 import {loadRemoteComponent, loadRemoteScript} from "@/utils/dynamicLoader";
 import {loadPage} from "@/framework/DynamicLoad/PageLoader";
-import NotFound from "@/layout/pages/NotFound";
+import NotFound from "@/layout/NotFound";
 import Layout from "@/layout";
 import {useDispatch} from "react-redux";
 import {refresh} from "@/store/MenuSlice";

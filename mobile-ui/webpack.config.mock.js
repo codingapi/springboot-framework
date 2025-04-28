@@ -7,7 +7,7 @@ const express = require('express');
 module.exports = merge(common, {
     mode: 'development',
     devServer: {
-        port: 3050,
+        port: 10000,
 
         setupMiddlewares: (middlewares, devServer) => {
             if (!devServer) {

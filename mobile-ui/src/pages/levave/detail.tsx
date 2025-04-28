@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "@/layout/Header";
 import {useLocation} from "react-router";
-import Descriptions from "@/components/descriptions";
+import {Descriptions} from "@codingapi/form-mobile";
 import {fields} from "@/pages/levave/fields";
 
 const LeaveDetailPage = () => {

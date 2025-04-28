@@ -22,16 +22,18 @@ public class UserService {
         }
     }
 
-    public void create(UserMetric userMetric) {
+    public void create(UserMetric userMetric,boolean isFlowManager) {
         User user = new User();
+        user.setFlowManager(isFlowManager);
         user.setUserMetric(userMetric);
         user.encodePassword(passwordEncoder);
         userRepository.save(user);
     }
 
 
-    public void update(long id, UserMetric metric) {
+    public void update(long id, UserMetric metric,boolean isFlowManager) {
         User user = userRepository.getUserById(id);
+        user.setFlowManager(isFlowManager);
         user.setUserMetric(metric);
         user.encodePassword(passwordEncoder);
         userRepository.save(user);

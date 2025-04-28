@@ -1,61 +1,21 @@
 import React from 'react';
+import {PageContainer} from "@ant-design/pro-components";
 import './index.scss';
-import Page from "@/components/Layout/Page";
-import {Button, Form, Input} from "antd";
-import {FlowFormApiContext, FlowFormCustomValidateContext} from "@/api/validate";
-import * as api from "@/api"
 
-FlowFormApiContext.getInstance().setApi({
-    get: (url: string, params?: any) => {
-        return api.get(url, params);
-    },
-    post: (url: string, data: any) => {
-        return api.post(url, data);
-    }
-});
 
-const Index = () => {
-
-    const [form] = Form.useForm();
-
-    const context = new FlowFormCustomValidateContext();
-
-    const validateFuncCode = `
-         if (content.value) {
-            return [];
-         } else {
-            return ["姓名不存在"];
-        }
-    `;
-    context.addCustomFunctionCodeValidate(["user", "name"], validateFuncCode);
+const WelcomePage = () => {
 
     return (
-        <Page enablePageContainer={true}>
+        <PageContainer>
 
-            <Form
-                form={form}
-            >
-
-                <Form.Item
-                    name={["user", "name"]}
-                    label={"姓名"}
-                >
-                    <Input/>
-                </Form.Item>
-            </Form>
-
-            <Button onClick={() => {
-                form.validateFields().then(res => {
-                    console.log(res);
-                })
-            }}>test1</Button>
-
-            <Button onClick={() => {
-                context.validate(form);
-            }}>test2</Button>
-
-        </Page>
+            <ul>Admin-UI 支持的功能有</ul>
+            <ul>1. 自定义流程</ul>
+            <ul>2. 表单渲染</ul>
+            <ul>3. 管理权限</ul>
+            <ul>4. 动态菜单</ul>
+            <ul>5. 动态加载组件</ul>
+        </PageContainer>
     );
 }
 
-export default Index;
+export default WelcomePage;

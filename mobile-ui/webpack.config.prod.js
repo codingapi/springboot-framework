@@ -4,6 +4,6 @@ const common = require('./webpack.common.js');
 module.exports = merge(common,{
     mode: 'production',
     devServer: {
-        port: 13000,
+        port: 10000,
     },
 });

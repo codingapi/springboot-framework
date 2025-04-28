@@ -4,7 +4,7 @@ const common = require('./webpack.common.js');
 module.exports = merge(common, {
     mode: 'development',
     devServer: {
-        port: 8000,
+        port: 10000,
         proxy: [
             {
                 context: ['/api', '/open', '/user'],

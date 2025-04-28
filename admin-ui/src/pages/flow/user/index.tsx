@@ -1,19 +1,11 @@
 import React, {useRef} from "react";
-import Page from "@/components/Layout/Page";
-import {
-    ActionType,
-    ModalForm,
-    PageContainer,
-    ProForm,
-    ProFormSwitch,
-    ProFormText,
-    ProTable
-} from "@ant-design/pro-components";
+import {ActionType, PageContainer, ProTable} from "@ant-design/pro-components";
 import {changeManager, entrust, list, remove, removeEntrust, save} from "@/api/user";
-import {Button, message, Popconfirm, Space} from "antd";
+import {Button, message, Modal, Popconfirm, Space} from "antd";
 import {DeleteOutlined, SettingOutlined} from "@ant-design/icons";
 import UserSelect from "@/pages/flow/user/select";
-
+import {Form,FormInput,FormSwitch} from "@codingapi/form-pc";
+import {ValidateUtils} from "@codingapi/ui-framework";
 
 const UserPage = () => {
 
@@ -23,7 +15,7 @@ const UserPage = () => {
     const [user, setUser] = React.useState<any>({});
 
     const actionRef = useRef<ActionType>();
-    const [form] = ProForm.useForm();
+    const form = Form.useForm();
 
     const handleSave = (values: any) => {
         save(values).then(res => {
@@ -168,7 +160,6 @@ const UserPage = () => {
 
     return (
         <PageContainer>
-            <Page>
                 <ProTable
                     actionRef={actionRef}
                     toolBarRender={() => [
@@ -188,67 +179,58 @@ const UserPage = () => {
                     }}
                 />
 
-                <ModalForm
-                    form={form}
+                <Modal
                     title={"编辑用户"}
                     open={visible}
-                    modalProps={{
-                        onCancel: () => {
-                            setVisible(false);
-                        },
-                        onClose: () => {
-                            setVisible(false);
-                        },
-                        destroyOnClose: true
+                    onClose={()=>{
+                        setVisible(false);
                     }}
-                    onFinish={async (values) => {
-                        handleSave(values);
+                    onCancel={()=>{
+                        setVisible(false);
+                    }}
+                    onOk={async ()=>{
+                        await form.submit();
                     }}
                 >
-                    <ProFormText
-                        name={"id"}
-                        hidden={true}
-                    />
+                    <Form
+                        layout={"vertical"}
+                        form={form}
+                        onFinish={async (values) => {
+                            handleSave(values);
+                        }}
+                    >
+                        <FormInput
+                            name={"id"}
+                            hidden={true}
+                        />
 
-                    <ProFormText
-                        name={"name"}
-                        label={"姓名"}
-                        rules={[
-                            {
-                                required: true,
-                                message: "请输入姓名"
-                            }
-                        ]}
-                    />
+                        <FormInput
+                            name={"name"}
+                            label={"姓名"}
+                            required={true}
+                            validateFunction={ValidateUtils.validateNotEmpty}
+                        />
 
-                    <ProFormText
-                        name={"username"}
-                        label={"登录账号"}
-                        rules={[
-                            {
-                                required: true,
-                                message: "请输入登录账号"
-                            }
-                        ]}
-                    />
+                        <FormInput
+                            name={"username"}
+                            label={"登录账号"}
+                            required={true}
+                            validateFunction={ValidateUtils.validateNotEmpty}
+                        />
 
-                    <ProFormText
-                        name={"password"}
-                        label={"登录密码"}
-                        rules={[
-                            {
-                                required: true,
-                                message: "请输入登录密码"
-                            }
-                        ]}
-                    />
+                        <FormInput
+                            name={"password"}
+                            label={"登录密码"}
+                            required={true}
+                            validateFunction={ValidateUtils.validateNotEmpty}
+                        />
 
-                    <ProFormSwitch
-                        name={"flowManager"}
-                        label={"是否流程管理员"}
-                    />
-
-                </ModalForm>
+                        <FormSwitch
+                            name={"flowManager"}
+                            label={"是否流程管理员"}
+                        />
+                    </Form>
+                </Modal>
 
                 <UserSelect
                     multiple={false}
@@ -263,7 +245,6 @@ const UserPage = () => {
                         }
                     }}
                 />
-            </Page>
         </PageContainer>
     )
 }
