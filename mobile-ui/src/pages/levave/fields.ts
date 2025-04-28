@@ -1,4 +1,4 @@
-import {FormField} from "@/components/form/types";
+import {FormField} from "@codingapi/ui-framework";
 
 export const fields = [
     {

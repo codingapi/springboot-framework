@@ -1,7 +1,7 @@
 import React from "react";
-import Form from "@/components/form";
+import {Form} from "@codingapi/form-mobile";
 import {Button, Modal} from "antd-mobile";
-import {FormField} from "@/components/form/types";
+import {FormField} from "@codingapi/ui-framework";
 
 const Test = () => {
 

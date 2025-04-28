@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "@/layout/Header";
-import {useLocation} from "react-router";
-import FlowView from "@/components/flow/view";
+import {useLocation, useNavigate} from "react-router";
+import {FlowView} from "@codingapi/flow-mobile";
 import {Result} from "antd-mobile";
 import {flowViews} from "@/config/flows";
 
@@ -10,6 +10,7 @@ const FlowDetailPage = () => {
 
     const location = useLocation();
     const state = location.state;
+    const navigate = useNavigate();
 
     if (state) {
         return (
@@ -25,6 +26,10 @@ const FlowDetailPage = () => {
                 <FlowView
                     view={flowViews}
                     id={state.id}
+                    visible={true}
+                    setVisible={()=>{
+                        navigate(-1);
+                    }}
                 />
             </>
         )

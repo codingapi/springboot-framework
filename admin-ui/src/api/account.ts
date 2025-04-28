@@ -1,8 +1,13 @@
-import {post} from "@/api/index";
+import {get, post} from "@/api/index";
 
 export async function login(body: Account.LoginRequest) {
     return post('/user/login', body);
 }
+
+export async function captcha() {
+    return get('/open/captcha');
+}
+
 
 export function clearUser() {
     localStorage.removeItem('username');

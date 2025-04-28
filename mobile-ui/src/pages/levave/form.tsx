@@ -1,8 +1,8 @@
 import React, {useContext, useEffect} from "react";
-import Form from "@/components/form";
-import {FlowFormViewProps} from "@/components/flow/types";
+import {Form} from "@codingapi/form-mobile";
+import {FlowFormViewProps} from "@codingapi/ui-framework";
 import {Button, Toast} from "antd-mobile";
-import {FlowViewReactContext} from "@/components/flow/view";
+import {FlowViewReactContext} from "@codingapi/flow-mobile";
 import {fields} from "@/pages/levave/fields";
 
 const LeaveForm: React.FC<FlowFormViewProps> = (props) => {

@@ -3,14 +3,13 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Route, Routes} from "react-router";
 import {useNavigate} from "react-router-dom";
 import {MenuRouteManager} from "@/framework/Routes/MenuRouteManager";
-import AvatarHeader from "@/components/Layout/AvatarHeader";
-import {loadHeaderAction} from "@/components/Layout/HeaderAction";
+import AvatarHeader from "@/layout/AvatarHeader";
+import {loadHeaderAction} from "@/layout/HeaderAction";
 import {config} from "@/config/theme";
 import "./index.scss";
 import {useSelector} from "react-redux";
 import {RootState} from "@/store/Redux";
-import NotFound from "@/layout/pages/NotFound";
-import "@/config/register.component";
+import NotFound from "@/layout/NotFound";
 
 const welcomePath = config.welcomePath;
 const loginPath = config.loginPath;

@@ -1,7 +1,6 @@
 import React from "react";
-import {SelectOptionFormEditProps} from "@/components/form/types";
-import Form from "@/components/form";
-import FormInput from "@/components/form/input";
+import {SelectOptionFormEditProps} from "@codingapi/ui-framework";
+import {FormInput,Form} from "@codingapi/form-mobile";
 
 const CustomFormEditOption:React.FC<SelectOptionFormEditProps> = (props)=>{
     return (

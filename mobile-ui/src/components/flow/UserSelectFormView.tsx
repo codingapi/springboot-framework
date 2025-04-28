@@ -1,8 +1,7 @@
 import React, {useEffect} from "react";
-import {UserSelectFormProps} from "@/components/flow/types";
+import {UserSelectFormProps} from "@codingapi/ui-framework";
 import Popup from "@/components/popup";
-import Form from "@/components/form";
-import FormInput from "@/components/form/input";
+import {Form,FormInput} from "@codingapi/form-mobile";
 
 const UserSelectFormView: React.FC<UserSelectFormProps> = (props) => {
 

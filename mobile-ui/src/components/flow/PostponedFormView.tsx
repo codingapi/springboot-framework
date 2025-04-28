@@ -1,9 +1,9 @@
 import React from "react";
-import {PostponedFormProps} from "@/components/flow/types";
+import {PostponedFormProps} from "@codingapi/ui-framework";
 import Popup from "@/components/popup";
 import {DatePickerView} from "antd-mobile";
 import dayjs from "dayjs";
-import {dateLabelRenderer} from "@/components/form/date";
+import {dateLabelRenderer} from "@codingapi/form-mobile";
 
 const PostponedFormView: React.FC<PostponedFormProps> = (props) => {
 

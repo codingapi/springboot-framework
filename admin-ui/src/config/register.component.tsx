@@ -1,1 +1,1 @@
-import "@/components/Flow/register/flow.register";
+import "@/components/flow/register";

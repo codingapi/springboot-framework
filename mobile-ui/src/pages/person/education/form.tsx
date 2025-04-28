@@ -5,7 +5,7 @@ import BasicInfo from "@/components/info/BasicInfo";
 import FormInfo from "@/components/info/FormInfo";
 import {Button, Toast} from "antd-mobile";
 import {loadFields} from "@/pages/person/education/fields";
-import Form from "@/components/form";
+import {Form} from "@codingapi/form-mobile";
 import {Grid} from "antd-mobile/es/components/grid/grid";
 
 const EducationForm = () => {
@@ -59,7 +59,7 @@ const EducationForm = () => {
 
                 <Button
                     onClick={() => {
-                        formInstance.validate();
+                        formInstance.validate().then();
                     }}
                 >校验字段</Button>
 

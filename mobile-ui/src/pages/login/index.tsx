@@ -1,9 +1,7 @@
 import React from "react";
 import {Button, Toast} from "antd-mobile";
-import FormInput from "@/components/form/input";
-import FormPassword from "@/components/form/password";
+import {FormInput,FormPassword,Form} from "@codingapi/form-mobile";
 import {useNavigate} from "react-router";
-import Form from "@/components/form";
 import {initUser, login} from "@/api/account";
 import {config} from "@/config/theme";
 
