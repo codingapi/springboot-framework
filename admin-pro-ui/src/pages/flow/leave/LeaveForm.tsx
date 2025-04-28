@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {FlowFormViewProps} from "@/components/flow/types";
+import {FlowFormViewProps} from "@codingapi/ui-framework";
 import {Form,FormInput,FormTextArea} from "@codingapi/form-pc";
 import {ValidateUtils} from "@codingapi/ui-framework";
 

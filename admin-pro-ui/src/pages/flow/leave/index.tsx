@@ -3,7 +3,7 @@ import {ActionType, PageContainer, ProTable} from "@ant-design/pro-components";
 import {list} from "@/api/leave";
 import {Button} from "antd";
 import LeaveForm from "@/pages/flow/leave/LeaveForm";
-import FlowModelView from "@/components/flow/view/FlowModelView";
+import {FlowModelView} from "@codingapi/flow-pc";
 
 const LeavePage = () => {
 

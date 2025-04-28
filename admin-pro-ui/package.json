@@ -7,7 +7,7 @@
     "@ant-design/icons": "^5.4.0",
     "@ant-design/pro-components": "^2.8.2",
     "@babel/standalone": "^7.25.6",
-    "@codingapi/flow-pc": "^0.0.3",
+    "@codingapi/flow-pc": "^0.0.8",
     "@codingapi/form-pc": "^0.0.16",
     "@codingapi/ui-framework": "^0.0.12",
     "@dnd-kit/core": "^6.2.0",
