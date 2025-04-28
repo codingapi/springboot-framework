@@ -42,9 +42,20 @@ const HomePage = () => {
                             width:"100%"
                         }}
                         onClick={() => {
-                            navigate("/person/education/index")
+                            navigate("/form")
                         }}
-                    >教育信息</Button>
+                    >表单</Button>
+                </Grid.Item>
+
+                <Grid.Item>
+                    <Button
+                        style={{
+                            width:"100%"
+                        }}
+                        onClick={() => {
+                            navigate("/mirco")
+                        }}
+                    >微前端</Button>
                 </Grid.Item>
 
                 <Grid.Item>
@@ -55,7 +66,7 @@ const HomePage = () => {
                         onClick={() => {
                             navigate("/leave/index")
                         }}
-                    >请假</Button>
+                    >请假管理</Button>
                 </Grid.Item>
 
 

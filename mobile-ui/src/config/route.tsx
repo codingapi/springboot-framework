@@ -5,14 +5,13 @@ import HomePage from "@/pages/home";
 import {Route} from "react-router";
 import {RouteObject} from "react-router/dist/lib/context";
 import React from "react";
-import EducationIndex from "@/pages/person/education";
-import EducationForm from "@/pages/person/education/form";
-import Test from "@/pages/test";
 import LeaveListPage from "@/pages/levave";
 import LeaveCreatePage from "@/pages/levave/create";
 import FlowListPage from "@/pages/flow";
 import FlowDetailPage from "@/pages/flow/detail";
 import LeaveDetailPage from "@/pages/levave/detail";
+import FormPage from "@/pages/form";
+import MircoPage from "@/pages/mirco";
 
 
 export const routes: RouteObject[] = [
@@ -21,16 +20,20 @@ export const routes: RouteObject[] = [
         element: <Login/>,
     },
     {
-        path: "/test",
-        element: <Test/>,
-    },
-    {
         path: '/',
         element: <Layout/>,
         children: [
             {
                 path: "/",
                 element: <HomePage/>,
+            },
+            {
+                path: "/form",
+                element: <FormPage/>,
+            },
+            {
+                path: "/mirco",
+                element: <MircoPage/>,
             },
             {
                 path: "/leave/index",
@@ -51,14 +54,6 @@ export const routes: RouteObject[] = [
             {
                 path: "/flow/detail",
                 element: <FlowDetailPage/>,
-            },
-            {
-                path: "/person/education/index",
-                element: <EducationIndex/>,
-            },
-            {
-                path: "/person/education/form",
-                element: <EducationForm/>,
             },
             {
                 path: '/*',
