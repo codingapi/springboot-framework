@@ -3,6 +3,7 @@ package com.codingapi.springboot.authorization.interceptor;
 import lombok.Getter;
 
 import java.sql.SQLException;
+import java.util.function.Supplier;
 
 /**
  * SQLRunningContext SQL执行拦截上下文
@@ -55,10 +56,25 @@ public class SQLRunningContext {
      * @param <T>      T
      * @return T
      */
-    public <T> T skipDataAuthorization(java.util.function.Supplier<T> supplier) {
+    public <T> T skipDataAuthorization(Supplier<T> supplier) {
         try {
             skipInterceptor.set(true);
             return (T) supplier.get();
+        } finally {
+            skipInterceptor.set(false);
+        }
+    }
+
+
+    /**
+     * 跳过数据权限拦截
+     *
+     * @param runnable 业务逻辑
+     */
+    public void skipDataAuthorization(Runnable runnable) {
+        try {
+            skipInterceptor.set(true);
+            runnable.run();
         } finally {
             skipInterceptor.set(false);
         }
