@@ -11,6 +11,9 @@ export default webpackMockServer.add((app, helper) => {
             }]
         }).list;
 
-        res.json(products);
+        res.json({
+            success: true,
+            data:products
+        });
     });
 });

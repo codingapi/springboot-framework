@@ -28,12 +28,6 @@ export const menus = [
         page: 'mirco',
     },
     {
-        path: '/table',
-        name: '表格',
-        icon: "TableOutlined",
-        page: 'table',
-    },
-    {
         path: '/flow',
         name: '流程',
         icon: "CiOutlined",
