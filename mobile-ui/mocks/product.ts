@@ -1,8 +1,8 @@
-const Mock = require('mockjs');
+import Mock from "mockjs";
+import webpackMockServer from "webpack-mock-server";
 
-module.exports = (app, helper) => {
+export default webpackMockServer.add((app, helper) => {
     app.get('/api/products', (req, res) => {
-
         const products = Mock.mock({
             'list|100': [{
                 'id|+1': 1,
@@ -13,4 +13,4 @@ module.exports = (app, helper) => {
 
         res.json(products);
     });
-};
+});

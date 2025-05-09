@@ -1,7 +1,8 @@
-module.exports = (app, helper) => {
+import webpackMockServer from "webpack-mock-server";
+
+export default webpackMockServer.add((app, helper) => {
     app.post('/user/login', (req, res) => {
         const username = req.body.username;
-
         if(username==='admin'){
             res.json({
                 success:true,
@@ -25,4 +26,4 @@ module.exports = (app, helper) => {
             }
         });
     });
-};
+});
