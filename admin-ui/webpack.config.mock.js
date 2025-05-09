@@ -21,7 +21,6 @@ module.exports = merge(common, {
                 ],
                 tsConfigFileName: "mocks/tsconfig.json"
             });
-            // webpackMockServer.add(mockFunction)(devServer.app);
 
             console.log('mock server is running');
             return middlewares; // 返回 middlewares
