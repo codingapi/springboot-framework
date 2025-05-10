@@ -2,7 +2,6 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
-const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
 const {dependencies} = require("./package.json");
 
@@ -56,7 +55,6 @@ module.exports = {
     },
     plugins: [
         new CleanWebpackPlugin(),
-        new MonacoWebpackPlugin(),
         new HtmlWebpackPlugin({
             template: './public/index.html',
         }),
