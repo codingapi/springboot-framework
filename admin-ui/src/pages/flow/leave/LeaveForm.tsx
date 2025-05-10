@@ -1,13 +1,12 @@
 import React, {useEffect} from "react";
-import {FlowFormViewProps} from "@codingapi/ui-framework";
-import {Form,FormInput,FormTextArea} from "@codingapi/form-pc";
-import {ValidateUtils} from "@codingapi/ui-framework";
+import {FlowFormViewProps, ValidateUtils} from "@codingapi/ui-framework";
+import {Form, FormInput, FormTextArea} from "@codingapi/form-pc";
 
 const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
 
     useEffect(() => {
         if (props.dataVersion && props.data) {
-            console.log('data',props.data);
+            console.log('data', props.data);
             props.form?.setFieldsValue({
                 ...props.data
             });
@@ -33,8 +32,8 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
             <FormInput
                 name={"days"}
                 label={"请假天数"}
-               inputType={"number"}
-               required={true}
+                inputType={"number"}
+                required={true}
                 validateFunction={ValidateUtils.validateNotEmpty}
             />
 

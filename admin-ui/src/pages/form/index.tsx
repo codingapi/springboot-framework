@@ -2,10 +2,15 @@ import React from 'react';
 import {PageContainer} from "@ant-design/pro-components";
 import {Button, Col, message, Row} from "antd";
 import {
+    Form,
+    FormCaptcha,
     FormCascader,
+    FormCheckbox,
     FormCode,
     FormColor,
     FormDate,
+    FormInput,
+    FormPassword,
     FormRadio,
     FormRate,
     FormSelect,
@@ -13,14 +18,9 @@ import {
     FormStepper,
     FormSwitch,
     FormTextArea,
-    FormUploader,
-    FormCheckbox,
-    FormCaptcha,
-    FormPassword,
-    FormInput,
-    Form
+    FormUploader
 } from "@codingapi/form-pc";
-import {FormInstance,FormField} from "@codingapi/ui-framework";
+import {FormField, FormInstance} from "@codingapi/ui-framework";
 
 
 const FooterButtons: React.FC<{ formInstance: FormInstance }> = ({formInstance}) => {
