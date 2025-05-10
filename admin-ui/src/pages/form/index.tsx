@@ -69,7 +69,12 @@ const FooterButtons: React.FC<{ formInstance: FormInstance }> = ({formInstance})
 
             <Button
                 onClick={async () => {
-                    await formInstance.validate();
+                    const result = await formInstance.validate();
+                    if (result) {
+                        message.success("验证通过");
+                    } else {
+                        message.error("验证失败");
+                    }
                 }}
             >验证表单</Button>
 
@@ -379,6 +384,9 @@ const FormPage = () => {
                     <Form
                         form={leftFormInstance}
                         layout={"horizontal"}
+                        onFinish={async (values)=>{
+                            message.success(JSON.stringify(values));
+                        }}
                         footer={(
                             <FooterButtons
                                 formInstance={leftFormInstance}
@@ -567,6 +575,9 @@ const FormPage = () => {
 
                 <Col span={12}>
                     <Form
+                        onFinish={async (values)=>{
+                            message.success(JSON.stringify(values));
+                        }}
                         form={rightFormInstance}
                         footer={(
                             <FooterButtons

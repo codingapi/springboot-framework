@@ -24,7 +24,7 @@ export const menus = [
     {
         path: '/mirco',
         name: '微前端',
-        icon: "FormOutlined",
+        icon: "AppstoreOutlined",
         page: 'mirco',
     },
     {
