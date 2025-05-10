@@ -195,7 +195,7 @@ const FlowPage = () => {
                 data-testid={"flow-editor"}
                 title="编辑流程"
                 open={editorVisible}
-                destroyOnClose={true}
+                destroyOnHidden={true}
                 onClose={()=>{
                     setEditorVisible(false)
                 }}

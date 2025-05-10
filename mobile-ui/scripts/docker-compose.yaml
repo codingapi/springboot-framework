@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  admin-nginx:
+    image: nginx:latest
+    volumes:
+      - "./admin:/usr/share/nginx/html"
+    environment:
+      TZ: "Asia/Shanghai"
+    restart: always
+    ports:
+      - "13000:80"

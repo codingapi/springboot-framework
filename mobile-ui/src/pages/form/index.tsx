@@ -66,7 +66,12 @@ const FooterButtons: React.FC<{ formInstance: FormInstance }> = ({formInstance})
 
             <Button
                 onClick={async () => {
-                    await formInstance.validate();
+                    const result = await formInstance.validate();
+                    if (result) {
+                        Toast.show("验证通过");
+                    } else {
+                        Toast.show("验证失败");
+                    }
                 }}
             >验证表单</Button>
 
@@ -374,6 +379,9 @@ const FormPage = ()=>{
                     <Form
                         layout={"horizontal"}
                         form={rightFormInstance}
+                        onFinish={async (values)=>{
+                            Toast.show(JSON.stringify(values));
+                        }}
                         footer={(
                             <FooterButtons formInstance={rightFormInstance}/>
                         )}
@@ -390,6 +398,9 @@ const FormPage = ()=>{
                     <Form
                         form={leftFormInstance}
                         layout={"horizontal"}
+                        onFinish={async (values)=>{
+                            Toast.show(JSON.stringify(values));
+                        }}
                         footer={(
                             <FooterButtons
                                 formInstance={leftFormInstance}
