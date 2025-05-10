@@ -12,6 +12,8 @@ This is a simple React App with Webpack5 & Typescript.
 7. Support Mock Server for API Mocking
 8. Support Monaco Editor for Code Editor
 9. Support Access ControlPanel for Menu & Page Components
+10. Support Jest for Unit Testing
+11. Support DockerCompose for Deployment
 
 ## Running
 ```shell
