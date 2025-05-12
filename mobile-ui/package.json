@@ -4,9 +4,9 @@
   "private": true,
   "dependencies": {
     "@babel/standalone": "^7.25.6",
-    "@codingapi/flow-mobile": "^0.0.20",
-    "@codingapi/form-mobile": "^0.0.20",
-    "@codingapi/ui-framework": "^0.0.20",
+    "@codingapi/flow-mobile": "^0.0.23",
+    "@codingapi/form-mobile": "^0.0.23",
+    "@codingapi/ui-framework": "^0.0.23",
     "@logicflow/core": "^2.0.10",
     "@logicflow/extension": "^2.0.14",
     "@reduxjs/toolkit": "^2.2.7",
