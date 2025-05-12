@@ -38,7 +38,7 @@ const FooterButtons: React.FC<{ formInstance: FormInstance }> = ({formInstance})
             textarea: '这是一段文本',
             date: '2021-08-01',
             cascader: '1,1-1,1-1-1',
-            select: '1,2',
+            select: '1-1-1,2',
             avatar: 'c84fb304c180f61bb7db40efef7f85b7',
             color: '#000000',
             ideCode: 'console.log("hello world")'
@@ -345,7 +345,20 @@ const FormPage = () => {
                 label: '选择器',
                 selectMultiple: true,
                 options: [
-                    {label: '选项1', value: '1'},
+                    {
+                        label: '选项1', value: '1',
+                        children: [
+                            {
+                                label: '选项1-1',
+                                value: '1-1',
+                                children: [
+                                    {label: '选项1-1-1', value: '1-1-1'},
+                                    {label: '选项1-1-2', value: '1-1-2'},
+                                ]
+                            },
+                            {label: '选项1-2', value: '1-2'},
+                        ]
+                    },
                     {label: '选项2', value: '2'},
                     {label: '选项3', value: '3'},
                 ]
@@ -384,7 +397,7 @@ const FormPage = () => {
                     <Form
                         form={leftFormInstance}
                         layout={"horizontal"}
-                        onFinish={async (values)=>{
+                        onFinish={async (values) => {
                             message.success(JSON.stringify(values));
                         }}
                         footer={(
@@ -547,7 +560,20 @@ const FormPage = () => {
                             label={"选择器"}
                             selectMultiple={true}
                             options={[
-                                {label: '选项1', value: '1'},
+                                {
+                                    label: '选项1', value: '1',
+                                    children: [
+                                        {
+                                            label: '选项1-1',
+                                            value: '1-1',
+                                            children: [
+                                                {label: '选项1-1-1', value: '1-1-1'},
+                                                {label: '选项1-1-2', value: '1-1-2'},
+                                            ]
+                                        },
+                                        {label: '选项1-2', value: '1-2'},
+                                    ]
+                                },
                                 {label: '选项2', value: '2'},
                                 {label: '选项3', value: '3'},
                             ]}
@@ -575,7 +601,7 @@ const FormPage = () => {
 
                 <Col span={12}>
                     <Form
-                        onFinish={async (values)=>{
+                        onFinish={async (values) => {
                             message.success(JSON.stringify(values));
                         }}
                         form={rightFormInstance}
