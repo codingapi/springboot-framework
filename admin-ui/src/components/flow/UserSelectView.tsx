@@ -1,7 +1,18 @@
 import React, {useEffect} from "react";
 import {UserSelectFormProps} from "@codingapi/ui-framework";
 import {ModalForm, ProForm, ProFormSelect} from "@ant-design/pro-components";
-import {users} from "@/api/user";
+
+const users = async () => {
+    const data = [];
+    for (let i = 0; i < 500; i++) {
+        data.push({
+            id: i,
+            name: `张三${i}`
+        });
+    }
+    return data
+}
+
 
 const UserSelectView: React.FC<UserSelectFormProps> = (props) => {
 
@@ -10,18 +21,16 @@ const UserSelectView: React.FC<UserSelectFormProps> = (props) => {
     const [userList, setUserList] = React.useState<any[]>([]);
 
     useEffect(() => {
-        users().then((res) => {
-            if (res.success) {
-                const list = res.data.list.filter((item:any)=>{
-                    const specifyUserIds = props.specifyUserIds;
-                    if(specifyUserIds && specifyUserIds.length > 0){
-                        return specifyUserIds.includes(item.id);
-                    }
-                });
-                setUserList(list);
-                // 默认选中当前用户
-                form.setFieldValue("users", props.currentUserIds);
-            }
+        users().then((userList) => {
+            const list = userList.filter((item: any) => {
+                const specifyUserIds = props.specifyUserIds;
+                if (specifyUserIds && specifyUserIds.length > 0) {
+                    return specifyUserIds.includes(item.id);
+                }
+            });
+            setUserList(list);
+            // 默认选中当前用户
+            form.setFieldValue("users", props.currentUserIds);
         })
     }, []);
 

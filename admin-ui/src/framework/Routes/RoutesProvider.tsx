@@ -1,6 +1,6 @@
 import React, {createContext, lazy, Suspense, useContext, useState} from 'react';
 import {createHashRouter, RouterProvider} from 'react-router-dom';
-import {loadRemoteComponent, loadRemoteScript} from "@/utils/dynamicLoader";
+import {DynamicComponentUtils} from "@codingapi/ui-framework";
 import {loadPage} from "@/framework/DynamicLoad/PageLoader";
 import NotFound from "@/layout/NotFound";
 import Layout from "@/layout";
@@ -82,8 +82,8 @@ const RoutesProvider: React.FC = () => {
     const addDynamicComponentRoute = (router: DynamicComponentRouter) => {
         const dynamicLoadComponent = (remoteUrl: string, scope: string, module: string): Promise<React.ComponentType<any>> => {
             return new Promise((resolve, reject) => {
-                loadRemoteScript(remoteUrl).then(() => {
-                    loadRemoteComponent(scope, module).then((ComponentModule: any) => {
+                DynamicComponentUtils.loadRemoteScript(remoteUrl).then(() => {
+                    DynamicComponentUtils.loadRemoteComponent(scope, module).then((ComponentModule: any) => {
                         resolve(ComponentModule.default || ComponentModule);
                     });
                 }).catch(ignore => {

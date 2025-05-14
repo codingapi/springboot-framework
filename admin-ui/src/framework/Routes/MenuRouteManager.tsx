@@ -2,7 +2,7 @@ import React from "react";
 import {loadPage} from "@/framework/DynamicLoad/PageLoader";
 import {Route} from "react-router";
 import {menus} from "@/config/menus";
-import RoleControl from "@/utils/RoleControl";
+import {RoleControl} from "@codingapi/ui-framework";
 import {cloneDeep} from 'lodash';
 import Icons from "@/components/icons";
 
