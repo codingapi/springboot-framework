@@ -93,7 +93,7 @@ https://github.com/codingapi/springboot-framework/wiki
 
 ## Example
 
-见 [springboot-example](https://github.com/codingapi/springboot-example)
+见 [example](./example)
 
 ## Reference Documentation
 
