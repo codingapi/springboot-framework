@@ -1,11 +1,11 @@
-import {get, post} from "@/api";
+import {httpClient} from "@/api";
 
 export async function captcha() {
-    return get('/open/captcha');
+    return httpClient.get('/open/captcha');
 }
 
 export async function login(body: any) {
-    return post('/user/login', body);
+    return httpClient.post('/user/login', body);
 }
 
 export function initUser(user: {

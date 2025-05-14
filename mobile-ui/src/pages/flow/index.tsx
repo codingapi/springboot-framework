@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import Header from "@/layout/Header";
-import PullToRefreshList, {ListAction} from "@/components/list";
+import {ListAction, PullToRefreshList} from "@codingapi/form-mobile";
 import {RightOutline} from "antd-mobile-icons";
 import {
     findAllByOperatorId,
@@ -84,6 +84,13 @@ const FlowListPage = () => {
         }
         if (key === 'all') {
             return findAllByOperatorId(last, pageSize);
+        }
+        return {
+            success: true,
+            data: {
+                list: [],
+                total: 0,
+            }
         }
     }
 

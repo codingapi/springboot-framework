@@ -159,7 +159,7 @@ const FooterButtons: React.FC<{ formInstance: FormInstance }> = ({formInstance})
 
 const FormPage = ()=>{
 
-    const [activeKey, setActiveKey] = React.useState("property");
+    const [activeKey, setActiveKey] = React.useState("left");
 
     const leftFormInstance = Form.useForm();
     const rightFormInstance = Form.useForm();
@@ -370,20 +370,20 @@ const FormPage = ()=>{
                     setActiveKey(value);
                 }}
             >
-                <Tabs.Tab title={"属性表单"} key={"property"}/>
-                <Tabs.Tab title={"字段表单"} key={"field"}/>
+                <Tabs.Tab title={"左侧表单"} key={"left"}/>
+                <Tabs.Tab title={"右侧表单"} key={"right"}/>
             </Tabs>
 
-            {activeKey ==='field' && (
+            {activeKey ==='left' && (
                 <>
                     <Form
                         layout={"horizontal"}
-                        form={rightFormInstance}
+                        form={leftFormInstance}
                         onFinish={async (values)=>{
                             Toast.show(JSON.stringify(values));
                         }}
                         footer={(
-                            <FooterButtons formInstance={rightFormInstance}/>
+                            <FooterButtons formInstance={leftFormInstance}/>
                         )}
                         loadFields={async () => {
                             return fields;
@@ -393,17 +393,17 @@ const FormPage = ()=>{
                 </>
             )}
 
-            {activeKey ==='property' && (
+            {activeKey ==='right' && (
                 <>
                     <Form
-                        form={leftFormInstance}
+                        form={rightFormInstance}
                         layout={"horizontal"}
                         onFinish={async (values)=>{
                             Toast.show(JSON.stringify(values));
                         }}
                         footer={(
                             <FooterButtons
-                                formInstance={leftFormInstance}
+                                formInstance={rightFormInstance}
                             />
                         )}
                     >

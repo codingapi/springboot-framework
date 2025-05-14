@@ -1,11 +1,11 @@
-import {get, post} from "@/api/index";
+import {httpClient} from "@/api/index";
 
 
 export async function loadFiles(ids: string) {
-    return get('/api/oss/load', {ids: ids});
+    return httpClient.get('/api/oss/load', {ids: ids});
 }
 
 
 export async function upload(body: any) {
-    return post('/api/oss/upload', body);
+    return httpClient.post('/api/oss/upload', body);
 }

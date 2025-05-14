@@ -5,7 +5,7 @@ import {HeaderProps} from "@/gateway";
 import HeaderDefault from "@/gateway/default/Header";
 import Header from "@/layout/Header";
 import {Form, FormInput} from "@codingapi/form-mobile";
-import Popup from "@/components/popup";
+import {Popup} from "@codingapi/form-mobile";
 
 
 const MircoPage = () => {

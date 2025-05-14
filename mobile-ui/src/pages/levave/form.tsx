@@ -6,7 +6,6 @@ import {FlowViewReactContext} from "@codingapi/flow-mobile";
 import {fields} from "@/pages/levave/fields";
 
 const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
-    const formInstance = props.form;
     const flowViewReactContext = useContext(FlowViewReactContext);
 
     console.log('LeaveForm init:', props);
@@ -22,9 +21,10 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
     useEffect(() => {
         // 设置表单数据
         if (props.dataVersion && props.data) {
-            formInstance?.setFieldsValue({
+            props.form?.setFieldsValue({
                 ...props.data
             });
+            console.log(props.form, props.form?.getFieldsValue());
         }
     }, [props.dataVersion]);
 
@@ -32,7 +32,7 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
 
     return (
         <Form
-            form={formInstance}
+            form={props.form}
             loadFields={async () => {
                 return fields;
             }}
@@ -51,7 +51,7 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
                             margin: 5
                         }}
                         onClick={async () => {
-                            formInstance?.validate();
+                            props.form?.validate();
                         }}
                     >校验表单</Button>
 
