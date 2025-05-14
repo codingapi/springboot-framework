@@ -41,4 +41,7 @@ public class FlowResult {
         return records.stream().allMatch(FlowRecord::isOverNode);
     }
 
+    public boolean isStart() {
+        return records.stream().allMatch(FlowRecord::isStartNode);
+    }
 }

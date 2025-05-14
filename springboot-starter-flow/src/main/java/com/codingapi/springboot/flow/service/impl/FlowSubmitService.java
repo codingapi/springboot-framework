@@ -231,7 +231,7 @@ public class FlowSubmitService {
      */
     public FlowResult submitFlow() {
         FlowResult flowResult = this.submitCurrentFlow();
-        if (this.isSkipIfSameApprover() && !flowResult.isOver()) {
+        if (this.isSkipIfSameApprover() && !flowResult.isOver() && !flowResult.isStart()) {
             List<FlowRecord> flowRecords = flowResult.matchRecordByOperator(currentOperator);
             FlowResult result = flowResult;
             if (!flowRecords.isEmpty()) {
