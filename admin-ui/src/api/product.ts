@@ -1,7 +1,7 @@
-import {get} from "@/api/index";
+import {httpClient} from "@/api/index";
 
 
 export async function products() {
-    return get('/api/products');
+    return httpClient.get('/api/products');
 }
 

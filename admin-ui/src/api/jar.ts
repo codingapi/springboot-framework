@@ -1,9 +1,9 @@
-import {post} from "@/api/index";
+import {httpClient} from "@/api/index";
 
 export async function upload(body: any) {
-    return post('/api/jar/upload', body);
+    return httpClient.post('/api/jar/upload', body);
 }
 
 export async function restart() {
-    return post('/api/jar/restart',{});
+    return httpClient.post('/api/jar/restart',{});
 }

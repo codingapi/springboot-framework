@@ -2,7 +2,8 @@ import React, {useEffect, useImperativeHandle} from "react";
 import todo from "@/assets/flow/todo.png";
 import un_submit from "@/assets/flow/un_submit.png";
 import done from "@/assets/flow/done.png";
-import PullToRefreshList, {ListAction, ListResponse} from "@/components/list";
+import {ListAction, PullToRefreshList} from "@codingapi/form-mobile";
+import {Response} from "@codingapi/ui-framework";
 import ListItem from "@/components/info/List/Item";
 import "./index.scss";
 
@@ -43,9 +44,9 @@ interface PullToRefreshTodoListProps {
     // 每页数量，默认为10
     pageSize?: number;
     // 刷新数据
-    onRefresh?: (pageSize: number) => Promise<ListResponse>;
+    onRefresh?: (pageSize: number) => Promise<Response>;
     // 加载更多
-    onLoadMore?: (pageSize: number, last: any) => Promise<ListResponse>;
+    onLoadMore?: (pageSize: number, last: any) => Promise<Response>;
 
 
     showDetail?: (item: TodoListItem) => boolean;
@@ -105,7 +106,7 @@ interface TodoListProps {
     // 删除事件
     onDeleteClick?: (item: TodoListItem) => void;
     // 加载数据
-    loadData: () => Promise<ListResponse>;
+    loadData: () => Promise<Response>;
 
 
     showDetail?: (item: TodoListItem) => boolean;

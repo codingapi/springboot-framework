@@ -1,4 +1,4 @@
-import RoleControl from "@/utils/RoleControl";
+import {RoleControl} from "@codingapi/ui-framework";
 
 interface AccessHandler {
     match: (child: any) => boolean;

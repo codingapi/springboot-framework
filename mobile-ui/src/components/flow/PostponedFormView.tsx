@@ -1,6 +1,6 @@
 import React from "react";
 import {PostponedFormProps} from "@codingapi/ui-framework";
-import Popup from "@/components/popup";
+import {Popup} from "@codingapi/form-mobile";
 import {DatePickerView} from "antd-mobile";
 import dayjs from "dayjs";
 import {dateLabelRenderer} from "@codingapi/form-mobile";

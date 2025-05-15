@@ -1,6 +1,7 @@
 import React from "react";
-import {FormProps,Form} from "@codingapi/form-mobile";
+import {Form} from "@codingapi/form-mobile";
 import "./index.scss";
+import {FormProps} from "@codingapi/ui-framework";
 
 interface FormInfoProps extends FormProps {
     title: string;
