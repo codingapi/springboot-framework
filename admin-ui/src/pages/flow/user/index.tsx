@@ -183,9 +183,6 @@ const UserPage = () => {
                     title={"编辑用户"}
                     open={visible}
                     destroyOnHidden={true}
-                    onClose={()=>{
-                        setVisible(false);
-                    }}
                     onCancel={()=>{
                         setVisible(false);
                     }}

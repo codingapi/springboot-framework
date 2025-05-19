@@ -43,9 +43,7 @@ const UserSelectView: React.FC<UserSelectFormProps> = (props) => {
                 onCancel: () => {
                     props.setVisible(false);
                 },
-                onClose: () => {
-                    props.setVisible(false);
-                }
+                destroyOnHidden:true,
             }}
             onFinish={async (values) => {
                 const users = values.users;

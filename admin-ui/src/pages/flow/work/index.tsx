@@ -196,9 +196,6 @@ const FlowPage = () => {
                 title="编辑流程"
                 open={editorVisible}
                 destroyOnHidden={true}
-                onClose={()=>{
-                    setEditorVisible(false)
-                }}
                 onCancel={()=>{
                     setEditorVisible(false)
                 }}

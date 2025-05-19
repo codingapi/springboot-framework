@@ -13,10 +13,7 @@ const PostponedFormView:React.FC<PostponedFormProps> = (props)=>{
                 onCancel: () => {
                     props.setVisible(false);
                 },
-                onClose: () => {
-                    props.setVisible(false);
-                },
-                destroyOnClose:true,
+                destroyOnHidden:true,
             }}
             onFinish={async (values) => {
                 props.onFinish(values.hours);
