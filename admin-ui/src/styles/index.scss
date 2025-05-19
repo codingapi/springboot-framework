@@ -1,0 +1,25 @@
+:root {
+  --primary-color: #4a79d8;
+  --body-background-color: #fdfdfd;
+
+  --content-font-size-large: 24px;
+  --content-font-size-middle: 16px;
+  --content-font-size-small: 12px;
+
+  --content-font-size: var(--content-font-size-middle);
+}
+
+
+body {
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--body-background-color);
+  font-size: var(--content-font-size);
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  monospace;
+}

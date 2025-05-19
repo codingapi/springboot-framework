@@ -1,7 +1,7 @@
 import React, {createContext} from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
-import './index.scss';
+import '@/styles/index.scss';
 import {createHashRouter, RouterProvider} from "react-router-dom";
 import {routes} from "@/config/route";
 import zhCN from "antd-mobile/es/locales/zh-CN";

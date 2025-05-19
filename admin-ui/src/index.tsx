@@ -7,7 +7,7 @@ import store from "@/store/Redux";
 import {ConfigProvider} from "antd";
 import zhCN from 'antd/es/locale/zh_CN';
 import {theme} from "@/config/theme";
-import './index.scss';
+import '@/styles/index.scss';
 import "@/config/register.component";
 
 const root = ReactDOM.createRoot(
