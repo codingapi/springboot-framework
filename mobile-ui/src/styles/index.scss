@@ -1,5 +1,5 @@
 :root {
-  --primary-color: #4a79d8;
+  --primary-color: #0f58ea;
   --body-background-color: #e6e7ea;
 
   --content-font-size-large: 24px;
@@ -7,6 +7,11 @@
   --content-font-size-small: 12px;
 
   --content-font-size: var(--content-font-size-middle);
+}
+
+
+:root:root{
+  --adm-color-primary: var(--primary-color);
 }
 
 
