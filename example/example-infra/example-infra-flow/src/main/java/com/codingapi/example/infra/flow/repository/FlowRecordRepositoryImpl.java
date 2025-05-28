@@ -49,6 +49,11 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository {
     }
 
     @Override
+    public List<FlowRecord> findMergeFlowRecordById(String workCode, String nodeCode, long currentOperatorId) {
+        return flowRecordEntityRepository.findMergeFlowRecordById(currentOperatorId,workCode,nodeCode).stream().map(item->FlowRecordConvertor.convert(item,flowOperatorRepository)).toList();
+    }
+
+    @Override
     public List<FlowRecord> findTodoFlowRecordByProcessId(String processId) {
         return flowRecordEntityRepository.findTodoFlowRecordByProcessId(processId)
                 .stream().map(item->FlowRecordConvertor.convert(item,flowOperatorRepository)).toList();

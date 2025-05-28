@@ -68,6 +68,11 @@ public class FlowNodeEntity {
     private Boolean editable;
 
     /**
+     * 是否合并审批
+     */
+    private Boolean mergeable;
+
+    /**
      * 创建时间
      */
     private Long createTime;

@@ -42,6 +42,11 @@ public class FlowRecordEntity {
     private String nodeCode;
 
     /**
+     * 是否可合并
+     */
+    private Boolean mergeable;
+
+    /**
      * 流程标题
      */
     private String title;

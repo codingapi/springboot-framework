@@ -50,6 +50,17 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository, FlowRecor
     }
 
     @Override
+    public List<FlowRecord> findMergeFlowRecordById(String workCode, String nodeCode, long operatorId) {
+        return cache.stream()
+                .filter(record -> record.isTodo() && record.getCurrentOperator().getUserId() == operatorId
+                        && record.getWorkCode().equals(workCode)
+                        && record.getNodeCode().equals(nodeCode)
+                        && record.isMergeable()
+                )
+                .toList();
+    }
+
+    @Override
     public List<FlowRecord> findTodoFlowRecordByProcessId(String processId) {
         return cache.stream().filter(record -> record.isTodo() && record.getProcessId().equals(processId)).toList();
     }

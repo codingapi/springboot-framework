@@ -23,8 +23,16 @@ public interface FlowRecordEntityRepository extends FastRepository<FlowRecordEnt
     @Query(value = "select r from FlowRecordEntity  r where r.flowType = 'TODO' and r.flowStatus = 'RUNNING' and r.processId = ?1")
     List<FlowRecordEntity> findTodoFlowRecordByProcessId(String processId);
 
-    @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.flowType = 'TODO' and r.flowStatus = 'RUNNING' order by r.id desc")
+    @Query(value = "select r from FlowRecordEntity r" +
+            " LEFT JOIN (select min(m.id) as id from FlowRecordEntity m where m.currentOperatorId = ?1 and m.flowType = 'TODO' and m.flowStatus = 'RUNNING' and m.mergeable = true ) debup " +
+            "on r.id = debup.id" +
+            " where r.currentOperatorId = ?1 and r.flowType = 'TODO' and r.flowStatus = 'RUNNING'" +
+            " and (r.mergeable !=true or debup.id is NOT null ) order by r.id desc")
     Page<FlowRecordEntity> findTodoByOperatorId(long operatorId, PageRequest pageRequest);
+
+    @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1 and r.workCode = ?2 and r.nodeCode = ?3" +
+            " and r.mergeable = true and r.flowType = 'TODO' and r.flowStatus = 'RUNNING' order by r.id desc")
+    List<FlowRecordEntity> findMergeFlowRecordById(long currentOperatorId,String workCode, String nodeCode);
 
     @Query(value = "select r from FlowRecordEntity  r where r.currentOperatorId = ?1  and r.workCode = ?2 and r.flowType = 'TODO' and r.flowStatus = 'RUNNING' order by r.id desc")
     Page<FlowRecordEntity> findTodoByOperatorIdAndWorkCode(long operatorId, String workCode, PageRequest pageRequest);

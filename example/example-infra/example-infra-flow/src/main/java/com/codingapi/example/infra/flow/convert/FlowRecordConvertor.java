@@ -21,6 +21,7 @@ public class FlowRecordConvertor {
         entity.setWorkId(flowRecord.getWorkId());
         entity.setProcessId(flowRecord.getProcessId());
         entity.setNodeCode(flowRecord.getNodeCode());
+        entity.setMergeable(flowRecord.isMergeable());
         entity.setTitle(flowRecord.getTitle());
         entity.setCurrentOperatorId(flowRecord.getCurrentOperator().getUserId());
         entity.setFlowType(flowRecord.getFlowType().name());
@@ -71,6 +72,7 @@ public class FlowRecordConvertor {
         flowRecord.setWorkId(entity.getWorkId());
         flowRecord.setProcessId(entity.getProcessId());
         flowRecord.setNodeCode(entity.getNodeCode());
+        flowRecord.setMergeable(entity.getMergeable());
         flowRecord.setTitle(entity.getTitle());
         flowRecord.setCurrentOperator(flowUserRepository.getFlowOperatorById(entity.getCurrentOperatorId()));
         flowRecord.setFlowType(FlowType.parser(entity.getFlowType()));
