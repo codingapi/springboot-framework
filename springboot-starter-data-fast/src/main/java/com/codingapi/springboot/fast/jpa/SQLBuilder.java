@@ -23,6 +23,10 @@ public class SQLBuilder {
         this(clazz, sql, "select count(1) from " + sql);
     }
 
+    public SQLBuilder(String sql,String countSql) {
+        this(null, sql, countSql);
+    }
+
     public SQLBuilder(Class<?> clazz, String sql, String countSQL) {
         this.countSQLBuilder = new StringBuilder(countSQL);
         this.sqlBuilder = new StringBuilder(sql);
