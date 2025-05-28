@@ -48,6 +48,7 @@ public class SchemaReader {
             String titleGenerator = properties.getString("titleGenerator");
             String name = properties.getString("name");
             boolean editable = properties.getBoolean("editable");
+            boolean mergeable = properties.getBoolean("mergeable");
             String view = properties.getString("view");
             String type = properties.getString("type");
             String approvalType = properties.getString("approvalType");
@@ -59,7 +60,7 @@ public class SchemaReader {
                 buttons = properties.getJSONArray("buttons").toJavaList(FlowButton.class);
             }
             FlowNode flowNode = new FlowNode(id, name, code, view, NodeType.parser(type), ApprovalType.parser(approvalType), new TitleGenerator(titleGenerator),
-                    new OperatorMatcher(operatorMatcher), timeout, StringUtils.hasLength(errTrigger) ? new ErrTrigger(errTrigger) : null, editable, buttons);
+                    new OperatorMatcher(operatorMatcher), timeout, StringUtils.hasLength(errTrigger) ? new ErrTrigger(errTrigger) : null, editable,mergeable, buttons);
             flowNodes.add(flowNode);
         }
     }

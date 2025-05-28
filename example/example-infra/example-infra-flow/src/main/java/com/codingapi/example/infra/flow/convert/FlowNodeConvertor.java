@@ -21,6 +21,7 @@ public class FlowNodeConvertor {
         entity.setCode(flowNode.getCode());
         entity.setName(flowNode.getName());
         entity.setEditable(flowNode.isEditable());
+        entity.setMergeable(flowNode.isMergeable());
         entity.setCreateTime(flowNode.getCreateTime());
         entity.setType(flowNode.getType().name());
         entity.setTimeout(flowNode.getTimeout());
@@ -52,6 +53,7 @@ public class FlowNodeConvertor {
                 ApprovalType.parser(entity.getApprovalType()),
                 new OperatorMatcher(entity.getOperatorMatcher()),
                 entity.getEditable(),
+                entity.getMergeable(),
                 entity.getCreateTime(),
                 entity.getUpdateTime(),
                 entity.getTimeout(),

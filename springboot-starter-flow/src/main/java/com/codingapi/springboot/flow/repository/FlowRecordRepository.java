@@ -50,6 +50,16 @@ public interface FlowRecordRepository {
 
 
     /**
+     * 获取合并的流程记录
+     * @param workCode 流程编码
+     * @param nodeCode 节点编码
+     * @param currentOperatorId 当前操作者ID
+     * @return List of FlowRecord
+     */
+    List<FlowRecord> findMergeFlowRecordById(String workCode,String nodeCode,long currentOperatorId);
+
+
+    /**
      * 查询所有未完成的流程记录
      *
      * @param processId 流程id
