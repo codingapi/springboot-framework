@@ -49,7 +49,21 @@ public class FlowAppQueryService {
     public Page<FlowRecordEntity> findTodoByOperatorId(SearchRequest searchRequest) {
         User user = userRepository.getUserByUsername(TokenContext.current().getUsername());
         String lastId = searchRequest.getParameter("lastId");
-        SQLBuilder sqlBuilder = new SQLBuilder("from FlowRecordEntity r where r.currentOperatorId = ?1 and r.flowType = 'TODO' and r.flowStatus = 'RUNNING' ");
+        SQLBuilder sqlBuilder = new SQLBuilder(
+                """
+                        select r from FlowRecordEntity r 
+                        LEFT JOIN (select min(m.id) as id from FlowRecordEntity m where m.currentOperatorId = ?1 and m.flowType = 'TODO' and m.flowStatus = 'RUNNING' and m.mergeable = true ) debup 
+                        on r.id = debup.id 
+                        where r.currentOperatorId = ?1 and r.flowType = 'TODO' and r.flowStatus = 'RUNNING'
+                        and (r.mergeable !=true or debup.id is NOT null ) 
+                """,
+                """
+                select count(r) from FlowRecordEntity r 
+                        LEFT JOIN (select min(m.id) as id from FlowRecordEntity m where m.currentOperatorId = ?1 and m.flowType = 'TODO' and m.flowStatus = 'RUNNING' and m.mergeable = true ) debup 
+                        on r.id = debup.id 
+                        where r.currentOperatorId = ?1 and r.flowType = 'TODO' and r.flowStatus = 'RUNNING'
+                        and (r.mergeable !=true or debup.id is NOT null ) 
+                """);
         sqlBuilder.addParam(user.getId());
         if(StringUtils.hasText(lastId)){
             sqlBuilder.append(" and r.id < ?",Long.parseLong(lastId));
