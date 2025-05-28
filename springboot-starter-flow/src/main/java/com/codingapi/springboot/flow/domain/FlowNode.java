@@ -79,6 +79,14 @@ public class FlowNode {
     private boolean editable;
 
     /**
+     * 是否合并记录
+     * <p>
+     * 如果为true，则表示该节点可以合并记录
+     */
+    private boolean mergeable;
+
+
+    /**
      * 创建时间
      */
     private long createTime;
@@ -148,6 +156,7 @@ public class FlowNode {
                 this.approvalType,
                 this.operatorMatcher.getScript(),
                 this.editable,
+                this.mergeable,
                 this.createTime,
                 this.updateTime,
                 this.timeout,
@@ -168,6 +177,7 @@ public class FlowNode {
                     long timeout,
                     ErrTrigger errTrigger,
                     boolean editable,
+                    boolean mergeable,
                     List<FlowButton> buttons) {
         this.id = id;
         this.code = code;
@@ -182,6 +192,7 @@ public class FlowNode {
         this.errTrigger = errTrigger;
         this.timeout = timeout;
         this.editable = editable;
+        this.mergeable = mergeable;
         this.buttons = buttons;
     }
 
@@ -229,6 +240,7 @@ public class FlowNode {
         FlowRecord record = new FlowRecord();
         record.setProcessId(processId);
         record.setNodeCode(this.code);
+        record.setMergeable(this.mergeable);
         record.setCreateTime(System.currentTimeMillis());
         record.setWorkId(workId);
         record.setWorkCode(workCode);

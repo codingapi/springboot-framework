@@ -70,6 +70,11 @@ public class FlowNodeSerializable implements Serializable {
     private boolean editable;
 
     /**
+     * 是否可合并审批
+     */
+    private boolean mergeable;
+
+    /**
      * 创建时间
      */
     private long createTime;
@@ -95,6 +100,6 @@ public class FlowNodeSerializable implements Serializable {
 
     public FlowNode toFlowNode() {
         return new FlowNode(id, code, name, new TitleGenerator(titleGenerator), type, view, approvalType,
-                new OperatorMatcher(operatorMatcher), editable, createTime, updateTime, timeout, errTrigger == null ? null : new ErrTrigger(errTrigger),buttons);
+                new OperatorMatcher(operatorMatcher), editable, mergeable, createTime, updateTime, timeout, errTrigger == null ? null : new ErrTrigger(errTrigger), buttons);
     }
 }

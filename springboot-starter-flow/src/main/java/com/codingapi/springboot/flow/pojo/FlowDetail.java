@@ -5,6 +5,7 @@ import com.codingapi.springboot.flow.bind.IBindData;
 import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.domain.Opinion;
+import com.codingapi.springboot.flow.record.FlowMerge;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import lombok.Getter;
@@ -64,8 +65,14 @@ public class FlowDetail {
      */
     private final boolean canHandle;
 
+    /**
+     * 合并记录
+     */
+    private final List<FlowMerge> mergeRecords;
+
 
     public FlowDetail(FlowRecord flowRecord,
+                      List<FlowMerge> mergeRecords,
                       BindDataSnapshot snapshot,
                       FlowWork flowWork,
                       List<FlowRecord> historyRecords,
@@ -73,6 +80,7 @@ public class FlowDetail {
                       boolean canHandle) {
         this.operators = operators;
         this.flowRecord = flowRecord;
+        this.mergeRecords = mergeRecords;
         this.flowWork = flowWork;
         this.bindData = snapshot.toBindData();
         this.historyRecords = historyRecords;
@@ -92,6 +100,7 @@ public class FlowDetail {
         this.operators = operators;
         this.flowCreateTime = 0;
         this.flowRecord = null;
+        this.mergeRecords = null;
         this.historyRecords = null;
         this.bindData = null;
         this.opinions = null;

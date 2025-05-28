@@ -73,43 +73,47 @@ public class FlowWorkBuilder {
 
     public class Nodes {
 
-        public Nodes node(String id, String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, long timeout, TitleGenerator titleGenerator, ErrTrigger errTrigger, boolean editable, List<FlowButton> buttons) {
-            FlowNode node = new FlowNode(id, name, code, view, NodeType.parser(code), approvalType, titleGenerator, operatorMatcher, timeout, errTrigger, editable, buttons);
+        public Nodes node(String id, String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, long timeout, TitleGenerator titleGenerator, ErrTrigger errTrigger, boolean editable, boolean mergeable, List<FlowButton> buttons) {
+            FlowNode node = new FlowNode(id, name, code, view, NodeType.parser(code), approvalType, titleGenerator, operatorMatcher, timeout, errTrigger, editable,mergeable, buttons);
             work.addNode(node);
             return this;
         }
 
         public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, long timeout, boolean editable) {
-            return node(RandomGenerator.generateUUID(), name, code, view, approvalType, operatorMatcher, timeout, TitleGenerator.defaultTitleGenerator(), null, editable, null);
+            return node(RandomGenerator.generateUUID(), name, code, view, approvalType, operatorMatcher, timeout, TitleGenerator.defaultTitleGenerator(), null, editable,false, null);
         }
 
-        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, long timeout, boolean editable, List<FlowButton> buttons) {
-            return node(RandomGenerator.generateUUID(), name, code, view, approvalType, operatorMatcher, timeout, TitleGenerator.defaultTitleGenerator(), null, editable, buttons);
+        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, long timeout, boolean editable,boolean mergeable) {
+            return node(RandomGenerator.generateUUID(), name, code, view, approvalType, operatorMatcher, timeout, TitleGenerator.defaultTitleGenerator(), null, editable,mergeable, null);
+        }
+
+        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, long timeout, boolean editable,boolean mergeable, List<FlowButton> buttons) {
+            return node(RandomGenerator.generateUUID(), name, code, view, approvalType, operatorMatcher, timeout, TitleGenerator.defaultTitleGenerator(), null, editable,mergeable, buttons);
         }
 
 
-        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, boolean editable) {
-            return node(RandomGenerator.generateUUID(), name, code, view, approvalType, operatorMatcher, 0, TitleGenerator.defaultTitleGenerator(), null, editable, null);
+        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, boolean editable,boolean mergeable) {
+            return node(RandomGenerator.generateUUID(), name, code, view, approvalType, operatorMatcher, 0, TitleGenerator.defaultTitleGenerator(), null, editable,mergeable, null);
         }
 
-        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, boolean editable, List<FlowButton> buttons) {
-            return node(RandomGenerator.generateUUID(), name, code, view, approvalType, operatorMatcher, 0, TitleGenerator.defaultTitleGenerator(), null, editable, buttons);
+        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, boolean editable,boolean mergeable, List<FlowButton> buttons) {
+            return node(RandomGenerator.generateUUID(), name, code, view, approvalType, operatorMatcher, 0, TitleGenerator.defaultTitleGenerator(), null, editable,mergeable, buttons);
         }
 
         public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, List<FlowButton> buttons) {
-            return node(name, code, view, approvalType, operatorMatcher, true, buttons);
+            return node(name, code, view, approvalType, operatorMatcher, true,false, buttons);
         }
 
         public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher) {
-            return node(name, code, view, approvalType, operatorMatcher, true, null);
+            return node(name, code, view, approvalType, operatorMatcher, true,false, null);
         }
 
-        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, ErrTrigger errTrigger, boolean editable, List<FlowButton> buttons) {
-            return node(RandomGenerator.generateUUID(), name, code, view, approvalType, operatorMatcher, 0, TitleGenerator.defaultTitleGenerator(), errTrigger, editable, buttons);
+        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, ErrTrigger errTrigger, boolean editable,boolean mergeable, List<FlowButton> buttons) {
+            return node(RandomGenerator.generateUUID(), name, code, view, approvalType, operatorMatcher, 0, TitleGenerator.defaultTitleGenerator(), errTrigger, editable,mergeable, buttons);
         }
 
-        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, ErrTrigger errTrigger, boolean editable) {
-            return node(RandomGenerator.generateUUID(), name, code, view, approvalType, operatorMatcher, 0, TitleGenerator.defaultTitleGenerator(), errTrigger, editable, null);
+        public Nodes node(String name, String code, String view, ApprovalType approvalType, OperatorMatcher operatorMatcher, ErrTrigger errTrigger, boolean editable,boolean mergeable) {
+            return node(RandomGenerator.generateUUID(), name, code, view, approvalType, operatorMatcher, 0, TitleGenerator.defaultTitleGenerator(), errTrigger, editable,mergeable, null);
         }
 
 

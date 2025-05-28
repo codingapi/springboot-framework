@@ -5,6 +5,7 @@ import com.codingapi.springboot.flow.content.FlowSession;
 import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.pojo.FlowDetail;
+import com.codingapi.springboot.flow.record.FlowMerge;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.*;
 import com.codingapi.springboot.flow.service.FlowRecordVerifyService;
@@ -46,6 +47,16 @@ public class FlowDetailService {
         FlowRecord flowRecord = flowRecordVerifyService.getFlowRecord();
         FlowWork flowWork = flowRecordVerifyService.getFlowWork();
 
+        List<FlowMerge> mergeRecords = null;
+        if(flowRecord.isTodo() && flowRecord.isMergeable()){
+            List<FlowRecord> flowRecords = flowRecordRepository.findMergeFlowRecordById(flowRecord.getWorkCode(),flowRecord.getNodeCode(),currentOperator.getUserId());
+            if(!flowRecords.isEmpty()){
+                mergeRecords = flowRecords.stream().map(record->{
+                    BindDataSnapshot bindDataSnapshot = flowBindDataRepository.getBindDataSnapshotById(record.getSnapshotId());
+                    return new FlowMerge(record,bindDataSnapshot.toBindData());
+                }).collect(Collectors.toList());
+            }
+        }
 
         BindDataSnapshot snapshot = flowBindDataRepository.getBindDataSnapshotById(flowRecord.getSnapshotId());
         List<FlowRecord> flowRecords =
@@ -64,7 +75,7 @@ public class FlowDetailService {
             }
         }
 
-        return new FlowDetail(flowRecord, snapshot, flowWork, flowRecords, operators, currentOperator != null && flowRecord.isTodo() && flowRecord.isOperator(currentOperator));
+        return new FlowDetail(flowRecord,mergeRecords, snapshot, flowWork, flowRecords, operators, currentOperator != null && flowRecord.isTodo() && flowRecord.isOperator(currentOperator));
     }
 
 
