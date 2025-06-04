@@ -1,15 +1,13 @@
 import React from "react";
 import {Button, Toast} from "antd-mobile";
-import FormInput from "@/components/form/input";
-import FormPassword from "@/components/form/password";
+import {FormInput,FormPassword,Form} from "@codingapi/form-mobile";
 import {useNavigate} from "react-router";
-import Form, {FormAction} from "@/components/form";
 import {initUser, login} from "@/api/account";
 import {config} from "@/config/theme";
 
 const LoginPage = () => {
 
-    const formAction = React.useRef<FormAction>(null);
+    const formInstance = Form.useForm();
 
     const navigate = useNavigate();
 
@@ -39,13 +37,13 @@ const LoginPage = () => {
                 login page
             </h3>
             <Form
-                actionRef={formAction}
+                form={formInstance}
                 onFinish={handlerLogin}
                 layout="horizontal"
                 footer={(
                     <Button
-                        onClick={() => {
-                            formAction.current?.submit();
+                        onClick={async () => {
+                            await formInstance.submit();
                         }}
                         block={true}
                         type={'button'}

@@ -1,23 +1,17 @@
 import React from "react";
-import Flow, {FlowActionType} from "@/components/Flow";
-import {
-    ActionType,
-    ModalForm,
-    PageContainer,
-    ProForm,
-    ProFormDigit, ProFormSwitch,
-    ProFormText, ProFormTextArea,
-    ProTable
-} from "@ant-design/pro-components";
+import {Flow,FlowActionType} from "@codingapi/flow-pc";
+import {ActionType, PageContainer, ProTable} from "@ant-design/pro-components";
 import {changeState, copy, list, remove, save, schema} from "@/api/flow";
-import {Button, Drawer, message, Popconfirm, Space} from "antd";
+import {Button, Drawer, message, Modal, Popconfirm, Space} from "antd";
+import {Form,FormInput,FormTextArea,FormSwitch} from "@codingapi/form-pc";
+import {ValidateUtils} from "@codingapi/ui-framework";
 
 const FlowPage = () => {
 
     const [visible, setVisible] = React.useState(false);
     const [editorVisible, setEditorVisible] = React.useState(false);
     const flowActionType = React.useRef<FlowActionType>(null);
-    const [form] = ProForm.useForm();
+    const form = Form.useForm();
     const actionRef = React.useRef<ActionType>();
 
     const [current, setCurrent] = React.useState<any>(null);
@@ -181,7 +175,7 @@ const FlowPage = () => {
                             data-testid={"flow-add-btn"}
                             type={"primary"}
                             onClick={() => {
-                                form.resetFields();
+                                form.reset();
                                 setEditorVisible(true);
                             }}
                         >新增</Button>
@@ -197,77 +191,65 @@ const FlowPage = () => {
                 }}
             />
 
-            <ModalForm
+            <Modal
                 data-testid={"flow-editor"}
                 title="编辑流程"
-                form={form}
                 open={editorVisible}
-                modalProps={{
-                    destroyOnClose: true,
-                    onClose: () => setEditorVisible(false),
-                    onCancel: () => setEditorVisible(false),
+                destroyOnHidden={true}
+                onCancel={()=>{
+                    setEditorVisible(false)
                 }}
-                submitter={{
-                    submitButtonProps:{
-                        "data-testid":"flow-editor-submit",
-                    },
+                onOk={async ()=>{
+                    await form.submit();
                 }}
-                onFinish={handlerSave}
             >
-                <ProFormText
-                    name={"id"}
-                    hidden={true}
-                />
 
-                <ProFormText
-                    name={"title"}
-                    label={"标题"}
-                    rules={[
-                        {
-                            required: true,
-                            message: "请输入标题"
-                        }
-                    ]}
-                />
+                <Form
+                    form={form}
+                    layout={"vertical"}
+                    onFinish={handlerSave}
+                >
+                    <FormInput
+                        name={"id"}
+                        hidden={true}
+                    />
 
-                <ProFormText
-                    name={"code"}
-                    label={"编码"}
-                    rules={[
-                        {
-                            required: true,
-                            message: "请输入编码"
-                        }
-                    ]}
-                />
+                    <FormInput
+                        name={"title"}
+                        label={"标题"}
+                        required={true}
+                        validateFunction={ValidateUtils.validateNotEmpty}
+                    />
 
-                <ProFormTextArea
-                    name={"description"}
-                    label={"描述"}
-                />
+                    <FormInput
+                        name={"code"}
+                        label={"编码"}
+                        required={true}
+                        validateFunction={ValidateUtils.validateNotEmpty}
+                    />
 
-                <ProFormDigit
-                    name={"postponedMax"}
-                    tooltip={"允许流程最大的延期次数"}
-                    label={"最大延期次数"}
-                    fieldProps={{
-                        step:1
-                    }}
-                    rules={[
-                        {
-                            required:true,
-                            message:'最大延期次数不能为空'
-                        }
-                    ]}
-                />
+                    <FormTextArea
+                        name={"description"}
+                        label={"描述"}
+                    />
 
-                <ProFormSwitch
-                    name={"skipIfSameApprover"}
-                    tooltip={"是否跳过相同审批人，默认为否"}
-                    label={"是否跳过相同审批人"}
-                />
+                    <FormInput
+                        name={"postponedMax"}
+                        tooltip={"允许流程最大的延期次数"}
+                        label={"最大延期次数"}
+                        inputType={'number'}
+                        required={true}
+                        validateFunction={ValidateUtils.validateNotEmpty}
+                    />
 
-            </ModalForm>
+                    <FormSwitch
+                        name={"skipIfSameApprover"}
+                        tooltip={"是否跳过相同审批人，默认为否"}
+                        label={"是否跳过相同审批人"}
+                    />
+                </Form>
+
+            </Modal>
 
 
             <Drawer

@@ -5,7 +5,7 @@
     <parent>
         <artifactId>springboot-example</artifactId>
         <groupId>com.codingapi.springboot</groupId>
-       <version>3.3.67</version>
+       <version>3.4.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -19,14 +19,29 @@
 
     <dependencies>
 
-
-
         <dependency>
             <groupId>com.codingapi.springboot</groupId>
-            <artifactId>example-application</artifactId>
+            <artifactId>example-interface</artifactId>
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.codingapi.springboot</groupId>
+            <artifactId>example-infra-jpa</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.codingapi.springboot</groupId>
+            <artifactId>example-infra-flow</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.codingapi.springboot</groupId>
+            <artifactId>example-infra-security</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
     </dependencies>
 

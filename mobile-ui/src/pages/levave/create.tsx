@@ -1,11 +1,13 @@
 import React from "react";
 import Header from "@/layout/Header";
-import FlowView from "@/components/flow/view";
+import {FlowView} from "@codingapi/flow-mobile";
 import LeaveForm from "@/pages/levave/form";
+import {useNavigate} from "react-router";
 
 const LeaveCreatePage = () => {
 
     const username = localStorage.getItem('username');
+    const navigate = useNavigate();
 
     return (
         <div>
@@ -13,9 +15,13 @@ const LeaveCreatePage = () => {
             <FlowView
                 view={LeaveForm}
                 workCode={"leave"}
+                setVisible={()=>{
+                    navigate(-1);
+                }}
+                visible={true}
                 formParams={{
                     days:1,
-                    clazzName: 'com.codingapi.example.domain.Leave',
+                    clazzName: 'com.codingapi.example.infra.flow.form.LeaveForm',
                     username: username
                 }}
             />

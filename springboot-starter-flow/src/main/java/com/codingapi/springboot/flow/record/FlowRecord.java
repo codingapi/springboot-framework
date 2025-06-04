@@ -50,6 +50,11 @@ public class FlowRecord {
     private String nodeCode;
 
     /**
+     * 是否可合并
+     */
+    private boolean mergeable;
+
+    /**
      * 流程标题
      */
     private String title;
@@ -401,6 +406,7 @@ public class FlowRecord {
         record.setWorkCode(this.workCode);
         record.setProcessId(this.processId);
         record.setNodeCode(this.nodeCode);
+        record.setMergeable(this.mergeable);
         record.setTitle(this.title);
         record.setCurrentOperator(this.currentOperator);
         record.setFlowType(this.flowType);
@@ -449,5 +455,9 @@ public class FlowRecord {
 
     public boolean isOverNode() {
         return this.nodeCode.equals(FlowNode.CODE_OVER);
+    }
+
+    public boolean isStartNode() {
+        return this.nodeCode.equals(FlowNode.CODE_START);
     }
 }

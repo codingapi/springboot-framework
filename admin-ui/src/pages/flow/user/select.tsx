@@ -42,8 +42,7 @@ const UserSelect:React.FC<UserSelectProps> = (props) => {
             width={"60%"}
             open={props.visible}
             onCancel={() => props.setVisible(false)}
-            onClose={() => props.setVisible(false)}
-            destroyOnClose={true}
+            destroyOnHidden={true}
             title={"选择用户"}
             onOk={() => {
                 if (props.onSelect) {

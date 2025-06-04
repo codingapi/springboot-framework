@@ -6,26 +6,34 @@ import {Provider} from "react-redux";
 import store from "@/store/Redux";
 import {ConfigProvider} from "antd";
 import zhCN from 'antd/es/locale/zh_CN';
-import {theme} from "@/config/theme";
-import './index.scss';
+import '@/styles/index.scss';
+import "@/config/register.component";
+import {CSSUtils, ThemeConfig, ThemeProvider} from "@codingapi/ui-framework";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );
 
+export const theme = {
+    token: {
+        colorPrimary: CSSUtils.getRootVariable('--primary-color'),
+        contentFontSize: CSSUtils.getRootVariable('--content-font-size'),
+    }
+} as ThemeConfig;
+
+
 root.render(
     <React.StrictMode>
-        <Provider store={store}>
-
+        <ThemeProvider theme={theme}>
             <ConfigProvider
                 locale={zhCN}
-                theme={{
-                    ...theme
-                }}
+                theme={theme}
             >
-                <RoutesProvider/>
+                <Provider store={store}>
+                    <RoutesProvider/>
+                </Provider>
             </ConfigProvider>
-        </Provider>
+        </ThemeProvider>
     </React.StrictMode>
 );
 

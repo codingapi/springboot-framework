@@ -1,15 +1,5 @@
-import {ThemeConfig} from "antd";
-
-export const theme = {
-    token: {
-        colorPrimary: '#4a79d8',
-    }
-} as ThemeConfig;
-
 
 export const config = {
-    // 主题配置
-    theme: theme,
     // 后台名称
     title: 'Admin UI',
     // 后台logo

@@ -62,8 +62,7 @@ const FlowSelect: React.FC<FlowSelectProps> = (props) => {
             width={"60%"}
             open={props.visible}
             onCancel={() => props.setVisible(false)}
-            onClose={() => props.setVisible(false)}
-            destroyOnClose={true}
+            destroyOnHidden={true}
             title={"选择流程"}
             onOk={() => {
                 if (props.onSelect) {

@@ -4,20 +4,22 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <modules>
-        <module>example-application</module>
+        <module>example-app</module>
         <module>example-domain</module>
-        <module>example-infra-jpa</module>
-        <module>example-infra-flow</module>
+        <module>example-interface</module>
+        <module>example-infra</module>
         <module>example-server</module>
     </modules>
+
     <parent>
         <groupId>com.codingapi.springboot</groupId>
         <artifactId>springboot-parent</artifactId>
         <version>3.3.5</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>springboot-example</artifactId>
-   <version>3.3.67</version>
+    <version>3.4.1</version>
 
     <name>springboot-example</name>
     <description>springboot-example project for Spring Boot</description>
@@ -51,14 +53,43 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.codingapi.springboot</groupId>
-            <artifactId>springboot-starter</artifactId>
-            <version>${codingapi.framework.version}</version>
-        </dependency>
-
     </dependencies>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.codingapi.springboot</groupId>
+                <artifactId>springboot-starter</artifactId>
+                <version>${codingapi.framework.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.codingapi.springboot</groupId>
+                <artifactId>springboot-starter-security</artifactId>
+                <version>${codingapi.framework.version}</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
+                <version>${jsonwebtoken.jjwt.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>${jsonwebtoken.jjwt.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId>
+                <version>${jsonwebtoken.jjwt.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
 
 
 </project>

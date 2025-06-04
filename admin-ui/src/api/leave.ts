@@ -1,4 +1,4 @@
-import {page, post} from "@/api/index";
+import {httpClient} from "@/api/index";
 
 export async function list(
     params: any,
@@ -9,12 +9,12 @@ export async function list(
         type: string
     }[]
 ) {
-    return page('/api/query/leave/list', params, sort, filter, match);
+    return httpClient.page('/api/query/leave/list', params, sort, filter, match);
 }
 
 
 
 export async function startLeave(body: any) {
-    return post('/api/cmd/leave/startLeave', body);
+    return httpClient.post('/api/cmd/leave/startLeave', body);
 }
 

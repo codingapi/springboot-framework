@@ -1,12 +1,11 @@
 import React, {useContext, useEffect} from "react";
-import Form from "@/components/form";
-import {FlowFormViewProps} from "@/components/flow/types";
+import {Form} from "@codingapi/form-mobile";
+import {FlowFormViewProps} from "@codingapi/ui-framework";
 import {Button, Toast} from "antd-mobile";
-import {FlowViewReactContext} from "@/components/flow/view";
+import {FlowViewReactContext} from "@codingapi/flow-mobile";
 import {fields} from "@/pages/levave/fields";
 
 const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
-    const formAction = props.formAction;
     const flowViewReactContext = useContext(FlowViewReactContext);
 
     console.log('LeaveForm init:', props);
@@ -22,9 +21,10 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
     useEffect(() => {
         // 设置表单数据
         if (props.dataVersion && props.data) {
-            formAction.current?.setFieldsValue({
+            props.form?.setFieldsValue({
                 ...props.data
             });
+            console.log(props.form, props.form?.getFieldsValue());
         }
     }, [props.dataVersion]);
 
@@ -32,7 +32,7 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
 
     return (
         <Form
-            actionRef={formAction}
+            form={props.form}
             loadFields={async () => {
                 return fields;
             }}
@@ -51,7 +51,7 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
                             margin: 5
                         }}
                         onClick={async () => {
-                            formAction.current && await formAction.current.validate();
+                            props.form?.validate();
                         }}
                     >校验表单</Button>
 
