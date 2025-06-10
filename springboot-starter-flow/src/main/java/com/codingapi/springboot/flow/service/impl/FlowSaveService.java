@@ -2,11 +2,14 @@ package com.codingapi.springboot.flow.service.impl;
 
 import com.codingapi.springboot.flow.bind.BindDataSnapshot;
 import com.codingapi.springboot.flow.bind.IBindData;
+import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.domain.Opinion;
+import com.codingapi.springboot.flow.event.FlowApprovalEvent;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.*;
 import com.codingapi.springboot.flow.service.FlowRecordVerifyService;
 import com.codingapi.springboot.flow.user.IFlowOperator;
+import com.codingapi.springboot.framework.event.EventPusher;
 import lombok.AllArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +48,15 @@ public class FlowSaveService {
 
         flowRecord.setOpinion(opinion);
         flowRecordRepository.update(flowRecord);
+
+        FlowWork flowWork = flowRecordVerifyService.getFlowWork();
+
+        EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_SAVE,
+                        flowRecord,
+                        flowRecord.getCurrentOperator(),
+                        flowWork,
+                        snapshot.toBindData()),
+                true);
     }
 
 }
