@@ -52,8 +52,23 @@ public class FlowApprovalEvent implements ISyncEvent {
     }
 
 
-    public boolean match(Class<?> bindDataClass) {
-        return bindDataClass.isInstance(bindData);
+    public boolean match(String matchKey) {
+        return bindData.match(matchKey);
+    }
+
+    /**
+     * 匹配类名
+     * 当前bingData下的clazzName变成了普通的key字段了，推荐使用match(String matchKey)方法
+     * @param clazz 类名
+     * @return 是否匹配
+     */
+    @Deprecated
+    public boolean match(Class<?> clazz) {
+        return bindData.match(clazz.getName());
+    }
+
+    public <T> T toJavaObject(Class<T> clazz) {
+        return bindData.toJavaObject(clazz);
     }
 
     public boolean isUrge() {

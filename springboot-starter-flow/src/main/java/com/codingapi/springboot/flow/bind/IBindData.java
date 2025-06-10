@@ -7,6 +7,8 @@ import com.alibaba.fastjson.JSONObject;
  */
 public interface IBindData {
 
+    String CLASS_NAME_KEY = "clazzName";
+
     /**
      * 数据快照
      *
@@ -19,9 +21,27 @@ public interface IBindData {
 
     /**
      * 获取类名称
+     *
      * @return 类名称
      */
     default String getClazzName() {
         return this.getClass().getName();
+    }
+
+
+    /**
+     * 类对象匹配
+     */
+    default boolean match(String dataKey) {
+        String className = this.getClazzName();
+        return dataKey.equals(className);
+    }
+
+
+    /**
+     * 转化为类对象
+     */
+    default <T> T toJavaObject(Class<T> clazz) {
+        return (T) this;
     }
 }
