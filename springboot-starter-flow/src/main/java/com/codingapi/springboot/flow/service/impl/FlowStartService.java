@@ -8,7 +8,6 @@ import com.codingapi.springboot.flow.domain.Opinion;
 import com.codingapi.springboot.flow.em.FlowSourceDirection;
 import com.codingapi.springboot.flow.event.FlowApprovalEvent;
 import com.codingapi.springboot.flow.pojo.FlowResult;
-import com.codingapi.springboot.flow.pojo.FlowSubmitResult;
 import com.codingapi.springboot.flow.record.FlowBackup;
 import com.codingapi.springboot.flow.record.FlowProcess;
 import com.codingapi.springboot.flow.record.FlowRecord;
@@ -190,6 +189,7 @@ public class FlowStartService {
         for (FlowRecord record : records) {
             this.pushEvent(FlowApprovalEvent.STATE_CREATE, record);
             this.pushEvent(FlowApprovalEvent.STATE_TODO, record);
+            this.pushEvent(FlowApprovalEvent.STATE_SAVE, record);
         }
         // 当前的审批记录
         return new FlowResult(flowWork, records);

@@ -34,6 +34,8 @@ public class FlowApprovalEvent implements ISyncEvent {
     public static final int STATE_URGE = 8;
     // 抄送
     public static final int STATE_CIRCULATE = 9;
+    // 保存
+    public static final int STATE_SAVE = 10;
 
 
     private final int state;
@@ -77,6 +79,10 @@ public class FlowApprovalEvent implements ISyncEvent {
 
     public boolean isTodo() {
         return state == STATE_TODO;
+    }
+
+    public boolean isSave() {
+        return state == STATE_SAVE;
     }
 
     public boolean isCreate() {
