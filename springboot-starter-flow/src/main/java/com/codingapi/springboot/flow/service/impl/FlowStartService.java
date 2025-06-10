@@ -189,6 +189,7 @@ public class FlowStartService {
         for (FlowRecord record : records) {
             this.pushEvent(FlowApprovalEvent.STATE_CREATE, record);
             this.pushEvent(FlowApprovalEvent.STATE_TODO, record);
+            this.pushEvent(FlowApprovalEvent.STATE_SAVE, record);
         }
         // 当前的审批记录
         return new FlowResult(flowWork, records);
