@@ -162,7 +162,7 @@ public class FlowNodeService {
         }
         this.nextNode = nextNode;
         this.nextOperator = flowOperator;
-        this.backOperator = flowOperator;
+        this.backOperator = null;
     }
 
 
