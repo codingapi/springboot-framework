@@ -10,7 +10,7 @@ export const config = {
     // 主题配置
     theme: theme,
     // 后台名称
-    title: 'HR-人力资源管理系统',
+    title: 'Admin-UI',
     // 后台logo
     logo: 'static://assets/logo.png',
     // 欢迎页路径
