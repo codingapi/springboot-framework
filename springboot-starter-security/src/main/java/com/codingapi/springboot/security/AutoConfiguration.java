@@ -2,6 +2,8 @@ package com.codingapi.springboot.security;
 
 import com.codingapi.springboot.security.configurer.HttpSecurityConfigurer;
 import com.codingapi.springboot.security.controller.VersionController;
+import com.codingapi.springboot.security.customer.DefaultHttpSecurityCustomer;
+import com.codingapi.springboot.security.customer.HttpSecurityCustomer;
 import com.codingapi.springboot.security.dto.request.LoginRequest;
 import com.codingapi.springboot.security.dto.response.LoginResponse;
 import com.codingapi.springboot.security.filter.*;
@@ -21,6 +23,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -89,28 +92,24 @@ public class AutoConfiguration {
         };
     }
 
+    @Bean
+    @ConditionalOnMissingBean
+    public HttpSecurityCustomer httpSecurityCustomer(CodingApiSecurityProperties properties){
+        return new DefaultHttpSecurityCustomer(properties);
+    }
+
 
     @Bean
     @ConditionalOnMissingBean
-    public SecurityFilterChain filterChain(HttpSecurity security, TokenGateway tokenGateway, SecurityLoginHandler loginHandler,
-                                           CodingApiSecurityProperties properties, AuthenticationTokenFilter authenticationTokenFilter) throws Exception {
-        //disable basic auth
-        security.httpBasic(AbstractHttpConfigurer::disable);
+    public SecurityFilterChain filterChain(HttpSecurity security,
+                                           HttpSecurityCustomer httpSecurityCustomer,
+                                           TokenGateway tokenGateway,
+                                           SecurityLoginHandler loginHandler,
+                                           CodingApiSecurityProperties properties,
+                                           AuthenticationTokenFilter authenticationTokenFilter) throws Exception {
+        httpSecurityCustomer.customize(security);
 
-        //before add addCorsMappings to enable cors.
-        security.cors(httpSecurityCorsConfigurer -> {
-            if (properties.isDisableCors()) {
-                httpSecurityCorsConfigurer.disable();
-            }
-        });
-
-        security.csrf(httpSecurityCsrfConfigurer -> {
-            if (properties.isDisableCsrf()) {
-                httpSecurityCsrfConfigurer.disable();
-            }
-        });
-
-
+        //authentication filter
         security.with(new HttpSecurityConfigurer(tokenGateway, loginHandler, properties, authenticationTokenFilter), Customizer.withDefaults());
         security.exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
                         httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(new MyUnAuthenticationEntryPoint())
