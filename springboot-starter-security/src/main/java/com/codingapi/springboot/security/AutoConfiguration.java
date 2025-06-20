@@ -2,6 +2,8 @@ package com.codingapi.springboot.security;
 
 import com.codingapi.springboot.security.configurer.HttpSecurityConfigurer;
 import com.codingapi.springboot.security.controller.VersionController;
+import com.codingapi.springboot.security.customer.DefaultHttpSecurityCustomer;
+import com.codingapi.springboot.security.customer.HttpSecurityCustomer;
 import com.codingapi.springboot.security.dto.request.LoginRequest;
 import com.codingapi.springboot.security.dto.response.LoginResponse;
 import com.codingapi.springboot.security.filter.*;
@@ -67,6 +69,11 @@ public class AutoConfiguration {
         };
     }
 
+    @Bean
+    @ConditionalOnMissingBean
+    public HttpSecurityCustomer httpSecurityCustomer(CodingApiSecurityProperties properties){
+        return new DefaultHttpSecurityCustomer(properties);
+    }
 
     @Bean
     @ConditionalOnMissingBean
@@ -91,16 +98,15 @@ public class AutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public SecurityFilterChain filterChain(HttpSecurity security, TokenGateway tokenGateway, SecurityLoginHandler loginHandler,
-                                           CodingApiSecurityProperties properties, AuthenticationTokenFilter authenticationTokenFilter) throws Exception {
-        //disable basic auth
-        security.httpBasic().disable();
+    public SecurityFilterChain filterChain(HttpSecurity security,
+                                           HttpSecurityCustomer httpSecurityCustomer,
+                                           TokenGateway tokenGateway,
+                                           SecurityLoginHandler loginHandler,
+                                           CodingApiSecurityProperties properties,
+                                           AuthenticationTokenFilter authenticationTokenFilter) throws Exception {
 
-        //before add addCorsMappings to enable cors.
-        security.cors();
-        if (properties.isDisableCsrf()) {
-            security.csrf().disable();
-        }
+        httpSecurityCustomer.customize(security);
+
         security.apply(new HttpSecurityConfigurer(tokenGateway, loginHandler, properties, authenticationTokenFilter));
         security
                 .exceptionHandling()
