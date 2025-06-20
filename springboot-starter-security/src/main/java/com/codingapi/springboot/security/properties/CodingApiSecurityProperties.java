@@ -40,6 +40,16 @@ public class CodingApiSecurityProperties {
 
 
     /**
+     * 禁用Basic Auth
+     */
+    private boolean disableBasicAuth = true;
+
+    /**
+     * 禁用FrameOptions
+     */
+    private boolean disableFrameOptions = true;
+
+    /**
      * 启用禁用CSRF
      */
     private boolean disableCsrf = true;
