@@ -40,13 +40,13 @@ public class FlowService {
                        FlowBackupRepository flowBackupRepository) {
         this.flowServiceRepositoryHolder = new FlowServiceRepositoryHolder(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowOperatorRepository, flowProcessRepository, flowBackupRepository);
         this.flowDetailService = new FlowDetailService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowOperatorRepository, flowProcessRepository);
-        this.flowCustomEventService = new FlowCustomEventService(flowWorkRepository,flowRecordRepository, flowProcessRepository);
-        this.flowRecallService = new FlowRecallService(flowWorkRepository,flowRecordRepository, flowProcessRepository);
-        this.flowRemoveService = new FlowRemoveService(flowWorkRepository,flowRecordRepository, flowProcessRepository);
-        this.flowSaveService = new FlowSaveService(flowWorkRepository,flowRecordRepository, flowBindDataRepository, flowProcessRepository);
-        this.flowTransferService = new FlowTransferService(flowWorkRepository,flowRecordRepository, flowBindDataRepository, flowProcessRepository);
-        this.flowPostponedService = new FlowPostponedService(flowWorkRepository,flowRecordRepository, flowProcessRepository);
-        this.flowUrgeService = new FlowUrgeService(flowWorkRepository,flowRecordRepository, flowProcessRepository);
+        this.flowCustomEventService = new FlowCustomEventService(flowWorkRepository, flowRecordRepository, flowProcessRepository);
+        this.flowRecallService = new FlowRecallService(flowWorkRepository, flowRecordRepository, flowProcessRepository);
+        this.flowRemoveService = new FlowRemoveService(flowWorkRepository, flowRecordRepository, flowProcessRepository);
+        this.flowSaveService = new FlowSaveService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowProcessRepository);
+        this.flowTransferService = new FlowTransferService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowProcessRepository);
+        this.flowPostponedService = new FlowPostponedService(flowWorkRepository, flowRecordRepository, flowProcessRepository);
+        this.flowUrgeService = new FlowUrgeService(flowWorkRepository, flowRecordRepository, flowProcessRepository);
     }
 
     /**
@@ -192,12 +192,24 @@ public class FlowService {
     /**
      * 获取流程执行节点
      *
+     * @param recordId
+     * @param currentOperator
+     * @return
+     */
+    public FlowStepResult getFlowStep(long recordId, IBindData bindData, IFlowOperator currentOperator) {
+        FlowStepService flowStepService = new FlowStepService(recordId, null, currentOperator, bindData, flowServiceRepositoryHolder);
+        return flowStepService.getFlowStep();
+    }
+
+    /**
+     * 获取流程执行节点
+     *
      * @param workCode
      * @param currentOperator
      * @return
      */
     public FlowStepResult getFlowStep(String workCode, IBindData bindData, IFlowOperator currentOperator) {
-        FlowStepService flowStepService = new FlowStepService(workCode, currentOperator, bindData, flowServiceRepositoryHolder);
+        FlowStepService flowStepService = new FlowStepService(0, workCode, currentOperator, bindData, flowServiceRepositoryHolder);
         return flowStepService.getFlowStep();
     }
 
@@ -230,10 +242,11 @@ public class FlowService {
 
     /**
      * 唤醒流程
-     * @param processId  流程实例id
+     *
+     * @param processId       流程实例id
      * @param currentOperator 当前操作者
      */
-    public void notifyFlow(String processId,IFlowOperator currentOperator) {
+    public void notifyFlow(String processId, IFlowOperator currentOperator) {
         FlowNotifyService flowNotifyService = new FlowNotifyService(processId, currentOperator, flowServiceRepositoryHolder);
         flowNotifyService.notifyFlow();
     }
@@ -261,7 +274,6 @@ public class FlowService {
     public void recall(long recordId, IFlowOperator currentOperator) {
         flowRecallService.recall(recordId, currentOperator);
     }
-
 
 
     /**
