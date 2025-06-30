@@ -17,6 +17,8 @@ import java.util.List;
 @AllArgsConstructor
 public class FlowRelation {
 
+    public static final int DEFAULT_ORDER = -100;
+
     /**
      * 关系id
      */
@@ -38,7 +40,7 @@ public class FlowRelation {
     private FlowNode target;
 
     /**
-     * 排序
+     * 排序 （顺序越大的排序越靠前）
      */
     private int order;
 
@@ -145,12 +147,12 @@ public class FlowRelation {
             throw new RuntimeException("outTrigger is null");
         }
 
-        if(source.getCode().equals(target.getCode())){
+        if (source.getCode().equals(target.getCode())) {
             throw new RuntimeException("source node code is equals target node code");
         }
 
-        if(back){
-            if(source.getType() != NodeType.APPROVAL){
+        if (back) {
+            if (source.getType() != NodeType.APPROVAL) {
                 throw new RuntimeException("source node type is not approval");
             }
         }

@@ -26,7 +26,7 @@ public class SpringEventHandler implements ApplicationListener<DomainEvent> {
     }
 
     @Override
-    public void onApplicationEvent(DomainEvent domainEvent) {
+    public synchronized void onApplicationEvent(DomainEvent domainEvent) {
         String traceId = domainEvent.getTraceId();
 
         if (domainEvent.isSync()) {
