@@ -13,6 +13,7 @@ import com.codingapi.springboot.flow.event.FlowApprovalEvent;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.FlowOperatorRepository;
 import com.codingapi.springboot.flow.repository.FlowRecordRepository;
+import com.codingapi.springboot.flow.trigger.OutTrigger;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import com.codingapi.springboot.framework.event.EventPusher;
 import lombok.Getter;
@@ -115,7 +116,7 @@ public class FlowNodeService {
                 throw new IllegalArgumentException("back node not found");
             }
             FlowRecord record = historyRecords.get(index);
-            if (record.isDone()) {
+            if (record.isDone() && record.getId()== currentRecord.getPreId()) {
                 // 是连续的回退节点时，则根据流程记录的状态来判断
                 if(record.isReject()){
                     boolean startRemove = false;
@@ -174,7 +175,28 @@ public class FlowNodeService {
      * @return 下一个节点
      */
     private FlowNode matcherNextNode(FlowNode flowNode, boolean back) {
-        List<FlowRelation> relations = flowWork.getRelations().stream()
+        List<FlowRelation> currentRelations = new ArrayList<>(flowWork.getRelations());
+        if(back){
+            String preCode = FlowNode.CODE_START;
+            if(flowRecord.getPreId()!=0){
+                FlowRecord preRecord = flowRecordRepository.getFlowRecordById(flowRecord.getPreId());
+                if(preRecord!=null){
+                    preCode = preRecord.getNodeCode();
+                    while (preCode.equals(flowRecord.getNodeCode())){
+                        preRecord = flowRecordRepository.getFlowRecordById(preRecord.getPreId());
+                        if(preRecord==null){
+                            break;
+                        }
+                        preCode = preRecord.getNodeCode();
+                    }
+                }
+            }
+            FlowRelation backRelation = new FlowRelation("defaultId",
+                    "默认回退关系", flowNode, flowWork.getNodeByCode(preCode), OutTrigger.defaultOutTrigger(), FlowRelation.DEFAULT_ORDER, true);
+            currentRelations.add(backRelation);
+        }
+
+        List<FlowRelation> relations = currentRelations.stream()
                 .filter(relation -> relation.sourceMatcher(flowNode.getCode()))
                 .filter(relation -> relation.isBack() == back)
                 .sorted((o1, o2) -> (o2.getOrder() - o1.getOrder()))
@@ -315,7 +337,7 @@ public class FlowNodeService {
                 List<Long> operatorIds = ((OperatorResult) errorResult).getOperatorIds();
                 List<? extends IFlowOperator> operators = flowOperatorRepository.findByIds(operatorIds);
                 for (IFlowOperator operator : operators) {
-                    FlowSession content = new FlowSession(flowRecord, flowWork, currentNode, createOperator, operator, snapshot.toBindData(), opinion, historyRecords);
+                    FlowSession content = new FlowSession(flowRecord, flowWork, currentNode, createOperator, nextOperator, snapshot.toBindData(), opinion, historyRecords);
                     String recordTitle = currentNode.generateTitle(content);
                     FlowRecord record = currentNode.createRecord(flowWork.getId(), flowWork.getCode(), processId, preId, recordTitle, createOperator, operator, snapshot, opinion.isWaiting());
                     recordList.add(record);

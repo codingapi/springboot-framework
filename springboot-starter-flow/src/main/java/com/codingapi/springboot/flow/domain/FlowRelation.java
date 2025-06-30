@@ -17,6 +17,9 @@ import java.util.List;
 @AllArgsConstructor
 public class FlowRelation {
 
+
+    public static final int DEFAULT_ORDER = -100;
+
     /**
      * 关系id
      */
