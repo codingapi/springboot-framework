@@ -44,4 +44,9 @@ public enum ColumnType {
      * JSON
      */
     JSON,
+
+    /**
+     * 任意
+     */
+    Any
 }
