@@ -32,6 +32,7 @@ public class FlowCmd {
     @Getter
     public static class FlowStep{
         private String workCode;
+        private long recordId;
         private JSONObject formData;
 
         @SneakyThrows
@@ -42,6 +43,10 @@ public class FlowCmd {
 
         public String getUserName() {
             return TokenContext.current().getUsername();
+        }
+
+        public boolean hasRecordId() {
+            return recordId > 0;
         }
     }
 
