@@ -113,7 +113,7 @@ public class FlowNodeService {
                 throw new IllegalArgumentException("back node not found");
             }
             FlowRecord record = historyRecords.get(index);
-            if (record.isDone()) {
+            if (record.isDone() && record.getId()== currentRecord.getPreId()) {
                 // 是连续的回退节点时，则根据流程记录的状态来判断
                 if(record.isReject()){
                     boolean startRemove = false;
