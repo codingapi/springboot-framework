@@ -30,12 +30,12 @@ public class CirculateTest {
     private final FlowBindDataRepositoryImpl flowBindDataRepository = new FlowBindDataRepositoryImpl();
     private final LeaveRepository leaveRepository = new LeaveRepository();
     private final FlowBackupRepository flowBackupRepository = new FlowBackupRepositoryImpl();
-    private final FlowProcessRepository flowProcessRepository = new FlowProcessRepositoryImpl(flowBackupRepository,userRepository);
-    private final FlowService flowService = new FlowService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, userRepository,flowProcessRepository,flowBackupRepository);
+    private final FlowProcessRepository flowProcessRepository = new FlowProcessRepositoryImpl(flowBackupRepository, userRepository);
+    private final FlowService flowService = new FlowService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, userRepository, flowProcessRepository, flowBackupRepository);
 
 
     @Test
-    void circulate(){
+    void circulate() {
         PageRequest pageRequest = PageRequest.of(0, 1000);
 
         User lorne = new User("lorne");
@@ -80,7 +80,7 @@ public class CirculateTest {
         // 创建流程
         flowService.startFlow(workCode, user, leave, "发起流程");
 
-        FlowStepResult result = flowService.getFlowStep(workCode, leave, user);
+        FlowStepResult result = flowService.getFlowStep( workCode, leave, user);
         result.print();
 
 
@@ -92,7 +92,7 @@ public class CirculateTest {
         FlowRecord userTodo = userTodos.get(0);
         // 保存流程
         leave.setTitle("我要出去看看~~");
-        flowService.save(userTodo.getId(), user, leave,"暂存");
+        flowService.save(userTodo.getId(), user, leave, "暂存");
 
         // 查看流程详情
         FlowDetail flowDetail = flowService.detail(userTodo.getId(), user);
@@ -117,6 +117,9 @@ public class CirculateTest {
         // 提交总经理的审批
         FlowRecord bossTodo = bossTodos.get(0);
         flowService.submitFlow(bossTodo.getId(), boss, leave, Opinion.pass("同意"));
+
+        result = flowService.getFlowStep(bossTodo.getId(), leave, boss);
+        result.print();
 
         // 查看所有流程
         List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();

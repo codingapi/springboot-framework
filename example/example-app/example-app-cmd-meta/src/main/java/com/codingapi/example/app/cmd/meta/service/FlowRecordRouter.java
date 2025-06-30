@@ -26,7 +26,11 @@ public class FlowRecordRouter {
 
     public FlowStepResult getFlowStep(FlowCmd.FlowStep request) {
         IFlowOperator current = flowUserRepository.getUserByUsername(request.getUserName());
-        return flowService.getFlowStep(request.getWorkCode(), request.getBindData(), current);
+        if(request.hasRecordId()) {
+            return flowService.getFlowStep(request.getRecordId(), request.getBindData(), current);
+        }else {
+            return flowService.getFlowStep(request.getWorkCode(), request.getBindData(), current);
+        }
     }
 
 

@@ -191,12 +191,24 @@ public class FlowService {
     /**
      * 获取流程执行节点
      *
+     * @param recordId
+     * @param currentOperator
+     * @return
+     */
+    public FlowStepResult getFlowStep(long recordId, IBindData bindData, IFlowOperator currentOperator) {
+        FlowStepService flowStepService = new FlowStepService(recordId,null, currentOperator, bindData, flowServiceRepositoryHolder);
+        return flowStepService.getFlowStep();
+    }
+
+    /**
+     * 获取流程执行节点
+     *
      * @param workCode
      * @param currentOperator
      * @return
      */
     public FlowStepResult getFlowStep(String workCode, IBindData bindData, IFlowOperator currentOperator) {
-        FlowStepService flowStepService = new FlowStepService(workCode, currentOperator, bindData, flowServiceRepositoryHolder);
+        FlowStepService flowStepService = new FlowStepService(0,workCode, currentOperator, bindData, flowServiceRepositoryHolder);
         return flowStepService.getFlowStep();
     }
 

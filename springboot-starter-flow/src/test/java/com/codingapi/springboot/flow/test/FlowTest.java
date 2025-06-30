@@ -118,6 +118,9 @@ public class FlowTest {
         FlowRecord bossTodo = bossTodos.get(0);
         flowService.submitFlow(bossTodo.getId(), boss, leave, Opinion.pass("同意"));
 
+        result = flowService.getFlowStep(bossTodo.getId(), leave, user);
+        result.print();
+
         // 查看所有流程
         List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
         assertEquals(3, records.size());
