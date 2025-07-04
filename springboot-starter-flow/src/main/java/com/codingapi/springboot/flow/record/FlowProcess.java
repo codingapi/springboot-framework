@@ -32,11 +32,24 @@ public class FlowProcess {
      */
     private long createOperatorId;
 
+    /**
+     * 是否作废
+     */
+    private boolean voided;
+
+    /**
+     * 作废流程
+     */
+    public void voided(){
+        this.voided = true;
+    }
+
 
     public FlowProcess(long backupId, IFlowOperator createOperator) {
         this.processId = RandomGenerator.generateUUID();
         this.createTime = System.currentTimeMillis();
         this.backupId = backupId;
         this.createOperatorId = createOperator.getUserId();
+        this.voided = false;
     }
 }

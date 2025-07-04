@@ -13,7 +13,11 @@ public enum FlowStatus {
     /**
      * 已完成
      */
-    FINISH;
+    FINISH,
+    /**
+     * 已作废
+     */
+    VOIDED;
 
 
     public static FlowStatus parser(String status) {

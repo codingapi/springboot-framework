@@ -93,4 +93,14 @@ public class FlowRecordRouter {
         IFlowOperator current = flowUserRepository.getUserByUsername(request.getUserName());
         flowService.remove(request.getRecordId(), current);
     }
+
+    public void back(FlowCmd.BackFlow request) {
+        IFlowOperator current = flowUserRepository.getUserByUsername(request.getUserName());
+        flowService.back(request.getProcessId(),request.getBackNodeCode(), current);
+    }
+
+    public void voided(FlowCmd.VoidedFlow request) {
+        IFlowOperator current = flowUserRepository.getUserByUsername(request.getUserName());
+        flowService.voided(request.getProcessId(), current);
+    }
 }

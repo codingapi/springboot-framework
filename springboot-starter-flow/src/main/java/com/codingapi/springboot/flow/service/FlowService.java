@@ -28,6 +28,8 @@ public class FlowService {
     private final FlowTransferService flowTransferService;
     private final FlowPostponedService flowPostponedService;
     private final FlowUrgeService flowUrgeService;
+    private final FlowVoidedService flowVoidedService;
+    private final FlowBackService flowBackService;
 
     private final FlowServiceRepositoryHolder flowServiceRepositoryHolder;
 
@@ -41,12 +43,14 @@ public class FlowService {
         this.flowServiceRepositoryHolder = new FlowServiceRepositoryHolder(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowOperatorRepository, flowProcessRepository, flowBackupRepository);
         this.flowDetailService = new FlowDetailService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowOperatorRepository, flowProcessRepository);
         this.flowCustomEventService = new FlowCustomEventService(flowWorkRepository, flowRecordRepository, flowProcessRepository);
-        this.flowRecallService = new FlowRecallService(flowWorkRepository, flowRecordRepository, flowProcessRepository);
-        this.flowRemoveService = new FlowRemoveService(flowWorkRepository, flowRecordRepository, flowProcessRepository);
+        this.flowRecallService = new FlowRecallService(flowWorkRepository, flowRecordRepository, flowProcessRepository, flowBindDataRepository);
+        this.flowRemoveService = new FlowRemoveService(flowWorkRepository, flowRecordRepository, flowProcessRepository, flowBindDataRepository);
         this.flowSaveService = new FlowSaveService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowProcessRepository);
         this.flowTransferService = new FlowTransferService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowProcessRepository);
         this.flowPostponedService = new FlowPostponedService(flowWorkRepository, flowRecordRepository, flowProcessRepository);
         this.flowUrgeService = new FlowUrgeService(flowWorkRepository, flowRecordRepository, flowProcessRepository);
+        this.flowVoidedService = new FlowVoidedService(flowWorkRepository, flowRecordRepository, flowProcessRepository, flowBindDataRepository);
+        this.flowBackService = new FlowBackService(flowWorkRepository, flowRecordRepository, flowProcessRepository, flowBindDataRepository);
     }
 
     /**
@@ -57,11 +61,13 @@ public class FlowService {
      * @return 流程详情
      */
     public FlowDetail detail(long recordId, String workCode, IFlowOperator currentOperator) {
-        if (StringUtils.hasText(workCode)) {
-            return flowDetailService.detail(workCode, currentOperator);
-        } else {
+        if (recordId > 0) {
             return flowDetailService.detail(recordId, currentOperator);
         }
+        if (StringUtils.hasText(workCode)) {
+            return flowDetailService.detail(workCode, currentOperator);
+        }
+        return null;
     }
 
     /**
@@ -196,7 +202,7 @@ public class FlowService {
      * @return
      */
     public FlowStepResult getFlowStep(long recordId, IBindData bindData, IFlowOperator currentOperator) {
-        FlowStepService flowStepService = new FlowStepService(recordId,null, currentOperator, bindData, flowServiceRepositoryHolder);
+        FlowStepService flowStepService = new FlowStepService(recordId, null, currentOperator, bindData, flowServiceRepositoryHolder);
         return flowStepService.getFlowStep();
     }
 
@@ -208,7 +214,7 @@ public class FlowService {
      * @return
      */
     public FlowStepResult getFlowStep(String workCode, IBindData bindData, IFlowOperator currentOperator) {
-        FlowStepService flowStepService = new FlowStepService(0,workCode, currentOperator, bindData, flowServiceRepositoryHolder);
+        FlowStepService flowStepService = new FlowStepService(0, workCode, currentOperator, bindData, flowServiceRepositoryHolder);
         return flowStepService.getFlowStep();
     }
 
@@ -243,10 +249,11 @@ public class FlowService {
 
     /**
      * 唤醒流程
-     * @param processId  流程实例id
+     *
+     * @param processId       流程实例id
      * @param currentOperator 当前操作者
      */
-    public void notifyFlow(String processId,IFlowOperator currentOperator) {
+    public void notifyFlow(String processId, IFlowOperator currentOperator) {
         FlowNotifyService flowNotifyService = new FlowNotifyService(processId, currentOperator, flowServiceRepositoryHolder);
         flowNotifyService.notifyFlow();
     }
@@ -284,6 +291,29 @@ public class FlowService {
      */
     public void remove(long recordId, IFlowOperator currentOperator) {
         flowRemoveService.remove(recordId, currentOperator);
+    }
+
+
+    /**
+     * 作废流程
+     *
+     * @param processId       流程processId
+     * @param currentOperator 当前操作者
+     */
+    public void voided(String processId, IFlowOperator currentOperator) {
+        flowVoidedService.voided(processId, currentOperator);
+    }
+
+
+    /**
+     * 退回流程
+     *
+     * @param processId       流程processId
+     * @param backNodeCode    退回节点编码
+     * @param currentOperator 当前操作者
+     */
+    public void back(String processId, String backNodeCode, IFlowOperator currentOperator) {
+        flowBackService.back(processId, backNodeCode, currentOperator);
     }
 
 }

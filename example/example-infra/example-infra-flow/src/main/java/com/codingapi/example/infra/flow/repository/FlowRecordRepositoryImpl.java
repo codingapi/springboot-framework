@@ -40,7 +40,10 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository {
 
     @Override
     public List<FlowRecord> findFlowRecordByPreId(long preId) {
-        return flowRecordEntityRepository.findFlowRecordEntityByPreId(preId).stream().map(item->FlowRecordConvertor.convert(item,flowOperatorRepository)).toList();
+        return flowRecordEntityRepository.findFlowRecordEntityByPreId(preId).stream()
+                .map(item->FlowRecordConvertor.convert(item,flowOperatorRepository))
+                .filter(flowRecord -> !flowRecord.isDelete())
+                .toList();
     }
 
     @Override

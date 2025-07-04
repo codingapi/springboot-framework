@@ -25,11 +25,20 @@ public class FlowProcessRepositoryImpl implements FlowProcessRepository {
     }
 
     @Override
+    public FlowProcess getFlowProcessByProcessId(String processId) {
+        return FlowProcessConvertor.convert(flowProcessEntityRepository.getFlowProcessEntityByProcessId(processId));
+    }
+
+    @Override
     public FlowWork getFlowWorkByProcessId(String processId) {
         FlowProcess flowProcess =  FlowProcessConvertor.convert(flowProcessEntityRepository.getFlowProcessEntityByProcessId(processId));
         if(flowProcess==null){
             return null;
         }
+        if(flowProcess.isVoided()){
+            return null;
+        }
+
         FlowBackup flowBackup = flowBackupRepository.getFlowBackupById(flowProcess.getBackupId());
         if (flowBackup != null) {
             try {

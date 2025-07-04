@@ -94,6 +94,16 @@ export async function urge(body:any) {
 }
 
 
+export async function back(body:any) {
+    return httpClient.post('/api/cmd/flowRecord/back', body);
+}
+
+export async function voided(body:any) {
+    return httpClient.post('/api/cmd/flowRecord/voided', body);
+}
+
+
+
 // 待办中心控制
 
 export async function findAllByOperatorId( lastId?: string,
