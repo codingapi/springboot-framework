@@ -71,7 +71,10 @@ public class FlowRecallService {
             flowRecord.recall();
             flowRecordRepository.update(flowRecord);
 
-            flowRecordRepository.delete(childrenRecords);
+            for(FlowRecord childrenRecord : childrenRecords) {
+                childrenRecord.delete();
+            }
+            flowRecordRepository.save(childrenRecords);
         }
         IBindData bindData =  bindDataSnapshot.toBindData();
 
