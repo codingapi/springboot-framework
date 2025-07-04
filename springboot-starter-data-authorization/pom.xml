@@ -9,6 +9,7 @@
        <version>3.4.8</version>
     </parent>
 
+    <name>springboot-starter-data-authorization</name>
     <artifactId>springboot-starter-data-authorization</artifactId>
     <description>springboot-starter-data-authorization project for Spring Boot</description>
 
