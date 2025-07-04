@@ -27,12 +27,20 @@ public class FlowProcessRepositoryImpl implements FlowProcessRepository {
 
     @Override
     public FlowWork getFlowWorkByProcessId(String processId) {
-        FlowProcess process = cache.stream().filter(flowProcess -> flowProcess.getProcessId().equals(processId)).findFirst().orElse(null);
+        FlowProcess process = cache.stream()
+                .filter(flowProcess -> flowProcess.getProcessId().equals(processId))
+                .filter(flowProcess -> !flowProcess.isVoided())
+                .findFirst().orElse(null);
         if (process == null) {
             return null;
         }
         FlowBackup flowBackup = flowBackupRepository.getFlowBackupById(process.getBackupId());
         return flowBackup.resume(userRepository);
+    }
+
+    @Override
+    public FlowProcess getFlowProcessByProcessId(String processId) {
+        return cache.stream().filter(flowProcess -> flowProcess.getProcessId().equals(processId)).findFirst().orElse(null);
     }
 
     @Override

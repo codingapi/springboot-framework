@@ -5,6 +5,7 @@ import com.codingapi.springboot.flow.bind.IBindData;
 import com.codingapi.springboot.flow.domain.FlowNode;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.event.FlowApprovalEvent;
+import com.codingapi.springboot.flow.record.FlowProcess;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.FlowBindDataRepository;
 import com.codingapi.springboot.flow.repository.FlowProcessRepository;
@@ -16,7 +17,6 @@ import com.codingapi.springboot.framework.event.EventPusher;
 import lombok.AllArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 
 @Transactional
@@ -54,12 +54,18 @@ public class FlowRemoveService {
         if(!flowNode.isStartNode()){
             throw new IllegalArgumentException("flow record not remove");
         }
-
         BindDataSnapshot bindDataSnapshot = flowBindDataRepository.getBindDataSnapshotById(flowRecord.getSnapshotId());
         IBindData bindData =  bindDataSnapshot.toBindData();
 
-        flowProcessRepository.deleteByProcessId(flowRecord.getProcessId());
-        flowRecordRepository.deleteByProcessId(flowRecord.getProcessId());
+        FlowProcess flowProcess =  flowProcessRepository.getFlowProcessByProcessId(flowRecord.getProcessId());
+        flowProcess.voided();
+        flowProcessRepository.save(flowProcess);
+
+        List<FlowRecord> historyRecords = flowRecordRepository.findFlowRecordByProcessId(flowRecord.getProcessId());
+        for (FlowRecord record : historyRecords) {
+            record.delete();
+        }
+        flowRecordRepository.save(historyRecords);
 
         EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_DELETE, flowRecord, currentOperator, flowWork, bindData), true);
     }

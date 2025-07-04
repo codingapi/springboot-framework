@@ -38,6 +38,10 @@ public class FlowApprovalEvent implements ISyncEvent {
     public static final int STATE_SAVE = 10;
     // 删除
     public static final int STATE_DELETE = 11;
+    // 退回
+    public static final int STATE_BACK = 12;
+    // 作废
+    public static final int STATE_VOIDED = 13;
 
 
     private final int state;
@@ -109,5 +113,17 @@ public class FlowApprovalEvent implements ISyncEvent {
 
     public boolean isFinish() {
         return state == STATE_FINISH;
+    }
+
+    public boolean isDelete() {
+        return state == STATE_DELETE;
+    }
+
+    public boolean isVoided() {
+        return state == STATE_VOIDED;
+    }
+
+    public boolean isBack() {
+        return state == STATE_BACK;
     }
 }

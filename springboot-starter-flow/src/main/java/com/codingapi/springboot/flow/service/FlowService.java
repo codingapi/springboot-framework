@@ -28,6 +28,8 @@ public class FlowService {
     private final FlowTransferService flowTransferService;
     private final FlowPostponedService flowPostponedService;
     private final FlowUrgeService flowUrgeService;
+    private final FlowVoidedService flowVoidedService;
+    private final FlowBackService flowBackService;
 
     private final FlowServiceRepositoryHolder flowServiceRepositoryHolder;
 
@@ -47,6 +49,8 @@ public class FlowService {
         this.flowTransferService = new FlowTransferService(flowWorkRepository, flowRecordRepository, flowBindDataRepository, flowProcessRepository);
         this.flowPostponedService = new FlowPostponedService(flowWorkRepository, flowRecordRepository, flowProcessRepository);
         this.flowUrgeService = new FlowUrgeService(flowWorkRepository, flowRecordRepository, flowProcessRepository);
+        this.flowVoidedService = new FlowVoidedService(flowWorkRepository, flowRecordRepository, flowProcessRepository, flowBindDataRepository);
+        this.flowBackService = new FlowBackService(flowWorkRepository, flowRecordRepository, flowProcessRepository, flowBindDataRepository);
     }
 
     /**
@@ -286,5 +290,28 @@ public class FlowService {
      */
     public void remove(long recordId, IFlowOperator currentOperator) {
         flowRemoveService.remove(recordId, currentOperator);
+    }
+
+
+    /**
+     * 作废流程
+     *
+     * @param processId       流程processId
+     * @param currentOperator 当前操作者
+     */
+    public void voided(String processId, IFlowOperator currentOperator) {
+        flowVoidedService.voided(processId, currentOperator);
+    }
+
+
+    /**
+     * 退回流程
+     *
+     * @param processId       流程processId
+     * @param backNodeCode    退回节点编码
+     * @param currentOperator 当前操作者
+     */
+    public void back(String processId, String backNodeCode, IFlowOperator currentOperator) {
+        flowBackService.back(processId, backNodeCode, currentOperator);
     }
 }

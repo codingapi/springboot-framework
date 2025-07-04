@@ -10,9 +10,9 @@ public interface FlowProcessRepository {
 
     void save(FlowProcess flowProcess);
 
-
     FlowWork getFlowWorkByProcessId(String processId);
 
+    FlowProcess getFlowProcessByProcessId(String processId);
 
     void deleteByProcessId(String processId);
 

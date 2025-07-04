@@ -395,6 +395,13 @@ public class FlowRecord {
         this.updateTime = System.currentTimeMillis();
     }
 
+    /**
+     * 删除流程
+     */
+    public void delete() {
+        this.flowType = FlowType.DELETE;
+        this.updateTime = System.currentTimeMillis();
+    }
 
     /**
      * 复制流程记录
@@ -428,6 +435,10 @@ public class FlowRecord {
         record.setInterferedOperator(this.interferedOperator);
         record.setReadTime(this.readTime);
         return record;
+    }
+
+    public boolean isDelete() {
+        return this.flowType == FlowType.DELETE;
     }
 
 
