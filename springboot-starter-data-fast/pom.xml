@@ -9,7 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <name>springboot-starter-data-fast</name>
     <artifactId>springboot-starter-data-fast</artifactId>
+    <description>springboot-starter-data-fast project for Spring Boot</description>
 
     <properties>
         <java.version>8</java.version>
