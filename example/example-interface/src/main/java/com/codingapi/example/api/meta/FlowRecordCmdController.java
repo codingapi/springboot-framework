@@ -84,4 +84,17 @@ public class FlowRecordCmdController {
         return Response.buildSuccess();
     }
 
+
+    @PostMapping("/back")
+    public Response back(@RequestBody FlowCmd.BackFlow request) {
+        flowRecordRouter.back(request);
+        return Response.buildSuccess();
+    }
+
+
+    @PostMapping("/voided")
+    public Response voided(@RequestBody FlowCmd.VoidedFlow request) {
+        flowRecordRouter.voided(request);
+        return Response.buildSuccess();
+    }
 }

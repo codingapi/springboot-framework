@@ -215,6 +215,29 @@ public class FlowCmd {
 
     @Setter
     @Getter
+    public static class BackFlow {
+
+        private String processId;
+        private String backNodeCode;
+
+        public String getUserName() {
+            return TokenContext.current().getUsername();
+        }
+    }
+
+    @Setter
+    @Getter
+    public static class VoidedFlow {
+
+        private String processId;
+
+        public String getUserName() {
+            return TokenContext.current().getUsername();
+        }
+    }
+
+    @Setter
+    @Getter
     public static class PostponedFlow {
         private long recordId;
 
