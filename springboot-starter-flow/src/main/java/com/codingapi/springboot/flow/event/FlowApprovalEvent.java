@@ -36,7 +36,8 @@ public class FlowApprovalEvent implements ISyncEvent {
     public static final int STATE_CIRCULATE = 9;
     // 保存
     public static final int STATE_SAVE = 10;
-
+    // 删除
+    public static final int STATE_DELETE = 11;
 
     private final int state;
     private final IFlowOperator operator;
