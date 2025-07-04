@@ -57,11 +57,13 @@ public class FlowService {
      * @return 流程详情
      */
     public FlowDetail detail(long recordId, String workCode, IFlowOperator currentOperator) {
-        if (StringUtils.hasText(workCode)) {
-            return flowDetailService.detail(workCode, currentOperator);
-        } else {
+        if (recordId > 0) {
             return flowDetailService.detail(recordId, currentOperator);
         }
+        if (StringUtils.hasText(workCode)) {
+            return flowDetailService.detail(workCode, currentOperator);
+        }
+        return null;
     }
 
     /**
@@ -196,7 +198,7 @@ public class FlowService {
      * @return
      */
     public FlowStepResult getFlowStep(long recordId, IBindData bindData, IFlowOperator currentOperator) {
-        FlowStepService flowStepService = new FlowStepService(recordId,null, currentOperator, bindData, flowServiceRepositoryHolder);
+        FlowStepService flowStepService = new FlowStepService(recordId, null, currentOperator, bindData, flowServiceRepositoryHolder);
         return flowStepService.getFlowStep();
     }
 
@@ -208,7 +210,7 @@ public class FlowService {
      * @return
      */
     public FlowStepResult getFlowStep(String workCode, IBindData bindData, IFlowOperator currentOperator) {
-        FlowStepService flowStepService = new FlowStepService(0,workCode, currentOperator, bindData, flowServiceRepositoryHolder);
+        FlowStepService flowStepService = new FlowStepService(0, workCode, currentOperator, bindData, flowServiceRepositoryHolder);
         return flowStepService.getFlowStep();
     }
 
@@ -243,10 +245,11 @@ public class FlowService {
 
     /**
      * 唤醒流程
-     * @param processId  流程实例id
+     *
+     * @param processId       流程实例id
      * @param currentOperator 当前操作者
      */
-    public void notifyFlow(String processId,IFlowOperator currentOperator) {
+    public void notifyFlow(String processId, IFlowOperator currentOperator) {
         FlowNotifyService flowNotifyService = new FlowNotifyService(processId, currentOperator, flowServiceRepositoryHolder);
         flowNotifyService.notifyFlow();
     }
