@@ -260,7 +260,7 @@ public class FlowService {
 
 
     /**
-     * 自定义事件
+     * 自定义接口
      *
      * @param recordId        流程记录id
      * @param currentOperator 当前操作者
