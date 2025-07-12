@@ -1,4 +1,4 @@
 ------------------------------------------------------
-CodingApi SpringBoot-Starter 3.4.8
+CodingApi SpringBoot-Starter 3.4.9
 springboot version (${spring-boot.version})
 ------------------------------------------------------
