@@ -1,5 +1,8 @@
 package com.codingapi.springboot.fast.jpa;
 
+import com.codingapi.springboot.fast.jpa.map.QueryColumnsContext;
+import com.codingapi.springboot.fast.jpa.map.QueryColumns;
+import com.codingapi.springboot.fast.jpa.map.MapViewResult;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import lombok.AllArgsConstructor;
@@ -60,4 +63,18 @@ public class JPAQuery {
         return query.getSingleResult();
     }
 
+    public Page<MapViewResult> pageMapQuery(QueryColumns columns, String sql, String countSql, PageRequest pageRequest, Object... params) {
+        String querySql = "select new com.codingapi.springboot.fast.jpa.map.MapViewResult('"+columns.getKey()+"',"+ String.join(",", columns.getColumnSql()) + ") " + sql;
+        String countQuerySql = "select count(1) " + countSql;
+        Page<MapViewResult> result = (Page<MapViewResult>) pageQuery(MapViewResult.class,querySql,countQuerySql,pageRequest,params);
+        QueryColumnsContext.getInstance().clearCache(columns.getKey());
+        return result;
+    }
+
+    public List<?> listMapQuery(QueryColumns columns, String sql, Object... params) {
+        String querySql = "select new com.codingapi.springboot.fast.jpa.map.MapViewResult('"+columns.getKey()+"',"+ String.join(",", columns.getColumnSql()) + ") " + sql;
+        List<?> result =  listQuery(MapViewResult.class,querySql,params);
+        QueryColumnsContext.getInstance().clearCache(columns.getKey());
+        return result;
+    }
 }

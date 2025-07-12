@@ -2,6 +2,8 @@ package com.codingapi.springboot.fast.jpa.repository;
 
 import com.codingapi.springboot.fast.jpa.JpaQueryContext;
 import com.codingapi.springboot.fast.jpa.SQLBuilder;
+import com.codingapi.springboot.fast.jpa.map.QueryColumns;
+import com.codingapi.springboot.fast.jpa.map.MapViewResult;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -38,6 +40,14 @@ public interface DynamicRepository<T, ID> extends BaseRepository<T, ID> {
 
     default <V> Page<V> dynamicPageQuery(Class<V> clazz, String sql, String countSql, PageRequest request, Object... params) {
         return (Page<V>) JpaQueryContext.getInstance().getJPAQuery().pageQuery(clazz, sql, countSql, request, params);
+    }
+
+    default Page<MapViewResult> dynamicMapPageQuery(QueryColumns columns, String sql, String countSql, PageRequest request, Object... params) {
+        return JpaQueryContext.getInstance().getJPAQuery().pageMapQuery(columns, sql, countSql, request, params);
+    }
+
+    default  List<MapViewResult> dynamicMapListQuery(QueryColumns columns, String sql, Object... params) {
+        return (List<MapViewResult>) JpaQueryContext.getInstance().getJPAQuery().listMapQuery(columns, sql, params);
     }
 
 }
