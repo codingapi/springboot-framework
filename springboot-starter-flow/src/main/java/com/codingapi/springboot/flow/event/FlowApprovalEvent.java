@@ -34,7 +34,14 @@ public class FlowApprovalEvent implements ISyncEvent {
     public static final int STATE_URGE = 8;
     // 抄送
     public static final int STATE_CIRCULATE = 9;
-
+    // 保存
+    public static final int STATE_SAVE = 10;
+    // 删除
+    public static final int STATE_DELETE = 11;
+    // 退回
+    public static final int STATE_BACK = 12;
+    // 作废
+    public static final int STATE_VOIDED = 13;
 
     private final int state;
     private final IFlowOperator operator;
@@ -52,8 +59,23 @@ public class FlowApprovalEvent implements ISyncEvent {
     }
 
 
-    public boolean match(Class<?> bindDataClass) {
-        return bindDataClass.isInstance(bindData);
+    public boolean match(String matchKey) {
+        return bindData.match(matchKey);
+    }
+
+    /**
+     * 匹配类名
+     * 当前bingData下的clazzName变成了普通的key字段了，推荐使用match(String matchKey)方法
+     * @param clazz 类名
+     * @return 是否匹配
+     */
+    @Deprecated
+    public boolean match(Class<?> clazz) {
+        return bindData.match(clazz.getName());
+    }
+
+    public <T> T toJavaObject(Class<T> clazz) {
+        return bindData.toJavaObject(clazz);
     }
 
     public boolean isUrge() {
@@ -62,6 +84,10 @@ public class FlowApprovalEvent implements ISyncEvent {
 
     public boolean isTodo() {
         return state == STATE_TODO;
+    }
+
+    public boolean isSave() {
+        return state == STATE_SAVE;
     }
 
     public boolean isCreate() {
@@ -86,5 +112,17 @@ public class FlowApprovalEvent implements ISyncEvent {
 
     public boolean isFinish() {
         return state == STATE_FINISH;
+    }
+
+    public boolean isDelete() {
+        return state == STATE_DELETE;
+    }
+
+    public boolean isVoided() {
+        return state == STATE_VOIDED;
+    }
+
+    public boolean isBack() {
+        return state == STATE_BACK;
     }
 }

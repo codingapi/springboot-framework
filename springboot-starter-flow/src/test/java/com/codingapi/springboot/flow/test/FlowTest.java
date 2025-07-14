@@ -13,6 +13,7 @@ import com.codingapi.springboot.flow.pojo.FlowSubmitResult;
 import com.codingapi.springboot.flow.record.FlowRecord;
 import com.codingapi.springboot.flow.repository.*;
 import com.codingapi.springboot.flow.service.FlowService;
+import com.codingapi.springboot.flow.trigger.OutTrigger;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import com.codingapi.springboot.flow.user.User;
 import org.junit.jupiter.api.Test;
@@ -116,6 +117,9 @@ public class FlowTest {
         // 提交总经理的审批
         FlowRecord bossTodo = bossTodos.get(0);
         flowService.submitFlow(bossTodo.getId(), boss, leave, Opinion.pass("同意"));
+
+        result = flowService.getFlowStep(bossTodo.getId(), leave, user);
+        result.print();
 
         // 查看所有流程
         List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
@@ -386,7 +390,7 @@ public class FlowTest {
                 .title("请假流程")
                 .nodes()
                 .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
-                .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(dept.getUserId()), false,false)
+                .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(dept.getUserId()), false, false)
                 .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
                 .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .relations()
@@ -1000,7 +1004,7 @@ public class FlowTest {
                 .title("请假流程")
                 .nodes()
                 .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
-                .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(dept.getUserId(),lorne.getUserId()))
+                .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(dept.getUserId(), lorne.getUserId()))
                 .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
                 .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
                 .relations()
@@ -1026,7 +1030,7 @@ public class FlowTest {
         // 提交流程
         FlowRecord userTodo = userTodos.get(0);
 
-        FlowSubmitResult flowSubmitResult =  flowService.trySubmitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
+        FlowSubmitResult flowSubmitResult = flowService.trySubmitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
         assertEquals(flowSubmitResult.getOperators().size(), 2);
         assertTrue(flowSubmitResult.getOperators().stream().map(IFlowOperator::getUserId).collect(Collectors.toList()).contains(dept.getUserId()));
         assertTrue(flowSubmitResult.getOperators().stream().map(IFlowOperator::getUserId).collect(Collectors.toList()).contains(lorne.getUserId()));
@@ -1099,6 +1103,164 @@ public class FlowTest {
         List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
         assertEquals(0, records.size());
 
+
+    }
+
+    /**
+     * 非会签审批意见测试
+     */
+    @Test
+    void noSignContentTest() {
+        PageRequest pageRequest = PageRequest.of(0, 1000);
+
+        User user = new User("张飞");
+        userRepository.save(user);
+
+        User dept1 = new User("诸葛亮");
+        userRepository.save(dept1);
+
+        User dept2 = new User("黄忠");
+        userRepository.save(dept2);
+
+        User boss = new User("刘备");
+        userRepository.save(boss);
+
+        FlowWork flowWork = FlowWorkBuilder.builder(user)
+                .title("请假流程")
+                .nodes()
+                .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
+                .node("部门领导审批", "dept", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(dept1.getUserId(), dept2.getUserId()))
+                .node("总经理审批", "manager", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
+                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
+                .relations()
+                .relation("部门领导审批", "start", "dept")
+                .relation("总经理审批", "dept", "manager")
+                .relation("结束节点", "manager", "over")
+                .build();
+
+        flowWorkRepository.save(flowWork);
+
+        String workCode = flowWork.getCode();
+
+        Leave leave = new Leave("我要出去看看");
+        leaveRepository.save(leave);
+
+        // 创建流程
+        flowService.startFlow(workCode, user, leave, "发起流程");
+
+        // 查看我的待办
+        List<FlowRecord> userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
+        assertEquals(1, userTodos.size());
+
+        // 提交到部门经理
+        FlowRecord userTodo = userTodos.get(0);
+        flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
+
+        List<FlowRecord> dept1Todos = flowRecordRepository.findTodoByOperatorId(dept1.getUserId(), pageRequest).getContent();
+        List<FlowRecord> dept2Todos = flowRecordRepository.findTodoByOperatorId(dept2.getUserId(), pageRequest).getContent();
+        assertEquals(1, dept1Todos.size());
+        assertEquals(1, dept2Todos.size());
+
+        FlowRecord dept1Todo = dept1Todos.get(0);
+        flowService.submitFlow(dept1Todo.getId(), dept1, leave, Opinion.pass("同意"));
+
+        List<FlowRecord> bossTodos = flowRecordRepository.findTodoByOperatorId(boss.getUserId(), pageRequest).getContent();
+        assertEquals(1, bossTodos.size());
+
+        List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
+        assertEquals(4, records.size());
+
+        FlowDetail detail = flowService.detail(bossTodos.get(0).getId());
+        System.out.println(detail);
+
+    }
+
+
+
+
+    /**
+     * 退回与自定义退回逻辑
+     */
+    @Test
+    void rejectDefaultTest() {
+        PageRequest pageRequest = PageRequest.of(0, 1000);
+
+        User user = new User("张飞");
+        userRepository.save(user);
+
+        User dept = new User("诸葛亮");
+        userRepository.save(dept);
+
+        User boss = new User("刘备");
+        userRepository.save(boss);
+
+        FlowWork flowWork = FlowWorkBuilder.builder(user)
+                .title("请假流程")
+                .nodes()
+                .node("开始节点", "start", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
+                .node("部门经理审批", "dept", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(dept.getUserId()))
+                .node("总经理审批", "boss", "default", ApprovalType.UN_SIGN, OperatorMatcher.specifyOperatorMatcher(boss.getUserId()))
+                .node("结束节点", "over", "default", ApprovalType.UN_SIGN, OperatorMatcher.anyOperatorMatcher())
+                .relations()
+                .relation("开始节点->部门经理", "start", "dept")
+                .relation("部门经理->总经理", "dept", "boss")
+                .relation("总经理退回发起人", "boss", "start", new OutTrigger("""
+                        def run(content) {
+                            def days = content.getBindData().getDays();
+                            if (days > 10) {
+                                return true;
+                            }
+                            return false;
+                        }
+                        """),1,true)
+                .relation("结束节点", "boss", "over")
+                .build();
+
+        flowWorkRepository.save(flowWork);
+
+        String workCode = flowWork.getCode();
+
+        Leave leave = new Leave("我要出去看看");
+        leaveRepository.save(leave);
+
+        // 创建流程
+        flowService.startFlow(workCode, user, leave, "发起流程");
+
+        // 查看我的待办
+        List<FlowRecord> userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
+        assertEquals(1, userTodos.size());
+
+
+        FlowRecord userTodo = userTodos.get(0);
+        flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
+
+        List<FlowRecord> deptTodos = flowRecordRepository.findTodoByOperatorId(dept.getUserId(), pageRequest).getContent();
+        assertEquals(1, deptTodos.size());
+
+        FlowRecord deptTodo = deptTodos.get(0);
+        flowService.submitFlow(deptTodo.getId(), dept, leave, Opinion.pass("同意"));
+
+        List<FlowRecord> bossTodos = flowRecordRepository.findTodoByOperatorId(boss.getUserId(), pageRequest).getContent();
+        assertEquals(1, bossTodos.size());
+
+        FlowRecord bossTodo = bossTodos.get(0);
+        flowService.submitFlow(bossTodo.getId(), boss, leave, Opinion.reject("不同意"));
+
+        deptTodos = flowRecordRepository.findTodoByOperatorId(dept.getUserId(), pageRequest).getContent();
+        assertEquals(1, deptTodos.size());
+
+        deptTodo = deptTodos.get(0);
+        flowService.submitFlow(deptTodo.getId(), dept, leave, Opinion.pass("同意"));
+
+        bossTodos = flowRecordRepository.findTodoByOperatorId(boss.getUserId(), pageRequest).getContent();
+        assertEquals(1, bossTodos.size());
+
+        bossTodo = bossTodos.get(0);
+        flowService.submitFlow(bossTodo.getId(), boss, leave, Opinion.pass("同意"));
+
+        List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
+        assertEquals(5, records.size());
+        assertTrue(records.stream().allMatch(FlowRecord::isFinish));
 
     }
 }

@@ -5,11 +5,11 @@ import HomePage from "@/pages/home";
 import {Route} from "react-router";
 import {RouteObject} from "react-router/dist/lib/context";
 import React from "react";
-import LeaveListPage from "@/pages/levave";
-import LeaveCreatePage from "@/pages/levave/create";
+import LeaveListPage from "@/pages/leave";
+import LeaveCreatePage from "@/pages/leave/create";
 import FlowListPage from "@/pages/flow";
 import FlowDetailPage from "@/pages/flow/detail";
-import LeaveDetailPage from "@/pages/levave/detail";
+import LeaveDetailPage from "@/pages/leave/detail";
 import FormPage from "@/pages/form";
 import MircoPage from "@/pages/mirco";
 

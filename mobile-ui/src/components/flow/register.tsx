@@ -61,6 +61,22 @@ class DefaultFlowApiImpl implements FlowApi{
         return flowApi.detail(null,workCode);
     }
 
+    backFlow(body: any): Promise<any> {
+        return flowApi.back(body);
+    }
+
+    voidedFlow(body: any): Promise<any> {
+        return flowApi.voided(body);
+    }
+
+    getFlowStep(recordId?: number, workCode?: string): Promise<any> {
+        const body = {
+            recordId,
+            workCode
+        }
+        return flowApi.getFlowStep(body);
+    }
+
 }
 
 FlowApiContent.getInstance().registerFlowApi(new DefaultFlowApiImpl());

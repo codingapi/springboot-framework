@@ -26,7 +26,11 @@ public class FlowRecordRouter {
 
     public FlowStepResult getFlowStep(FlowCmd.FlowStep request) {
         IFlowOperator current = flowUserRepository.getUserByUsername(request.getUserName());
-        return flowService.getFlowStep(request.getWorkCode(), request.getBindData(), current);
+        if(request.hasRecordId()) {
+            return flowService.getFlowStep(request.getRecordId(), request.getBindData(), current);
+        }else {
+            return flowService.getFlowStep(request.getWorkCode(), request.getBindData(), current);
+        }
     }
 
 
@@ -88,5 +92,15 @@ public class FlowRecordRouter {
     public void remove(FlowCmd.RemoveFlow request) {
         IFlowOperator current = flowUserRepository.getUserByUsername(request.getUserName());
         flowService.remove(request.getRecordId(), current);
+    }
+
+    public void back(FlowCmd.BackFlow request) {
+        IFlowOperator current = flowUserRepository.getUserByUsername(request.getUserName());
+        flowService.back(request.getProcessId(),request.getBackNodeCode(), current);
+    }
+
+    public void voided(FlowCmd.VoidedFlow request) {
+        IFlowOperator current = flowUserRepository.getUserByUsername(request.getUserName());
+        flowService.voided(request.getProcessId(), current);
     }
 }

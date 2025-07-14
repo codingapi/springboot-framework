@@ -3,7 +3,7 @@ import {Form} from "@codingapi/form-mobile";
 import {FlowFormViewProps} from "@codingapi/ui-framework";
 import {Button, Toast} from "antd-mobile";
 import {FlowViewReactContext} from "@codingapi/flow-mobile";
-import {fields} from "@/pages/levave/fields";
+import {fields} from "@/pages/leave/fields";
 
 const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
     const flowViewReactContext = useContext(FlowViewReactContext);

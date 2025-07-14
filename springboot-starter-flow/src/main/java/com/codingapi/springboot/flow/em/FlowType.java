@@ -24,7 +24,11 @@ public enum FlowType {
     /**
      * 等待执行
      */
-    WAITING;
+    WAITING,
+    /**
+     * 删除
+     */
+    DELETE;
 
 
     public static FlowType parser(String type){

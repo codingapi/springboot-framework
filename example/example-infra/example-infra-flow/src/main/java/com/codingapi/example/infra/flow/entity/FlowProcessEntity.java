@@ -33,4 +33,9 @@ public class FlowProcessEntity {
      */
     private Long createOperatorId;
 
+    /**
+     * 是否作废
+     */
+    private Boolean voided;
+
 }

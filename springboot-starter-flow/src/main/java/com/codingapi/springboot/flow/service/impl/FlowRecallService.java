@@ -1,5 +1,7 @@
 package com.codingapi.springboot.flow.service.impl;
 
+import com.codingapi.springboot.flow.bind.BindDataSnapshot;
+import com.codingapi.springboot.flow.bind.IBindData;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.event.FlowApprovalEvent;
 import com.codingapi.springboot.flow.record.FlowRecord;
@@ -19,6 +21,7 @@ public class FlowRecallService {
     private final FlowWorkRepository flowWorkRepository;
     private final FlowRecordRepository flowRecordRepository;
     private final FlowProcessRepository flowProcessRepository;
+    private final FlowBindDataRepository flowBindDataRepository;
 
     /**
      * 撤回流程
@@ -44,6 +47,9 @@ public class FlowRecallService {
 
         // 下一流程的流程记录
         List<FlowRecord> childrenRecords = flowRecordRepository.findFlowRecordByPreId(recordId);
+
+        BindDataSnapshot bindDataSnapshot = flowBindDataRepository.getBindDataSnapshotById(flowRecord.getSnapshotId());
+
         // 下一流程均为办理且未读
 
         // 如果是在开始节点撤销，则直接删除
@@ -65,9 +71,13 @@ public class FlowRecallService {
             flowRecord.recall();
             flowRecordRepository.update(flowRecord);
 
-            flowRecordRepository.delete(childrenRecords);
+            for(FlowRecord childrenRecord : childrenRecords) {
+                childrenRecord.delete();
+            }
+            flowRecordRepository.save(childrenRecords);
         }
+        IBindData bindData =  bindDataSnapshot.toBindData();
 
-        EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_RECALL, flowRecord, currentOperator, flowWork, null), true);
+        EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_RECALL, flowRecord, currentOperator, flowWork, bindData), true);
     }
 }

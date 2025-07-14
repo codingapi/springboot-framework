@@ -393,6 +393,14 @@ public class FlowRecord {
         this.updateTime = System.currentTimeMillis();
     }
 
+    /**
+     * 删除流程
+     */
+    public void delete() {
+        this.flowType = FlowType.DELETE;
+        this.updateTime = System.currentTimeMillis();
+    }
+
 
     /**
      * 复制流程记录
@@ -428,6 +436,9 @@ public class FlowRecord {
         return record;
     }
 
+    public boolean isDelete() {
+        return this.flowType == FlowType.DELETE;
+    }
 
     /**
      * 是否超时
@@ -460,4 +471,5 @@ public class FlowRecord {
     public boolean isStartNode() {
         return this.nodeCode.equals(FlowNode.CODE_START);
     }
+
 }

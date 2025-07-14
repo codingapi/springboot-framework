@@ -10,7 +10,7 @@ public class FlowProcessConvertor {
             return null;
         }
         return new FlowProcess(entity.getProcessId(),
-                entity.getCreateTime(),entity.getBackupId(),entity.getCreateOperatorId());
+                entity.getCreateTime(),entity.getBackupId(),entity.getCreateOperatorId(), entity.getVoided());
     }
 
 
@@ -23,6 +23,7 @@ public class FlowProcessConvertor {
         entity.setCreateTime(flowProcess.getCreateTime());
         entity.setBackupId(flowProcess.getBackupId());
         entity.setCreateOperatorId(flowProcess.getCreateOperatorId());
+        entity.setVoided(flowProcess.isVoided());
         return entity;
     }
 }

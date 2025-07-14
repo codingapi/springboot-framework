@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "@/layout/Header";
 import {FlowView} from "@codingapi/flow-mobile";
-import LeaveForm from "@/pages/levave/form";
+import LeaveForm from "@/pages/leave/form";
 import {useNavigate} from "react-router";
 
 const LeaveCreatePage = () => {

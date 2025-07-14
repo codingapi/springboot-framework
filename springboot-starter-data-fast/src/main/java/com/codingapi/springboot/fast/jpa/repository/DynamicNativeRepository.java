@@ -12,7 +12,7 @@ import java.util.Map;
 @NoRepositoryBean
 public interface DynamicNativeRepository<T, ID> extends BaseRepository<T, ID> {
 
-    default List<Map<String, Object>> dynamicNativeListMapQuery(SQLBuilder builder) {
+    default List<Map<String, Object>> dynamicNativeListMapQuery(SQLBuilder<?> builder) {
         return JdbcQueryContext.getInstance().getJdbcQuery().queryForMapList(builder);
     }
 
@@ -28,7 +28,7 @@ public interface DynamicNativeRepository<T, ID> extends BaseRepository<T, ID> {
         return JdbcQueryContext.getInstance().getJdbcQuery().queryForList(sql, clazz, params);
     }
 
-    default <V> List<V> dynamicNativeListQuery(SQLBuilder sqlBuilder) {
+    default <V> List<V> dynamicNativeListQuery(SQLBuilder<V> sqlBuilder) {
         return JdbcQueryContext.getInstance().getJdbcQuery().queryForList(sqlBuilder);
     }
 
@@ -48,11 +48,11 @@ public interface DynamicNativeRepository<T, ID> extends BaseRepository<T, ID> {
         return JdbcQueryContext.getInstance().getJdbcQuery().queryForPage(sql, clazz, request, params);
     }
 
-    default <V> Page<V> dynamicNativePageQuery(SQLBuilder sqlBuilder, PageRequest request) {
+    default <V> Page<V> dynamicNativePageQuery(SQLBuilder<V> sqlBuilder, PageRequest request) {
         return JdbcQueryContext.getInstance().getJdbcQuery().queryForPage(sqlBuilder, request);
     }
 
-    default Page<Map<String, Object>> dynamicNativeMapPageMapQuery(SQLBuilder sqlBuilder,PageRequest request) {
+    default Page<Map<String, Object>> dynamicNativeMapPageMapQuery(SQLBuilder<?> sqlBuilder,PageRequest request) {
         return JdbcQueryContext.getInstance().getJdbcQuery().queryForMapPage(sqlBuilder,request);
     }
 

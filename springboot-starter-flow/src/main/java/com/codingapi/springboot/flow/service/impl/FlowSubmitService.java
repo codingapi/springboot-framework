@@ -281,7 +281,7 @@ public class FlowSubmitService {
         if (flowNode.isUnSign()) {
             for (FlowRecord record : historyRecords) {
                 if (record.isTodo() && record.getId() != flowRecord.getId()) {
-                    record.autoPass(currentOperator, snapshot);
+                    record.autoPass(record.getCurrentOperator(), snapshot);
                     FlowRecordRepository flowRecordRepository = flowServiceRepositoryHolder.getFlowRecordRepository();
                     flowRecordRepository.update(record);
                 }
