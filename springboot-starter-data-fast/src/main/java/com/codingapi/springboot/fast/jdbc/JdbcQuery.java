@@ -38,49 +38,49 @@ public class JdbcQuery {
         }
     }
 
-    public List<Map<String, Object>> queryForMapList(SQLBuilder builder) {
+    public List<Map<String, Object>> queryForMapList(SQLBuilder<?> builder) {
         return queryForMapList(builder.getSQL(), builder.getParams());
     }
 
     public List<Map<String, Object>> queryForMapList(String sql, Object... params) {
-        return jdbcTemplate.query(sql, params, new CamelCaseRowMapper());
+        return jdbcTemplate.query(sql, new CamelCaseRowMapper(), params);
     }
 
-    public <T> List<T> queryForList(SQLBuilder builder) {
-        return (List<T>) queryForList(builder.getSQL(), builder.getClazz(), builder.getParams());
+    public <T> List<T> queryForList(SQLBuilder<T> builder) {
+        return queryForList(builder.getSQL(), builder.getClazz(), builder.getParams());
     }
 
     public <T> List<T> queryForList(String sql, Class<T> clazz, Object... params) {
-        return jdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(clazz));
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(clazz), params);
     }
 
-    public <T> Page<T> queryForPage(SQLBuilder builder, PageRequest pageRequest) {
-        return (Page<T>)queryForPage(builder.getSQL(), builder.getCountSQL(), builder.getClazz(), pageRequest, builder.getParams());
+    public <T> Page<T> queryForPage(SQLBuilder<T> builder, PageRequest pageRequest) {
+        return queryForPage(builder.getSQL(), builder.getCountSQL(), builder.getClazz(), pageRequest, builder.getParams());
     }
 
     public <T> Page<T> queryForPage(String sql, String countSql, Class<T> clazz, PageRequest pageRequest, Object... params) {
-        List<T> list = jdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(clazz));
+        List<T> list = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(clazz), params);
         long count = this.countQuery(countSql, params);
         return new PageImpl<>(list, pageRequest, count);
     }
 
     public <T> Page<T> queryForPage(String sql, Class<T> clazz, PageRequest pageRequest, Object... params) {
-        String countSql = "select count(1) " + sql;
+        String countSql = "SELECT COUNT(1) " + sql;
         return this.queryForPage(sql, countSql, clazz, pageRequest, params);
     }
 
-    public Page<Map<String, Object>> queryForMapPage(SQLBuilder builder, PageRequest pageRequest) {
+    public Page<Map<String, Object>> queryForMapPage(SQLBuilder<?> builder, PageRequest pageRequest) {
         return queryForMapPage(builder.getSQL(), builder.getCountSQL(), pageRequest, builder.getParams());
     }
 
     public Page<Map<String, Object>> queryForMapPage(String sql, String countSql, PageRequest pageRequest, Object... params) {
-        List<Map<String, Object>> list = jdbcTemplate.query(sql, params, new CamelCaseRowMapper());
+        List<Map<String, Object>> list = jdbcTemplate.query(sql, new CamelCaseRowMapper(), params);
         long count = this.countQuery(countSql, params);
         return new PageImpl<>(list, pageRequest, count);
     }
 
     public Page<Map<String, Object>> queryForMapPage(String sql, PageRequest pageRequest, Object... params) {
-        String countSql = "select count(1) " + sql;
+        String countSql = "SELECT COUNT(1) " + sql;
         return this.queryForMapPage(sql, countSql, pageRequest, params);
     }
 
@@ -92,6 +92,6 @@ public class JdbcQuery {
         if (paramsLength > countSqlParamsLength) {
             System.arraycopy(params, 0, newParams, 0, countSqlParamsLength);
         }
-        return jdbcTemplate.queryForObject(sql, newParams, Long.class);
+        return jdbcTemplate.queryForObject(sql, Long.class, newParams);
     }
 }
