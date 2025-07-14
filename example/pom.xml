@@ -19,7 +19,7 @@
     </parent>
 
     <artifactId>springboot-example</artifactId>
-    <version>3.4.9</version>
+    <version>3.4.10</version>
 
     <name>springboot-example</name>
     <description>springboot-example project for Spring Boot</description>
