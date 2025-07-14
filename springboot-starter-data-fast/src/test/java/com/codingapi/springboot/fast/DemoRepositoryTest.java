@@ -1,5 +1,6 @@
 package com.codingapi.springboot.fast;
 
+import com.codingapi.springboot.fast.dto.DemoDTO;
 import com.codingapi.springboot.fast.entity.Demo;
 import com.codingapi.springboot.fast.jpa.SQLBuilder;
 import com.codingapi.springboot.fast.repository.DemoRepository;
@@ -219,11 +220,11 @@ public class DemoRepositoryTest {
         demo2.setName("456");
         demoRepository.save(demo2);
 
-        SQLBuilder builder = new SQLBuilder("from Demo where 1=1");
+        SQLBuilder<DemoDTO> builder = new SQLBuilder<>(DemoDTO.class," select new com.codingapi.springboot.fast.dto.DemoDTO(id,name) from Demo where 1=1");
         String search = "12";
         builder.append("and name like ?","%"+search+"%");
 
-        List<Demo> list = demoRepository.dynamicListQuery(builder);
+        List<DemoDTO> list = demoRepository.dynamicListQuery(builder);
         assertEquals(1, list.size());
     }
 
@@ -240,7 +241,7 @@ public class DemoRepositoryTest {
         demo2.setName("456");
         demoRepository.save(demo2);
 
-        SQLBuilder builder = new SQLBuilder(Demo.class,"select * from t_demo where 1=1");
+        SQLBuilder<Demo> builder = new SQLBuilder<>(Demo.class,"select * from t_demo where 1=1");
         String search = "12";
         builder.append("and name like ?","%"+search+"%");
 
@@ -260,11 +261,13 @@ public class DemoRepositoryTest {
         demo2.setName("456");
         demoRepository.save(demo2);
 
-        SQLBuilder builder = new SQLBuilder(Demo.class,"select d from Demo d where 1=1","select count(1) from Demo d where 1=1");
+        SQLBuilder<DemoDTO> builder = new SQLBuilder<>(DemoDTO.class,
+                "select new com.codingapi.springboot.fast.dto.DemoDTO(id,name) from Demo d where 1=1",
+                "select count(1) from Demo d where 1=1");
         String search = "12";
         builder.append("and d.name like ?","%"+search+"%");
 
-        Page<Demo> page = demoRepository.dynamicPageQuery(builder,PageRequest.of(1, 2));
+        Page<DemoDTO> page = demoRepository.dynamicPageQuery(builder,PageRequest.of(1, 2));
         assertEquals(1, page.getTotalElements());
     }
 
