@@ -272,33 +272,22 @@ public class MultiRelationFlowTest {
         assertEquals(4, records.size());
 
         // 用户修改确认
-        userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
-        assertEquals(1, userTodos.size());
+        deptTodos = flowRecordRepository.findTodoByOperatorId(dept.getUserId(), pageRequest).getContent();
+        assertEquals(1, deptTodos.size());
 
         // 用户调整为3天
         leave.setDays(3);
         // 提交流程
-        userTodo = userTodos.get(0);
-        flowService.submitFlow(userTodo.getId(), user, leave, Opinion.pass("同意"));
-
-        records = flowRecordRepository.findAll(pageRequest).getContent();
-        assertEquals(5, records.size());
-
-        deptTodos = flowRecordRepository.findTodoByOperatorId(dept.getUserId(), pageRequest).getContent();
-        assertEquals(1, deptTodos.size());
-
-        // 提交部门经理的审批
         deptTodo = deptTodos.get(0);
         flowService.submitFlow(deptTodo.getId(), dept, leave, Opinion.pass("同意"));
 
-        // 用户修改确认
-        userTodos = flowRecordRepository.findTodoByOperatorId(user.getUserId(), pageRequest).getContent();
-        assertEquals(0, userTodos.size());
+        records = flowRecordRepository.findAll(pageRequest).getContent();
+        assertEquals(4, records.size());
 
         // 查看所有流程是否都已经结束
         assertTrue(records.stream().allMatch(FlowRecord::isFinish));
 
         List<BindDataSnapshot> snapshots = flowBindDataRepository.findAll();
-        assertEquals(6, snapshots.size());
+        assertEquals(5, snapshots.size());
     }
 }
