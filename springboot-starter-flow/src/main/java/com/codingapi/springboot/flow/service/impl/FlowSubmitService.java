@@ -191,12 +191,8 @@ public class FlowSubmitService {
         // 审批通过并进入下一节点
         if (flowDirectionService.isPassRecord()) {
             flowNodeService.loadNextPassNode(flowNode);
-            // 审批拒绝返回上一节点
-        } else if (flowDirectionService.isDefaultBackRecord()) {
+        } else  {
             flowNodeService.loadDefaultBackNode(flowRecord);
-        } else {
-            // 审批拒绝，并且自定了返回节点
-            flowNodeService.loadCustomBackNode(flowNode, flowRecord.getPreId());
         }
         this.nextNode = flowNodeService.getNextNode();
     }
