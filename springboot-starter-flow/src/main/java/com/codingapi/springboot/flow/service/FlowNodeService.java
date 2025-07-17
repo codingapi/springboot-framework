@@ -146,28 +146,6 @@ public class FlowNodeService {
     }
 
 
-    /**
-     * 加载自定义回退节点
-     */
-    public void loadCustomBackNode(FlowNode flowNode, long parentRecordId) {
-        FlowNode nextNode = this.matcherNextNode(flowNode, true);
-        if (nextNode == null) {
-            throw new IllegalArgumentException("next node not found");
-        }
-        IFlowOperator flowOperator = currentOperator;
-        if (nextNode.isAnyOperatorMatcher()) {
-            // 如果是任意人员操作时则需要指定为当时审批人员为当前审批人员
-            FlowRecord preFlowRecord = flowRecordRepository.getFlowRecordById(parentRecordId);
-            while (preFlowRecord.isTransfer() || !preFlowRecord.getNodeCode().equals(nextNode.getCode())) {
-                preFlowRecord = flowRecordRepository.getFlowRecordById(preFlowRecord.getPreId());
-            }
-            flowOperator = preFlowRecord.getCurrentOperator();
-        }
-        this.nextNode = nextNode;
-        this.nextOperator = flowOperator;
-        this.backOperator = null;
-    }
-
 
     /**
      * 获取下一个节点
