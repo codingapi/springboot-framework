@@ -352,18 +352,6 @@
 
             <build>
                 <plugins>
-
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>${maven-compiler-plugin.version}</version>
-                        <configuration>
-                            <source>${maven.compile.source}</source>
-                            <target>${maven.compile.target}</target>
-                            <encoding>${project.build.sourceEncoding}</encoding>
-                            <compilerArgument>-Xlint:deprecation</compilerArgument>
-                        </configuration>
-                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
@@ -376,19 +364,6 @@
                             </execution>
                         </executions>
                     </plugin>
-
-
-<!--                    <plugin>-->
-<!--                        <groupId>org.sonatype.plugins</groupId>-->
-<!--                        <artifactId>nexus-staging-maven-plugin</artifactId>-->
-<!--                        <version>1.6.13</version>-->
-<!--                        <extensions>true</extensions>-->
-<!--                        <configuration>-->
-<!--                            <serverId>ossrh</serverId>-->
-<!--                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>-->
-<!--                            <autoReleaseAfterClose>true</autoReleaseAfterClose>-->
-<!--                        </configuration>-->
-<!--                    </plugin>-->
 
                     <plugin>
                         <groupId>org.sonatype.central</groupId>
@@ -420,7 +395,6 @@
                         </configuration>
                     </plugin>
 
-
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
@@ -439,8 +413,6 @@
                 </plugins>
             </build>
         </profile>
-
-
     </profiles>
 
 </project>
