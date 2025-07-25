@@ -348,18 +348,6 @@
 
             <build>
                 <plugins>
-
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>${maven-compiler-plugin.version}</version>
-                        <configuration>
-                            <source>${maven.compile.source}</source>
-                            <target>${maven.compile.target}</target>
-                            <encoding>${project.build.sourceEncoding}</encoding>
-                            <compilerArgument>-Xlint:deprecation</compilerArgument>
-                        </configuration>
-                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
@@ -373,19 +361,6 @@
                         </executions>
                     </plugin>
 
-
-                    <!--                    <plugin>-->
-                    <!--                        <groupId>org.sonatype.plugins</groupId>-->
-                    <!--                        <artifactId>nexus-staging-maven-plugin</artifactId>-->
-                    <!--                        <version>1.6.13</version>-->
-                    <!--                        <extensions>true</extensions>-->
-                    <!--                        <configuration>-->
-                    <!--                            <serverId>ossrh</serverId>-->
-                    <!--                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>-->
-                    <!--                            <autoReleaseAfterClose>true</autoReleaseAfterClose>-->
-                    <!--                        </configuration>-->
-                    <!--                    </plugin>-->
-
                     <plugin>
                         <groupId>org.sonatype.central</groupId>
                         <artifactId>central-publishing-maven-plugin</artifactId>
@@ -397,7 +372,6 @@
                             <waitUntil>published</waitUntil>
                         </configuration>
                     </plugin>
-
 
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
