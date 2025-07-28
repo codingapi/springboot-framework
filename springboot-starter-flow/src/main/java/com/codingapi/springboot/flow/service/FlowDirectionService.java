@@ -92,5 +92,4 @@ public class FlowDirectionService {
         return flowSourceDirection == FlowSourceDirection.PASS;
     }
 
-
 }

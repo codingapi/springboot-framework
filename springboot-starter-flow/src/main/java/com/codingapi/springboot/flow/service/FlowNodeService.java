@@ -100,27 +100,48 @@ public class FlowNodeService {
     /**
      * 加载默认回退节点
      */
-    public void loadDefaultBackNode(FlowRecord currentRecord) {
+    public void loadDefaultBackNode(FlowNode flowNode, FlowRecord currentRecord) {
+        // 如果退回设置了回退关系，则需要根据关系匹配下一个节点
+        if (flowWork.hasBackRelation(flowNode.getCode())) {
+            FlowNode nextNode = this.matcherNextNode(flowNode, true);
+            if (nextNode == null) {
+                throw new IllegalArgumentException("next node not found");
+            }
+            long parentRecordId = currentRecord.getPreId();
+            FlowRecord preFlowRecord = flowRecordRepository.getFlowRecordById(parentRecordId);
+            IFlowOperator flowOperator = currentOperator;
+            if (nextNode.isAnyOperatorMatcher()) {
+                while (preFlowRecord.isTransfer() || !preFlowRecord.getNodeCode().equals(nextNode.getCode())) {
+                    preFlowRecord = flowRecordRepository.getFlowRecordById(preFlowRecord.getPreId());
+                }
+                flowOperator = preFlowRecord.getCurrentOperator();
+            }
+            this.nextNode = nextNode;
+            this.nextOperator = flowOperator;
+            this.backOperator = null;
+            return;
+        }
+
+        // 如果没有设置回退关系，则需要根据流程记录来匹配下一个节点
         List<FlowRecord> historyRecords =
                 flowRecordRepository.findFlowRecordByProcessId(currentRecord.getProcessId())
                         .stream()
                         .sorted((o1, o2) -> (int) (o2.getId() - o1.getId()))
                         .filter(record -> record.getId() < currentRecord.getId())
                         .toList();
-
         int index = 0;
         while (true) {
             if (index >= historyRecords.size()) {
                 throw new IllegalArgumentException("back node not found");
             }
             FlowRecord record = historyRecords.get(index);
-            if (record.isDone() && record.getId()== currentRecord.getPreId()) {
+            if (record.isDone() && record.getId() == currentRecord.getPreId()) {
                 // 是连续的回退节点时，则根据流程记录的状态来判断
-                if(record.isReject()){
+                if (record.isReject()) {
                     boolean startRemove = false;
-                    for(FlowRecord historyRecord: historyRecords){
-                        if(startRemove){
-                            if(historyRecord.getNodeCode().equals(currentRecord.getNodeCode())){
+                    for (FlowRecord historyRecord : historyRecords) {
+                        if (startRemove) {
+                            if (historyRecord.getNodeCode().equals(currentRecord.getNodeCode())) {
                                 continue;
                             }
                             this.nextNode = flowWork.getNodeByCode(historyRecord.getNodeCode());
@@ -128,11 +149,11 @@ public class FlowNodeService {
                             this.backOperator = historyRecord.getCurrentOperator();
                             return;
                         }
-                        if(historyRecord.getNodeCode().equals(currentRecord.getNodeCode())){
+                        if (historyRecord.getNodeCode().equals(currentRecord.getNodeCode())) {
                             startRemove = true;
                         }
                     }
-                }else {
+                } else {
                     this.nextNode = flowWork.getNodeByCode(record.getNodeCode());
                     this.nextOperator = record.getCurrentOperator();
                     this.backOperator = record.getCurrentOperator();
@@ -144,7 +165,6 @@ public class FlowNodeService {
     }
 
 
-
     /**
      * 获取下一个节点
      *
@@ -152,15 +172,15 @@ public class FlowNodeService {
      */
     private FlowNode matcherNextNode(FlowNode flowNode, boolean back) {
         List<FlowRelation> currentRelations = new ArrayList<>(flowWork.getRelations());
-        if(back){
+        if (back) {
             String preCode = FlowNode.CODE_START;
-            if(flowRecord.getPreId()!=0){
+            if (flowRecord.getPreId() != 0) {
                 FlowRecord preRecord = flowRecordRepository.getFlowRecordById(flowRecord.getPreId());
-                if(preRecord!=null){
+                if (preRecord != null) {
                     preCode = preRecord.getNodeCode();
-                    while (preCode.equals(flowRecord.getNodeCode())){
+                    while (preCode.equals(flowRecord.getNodeCode())) {
                         preRecord = flowRecordRepository.getFlowRecordById(preRecord.getPreId());
-                        if(preRecord==null){
+                        if (preRecord == null) {
                             break;
                         }
                         preCode = preRecord.getNodeCode();
