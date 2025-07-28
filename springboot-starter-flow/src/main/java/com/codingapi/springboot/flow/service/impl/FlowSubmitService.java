@@ -193,7 +193,7 @@ public class FlowSubmitService {
         if (flowDirectionService.isPassRecord()) {
             flowNodeService.loadNextPassNode(flowNode);
         } else  {
-            flowNodeService.loadDefaultBackNode(flowRecord);
+            flowNodeService.loadDefaultBackNode(flowNode,flowRecord);
         }
         this.nextNode = flowNodeService.getNextNode();
     }

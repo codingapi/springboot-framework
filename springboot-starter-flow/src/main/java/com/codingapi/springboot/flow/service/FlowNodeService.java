@@ -102,7 +102,29 @@ public class FlowNodeService {
     /**
      * 加载默认回退节点
      */
-    public void loadDefaultBackNode(FlowRecord currentRecord) {
+    public void loadDefaultBackNode(FlowNode flowNode,FlowRecord currentRecord) {
+        // 如果退回设置了回退关系，则需要根据关系匹配下一个节点
+        if (flowWork.hasBackRelation(flowNode.getCode())) {
+            FlowNode nextNode = this.matcherNextNode(flowNode, true);
+            if (nextNode == null) {
+                throw new IllegalArgumentException("next node not found");
+            }
+            long parentRecordId = currentRecord.getPreId();
+            FlowRecord preFlowRecord = flowRecordRepository.getFlowRecordById(parentRecordId);
+            IFlowOperator flowOperator = currentOperator;
+            if (nextNode.isAnyOperatorMatcher()) {
+                while (preFlowRecord.isTransfer() || !preFlowRecord.getNodeCode().equals(nextNode.getCode())) {
+                    preFlowRecord = flowRecordRepository.getFlowRecordById(preFlowRecord.getPreId());
+                }
+                flowOperator = preFlowRecord.getCurrentOperator();
+            }
+            this.nextNode = nextNode;
+            this.nextOperator = flowOperator;
+            this.backOperator = null;
+            return;
+        }
+
+        // 如果没有设置回退关系，则需要根据流程记录来匹配下一个节点
         List<FlowRecord> historyRecords =
                 flowRecordRepository.findFlowRecordByProcessId(currentRecord.getProcessId())
                         .stream()
