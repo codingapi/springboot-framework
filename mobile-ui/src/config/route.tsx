@@ -1,59 +1,109 @@
-import Login from "@/pages/login";
 import NotFound from "@/layout/NotFound";
-import Layout from "@/layout";
-import HomePage from "@/pages/home";
 import {Route} from "react-router";
 import {RouteObject} from "react-router/dist/lib/context";
 import React from "react";
-import LeaveListPage from "@/pages/leave";
-import LeaveCreatePage from "@/pages/leave/create";
-import FlowListPage from "@/pages/flow";
-import FlowDetailPage from "@/pages/flow/detail";
-import LeaveDetailPage from "@/pages/leave/detail";
-import FormPage from "@/pages/form";
-import MircoPage from "@/pages/mirco";
-
+import LazyComponent from "@/components/LazyComponent";
 
 export const routes: RouteObject[] = [
     {
         path: "/login",
-        element: <Login/>,
+        element: (
+            <LazyComponent
+                lazy={() => {
+                    return import('@/pages/login');
+                }}
+            />
+        ),
     },
     {
         path: '/',
-        element: <Layout/>,
+        element: (
+            <LazyComponent
+                lazy={() => {
+                    return import('@/layout/index');
+                }}
+            />
+        ),
         children: [
             {
                 path: "/",
-                element: <HomePage/>,
+                element: (
+                    <LazyComponent
+                        lazy={() => {
+                            return import('@/pages/home');
+                        }}
+                    />
+                ),
             },
             {
                 path: "/form",
-                element: <FormPage/>,
+                element: (
+                    <LazyComponent
+                        lazy={() => {
+                            return import('@/pages/form');
+                        }}
+                    />
+                ),
             },
             {
                 path: "/mirco",
-                element: <MircoPage/>,
+                element: (
+                    <LazyComponent
+                        lazy={() => {
+                            return import('@/pages/mirco');
+                        }}
+                    />
+                ),
             },
             {
                 path: "/leave/index",
-                element: <LeaveListPage/>,
+                element: (
+                    <LazyComponent
+                        lazy={() => {
+                            return import('@/pages/leave');
+                        }}
+                    />
+                ),
             },
             {
                 path: "/leave/create",
-                element: <LeaveCreatePage/>,
+                element: (
+                    <LazyComponent
+                        lazy={() => {
+                            return import('@/pages/leave/create');
+                        }}
+                    />
+                ),
             },
             {
                 path: "/leave/detail",
-                element: <LeaveDetailPage/>,
+                element: (
+                    <LazyComponent
+                        lazy={() => {
+                            return import('@/pages/leave/detail');
+                        }}
+                    />
+                ),
             },
             {
                 path: "/flow/list",
-                element: <FlowListPage/>,
+                element: (
+                    <LazyComponent
+                        lazy={() => {
+                            return import('@/pages/flow');
+                        }}
+                    />
+                ),
             },
             {
                 path: "/flow/detail",
-                element: <FlowDetailPage/>,
+                element: (
+                    <LazyComponent
+                        lazy={() => {
+                            return import('@/pages/flow/detail');
+                        }}
+                    />
+                ),
             },
             {
                 path: '/*',
