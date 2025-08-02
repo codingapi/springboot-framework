@@ -1,12 +1,15 @@
 import React, {createContext} from 'react';
 import ReactDOM from 'react-dom/client';
-import reportWebVitals from './reportWebVitals';
+// import reportWebVitals from './reportWebVitals';
 import '@/styles/index.scss';
 import {createHashRouter, RouterProvider} from "react-router-dom";
 import {routes} from "@/config/route";
 import zhCN from "antd-mobile/es/locales/zh-CN";
 import {ConfigProvider} from "antd-mobile";
-import "@/config/register.component";
+
+import("@/config/register.component").then(() => {
+    console.log('register.component loaded');
+});
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
@@ -26,4 +29,4 @@ root.render(
 
 // If you want to start measuring performance in your app, pass a function
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+// reportWebVitals();

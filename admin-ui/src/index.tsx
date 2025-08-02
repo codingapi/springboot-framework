@@ -7,7 +7,9 @@ import store from "@/store/Redux";
 import {ConfigProvider} from "antd";
 import zhCN from 'antd/es/locale/zh_CN';
 import '@/styles/index.scss';
-import "@/config/register.component";
+import("@/config/register.component").then(()=>{
+    console.log('register.component loaded');
+});
 import {CSSUtils, ThemeConfig, ThemeProvider} from "@codingapi/ui-framework";
 
 const root = ReactDOM.createRoot(

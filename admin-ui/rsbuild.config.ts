@@ -52,11 +52,11 @@ export default defineConfig({
         template: './public/index.html',
     },
     performance: {
-        chunkSplit: {
-            strategy: 'split-by-size',
-            minSize: 10000,
-            maxSize: 30000,
-        },
+        // chunkSplit: {
+        //     strategy: 'split-by-size',
+        //     minSize: 10000,
+        //     maxSize: 30000,
+        // },
     },
     tools: {
         rspack: (config) => {
