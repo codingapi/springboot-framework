@@ -2,7 +2,7 @@ import NotFound from "@/layout/NotFound";
 import {Route} from "react-router";
 import {RouteObject} from "react-router/dist/lib/context";
 import React from "react";
-import LazyComponent from "@/components/LazyComponent";
+import { LazyComponent } from "@codingapi/form-mobile";
 
 export const routes: RouteObject[] = [
     {
