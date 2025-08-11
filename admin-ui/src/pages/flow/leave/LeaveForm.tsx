@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
-import {FlowFormViewProps, ValidateUtils} from "@codingapi/ui-framework";
-import {Form, FormInput, FormTextArea} from "@codingapi/form-pc";
+import {FlowFormViewProps} from "@codingapi/ui-framework";
+import {Form, FormItem} from "@codingapi/form-pc";
 
 const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
 
@@ -19,29 +19,43 @@ const LeaveForm: React.FC<FlowFormViewProps> = (props) => {
             layout={"vertical"}
         >
 
-            <FormInput
+            <FormItem
                 name={"id"}
                 hidden={true}
+                type={"input"}
             />
 
-            <FormInput
+            <FormItem
+                type={"input"}
                 name={"username"}
                 hidden={true}
             />
 
-            <FormInput
+            <FormItem
+                type={"input"}
                 name={"days"}
                 label={"请假天数"}
                 inputType={"number"}
                 required={true}
-                validateFunction={ValidateUtils.validateNotEmpty}
+                rules={[
+                    {
+                        required: true,
+                        message: "请假天数不能为空",
+                    },
+                ]}
             />
 
-            <FormTextArea
+            <FormItem
+                type={"textarea"}
                 name={"desc"}
                 label={"请假原因"}
                 required={true}
-                validateFunction={ValidateUtils.validateNotEmpty}
+                rules={[
+                    {
+                        required: true,
+                        message: "请假原因不能为空",
+                    },
+                ]}
             />
 
         </Form>
