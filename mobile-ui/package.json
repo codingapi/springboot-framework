@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@codingapi/flow-mobile": "^0.0.60",
-    "@codingapi/form-mobile": "^0.0.60",
-    "@codingapi/ui-framework": "^0.0.60",
+    "@codingapi/flow-mobile": "^0.0.61",
+    "@codingapi/form-mobile": "^0.0.61",
+    "@codingapi/ui-framework": "^0.0.61",
     "@logicflow/core": "^2.0.10",
     "@logicflow/extension": "^2.0.14",
     "@reduxjs/toolkit": "^2.2.7",
