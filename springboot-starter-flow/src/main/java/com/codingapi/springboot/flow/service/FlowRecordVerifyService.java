@@ -84,6 +84,14 @@ public class FlowRecordVerifyService {
     }
 
     /**
+     * 当前人是否为发起人
+     * @return 是否为发起人
+     */
+    public boolean isCreateOperator() {
+        return flowRecord.isCreateOperator(currentOperator);
+    }
+
+    /**
      * 校验流程是否已审批
      */
     public void verifyFlowRecordNotDone() {

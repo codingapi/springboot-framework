@@ -38,7 +38,8 @@ public class FlowRecallService {
                 flowWorkRepository,
                 flowRecordRepository,
                 flowProcessRepository,
-                recordId, currentOperator);
+                recordId,
+                currentOperator);
 
         flowRecordVerifyService.verifyFlowRecordCurrentOperator();
         flowRecordVerifyService.loadFlowWork();
@@ -48,23 +49,23 @@ public class FlowRecallService {
 
         FlowRecord flowRecord = flowRecordVerifyService.getFlowRecord();
         FlowWork flowWork = flowRecordVerifyService.getFlowWork();
-
-        // 下一流程的流程记录
-        List<FlowRecord> childrenRecords = flowRecordRepository.findFlowRecordByPreId(recordId);
-
         BindDataSnapshot bindDataSnapshot = flowBindDataRepository.getBindDataSnapshotById(flowRecord.getSnapshotId());
 
-        // 下一流程均为办理且未读
-
-        // 如果是在开始节点撤销，则直接删除
-        if (flowRecord.isStartRecord() && flowRecord.isTodo()) {
-            if (!childrenRecords.isEmpty()) {
-                throw new IllegalArgumentException("flow record not recall");
+        if(flowRecordVerifyService.isCreateOperator()){
+            List<FlowRecord> records = flowRecordRepository.findFlowRecordByProcessId(flowRecord.getProcessId());
+            for(FlowRecord record:records){
+                if(!record.isStartRecord()) {
+                    record.delete();
+                    flowRecordRepository.update(record);
+                }else {
+                    record.recall();
+                    flowRecordRepository.update(record);
+                }
             }
-            List<FlowRecord> flowRecords = new ArrayList<>();
-            flowRecords.add(flowRecord);
-            flowRecordRepository.delete(flowRecords);
-        } else {
+        }else {
+            // 下一流程的流程记录
+            List<FlowRecord> childrenRecords = flowRecordRepository.findFlowRecordByPreId(recordId);
+
             // 如果是在中间节点撤销，则需要判断是否所有的子流程都是未读状态
             if (childrenRecords.isEmpty()) {
                 throw new IllegalArgumentException("flow record not submit");
@@ -77,13 +78,13 @@ public class FlowRecallService {
             flowRecord.recall();
             flowRecordRepository.update(flowRecord);
 
-            for(FlowRecord childrenRecord : childrenRecords) {
+            for (FlowRecord childrenRecord : childrenRecords) {
                 childrenRecord.delete();
             }
             flowRecordRepository.save(childrenRecords);
         }
-        IBindData bindData =  bindDataSnapshot.toBindData();
 
+        IBindData bindData = bindDataSnapshot.toBindData();
         EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_RECALL, flowRecord, currentOperator, flowWork, bindData), true);
     }
 }

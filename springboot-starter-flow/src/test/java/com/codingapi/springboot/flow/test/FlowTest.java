@@ -1103,7 +1103,7 @@ public class FlowTest {
         flowService.recall(userTodo.getId(), user);
 
         List<FlowRecord> records = flowRecordRepository.findAll(pageRequest).getContent();
-        assertEquals(0, records.size());
+        assertEquals(1, records.size());
 
 
     }
