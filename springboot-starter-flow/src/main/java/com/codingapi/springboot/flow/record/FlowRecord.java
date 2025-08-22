@@ -375,6 +375,15 @@ public class FlowRecord {
     }
 
     /**
+     * 是否是当前发起人
+     * @param operator 操作者
+     * @return 是否是当前发起人
+     */
+    public boolean isCreateOperator(IFlowOperator operator) {
+        return this.createOperator.getUserId() == operator.getUserId();
+    }
+
+    /**
      * 是否是当前操作者
      *
      * @param operator 操作者
