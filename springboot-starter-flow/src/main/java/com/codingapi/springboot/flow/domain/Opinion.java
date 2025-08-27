@@ -35,6 +35,8 @@ public class Opinion {
     public static final int RESULT_CIRCULATE = 4;
     // 审批结果 等待
     public static final int RESULT_WAITING = 5;
+    // 审批结果 停止
+    public static final int RESULT_STOP = 6;
 
     /**
      * 审批意见
@@ -80,6 +82,10 @@ public class Opinion {
 
     public static Opinion pass(String advice) {
         return new Opinion(advice, RESULT_PASS, TYPE_DEFAULT);
+    }
+
+    public static Opinion stop() {
+        return new Opinion("", RESULT_STOP, TYPE_DEFAULT);
     }
 
     public static Opinion reject(String advice) {
