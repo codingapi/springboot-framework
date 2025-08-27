@@ -6,7 +6,7 @@
     <parent>
         <artifactId>springboot-parent</artifactId>
         <groupId>com.codingapi.springboot</groupId>
-       <version>3.4.13</version>
+       <version>3.4.14</version>
     </parent>
 
     <artifactId>springboot-starter-security</artifactId>

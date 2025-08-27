@@ -316,4 +316,16 @@ public class FlowService {
         flowBackService.back(processId, backNodeCode, currentOperator);
     }
 
+
+
+    /**
+     * 停止流程
+     *
+     * @param recordId        流程记录id
+     * @param currentOperator 当前操作者
+     */
+    public void stop(long recordId, IFlowOperator currentOperator) {
+        FlowStopService flowSubmitService = new FlowStopService(recordId, currentOperator, flowServiceRepositoryHolder);
+        flowSubmitService.stop();
+    }
 }

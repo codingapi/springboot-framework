@@ -247,6 +247,16 @@ public class FlowRecord {
     }
 
     /**
+     * 停止流程
+     */
+    public void stop(){
+        this.flowSourceDirection = FlowSourceDirection.PASS;
+        this.flowType = FlowType.DONE;
+        this.updateTime = System.currentTimeMillis();
+        this.opinion = Opinion.stop();
+    }
+
+    /**
      * 转交流程
      */
     public void transfer(IFlowOperator flowOperator, BindDataSnapshot snapshot, Opinion opinion) {
@@ -325,6 +335,7 @@ public class FlowRecord {
     public boolean isFinish() {
         return this.flowStatus == FlowStatus.FINISH;
     }
+
 
     /**
      * 是否等待
