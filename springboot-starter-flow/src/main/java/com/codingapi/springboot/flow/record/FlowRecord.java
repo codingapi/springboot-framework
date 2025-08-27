@@ -247,6 +247,17 @@ public class FlowRecord {
         this.opinion = Opinion.circulate();
     }
 
+
+    /**
+     * 停止流程
+     */
+    public void stop(){
+        this.flowSourceDirection = FlowSourceDirection.PASS;
+        this.flowType = FlowType.DONE;
+        this.updateTime = System.currentTimeMillis();
+        this.opinion = Opinion.stop();
+    }
+
     /**
      * 转交流程
      */

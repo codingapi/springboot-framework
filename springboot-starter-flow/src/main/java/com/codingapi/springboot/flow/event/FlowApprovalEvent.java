@@ -42,6 +42,8 @@ public class FlowApprovalEvent implements ISyncEvent {
     public static final int STATE_BACK = 12;
     // 作废
     public static final int STATE_VOIDED = 13;
+    // 停止
+    public static final int STATE_STOP = 14;
 
 
     private final int state;
