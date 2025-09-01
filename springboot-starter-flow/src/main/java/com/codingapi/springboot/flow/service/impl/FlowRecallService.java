@@ -59,6 +59,7 @@ public class FlowRecallService {
                     flowRecordRepository.update(record);
                 }else {
                     record.recall();
+                    flowRecord = record;
                     flowRecordRepository.update(record);
                 }
             }
