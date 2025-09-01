@@ -92,6 +92,10 @@ public class FlowApprovalEvent implements ISyncEvent {
         return state == STATE_SAVE;
     }
 
+    public boolean isStop() {
+        return state == STATE_STOP;
+    }
+
     public boolean isCreate() {
         return state == STATE_CREATE;
     }
