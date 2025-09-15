@@ -19,7 +19,6 @@ public class EventException extends RuntimeException {
             this.addSuppressed(errors.get(i));
         }
     }
-
     private static String buildMessage(List<Exception> errors) {
         return errors.stream()
                 .map(e -> e.getClass().getSimpleName() + ": " + e.getMessage())
