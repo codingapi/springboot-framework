@@ -247,6 +247,16 @@ public class FlowRecord {
     }
 
     /**
+     * 停止流程
+     */
+    public void stop(){
+        this.flowSourceDirection = FlowSourceDirection.PASS;
+        this.flowType = FlowType.DONE;
+        this.updateTime = System.currentTimeMillis();
+        this.opinion = Opinion.stop();
+    }
+
+    /**
      * 转交流程
      */
     public void transfer(IFlowOperator flowOperator, BindDataSnapshot snapshot, Opinion opinion) {
@@ -326,6 +336,7 @@ public class FlowRecord {
         return this.flowStatus == FlowStatus.FINISH;
     }
 
+
     /**
      * 是否等待
      */
@@ -372,6 +383,15 @@ public class FlowRecord {
         if (!isOperator(currentOperator)) {
             throw new IllegalArgumentException("current operator is not match");
         }
+    }
+
+    /**
+     * 是否是当前发起人
+     * @param operator 操作者
+     * @return 是否是当前发起人
+     */
+    public boolean isCreateOperator(IFlowOperator operator) {
+        return this.createOperator.getUserId() == operator.getUserId();
     }
 
     /**

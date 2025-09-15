@@ -4,8 +4,7 @@ import {changeManager, entrust, list, remove, removeEntrust, save} from "@/api/u
 import {Button, message, Modal, Popconfirm, Space} from "antd";
 import {DeleteOutlined, SettingOutlined} from "@ant-design/icons";
 import UserSelect from "@/pages/flow/user/select";
-import {Form,FormInput,FormSwitch} from "@codingapi/form-pc";
-import {ValidateUtils} from "@codingapi/ui-framework";
+import {Form, FormItem} from "@codingapi/form-pc";
 
 const UserPage = () => {
 
@@ -186,8 +185,8 @@ const UserPage = () => {
                     onCancel={()=>{
                         setVisible(false);
                     }}
-                    onOk={async ()=>{
-                        await form.submit();
+                    onOk={ ()=>{
+                         form.submit();
                     }}
                 >
                     <Form
@@ -197,33 +196,53 @@ const UserPage = () => {
                             handleSave(values);
                         }}
                     >
-                        <FormInput
+                        <FormItem
+                            type={"input"}
                             name={"id"}
                             hidden={true}
                         />
 
-                        <FormInput
+                        <FormItem
+                            type={"input"}
                             name={"name"}
                             label={"姓名"}
                             required={true}
-                            validateFunction={ValidateUtils.validateNotEmpty}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "姓名不能为空",
+                                }
+                            ]}
                         />
 
-                        <FormInput
+                        <FormItem
+                            type={"input"}
                             name={"username"}
                             label={"登录账号"}
                             required={true}
-                            validateFunction={ValidateUtils.validateNotEmpty}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "登录账号不能为空",
+                                }
+                            ]}
                         />
 
-                        <FormInput
+                        <FormItem
+                            type={"password"}
                             name={"password"}
                             label={"登录密码"}
                             required={true}
-                            validateFunction={ValidateUtils.validateNotEmpty}
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "登录密码不能为空",
+                                }
+                            ]}
                         />
 
-                        <FormSwitch
+                        <FormItem
+                            type={"switch"}
                             name={"flowManager"}
                             label={"是否流程管理员"}
                         />

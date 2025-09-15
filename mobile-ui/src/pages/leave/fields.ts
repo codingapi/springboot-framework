@@ -21,12 +21,12 @@ export const fields = [
             label: "请假天数",
             name: "days",
             required: true,
-            validateFunction: async (content) => {
-                if (content.value <= 0) {
-                    return ["请假天数不能小于0"];
+            rules: [
+                {
+                    required: true,
+                    message: "请假天数不能为空"
                 }
-                return []
-            }
+            ],
         }
     },
     {
@@ -35,12 +35,12 @@ export const fields = [
             label: "请假理由",
             name: "desc",
             required: true,
-            validateFunction: async (content) => {
-                if (content.value && content.value.length > 0) {
-                    return []
+            rules:[
+                {
+                    required: true,
+                    message: "请假理由不能为空"
                 }
-                return ["请假理由不能为空"];
-            }
+            ]
         }
     }
 ] as FormField[]

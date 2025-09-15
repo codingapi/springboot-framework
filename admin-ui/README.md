@@ -1,9 +1,9 @@
 # Admin-ui with Antd For Micro Frontends
 
-This is a simple React App with Webpack5 & Typescript.
+This is a simple React App with RsBuild & Typescript.
 
 ## Features
-1. Support Webpack 5 ModuleFederationPlugin for Micro Frontends
+1. Support RsBuild ModuleFederationPlugin for Micro Frontends
 2. Support Dynamic zip component loading
 3. Support Dynamic Routing & Dynamic Menu
 4. Support Axios for API calls

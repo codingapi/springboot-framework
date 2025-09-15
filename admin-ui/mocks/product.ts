@@ -1,8 +1,11 @@
 import Mock from "mockjs";
-import webpackMockServer from "webpack-mock-server";
+import type {IncomingMessage, ServerResponse} from "node:http";
+import {NextFunction} from "@rsbuild/core/dist-types/types/config";
 
-export default webpackMockServer.add((app, helper) => {
-    app.get('/api/products', (req, res) => {
+export const productsHandler = async (req: IncomingMessage, res: ServerResponse, next: NextFunction) => {
+    const url = req.url;
+    const method = req.method?.toUpperCase();
+    if(url?.startsWith("/api/products") && method === 'GET') {
         const products = Mock.mock({
             'list|100': [{
                 'id|+1': 1,
@@ -10,13 +13,16 @@ export default webpackMockServer.add((app, helper) => {
                 'price|100-1000': 1,
             }]
         }).list;
-
-        res.json({
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({
             success: true,
-            data:{
-                list:products,
+            data: {
+                list: products,
                 total: products.length
             },
-        });
-    });
-});
+        }), 'utf-8');
+        return;
+    }
+
+    next();
+}

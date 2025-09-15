@@ -184,7 +184,19 @@ public class FlowSession {
     }
 
     /**
+     * 停止流程
+     */
+    public void stopFlow() {
+        if (flowRecord == null) {
+            throw new IllegalArgumentException("flow record is null");
+        }
+        FlowService flowService = loadFlowService();
+        flowService.stop(flowRecord.getId(), currentOperator);
+    }
+
+    /**
      * 上级节点的状态是驳回状态
+     *
      * @return 上级节点的状态是驳回状态
      */
     public boolean backStateIsReject() {

@@ -42,6 +42,8 @@ public class FlowApprovalEvent implements ISyncEvent {
     public static final int STATE_BACK = 12;
     // 作废
     public static final int STATE_VOIDED = 13;
+    // 停止
+    public static final int STATE_STOP = 14;
 
     private final int state;
     private final IFlowOperator operator;
@@ -88,6 +90,10 @@ public class FlowApprovalEvent implements ISyncEvent {
 
     public boolean isSave() {
         return state == STATE_SAVE;
+    }
+
+    public boolean isStop() {
+        return state == STATE_STOP;
     }
 
     public boolean isCreate() {

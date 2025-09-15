@@ -1,6 +1,6 @@
 import React from "react";
 import {Button, Toast} from "antd-mobile";
-import {FormInput,FormPassword,Form} from "@codingapi/form-mobile";
+import {Form, FormItem} from "@codingapi/form-mobile";
 import {useNavigate} from "react-router";
 import {initUser, login} from "@/api/account";
 import {config} from "@/config/theme";
@@ -53,32 +53,32 @@ const LoginPage = () => {
                 )}
             >
 
-                <FormInput
+                <FormItem
+                    type={"input"}
                     name={'username'}
                     label={'用户名'}
                     placeholder={'请输入用户名'}
                     required={true}
-                    validateFunction={async (content)=>{
-                        if(content.value){
-                            return []
-                        }else {
-                            return ["用户名不能为空"]
+                    rules={[
+                        {
+                            required: true,
+                            message: "用户名不能为空"
                         }
-                    }}
+                    ]}
                 />
 
-                <FormPassword
+                <FormItem
+                    type={"password"}
                     name={'password'}
                     label={'密码'}
                     placeholder={'请输入密码'}
                     required={true}
-                    validateFunction={async (content)=>{
-                        if(content.value){
-                            return []
-                        }else {
-                            return ["密码不能为空"]
+                    rules={[
+                        {
+                            required: true,
+                            message: "密码不能为空"
                         }
-                    }}
+                    ]}
                 />
             </Form>
         </div>

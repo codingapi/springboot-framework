@@ -1,29 +1,37 @@
-import webpackMockServer from "webpack-mock-server";
+import type {IncomingMessage, ServerResponse} from "node:http";
+import {NextFunction} from "@rsbuild/core/dist-types/types/config";
+import {parseBody} from "./index";
 
-export default webpackMockServer.add((app, helper) => {
-    app.post('/user/login', (req, res) => {
-        const username = req.body.username;
+export const usersHandler = async (req: IncomingMessage, res: ServerResponse, next: NextFunction) => {
+    const url = req.url;
+    const method = req.method?.toUpperCase();
+    if(url?.startsWith("/user/login") && method === 'POST') {
+        const body = await parseBody(req);
+        const username = body.username || '';
+        res.setHeader('Content-Type', 'application/json');
         if(username==='admin'){
-            res.json({
-                success:true,
-                data:{
+            res.end(JSON.stringify({
+                success: true,
+                data: {
                     'username': username,
-                    'token':'test token',
-                    'avatar':'/logo.png',
-                    'authorities': ['ROLE_ADMIN','ROLE_DEVELOPER'],
+                    'token': 'test token',
+                    'avatar': '/logo.png',
+                    'authorities': ['ROLE_ADMIN', 'ROLE_DEVELOPER'],
                 }
-            });
-            return;
+            }), 'utf-8');
+        }else {
+            res.end(JSON.stringify({
+                success: true,
+                data: {
+                    'username': username,
+                    'token': 'test token',
+                    'avatar': '/logo.png',
+                    'authorities': ['ROLE_USER'],
+                }
+            }), 'utf-8');
         }
+        return;
+    }
 
-        res.json({
-            success:true,
-            data:{
-                'username': username,
-                'token':'test token',
-                'avatar':'/logo.png',
-                'authorities': ['ROLE_USER'],
-            }
-        });
-    });
-});
+    next();
+}

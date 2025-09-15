@@ -310,8 +310,10 @@ public class FlowWork {
     /**
      * 是否存在退回关系
      */
-    public boolean hasBackRelation() {
-        return relations.stream().anyMatch(FlowRelation::isBack);
+    public boolean hasBackRelation(String sourceCode) {
+        return relations.stream()
+                .filter(relation -> relation.getSource().getCode().equals(sourceCode))
+                .anyMatch(FlowRelation::isBack);
     }
 
 

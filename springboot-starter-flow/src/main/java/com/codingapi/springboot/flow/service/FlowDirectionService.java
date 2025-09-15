@@ -85,38 +85,11 @@ public class FlowDirectionService {
         return historyRecords.stream().filter(item -> !item.isTransfer()).allMatch(FlowRecord::isDone);
     }
 
-
-    /**
-     * 检测当前流程是否已经完成
-     * 即流程已经进行到了最终节点且审批意见为同意
-     */
-    public boolean hasCurrentFlowIsFinish() {
-        if (flowSourceDirection == FlowSourceDirection.PASS && flowNode.isOverNode()) {
-            return true;
-        }
-        return false;
-    }
-
-
-    /**
-     * 判断当前流程是否为默认的驳回流程
-     */
-    public boolean isDefaultBackRecord() {
-        return flowSourceDirection == FlowSourceDirection.REJECT && !flowWork.hasBackRelation();
-    }
-
     /**
      * 判断当前流程是否为通过流程
      */
     public boolean isPassRecord() {
         return flowSourceDirection == FlowSourceDirection.PASS;
-    }
-
-    /**
-     * 判断当前流程是否为自定义的驳回流程
-     */
-    public boolean isCustomBackRecord() {
-        return flowSourceDirection == FlowSourceDirection.REJECT && flowWork.hasBackRelation();
     }
 
 }
