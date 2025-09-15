@@ -8,13 +8,21 @@ import java.util.stream.Collectors;
 @Getter
 public class EventException extends RuntimeException {
 
-    private final List<Exception> error;
+    private final List<Exception> errors;
 
-    public EventException(List<Exception> error) {
-        super(error.stream().map(Exception::getMessage).collect(Collectors.joining("\n")));
-        this.error = error;
-        for (Exception e : error) {
-            e.printStackTrace();
+    public EventException(List<Exception> errors) {
+        super(buildMessage(errors), errors.isEmpty() ? null : errors.get(0)); // 第一个异常作为 cause
+        this.errors = errors;
+
+        // 把其他异常挂在 suppressed 上
+        for (int i = 1; i < errors.size(); i++) {
+            this.addSuppressed(errors.get(i));
         }
+    }
+
+    private static String buildMessage(List<Exception> errors) {
+        return errors.stream()
+                .map(e -> e.getClass().getSimpleName() + ": " + e.getMessage())
+                .collect(Collectors.joining("; "));
     }
 }
