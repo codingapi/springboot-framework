@@ -66,7 +66,7 @@ public class FlowStartService {
         flowWork.enableValidate();
     }
 
-    private void loadFlowBackup() {
+    private synchronized void loadFlowBackup() {
         FlowBackupRepository flowBackupRepository = flowServiceRepositoryHolder.getFlowBackupRepository();
         this.flowBackup = flowBackupRepository.getFlowBackupByWorkIdAndVersion(flowWork.getId(), flowWork.getUpdateTime());
         if (flowBackup == null) {

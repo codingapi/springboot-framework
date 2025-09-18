@@ -3,7 +3,6 @@ package com.codingapi.springboot.framework.exception;
 import lombok.Getter;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 public class EventException extends RuntimeException {
@@ -11,10 +10,28 @@ public class EventException extends RuntimeException {
     private final List<Exception> error;
 
     public EventException(List<Exception> error) {
-        super(error.stream().map(Exception::getMessage).collect(Collectors.joining("\n")));
+        super(EventException.convert(error));
         this.error = error;
         for (Exception e : error) {
-            e.printStackTrace();
+            this.addSuppressed(e);
         }
+    }
+
+    private static String convert(List<Exception> errors){
+        if (errors == null || errors.isEmpty()) {
+            return "No errors.";
+        }
+        StringBuilder message = new StringBuilder();
+        message.append("Has ").append(errors.size()).append(" Errors:\n");
+        int index = 1;
+        for (Exception exception : errors) {
+            message.append(index++)
+                    .append(". ")
+                    .append(exception.getClass().getSimpleName())
+                    .append(": ")
+                    .append(exception.getMessage())
+                    .append("\n");
+        }
+        return message.toString();
     }
 }
