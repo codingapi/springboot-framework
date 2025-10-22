@@ -5,6 +5,8 @@ import com.codingapi.springboot.authorization.handler.Condition;
 import com.codingapi.springboot.authorization.handler.RowHandler;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
+import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
+import net.sf.jsqlparser.expression.operators.relational.InExpression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
@@ -98,6 +100,49 @@ public class DataPermissionSQLEnhancer {
                 if (join.getRightItem() instanceof Table) {
                     injectDataPermissionCondition(plainSelect, (Table) join.getRightItem(), plainSelect.getWhere());
                 }
+            }
+        }
+
+        Expression expression =  plainSelect.getWhere();
+        this.handlerSubSelect(expression);
+    }
+
+    private void handlerSubSelect(Expression expression) throws Exception {
+        if(expression!=null){
+            if(expression instanceof AndExpression){
+                AndExpression andExpression = (AndExpression) expression;
+                Expression leftExpression =  andExpression.getLeftExpression();
+                Expression rightExpression =  andExpression.getRightExpression();
+
+                this.handlerSubSelect(leftExpression);
+                this.handlerSubSelect(rightExpression);
+
+            }
+            if(expression instanceof OrExpression){
+                OrExpression orExpression = (OrExpression) expression;
+                Expression leftExpression =  orExpression.getLeftExpression();
+                Expression rightExpression =  orExpression.getRightExpression();
+
+                this.handlerSubSelect(leftExpression);
+                this.handlerSubSelect(rightExpression);
+            }
+
+            if(expression instanceof InExpression){
+                InExpression inExpression = (InExpression) expression;
+                Expression leftExpression =  inExpression.getLeftExpression();
+                Expression rightExpression =  inExpression.getRightExpression();
+
+                this.handlerSubSelect(leftExpression);
+                this.handlerSubSelect(rightExpression);
+            }
+
+            if(expression instanceof ParenthesedSelect){
+                ParenthesedSelect  parenthesedSelect = (ParenthesedSelect) expression;
+                this.enhanceDataPermissionInSelect(parenthesedSelect.getPlainSelect());
+            }
+
+            if(expression instanceof PlainSelect){
+                this.enhanceDataPermissionInSelect((PlainSelect) expression);
             }
         }
     }
