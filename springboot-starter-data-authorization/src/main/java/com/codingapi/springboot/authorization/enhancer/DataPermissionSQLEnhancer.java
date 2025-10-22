@@ -3,15 +3,25 @@ package com.codingapi.springboot.authorization.enhancer;
 
 import com.codingapi.springboot.authorization.handler.Condition;
 import com.codingapi.springboot.authorization.handler.RowHandler;
+import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.ExpressionVisitorAdapter;
+import net.sf.jsqlparser.expression.SignedExpression;
+import net.sf.jsqlparser.expression.operators.arithmetic.Subtraction;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
+import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
+import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
+import net.sf.jsqlparser.expression.operators.relational.InExpression;
+import net.sf.jsqlparser.expression.operators.relational.LikeExpression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
+import net.sf.jsqlparser.util.TablesNamesFinder;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 数据权限 SQL 增强器
@@ -100,8 +110,51 @@ public class DataPermissionSQLEnhancer {
                 }
             }
         }
+
+        Expression expression =  plainSelect.getWhere();
+        this.handlerSubSelect(expression);
     }
 
+
+    private void handlerSubSelect(Expression expression) throws Exception {
+        if(expression!=null){
+            if(expression instanceof AndExpression){
+                AndExpression andExpression = (AndExpression) expression;
+                Expression leftExpression =  andExpression.getLeftExpression();
+                Expression rightExpression =  andExpression.getRightExpression();
+
+                this.handlerSubSelect(leftExpression);
+                this.handlerSubSelect(rightExpression);
+
+            }
+            if(expression instanceof OrExpression){
+                OrExpression orExpression = (OrExpression) expression;
+                Expression leftExpression =  orExpression.getLeftExpression();
+                Expression rightExpression =  orExpression.getRightExpression();
+
+                this.handlerSubSelect(leftExpression);
+                this.handlerSubSelect(rightExpression);
+            }
+
+            if(expression instanceof InExpression){
+                InExpression inExpression = (InExpression) expression;
+                Expression leftExpression =  inExpression.getLeftExpression();
+                Expression rightExpression =  inExpression.getRightExpression();
+
+                this.handlerSubSelect(leftExpression);
+                this.handlerSubSelect(rightExpression);
+            }
+
+            if(expression instanceof ParenthesedSelect){
+                ParenthesedSelect  parenthesedSelect = (ParenthesedSelect) expression;
+                this.enhanceDataPermissionInSelect(parenthesedSelect.getPlainSelect());
+            }
+
+            if(expression instanceof PlainSelect){
+                this.enhanceDataPermissionInSelect((PlainSelect) expression);
+            }
+        }
+    }
 
     // 注入数据权限条件
     private void injectDataPermissionCondition(PlainSelect plainSelect, Table table, Expression where) throws Exception {
