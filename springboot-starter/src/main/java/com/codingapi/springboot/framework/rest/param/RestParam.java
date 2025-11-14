@@ -1,7 +1,6 @@
 package com.codingapi.springboot.framework.rest.param;
 
 import com.alibaba.fastjson.JSONObject;
-import org.springframework.http.HttpHeaders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -50,7 +49,7 @@ public class RestParam {
     }
 
     public MultiValueMap<String,String> toGetRequest(){
-        MultiValueMap<String,String> request = new HttpHeaders();
+        MultiValueMap<String,String> request = new LinkedMultiValueMap<>();
         for(String key: mapBody.keySet()){
             List<Object> objectList = mapBody.get(key);
             List<String> stringList = new ArrayList<>();
