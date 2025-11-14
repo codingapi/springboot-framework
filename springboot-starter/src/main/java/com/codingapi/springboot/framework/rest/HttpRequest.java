@@ -129,8 +129,8 @@ public class HttpRequest {
         };
     }
 
-    public Request getPostRequest(String url, HttpHeaders headers, MultiValueMap<String, String> formData) {
-        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(formData, headers);
+    public Request getPostRequest(String url, HttpHeaders headers, MultiValueMap<String, Object> formData) {
+        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(formData, headers);
         String requestUrl = requestHandler.handler(this,url ,HttpMethod.POST,headers,httpEntity);
         return () -> {
             ResponseEntity<String> httpResponse = restTemplate.exchange(requestUrl, HttpMethod.POST, httpEntity, String.class);

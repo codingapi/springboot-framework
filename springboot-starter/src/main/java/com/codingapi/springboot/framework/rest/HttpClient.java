@@ -31,7 +31,7 @@ public class HttpClient {
         return httpRequest.getPostRequest(url, headers, jsonObject).execute();
     }
 
-    public String post(String url, HttpHeaders headers, MultiValueMap<String, String> formData) {
+    public String post(String url, HttpHeaders headers, MultiValueMap<String, Object> formData) {
         return httpRequest.getPostRequest(url, headers, formData).execute();
     }
 
