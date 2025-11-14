@@ -92,11 +92,11 @@ public class SessionClient {
 
     public String getHtml(String url, RestParam restParam){
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        return httpClient.get(url,httpHeaders,restParam!=null?restParam.toFormRequest():null);
+        return httpClient.get(url,httpHeaders,restParam!=null?restParam.toGetRequest():null);
     }
 
     public String getJson(String url, RestParam restParam){
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        return httpClient.get(url,httpHeaders,restParam!=null?restParam.toFormRequest():null);
+        return httpClient.get(url,httpHeaders,restParam!=null?restParam.toGetRequest():null);
     }
 }

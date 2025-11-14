@@ -62,7 +62,7 @@ public class RestClient {
     }
 
     public String get(String api, HttpHeaders headers, RestParam paramBuilder) {
-        return get(api, headers,paramBuilder!=null?paramBuilder.toFormRequest():null);
+        return get(api, headers,paramBuilder!=null?paramBuilder.toGetRequest():null);
     }
 
     public String get(String api, RestParam paramBuilder) {
