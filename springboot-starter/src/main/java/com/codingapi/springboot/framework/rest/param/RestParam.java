@@ -6,11 +6,13 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RestParam {
 
     private final JSONObject jsonBody;
-    private final MultiValueMap<String, String> mapBody;
+    private final MultiValueMap<String, Object> mapBody;
 
     private RestParam() {
         this.jsonBody = new JSONObject();
@@ -42,8 +44,21 @@ public class RestParam {
         return jsonBody;
     }
 
-    public MultiValueMap<String, String> toFormRequest() {
+    public MultiValueMap<String, Object> toFormRequest() {
         return mapBody;
+    }
+
+    public MultiValueMap<String,String> toGetRequest(){
+        MultiValueMap<String,String> request = new LinkedMultiValueMap<>();
+        for(String key: mapBody.keySet()){
+            List<Object> objectList = mapBody.get(key);
+            List<String> stringList = new ArrayList<>();
+            for (Object object:objectList){
+                stringList.add(object.toString());
+            }
+            request.put(key,stringList);
+        }
+        return request;
     }
 
     public RestParam add(String key, Object value) {
