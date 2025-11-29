@@ -12,7 +12,7 @@
 
     <groupId>com.codingapi.springboot</groupId>
     <artifactId>springboot-parent</artifactId>
-    <version>3.4.21</version>
+    <version>3.4.22</version>
 
     <url>https://github.com/codingapi/springboot-framewrok</url>
     <name>springboot-parent</name>
@@ -346,6 +346,7 @@
 
         <profile>
             <!-- mvn clean deploy -P ossrh  -->
+            <!-- mvn clean deploy -P ossrh -Dgpg.passphrase="你的GPG密码" -->
             <!-- gpg: signing failed: Inappropriate ioctl for device -->
             <!-- fix command : export GPG_TTY=$(tty)  -->
             <!-- https://github.com/keybase/keybase-issues/issues/2798 -->

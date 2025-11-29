@@ -17,47 +17,62 @@ import java.util.List;
 class DynamicSQLBuilder {
 
     private final PageRequest request;
-    private final Class<?> clazz;
 
     private final List<Object> params = new ArrayList<>();
     private int paramIndex = 1;
+    private final StringBuilder hql;
+    private final StringBuilder countHql ;
 
     public DynamicSQLBuilder(PageRequest request, Class<?> clazz) {
         this.request = request;
-        this.clazz = clazz;
+        this.hql = new StringBuilder("FROM " + clazz.getSimpleName() + " WHERE ");
+        this.countHql = new StringBuilder("SELECT COUNT(1) FROM " + clazz.getSimpleName() + " WHERE ");
+        this.build();
     }
 
+    public String getHQL(){
+        return this.hql.toString();
+    }
 
-    public String getHQL() {
-        StringBuilder hql = new StringBuilder("FROM " + clazz.getSimpleName() + " WHERE ");
+    public String getCountHQL(){
+        return this.countHql.toString();
+    }
+
+    private void build() {
+        StringBuilder querySQL = new StringBuilder();
+        StringBuilder orderSQL = new StringBuilder();
         RequestFilter requestFilter = request.getRequestFilter();
         if (requestFilter.hasFilter()) {
             List<Filter> filters = requestFilter.getFilters();
             for (int i = 0; i < filters.size(); i++) {
                 Filter filter = filters.get(i);
-                this.buildSQL(filter, hql);
+                this.buildSQL(filter, querySQL);
                 if (i != filters.size() - 1) {
-                    hql.append(" AND ");
+                    querySQL.append(" AND ");
                 }
             }
         }
 
         Sort sort = request.getSort();
         if (sort.isSorted()) {
-            hql.append(" ORDER BY ");
+            orderSQL.append(" ORDER BY ");
             List<Sort.Order> orders = sort.toList();
             for (int i = 0; i < orders.size(); i++) {
                 Sort.Order order = orders.get(i);
-                hql.append(order.getProperty()).append(" ").append(order.getDirection().name());
+                orderSQL.append(order.getProperty()).append(" ").append(order.getDirection().name());
                 if (i != orders.size() - 1) {
-                    hql.append(",");
+                    orderSQL.append(",");
                 }
             }
         }
 
+        this.hql.append(querySQL);
+        this.hql.append(orderSQL);
+        this.countHql.append(querySQL);
+
         log.debug("hql:{}", hql);
         log.debug("params:{}", params);
-        return hql.toString();
+
     }
 
 
@@ -171,4 +186,5 @@ class DynamicSQLBuilder {
     public Object[] getParams() {
         return params.toArray();
     }
+
 }
