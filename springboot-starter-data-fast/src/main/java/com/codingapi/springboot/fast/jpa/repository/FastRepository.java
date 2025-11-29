@@ -29,7 +29,7 @@ public interface FastRepository<T, ID> extends JpaRepository<T, ID>, JpaSpecific
         if (request.hasFilter()) {
             Class<T> clazz = getEntityClass();
             DynamicSQLBuilder dynamicSQLBuilder = new DynamicSQLBuilder(request, clazz);
-            return dynamicPageQuery(dynamicSQLBuilder.getHQL(), request, dynamicSQLBuilder.getParams());
+            return dynamicPageQuery(dynamicSQLBuilder.getHQL(),dynamicSQLBuilder.getCountHQL(), request, dynamicSQLBuilder.getParams());
         }
         return findAll((org.springframework.data.domain.PageRequest) request);
     }
