@@ -5,7 +5,10 @@ import com.codingapi.springboot.flow.bind.IBindData;
 import com.codingapi.springboot.flow.domain.FlowWork;
 import com.codingapi.springboot.flow.event.FlowApprovalEvent;
 import com.codingapi.springboot.flow.record.FlowRecord;
-import com.codingapi.springboot.flow.repository.*;
+import com.codingapi.springboot.flow.repository.FlowBindDataRepository;
+import com.codingapi.springboot.flow.repository.FlowProcessRepository;
+import com.codingapi.springboot.flow.repository.FlowRecordRepository;
+import com.codingapi.springboot.flow.repository.FlowWorkRepository;
 import com.codingapi.springboot.flow.service.FlowRecordVerifyService;
 import com.codingapi.springboot.flow.user.IFlowOperator;
 import com.codingapi.springboot.framework.event.EventPusher;
@@ -28,8 +31,9 @@ public class FlowRecallService {
      *
      * @param recordId        流程记录id
      * @param currentOperator 当前操作者
+     * @param backStartNode   是否退回到发起节点（仅限于流程创建者有效）
      */
-    public void recall(long recordId, IFlowOperator currentOperator) {
+    public void recall(long recordId, IFlowOperator currentOperator, boolean backStartNode) {
         FlowRecordVerifyService flowRecordVerifyService = new FlowRecordVerifyService(
                 flowWorkRepository,
                 flowRecordRepository,
@@ -47,19 +51,19 @@ public class FlowRecallService {
         FlowWork flowWork = flowRecordVerifyService.getFlowWork();
         BindDataSnapshot bindDataSnapshot = flowBindDataRepository.getBindDataSnapshotById(flowRecord.getSnapshotId());
 
-        if(flowRecordVerifyService.isCreateOperator()){
+        if (backStartNode && flowRecordVerifyService.isCreateOperator()) {
             List<FlowRecord> records = flowRecordRepository.findFlowRecordByProcessId(flowRecord.getProcessId());
-            for(FlowRecord record:records){
-                if(!record.isStartRecord()) {
+            for (FlowRecord record : records) {
+                if (!record.isStartRecord()) {
                     record.delete();
                     flowRecordRepository.update(record);
-                }else {
+                } else {
                     record.recall();
                     flowRecord = record;
                     flowRecordRepository.update(record);
                 }
             }
-        }else {
+        } else {
             // 下一流程的流程记录
             List<FlowRecord> childrenRecords = flowRecordRepository.findFlowRecordByPreId(recordId);
 
@@ -83,5 +87,15 @@ public class FlowRecallService {
 
         IBindData bindData = bindDataSnapshot.toBindData();
         EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_RECALL, flowRecord, currentOperator, flowWork, bindData), true);
+    }
+
+    /**
+     * 撤回流程
+     *
+     * @param recordId        流程记录id
+     * @param currentOperator 当前操作者
+     */
+    public void recall(long recordId, IFlowOperator currentOperator) {
+        this.recall(recordId, currentOperator, true);
     }
 }
