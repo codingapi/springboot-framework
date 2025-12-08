@@ -282,6 +282,18 @@ public class FlowSession {
         flowService.recall(flowRecord.getId(), currentOperator);
     }
 
+    /**
+     * 撤回流程
+     * @param backStartNode  是否退回到发起节点（仅限于流程创建者有效）
+     */
+    public void recallFlow(boolean backStartNode) {
+        if (flowRecord == null) {
+            throw new IllegalArgumentException("flow record is null");
+        }
+        FlowService flowService = loadFlowService();
+        flowService.recall(flowRecord.getId(), currentOperator,backStartNode);
+    }
+
 
     private FlowService loadFlowService() {
         return (FlowService) getBean("flowService");
