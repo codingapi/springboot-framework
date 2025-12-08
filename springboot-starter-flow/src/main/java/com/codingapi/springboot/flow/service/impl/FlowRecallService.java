@@ -32,8 +32,9 @@ public class FlowRecallService {
      *
      * @param recordId        流程记录id
      * @param currentOperator 当前操作者
+     * @param backStartNode  是否退回到发起节点（仅限于流程创建者有效）
      */
-    public void recall(long recordId, IFlowOperator currentOperator) {
+    public void recall(long recordId, IFlowOperator currentOperator,boolean backStartNode) {
         FlowRecordVerifyService flowRecordVerifyService = new FlowRecordVerifyService(
                 flowWorkRepository,
                 flowRecordRepository,
@@ -51,7 +52,7 @@ public class FlowRecallService {
         FlowWork flowWork = flowRecordVerifyService.getFlowWork();
         BindDataSnapshot bindDataSnapshot = flowBindDataRepository.getBindDataSnapshotById(flowRecord.getSnapshotId());
 
-        if(flowRecordVerifyService.isCreateOperator()){
+        if(backStartNode && flowRecordVerifyService.isCreateOperator()){
             List<FlowRecord> records = flowRecordRepository.findFlowRecordByProcessId(flowRecord.getProcessId());
             for(FlowRecord record:records){
                 if(!record.isStartRecord()) {
@@ -87,5 +88,16 @@ public class FlowRecallService {
 
         IBindData bindData = bindDataSnapshot.toBindData();
         EventPusher.push(new FlowApprovalEvent(FlowApprovalEvent.STATE_RECALL, flowRecord, currentOperator, flowWork, bindData), true);
+    }
+
+
+    /**
+     * 撤回流程
+     *
+     * @param recordId        流程记录id
+     * @param currentOperator 当前操作者
+     */
+    public void recall(long recordId, IFlowOperator currentOperator) {
+        this.recall(recordId, currentOperator, true);
     }
 }

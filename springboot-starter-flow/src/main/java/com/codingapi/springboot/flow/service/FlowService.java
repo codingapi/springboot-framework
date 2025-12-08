@@ -281,6 +281,17 @@ public class FlowService {
         flowRecallService.recall(recordId, currentOperator);
     }
 
+    /**
+     * 撤回流程
+     *
+     * @param recordId        流程记录id
+     * @param currentOperator 当前操作者
+     * @param backStartNode  是否退回到发起节点（仅限于流程创建者有效）
+    */
+    public void recall(long recordId, IFlowOperator currentOperator, boolean backStartNode) {
+        flowRecallService.recall(recordId, currentOperator,backStartNode);
+    }
+
 
     /**
      * 删除流程
