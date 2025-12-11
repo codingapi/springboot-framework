@@ -1,4 +1,4 @@
-package com.codingapi.springboot.fast.dynamic;
+package com.codingapi.springboot.fast.generator;
 
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
@@ -15,17 +15,23 @@ import org.springframework.util.StringUtils;
 
 import java.util.*;
 
-public class DynamicEntityBuilder {
+/**
+ * DynamicTableGenerator 数据库表动态构建器
+ */
+public class DynamicTableGenerator {
 
+    /**
+     * 数据库方言
+     */
     private final Dialect dialect;
     private final StandardServiceRegistry serviceRegistry;
     private final SchemaManagementTool managementTool;
 
-    public DynamicEntityBuilder(Class<?> dialectClass, String jdbcUrl) {
+    public DynamicTableGenerator(Class<?> dialectClass, String jdbcUrl) {
         this(dialectClass,jdbcUrl,null,null);
     }
 
-    public DynamicEntityBuilder(Class<?> dialectClass, String jdbcUrl, String username, String password) {
+    public DynamicTableGenerator(Class<?> dialectClass, String jdbcUrl, String username, String password) {
         try {
             this.dialect = (Dialect) dialectClass.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
@@ -65,7 +71,6 @@ public class DynamicEntityBuilder {
         }
     }
 
-
     private static class SourceDescriptorImpl implements SourceDescriptor {
 
         @Override
@@ -96,10 +101,20 @@ public class DynamicEntityBuilder {
 
     private static class TargetDescriptorImpl implements TargetDescriptor {
         private final List<String> sqlCommands = new ArrayList<>();
+        private final boolean executable;
+
+        public TargetDescriptorImpl(boolean executable) {
+            this.executable = executable;
+        }
 
         @Override
         public EnumSet<TargetType> getTargetTypes() {
-            return EnumSet.of(TargetType.SCRIPT);
+            EnumSet<TargetType> targetTypes = EnumSet.of(TargetType.SCRIPT);
+            if(executable) {
+                // 在数据库中执行
+                targetTypes.add(TargetType.DATABASE);
+            }
+            return targetTypes;
         }
 
         @Override
@@ -127,11 +142,26 @@ public class DynamicEntityBuilder {
         }
     }
 
+    /**
+     * 创建删除DDL语句
+     * @param entityClass entity class对象
+     * @return DDL
+     */
     public String generateDropTableDDL(Class<?> entityClass) {
+        return this.generateDropTableDDL(entityClass,false);
+    }
+
+    /**
+     * 创建删除DDL语句
+     * @param entityClass entity class对象
+     * @param executable 是否数据中执行
+     * @return DDL
+     */
+    public String generateDropTableDDL(Class<?> entityClass,boolean executable) {
         MetadataSources metadataSources = new MetadataSources(serviceRegistry);
         metadataSources.addAnnotatedClass(entityClass);
         Metadata metadata = metadataSources.buildMetadata();
-        TargetDescriptorImpl targetDescriptor = new TargetDescriptorImpl();
+        TargetDescriptorImpl targetDescriptor = new TargetDescriptorImpl(executable);
 
         managementTool.getSchemaDropper(Collections.emptyMap()).doDrop(metadata,
                 new ExecutionOptionsImpl(),
@@ -141,12 +171,27 @@ public class DynamicEntityBuilder {
         return targetDescriptor.getDDL();
     }
 
+    /**
+     * 创建创建DDL语句
+     * @param entityClass entity class对象
+     * @return DDL
+     */
     public String generateCreateTableDDL(Class<?> entityClass) {
+        return this.generateCreateTableDDL(entityClass,false);
+    }
+
+    /**
+     * 创建创建DDL语句
+     * @param entityClass entity class对象
+     * @param executable 是否数据中执行
+     * @return DDL
+     */
+    public String generateCreateTableDDL(Class<?> entityClass,boolean executable) {
         MetadataSources metadataSources = new MetadataSources(serviceRegistry);
         metadataSources.addAnnotatedClass(entityClass);
         Metadata metadata = metadataSources.buildMetadata();
 
-        TargetDescriptorImpl targetDescriptor = new TargetDescriptorImpl();
+        TargetDescriptorImpl targetDescriptor = new TargetDescriptorImpl(executable);
 
         managementTool.getSchemaCreator(Collections.emptyMap()).doCreation(metadata,
                 new ExecutionOptionsImpl(),
@@ -155,12 +200,27 @@ public class DynamicEntityBuilder {
         return targetDescriptor.getDDL();
     }
 
+    /**
+     * 创建变更DDL语句，当数据不存在时则为创建，当数据中的表对象与entityClass不一致时则创建调整DDL
+     * @param entityClass entity class对象
+     * @return DDL
+     */
     public String generateMigratorTableDDL(Class<?> entityClass) {
+        return this.generateMigratorTableDDL(entityClass,false);
+    }
+
+    /**
+     * 创建变更DDL语句，当数据不存在时则为创建，当数据中的表对象与entityClass不一致时则创建调整DDL
+     * @param entityClass entity class对象
+     * @param executable 是否数据中执行
+     * @return DDL
+     */
+    public String generateMigratorTableDDL(Class<?> entityClass,boolean executable) {
         MetadataSources metadataSources = new MetadataSources(serviceRegistry);
         metadataSources.addAnnotatedClass(entityClass);
         Metadata metadata = metadataSources.buildMetadata();
 
-        TargetDescriptorImpl targetDescriptor = new TargetDescriptorImpl();
+        TargetDescriptorImpl targetDescriptor = new TargetDescriptorImpl(executable);
 
         managementTool.getSchemaMigrator(Collections.emptyMap()).doMigration(metadata,
                 new ExecutionOptionsImpl(),
@@ -168,6 +228,11 @@ public class DynamicEntityBuilder {
         return targetDescriptor.getDDL();
     }
 
+    /**
+     * 检验对象与数据库是否一致，一致时无异常信息
+     * @param entityClass entity class对象
+     * @return 异常列表
+     */
     public List<Exception> validatorTable(Class<?> entityClass) {
         ExceptionHandlerCollectingImpl exceptionHandler = new ExceptionHandlerCollectingImpl();
         MetadataSources metadataSources = new MetadataSources(serviceRegistry);
