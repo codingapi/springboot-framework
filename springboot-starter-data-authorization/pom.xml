@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.codingapi.springboot</groupId>
         <artifactId>springboot-parent</artifactId>
-       <version>3.4.23</version>
+       <version>3.4.24</version>
     </parent>
 
     <name>springboot-starter-data-authorization</name>
