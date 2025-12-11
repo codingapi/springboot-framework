@@ -1,6 +1,6 @@
 package com.codingapi.springboot.fast.classloader;
 
-import com.codingapi.springboot.fast.metadata.EntityMeta;
+import com.codingapi.springboot.fast.metadata.EntityMetaData;
 import jakarta.persistence.*;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.description.annotation.AnnotationDescription;
@@ -23,21 +23,21 @@ public class DynamicEntityClassBuilder {
     /**
      * 根据 EntityClass 构建动态实体
      */
-    public static Class<?> buildDynamicEntity(EntityMeta entityMeta) {
-        if (entityMeta == null || entityMeta.getClassName() == null) {
+    public static Class<?> buildDynamicEntity(EntityMetaData entityMetaData) {
+        if (entityMetaData == null || entityMetaData.getClassName() == null) {
             throw new IllegalArgumentException("Entity metadata cannot be null");
         }
 
         try {
             DynamicType.Builder<?> builder = new ByteBuddy()
                     .subclass(Object.class)
-                    .name(entityMeta.getClassName())
+                    .name(entityMetaData.getClassName())
                     .implement(Serializable.class)
-                    .annotateType(buildEntityAnnotations(entityMeta));
+                    .annotateType(buildEntityAnnotations(entityMetaData));
 
             // 添加字段
             boolean hasPrimaryKey = false;
-            for (EntityMeta.ColumnMeta column : entityMeta.getColumns()) {
+            for (EntityMetaData.ColumnMeta column : entityMetaData.getColumns()) {
                 builder = addColumnField(builder, column);
                 if (column.isPrimaryKey()) {
                     hasPrimaryKey = true;
@@ -61,25 +61,25 @@ public class DynamicEntityClassBuilder {
 
         } catch (Exception e) {
             throw new RuntimeException("Failed to build dynamic entity: " +
-                    entityMeta.getClassName(), e);
+                    entityMetaData.getClassName(), e);
         }
     }
 
     /**
      * 构建实体类注解
      */
-    private static AnnotationDescription[] buildEntityAnnotations(EntityMeta entityMeta) {
+    private static AnnotationDescription[] buildEntityAnnotations(EntityMetaData entityMetaData) {
         List<AnnotationDescription> annotations = new ArrayList<>();
 
         // @Entity 注解
         annotations.add(AnnotationDescription.Builder.ofType(Entity.class).build());
 
         // @Table 注解
-        if (entityMeta.getTable() != null) {
+        if (entityMetaData.getTable() != null) {
             AnnotationDescription.Builder tableBuilder =
                     AnnotationDescription.Builder.ofType(Table.class);
 
-            EntityMeta.TableMeta tableMeta = entityMeta.getTable();
+            EntityMetaData.TableMeta tableMeta = entityMetaData.getTable();
             if (tableMeta.getName() != null && !tableMeta.getName().isEmpty()) {
                 tableBuilder = tableBuilder.define("name", tableMeta.getName());
             }
@@ -94,11 +94,11 @@ public class DynamicEntityClassBuilder {
         }
 
         // @Comment 注解 - 注释应该放在类上，而不是表注解上
-        if (entityMeta.getTable() != null && StringUtils.hasText(entityMeta.getTable().getComment())) {
+        if (entityMetaData.getTable() != null && StringUtils.hasText(entityMetaData.getTable().getComment())) {
             AnnotationDescription.Builder commentBuilder =
                     AnnotationDescription.Builder.ofType(Comment.class);
 
-            EntityMeta.TableMeta tableMeta = entityMeta.getTable();
+            EntityMetaData.TableMeta tableMeta = entityMetaData.getTable();
             commentBuilder = commentBuilder.define("value", tableMeta.getComment());
             annotations.add(commentBuilder.build());
         }
@@ -110,7 +110,7 @@ public class DynamicEntityClassBuilder {
      * 添加字段
      */
     private static DynamicType.Builder<?> addColumnField(DynamicType.Builder<?> builder,
-                                                         EntityMeta.ColumnMeta columnMeta) {
+                                                         EntityMetaData.ColumnMeta columnMeta) {
         // 确定字段类型
         Class<?> fieldType = columnMeta.getType();
 
@@ -160,7 +160,7 @@ public class DynamicEntityClassBuilder {
      * 构建字段注解
      */
     private static List<AnnotationDescription> buildFieldAnnotations(
-            EntityMeta.ColumnMeta columnMeta, String fieldName) {
+            EntityMetaData.ColumnMeta columnMeta, String fieldName) {
 
         List<AnnotationDescription> annotations = new ArrayList<>();
 
@@ -170,7 +170,7 @@ public class DynamicEntityClassBuilder {
 
             // @GeneratedValue 注解
             if (columnMeta.getGeneratedValue() != null) {
-                EntityMeta.GeneratedValueMeta genMeta = columnMeta.getGeneratedValue();
+                EntityMetaData.GeneratedValueMeta genMeta = columnMeta.getGeneratedValue();
                 AnnotationDescription.Builder genBuilder =
                         AnnotationDescription.Builder.ofType(GeneratedValue.class);
 

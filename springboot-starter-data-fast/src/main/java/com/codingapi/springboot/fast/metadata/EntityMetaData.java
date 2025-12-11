@@ -1,7 +1,6 @@
 package com.codingapi.springboot.fast.metadata;
 
 import com.codingapi.springboot.fast.classloader.DynamicEntityClassBuilder;
-import com.codingapi.springboot.fast.dynamic.DynamicEntityBuilder;
 import jakarta.persistence.GenerationType;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,13 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class EntityMeta {
+public class EntityMetaData {
 
     private final String className;
     private final TableMeta table;
     private final List<ColumnMeta> columns;
 
-    public EntityMeta(String className) {
+    public EntityMetaData(String className) {
         this.className = className;
         this.table = new TableMeta();
         this.columns = new ArrayList<>();

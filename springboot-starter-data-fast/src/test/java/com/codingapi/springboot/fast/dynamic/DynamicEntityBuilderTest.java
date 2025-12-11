@@ -1,7 +1,7 @@
 package com.codingapi.springboot.fast.dynamic;
 
 import com.codingapi.springboot.fast.entity.Demo;
-import com.codingapi.springboot.fast.metadata.EntityMeta;
+import com.codingapi.springboot.fast.metadata.EntityMetaData;
 import jakarta.persistence.GenerationType;
 import org.hibernate.dialect.H2Dialect;
 import org.junit.jupiter.api.Test;
@@ -36,12 +36,12 @@ class DynamicEntityBuilderTest {
     void dynamicGenerateTableDDL() {
         DynamicEntityBuilder dynamicEntityBuilder = new DynamicEntityBuilder(H2Dialect.class,"jdbc:h2:file:./test.db");
 
-        EntityMeta entityMeta = new EntityMeta("com.codingapi.entity.Test");
-        entityMeta.setTable("test");
-        entityMeta.addPrimaryKeyColumn(Long.class,"id", GenerationType.IDENTITY,"主键");
-        entityMeta.addColumn(String.class,"name","姓名");
+        EntityMetaData entityMetaData = new EntityMetaData("com.codingapi.entity.Test");
+        entityMetaData.setTable("test");
+        entityMetaData.addPrimaryKeyColumn(Long.class,"id", GenerationType.IDENTITY,"主键");
+        entityMetaData.addColumn(String.class,"name","姓名");
 
-        Class<?> entityClass = entityMeta.buildClass();
+        Class<?> entityClass = entityMetaData.buildClass();
 
         List<Exception> exceptions = dynamicEntityBuilder.validatorTable(entityClass);
         System.out.println(exceptions);
