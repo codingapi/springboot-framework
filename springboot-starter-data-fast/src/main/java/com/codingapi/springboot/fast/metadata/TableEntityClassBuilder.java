@@ -1,6 +1,6 @@
-package com.codingapi.springboot.fast.classloader;
+package com.codingapi.springboot.fast.metadata;
 
-import com.codingapi.springboot.fast.metadata.EntityMetaData;
+import com.codingapi.springboot.fast.classloader.DynamicTableClassLoader;
 import jakarta.persistence.*;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.description.annotation.AnnotationDescription;
@@ -16,70 +16,64 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 动态实体构建器 - 基于 EntityClass 元数据
+ * 动态实体构建器 - 基于 TableEntityMetadata 元数据
  */
-public class DynamicEntityClassBuilder {
+class TableEntityClassBuilder {
 
-    /**
-     * 根据 EntityClass 构建动态实体
-     */
-    public static Class<?> buildDynamicEntity(EntityMetaData entityMetaData) {
-        if (entityMetaData == null || entityMetaData.getClassName() == null) {
+    private final TableEntityMetadata metadata;
+    private DynamicType.Builder<?> builder;
+
+    public TableEntityClassBuilder(TableEntityMetadata metadata) {
+        if (metadata == null || metadata.getClassName() == null) {
             throw new IllegalArgumentException("Entity metadata cannot be null");
         }
+        this.metadata = metadata;
+        this.builder = new ByteBuddy()
+                .subclass(Object.class)
+                .name(metadata.getClassName())
+                .implement(Serializable.class)
+                .annotateType(buildEntityAnnotations());
+    }
 
+    public Class<?> build() {
         try {
-            DynamicType.Builder<?> builder = new ByteBuddy()
-                    .subclass(Object.class)
-                    .name(entityMetaData.getClassName())
-                    .implement(Serializable.class)
-                    .annotateType(buildEntityAnnotations(entityMetaData));
-
-            // 添加字段
-            boolean hasPrimaryKey = false;
-            for (EntityMetaData.ColumnMeta column : entityMetaData.getColumns()) {
-                builder = addColumnField(builder, column);
-                if (column.isPrimaryKey()) {
-                    hasPrimaryKey = true;
-                }
-            }
-
-            // 如果没有主键，添加默认ID字段
-            if (!hasPrimaryKey) {
-                builder = addDefaultIdField(builder);
-            }
-
-
+            this.buildColumns();
             Class<?> clazz = builder.make()
-                    .load(DynamicEntityClassBuilder.class.getClassLoader(),
+                    .load(TableEntityClassBuilder.class.getClassLoader(),
                             ClassLoadingStrategy.Default.WRAPPER)
                     .getLoaded();
-
-            DynamicEntityClassLoaderContext.getInstance().registerClass(clazz);
-
+            DynamicTableClassLoader.getInstance().registerClass(clazz);
             return clazz;
 
         } catch (Exception e) {
             throw new RuntimeException("Failed to build dynamic entity: " +
-                    entityMetaData.getClassName(), e);
+                    metadata.getClassName(), e);
         }
     }
+
+
+    private void buildColumns() {
+        for (TableEntityMetadata.ColumnMeta column : metadata.getColumns()) {
+            this.addColumnField(column);
+        }
+    }
+
 
     /**
      * 构建实体类注解
      */
-    private static AnnotationDescription[] buildEntityAnnotations(EntityMetaData entityMetaData) {
+    private AnnotationDescription[] buildEntityAnnotations() {
         List<AnnotationDescription> annotations = new ArrayList<>();
 
         // @Entity 注解
         annotations.add(AnnotationDescription.Builder.ofType(Entity.class).build());
 
         // @Table 注解
-        if (entityMetaData.getTable() != null) {
+        if (metadata.getTable() != null) {
             AnnotationDescription.Builder tableBuilder =
                     AnnotationDescription.Builder.ofType(Table.class);
 
-            EntityMetaData.TableMeta tableMeta = entityMetaData.getTable();
+            TableEntityMetadata.TableMeta tableMeta = metadata.getTable();
             if (tableMeta.getName() != null && !tableMeta.getName().isEmpty()) {
                 tableBuilder = tableBuilder.define("name", tableMeta.getName());
             }
@@ -94,11 +88,11 @@ public class DynamicEntityClassBuilder {
         }
 
         // @Comment 注解 - 注释应该放在类上，而不是表注解上
-        if (entityMetaData.getTable() != null && StringUtils.hasText(entityMetaData.getTable().getComment())) {
+        if (metadata.getTable() != null && StringUtils.hasText(metadata.getTable().getComment())) {
             AnnotationDescription.Builder commentBuilder =
                     AnnotationDescription.Builder.ofType(Comment.class);
 
-            EntityMetaData.TableMeta tableMeta = entityMetaData.getTable();
+            TableEntityMetadata.TableMeta tableMeta = metadata.getTable();
             commentBuilder = commentBuilder.define("value", tableMeta.getComment());
             annotations.add(commentBuilder.build());
         }
@@ -109,28 +103,20 @@ public class DynamicEntityClassBuilder {
     /**
      * 添加字段
      */
-    private static DynamicType.Builder<?> addColumnField(DynamicType.Builder<?> builder,
-                                                         EntityMetaData.ColumnMeta columnMeta) {
+    private void addColumnField(TableEntityMetadata.ColumnMeta columnMeta) {
         // 确定字段类型
         Class<?> fieldType = columnMeta.getType();
 
-        // 构建字段名（转换驼峰命名）
-        String fieldName = convertToCamelCase(columnMeta.getName());
-
-
+        // 构建字段名
+        String fieldName = columnMeta.getFieldName();
 
         // 构建字段注解
-        List<AnnotationDescription> fieldAnnotations =
-                buildFieldAnnotations(columnMeta, fieldName);
-
-        // 开始定义字段
-        DynamicType.Builder<?> fieldBuilder = builder;
-
+        List<AnnotationDescription> fieldAnnotations = this.buildFieldAnnotations(columnMeta);
 
         if (fieldAnnotations.isEmpty()) {
-            fieldBuilder = fieldBuilder.defineField(fieldName, fieldType, Visibility.PRIVATE);
-        }else {
-            fieldBuilder = fieldBuilder.defineField(fieldName, fieldType, Visibility.PRIVATE)
+            builder = builder.defineField(fieldName, fieldType, Visibility.PRIVATE);
+        } else {
+            builder = builder.defineField(fieldName, fieldType, Visibility.PRIVATE)
                     .annotateField(fieldAnnotations.toArray(new AnnotationDescription[0]));
         }
 
@@ -144,24 +130,20 @@ public class DynamicEntityClassBuilder {
             getterName = "is" + capitalizedFieldName;
         }
 
-        fieldBuilder = fieldBuilder
-                .defineMethod(getterName, fieldType, Visibility.PUBLIC)
+        builder = builder.defineMethod(getterName, fieldType, Visibility.PUBLIC)
                 .intercept(FieldAccessor.ofField(fieldName));
 
-        fieldBuilder = fieldBuilder
-                .defineMethod(setterName, void.class, Visibility.PUBLIC)
+        builder =  builder.defineMethod(setterName, void.class, Visibility.PUBLIC)
                 .withParameter(fieldType)
                 .intercept(FieldAccessor.ofField(fieldName));
 
-        return fieldBuilder;
     }
 
     /**
      * 构建字段注解
      */
-    private static List<AnnotationDescription> buildFieldAnnotations(
-            EntityMetaData.ColumnMeta columnMeta, String fieldName) {
-
+    private List<AnnotationDescription> buildFieldAnnotations(
+            TableEntityMetadata.ColumnMeta columnMeta) {
         List<AnnotationDescription> annotations = new ArrayList<>();
 
         // @Id 注解
@@ -170,7 +152,7 @@ public class DynamicEntityClassBuilder {
 
             // @GeneratedValue 注解
             if (columnMeta.getGeneratedValue() != null) {
-                EntityMetaData.GeneratedValueMeta genMeta = columnMeta.getGeneratedValue();
+                TableEntityMetadata.GeneratedValueMeta genMeta = columnMeta.getGeneratedValue();
                 AnnotationDescription.Builder genBuilder =
                         AnnotationDescription.Builder.ofType(GeneratedValue.class);
 
@@ -191,7 +173,7 @@ public class DynamicEntityClassBuilder {
                 AnnotationDescription.Builder.ofType(Column.class);
 
         columnBuilder = columnBuilder
-                .define("name", columnMeta.getName())
+                .define("name", columnMeta.getColumnName())
                 .define("nullable", columnMeta.isNullable())
                 .define("unique", columnMeta.isUnique())
                 .define("insertable", columnMeta.isInsertable())
@@ -224,76 +206,8 @@ public class DynamicEntityClassBuilder {
         return annotations;
     }
 
-    /**
-     * 添加默认ID字段 - 修正版本
-     */
-    private static DynamicType.Builder<?> addDefaultIdField(DynamicType.Builder<?> builder) {
 
-
-        // 创建字段注解
-        List<AnnotationDescription> fieldAnnotations = new ArrayList<>();
-        fieldAnnotations.add(AnnotationDescription.Builder.ofType(Id.class).build());
-
-        // @GeneratedValue 注解
-        AnnotationDescription.Builder genBuilder =
-                AnnotationDescription.Builder.ofType(GeneratedValue.class);
-        genBuilder = genBuilder.define("strategy", GenerationType.IDENTITY);
-        fieldAnnotations.add(genBuilder.build());
-
-        // @Column 注解
-        AnnotationDescription.Builder columnBuilder =
-                AnnotationDescription.Builder.ofType(Column.class);
-        columnBuilder = columnBuilder
-                .define("name", "id")
-                .define("nullable", false);
-        fieldAnnotations.add(columnBuilder.build());
-
-        // 应用字段注解
-        builder = builder.defineField("id", Long.class, Visibility.PRIVATE).annotateField(fieldAnnotations.toArray(new AnnotationDescription[0]));
-
-        // 添加 getter 和 setter
-        builder = builder
-                .defineMethod("getId", Long.class, Visibility.PUBLIC)
-                .intercept(FieldAccessor.ofField("id"))
-                .defineMethod("setId", void.class, Visibility.PUBLIC)
-                .withParameter(Long.class)
-                .intercept(FieldAccessor.ofField("id"));
-
-        return builder;
-    }
-
-    /**
-     * 转换为驼峰命名
-     */
-    private static String convertToCamelCase(String name) {
-        if (name == null || name.isEmpty()) {
-            return name;
-        }
-
-        // 处理下划线命名
-        if (name.contains("_")) {
-            StringBuilder result = new StringBuilder();
-            String[] parts = name.split("_");
-            if (parts.length > 0) {
-                result.append(parts[0].toLowerCase());
-
-                for (int i = 1; i < parts.length; i++) {
-                    if (!parts[i].isEmpty()) {
-                        result.append(Character.toUpperCase(parts[i].charAt(0)));
-                        if (parts[i].length() > 1) {
-                            result.append(parts[i].substring(1).toLowerCase());
-                        }
-                    }
-                }
-            }
-            return result.toString();
-        }
-
-        // 已经是驼峰命名，首字母小写
-        return Character.toLowerCase(name.charAt(0)) + name.substring(1);
-    }
-
-    private static String capitalize(String str) {
+    private String capitalize(String str) {
         if (str == null || str.isEmpty()) {
             return str;
         }
