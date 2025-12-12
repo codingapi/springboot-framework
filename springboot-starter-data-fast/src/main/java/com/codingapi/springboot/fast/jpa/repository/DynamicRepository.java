@@ -14,39 +14,39 @@ import java.util.List;
 public interface DynamicRepository<T, ID> extends BaseRepository<T, ID> {
 
     default <V> List<V> dynamicListQuery(SQLBuilder<V> builder) {
-        return JpaQueryContext.getInstance().getJPAQuery().listQuery(builder);
+        return JpaQueryContext.getInstance().getJpaQuery().listQuery(builder);
     }
 
     default List<T> dynamicListQuery(String sql, Object... params) {
-        return JpaQueryContext.getInstance().getJPAQuery().listQuery(getEntityClass(), sql, params);
+        return JpaQueryContext.getInstance().getJpaQuery().listQuery(getEntityClass(), sql, params);
     }
 
     default <V> List<V> dynamicListQuery(Class<V> clazz, String sql, Object... params) {
-        return JpaQueryContext.getInstance().getJPAQuery().listQuery(clazz, sql, params);
+        return JpaQueryContext.getInstance().getJpaQuery().listQuery(clazz, sql, params);
     }
 
     default <V> Page<V> dynamicPageQuery(SQLBuilder<V> builder, PageRequest request) {
-        return JpaQueryContext.getInstance().getJPAQuery().pageQuery(builder, request);
+        return JpaQueryContext.getInstance().getJpaQuery().pageQuery(builder, request);
     }
 
     default Page<T> dynamicPageQuery(String sql, String countSql, PageRequest request, Object... params) {
-        return JpaQueryContext.getInstance().getJPAQuery().pageQuery(getEntityClass(), sql, countSql, request, params);
+        return JpaQueryContext.getInstance().getJpaQuery().pageQuery(getEntityClass(), sql, countSql, request, params);
     }
 
     default Page<T> dynamicPageQuery(String sql, PageRequest request, Object... params) {
-        return JpaQueryContext.getInstance().getJPAQuery().pageQuery(getEntityClass(), sql, request, params);
+        return JpaQueryContext.getInstance().getJpaQuery().pageQuery(getEntityClass(), sql, request, params);
     }
 
     default <V> Page<V> dynamicPageQuery(Class<V> clazz, String sql, String countSql, PageRequest request, Object... params) {
-        return JpaQueryContext.getInstance().getJPAQuery().pageQuery(clazz, sql, countSql, request, params);
+        return JpaQueryContext.getInstance().getJpaQuery().pageQuery(clazz, sql, countSql, request, params);
     }
 
     default Page<MapViewResult> dynamicMapPageQuery(QueryColumns columns, String sql, String countSql, PageRequest request, Object... params) {
-        return JpaQueryContext.getInstance().getJPAQuery().pageMapQuery(columns, sql, countSql, request, params);
+        return JpaQueryContext.getInstance().getJpaQuery().pageMapQuery(columns, sql, countSql, request, params);
     }
 
     default List<MapViewResult> dynamicMapListQuery(QueryColumns columns, String sql, Object... params) {
-        return JpaQueryContext.getInstance().getJPAQuery().listMapQuery(columns, sql, params);
+        return JpaQueryContext.getInstance().getJpaQuery().listMapQuery(columns, sql, params);
     }
 
 }

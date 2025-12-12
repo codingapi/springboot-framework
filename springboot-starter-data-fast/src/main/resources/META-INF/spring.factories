@@ -1,4 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.codingapi.springboot.fast.DataFastConfiguration,\
-com.codingapi.springboot.fast.jpa.JPAQueryConfiguration,\
+com.codingapi.springboot.fast.jpa.JpaQueryConfiguration,\
 com.codingapi.springboot.fast.jdbc.JdbcQueryConfiguration
