@@ -2,7 +2,7 @@ package com.codingapi.springboot.fast.script;
 
 import com.codingapi.springboot.fast.jdbc.JdbcQuery;
 import com.codingapi.springboot.fast.jdbc.JdbcQueryContext;
-import com.codingapi.springboot.fast.jpa.JPAQuery;
+import com.codingapi.springboot.fast.jpa.JpaQuery;
 import com.codingapi.springboot.fast.jpa.JpaQueryContext;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -18,7 +18,7 @@ public class ScriptRuntime {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         ScriptRequest request = new ScriptRequest(attributes.getRequest());
         JdbcQuery jdbcQuery = JdbcQueryContext.getInstance().getJdbcQuery();
-        JPAQuery jpaQuery = JpaQueryContext.getInstance().getJPAQuery();
+        JpaQuery jpaQuery = JpaQueryContext.getInstance().getJpaQuery();
 
         binding.setVariable("$request", request);
         binding.setVariable("$jpa", jpaQuery);

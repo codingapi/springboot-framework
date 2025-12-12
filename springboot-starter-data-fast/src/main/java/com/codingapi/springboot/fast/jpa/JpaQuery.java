@@ -13,7 +13,7 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 @AllArgsConstructor
-public class JPAQuery {
+public class JpaQuery {
 
     private final EntityManager entityManager;
 

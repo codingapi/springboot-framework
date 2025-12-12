@@ -4,13 +4,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;
 
 @AllArgsConstructor
-public class JPAQueryContextRegister implements InitializingBean {
+public class JpaQueryContextRegister implements InitializingBean {
 
-    private JPAQuery JPAQuery;
+    private JpaQuery JPAQuery;
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        JpaQueryContext.getInstance().setJPAQuery(JPAQuery);
+        JpaQueryContext.getInstance().setJpaQuery(JPAQuery);
     }
 
 }
