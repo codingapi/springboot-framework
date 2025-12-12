@@ -5,7 +5,6 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.AvailableSettings;
-import org.hibernate.dialect.Dialect;
 import org.hibernate.tool.hbm2ddl.ImportSqlCommandExtractor;
 import org.hibernate.tool.schema.SourceType;
 import org.hibernate.tool.schema.TargetType;
@@ -23,7 +22,7 @@ public class DynamicTableGenerator {
     /**
      * 数据库方言
      */
-    private final Dialect dialect;
+    private final Class<?> dialect;
     private final StandardServiceRegistry serviceRegistry;
     private final SchemaManagementTool managementTool;
 
@@ -32,14 +31,9 @@ public class DynamicTableGenerator {
     }
 
     public DynamicTableGenerator(Class<?> dialectClass, String jdbcUrl, String username, String password) {
-        try {
-            this.dialect = (Dialect) dialectClass.getDeclaredConstructor().newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to instantiate dialect", e);
-        }
-
+        this.dialect = dialectClass;
         StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder()
-                .applySetting(AvailableSettings.DIALECT, dialect.getClass().getName())
+                .applySetting(AvailableSettings.DIALECT, dialect.getName())
                 .applySetting("hibernate.connection.url", jdbcUrl);
         if (StringUtils.hasText(username)) {
             builder.applySetting("hibernate.connection.username", username);
@@ -56,7 +50,7 @@ public class DynamicTableGenerator {
         @Override
         public Map<String, Object> getConfigurationValues() {
             Map<String, Object> config = new HashMap<>();
-            config.put(AvailableSettings.DIALECT, dialect.getClass().getName());
+            config.put(AvailableSettings.DIALECT, dialect.getName());
             return config;
         }
 
