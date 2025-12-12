@@ -13,7 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import java.util.List;
 
 @AllArgsConstructor
-public class JPAQuery {
+public class JpaQuery {
 
     private final EntityManager entityManager;
 

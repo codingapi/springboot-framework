@@ -2,7 +2,7 @@ package com.codingapi.springboot.fast.generator;
 
 import com.codingapi.springboot.fast.jdbc.JdbcQuery;
 import com.codingapi.springboot.fast.jdbc.JdbcQueryContext;
-import com.codingapi.springboot.fast.jpa.JPAQuery;
+import com.codingapi.springboot.fast.jpa.JpaQuery;
 import com.codingapi.springboot.fast.jpa.JpaQueryContext;
 import com.codingapi.springboot.fast.metadata.TableEntityMetadata;
 import jakarta.persistence.EntityManagerFactory;
@@ -53,7 +53,7 @@ public class DynamicTableGeneratorQueryTest {
         dynamicTableGenerator.generateMigratorTableDDL(entityClass, true);
 
         // 通过DynamicTableGenerator 动态创建的entity无法通过jpa的 EntityManager进行数据查询处理, 因为Entity不在JPA扫描支持的范围内。
-        JPAQuery jpaQuery = JpaQueryContext.getInstance().getJPAQuery();
+        JpaQuery jpaQuery = JpaQueryContext.getInstance().getJpaQuery();
         assertThrows(Exception.class,()->{
             jpaQuery.listQuery(entityClass,"select t from com.codingapi.springboot.fast.entity.Test");
         });

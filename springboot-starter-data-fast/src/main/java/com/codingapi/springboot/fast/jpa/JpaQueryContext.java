@@ -13,10 +13,10 @@ public class JpaQueryContext {
     }
 
     @Getter
-    private JPAQuery JPAQuery;
+    private JpaQuery jpaQuery;
 
-    void setJPAQuery(JPAQuery JPAQuery) {
-        this.JPAQuery = JPAQuery;
+    void setJpaQuery(JpaQuery jpaQuery) {
+        this.jpaQuery = jpaQuery;
     }
 
 
