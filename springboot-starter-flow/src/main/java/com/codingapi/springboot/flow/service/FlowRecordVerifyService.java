@@ -198,7 +198,7 @@ public class FlowRecordVerifyService {
             if (flowRecord.isOperator(currentOperator)) {
                 if (!flowRecord.isRead()) {
                     flowRecord.read();
-                    flowRecordRepository.update(flowRecord);
+                    flowRecordRepository.setReadRecord(flowRecord.getId());
                 }
             }
         }

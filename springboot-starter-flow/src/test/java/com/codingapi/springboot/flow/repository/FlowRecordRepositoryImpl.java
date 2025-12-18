@@ -41,6 +41,14 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository, FlowRecor
     }
 
     @Override
+    public void setReadRecord(long recordId) {
+        cache.stream()
+                .filter(record -> record.getId() == recordId)
+                .filter(record -> !record.isDelete())
+                .forEach(record -> record.setRead(true));
+    }
+
+    @Override
     public List<FlowRecord> findFlowRecordByPreId(long preId) {
         return cache.stream().filter(record -> record.getPreId() == preId)
                 .filter(record -> !record.isDelete())

@@ -34,6 +34,11 @@ public class FlowRecordRepositoryImpl implements FlowRecordRepository {
     }
 
     @Override
+    public void setReadRecord(long recordId) {
+        flowRecordEntityRepository.setReadFlowRecordEntity(recordId);
+    }
+
+    @Override
     public FlowRecord getFlowRecordById(long id) {
         return FlowRecordConvertor.convert(flowRecordEntityRepository.getFlowRecordEntityById(id),flowOperatorRepository);
     }
