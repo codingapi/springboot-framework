@@ -168,6 +168,13 @@ class TableEntityClassBuilder {
             }
         }
 
+        // @Lob 注解
+        if (columnMeta.isLob()) {
+            AnnotationDescription.Builder logBuilder =
+                    AnnotationDescription.Builder.ofType(Lob.class);
+            annotations.add(logBuilder.build());
+        }
+
         // @Column 注解
         AnnotationDescription.Builder columnBuilder =
                 AnnotationDescription.Builder.ofType(Column.class);
