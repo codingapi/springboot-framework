@@ -24,6 +24,13 @@ public interface FlowRecordRepository {
      */
     void update(FlowRecord flowRecord);
 
+
+    /**
+     * 设置为已读
+     * @param recordId 流程记录ID
+     */
+    void setReadRecord(long recordId);
+
     /**
      * 根据ID查询流程记录
      *

@@ -4,6 +4,7 @@ import com.codingapi.example.infra.flow.entity.FlowRecordEntity;
 import com.codingapi.springboot.fast.jpa.repository.FastRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -14,6 +15,10 @@ public interface FlowRecordEntityRepository extends FastRepository<FlowRecordEnt
     FlowRecordEntity getFlowRecordEntityById(long id);
 
     void deleteByProcessId(String processId);
+
+    @Modifying
+    @Query(value = "update FlowRecordEntity set read = true where id = ?1")
+    void setReadFlowRecordEntity(long id);
 
     @Query(value = "select r from FlowRecordEntity  r where r.flowType!='DELETE' and r.preId = ?1")
     List<FlowRecordEntity> findFlowRecordEntityByPreId(long preId);
