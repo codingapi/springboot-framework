@@ -46,11 +46,15 @@ public class DynamicTableGeneratorQueryTest {
         tableEntityMetadata.setTable("test");
         tableEntityMetadata.addPrimaryKeyColumn(Long.class, "id", GenerationType.IDENTITY, "主键");
         tableEntityMetadata.addColumn(String.class, "name", "姓名");
+        tableEntityMetadata.addColumn(String.class, "description", "描述",true);
 
         Class<?> entityClass = tableEntityMetadata.buildClass();
 
+        dynamicTableGenerator.generateDropTableDDL(entityClass,true);
+
         // 创建表
-        dynamicTableGenerator.generateMigratorTableDDL(entityClass, true);
+        String sql = dynamicTableGenerator.generateMigratorTableDDL(entityClass, true);
+        System.out.println(sql);
 
         // 通过DynamicTableGenerator 动态创建的entity无法通过jpa的 EntityManager进行数据查询处理, 因为Entity不在JPA扫描支持的范围内。
         JpaQuery jpaQuery = JpaQueryContext.getInstance().getJpaQuery();
@@ -59,7 +63,7 @@ public class DynamicTableGeneratorQueryTest {
         });
 
         // 插入数据
-        jdbcTemplate.update("insert into test(name) values(?)", "小明");
+        jdbcTemplate.update("insert into test(name,description) values(?,?)", "小明","123");
 
         // 查询数据
         JdbcQuery jdbcQuery = JdbcQueryContext.getInstance().getJdbcQuery();
