@@ -379,6 +379,10 @@ public class FlowSubmitService {
 
     // 是否跳过相同审批人
     public boolean isSkipIfSameApprover() {
-        return flowWork.isSkipIfSameApprover() && !nextNode.isOverNode();
+        if(nextNode!=null) {
+            return flowWork.isSkipIfSameApprover() && !nextNode.isOverNode();
+        }else {
+            return flowWork.isSkipIfSameApprover();
+        }
     }
 }

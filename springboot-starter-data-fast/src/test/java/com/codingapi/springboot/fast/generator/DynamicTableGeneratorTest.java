@@ -39,6 +39,7 @@ class DynamicTableGeneratorTest {
         tableEntityMetadata.setTable("test");
         tableEntityMetadata.addPrimaryKeyColumn(Long.class,"id", GenerationType.IDENTITY,"主键");
         tableEntityMetadata.addColumn(String.class,"name","姓名");
+        tableEntityMetadata.addColumn(String.class,"desc","描述",true);
 
         Class<?> entityClass = tableEntityMetadata.buildClass();
 

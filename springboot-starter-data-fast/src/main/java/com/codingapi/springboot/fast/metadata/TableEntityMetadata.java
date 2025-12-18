@@ -68,6 +68,12 @@ public class TableEntityMetadata {
          * 备注
          */
         private String comment;
+
+        /**
+         * 是否为lob 对应长内容
+         */
+        private boolean isLob;
+
         /**
          * 是否唯一
          */
@@ -92,7 +98,13 @@ public class TableEntityMetadata {
          * 字段长度
          */
         private int length;
+        /**
+         * 字段精度
+         */
         private int precision;
+        /**
+         * 字段缩放
+         */
         private int scale;
     }
 
@@ -138,7 +150,7 @@ public class TableEntityMetadata {
     }
 
     public void addPrimaryKeyColumn(Class<?> type, String fieldName, String columnName, GenerationType strategy,
-                                    String generator, String comment, boolean unique, boolean nullable,
+                                    String generator, String comment, boolean isLob, boolean unique, boolean nullable,
                                     boolean insertable, boolean updatable, String columnDefinition,
                                     int length, int precision, int scale) {
         ColumnMeta column = new ColumnMeta();
@@ -150,6 +162,7 @@ public class TableEntityMetadata {
         generatedValueMeta.setGenerator(generator);
         generatedValueMeta.setStrategy(strategy);
         column.setGeneratedValue(generatedValueMeta);
+        column.setLob(isLob);
         column.setComment(comment);
         column.setUnique(unique);
         column.setNullable(nullable);
@@ -162,7 +175,7 @@ public class TableEntityMetadata {
         this.columns.add(column);
     }
 
-    public void addColumn(Class<?> type, String fieldName, String columnName, String comment,
+    public void addColumn(Class<?> type, String fieldName, String columnName, String comment, boolean isLob,
                           boolean unique, boolean nullable, boolean insertable,
                           boolean updatable, String columnDefinition, int length,
                           int precision, int scale) {
@@ -172,6 +185,7 @@ public class TableEntityMetadata {
         column.setFieldName(fieldName);
         column.setColumnName(columnName);
         column.setComment(comment);
+        column.setLob(isLob);
         column.setUnique(unique);
         column.setNullable(nullable);
         column.setInsertable(insertable);
@@ -184,23 +198,31 @@ public class TableEntityMetadata {
     }
 
     public void addColumn(Class<?> type, String name, String comment) {
-        this.addColumn(type, name, name, comment, false, false, false, false, null, 255, 0, 0);
+        this.addColumn(type, name, name, comment, false, false, true, false, false, null, 255, 0, 0);
+    }
+
+    public void addColumn(Class<?> type, String name, String comment, boolean isLob) {
+        this.addColumn(type, name, name, comment, isLob, false, true, false, false, null, 255, 0, 0);
+    }
+
+    public void addColumn(Class<?> type, String name, boolean isLob) {
+        this.addColumn(type, name, name, null, isLob, false, true, false, false, null, 255, 0, 0);
     }
 
     public void addColumn(Class<?> type, String name) {
-        this.addColumn(type, name, name, null, false, false, false, false, null, 255, 0, 0);
+        this.addColumn(type, name, name, null, false, false, true, false, false, null, 255, 0, 0);
     }
 
     public void addPrimaryKeyColumn(Class<?> type, String name) {
-        this.addPrimaryKeyColumn(type, name, name, null, null, null, false, false, false, false, null, 255, 0, 0);
+        this.addPrimaryKeyColumn(type, name, name, null, null, null, false, false, false, false, false, null, 255, 0, 0);
     }
 
     public void addPrimaryKeyColumn(Class<?> type, String name, GenerationType strategy) {
-        this.addPrimaryKeyColumn(type, name, name, strategy, null, null, false, false, false, false, null, 255, 0, 0);
+        this.addPrimaryKeyColumn(type, name, name, strategy, null, null, false, false, false, false, false, null, 255, 0, 0);
     }
 
     public void addPrimaryKeyColumn(Class<?> type, String name, GenerationType strategy, String comment) {
-        this.addPrimaryKeyColumn(type, name, name, strategy, null, comment, false, false, false, false, null, 255, 0, 0);
+        this.addPrimaryKeyColumn(type, name, name, strategy, null, comment, false, false, false, false, false, null, 255, 0, 0);
     }
 
     public void verify() {
