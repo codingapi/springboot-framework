@@ -53,6 +53,10 @@ public class MyAuthenticationFilter extends BasicAuthenticationFilter {
                 }
 
                 Token token = tokenGateway.parser(sign);
+                if(token==null) {
+                    writeResponse(response, Response.buildFailure("token.error", "token error."));
+                    return;
+                }
                 if (token.canRestToken()) {
                     Token newSign = tokenGateway.create(token.getUsername(), token.decodeIv(), token.getAuthorities(), token.getExtra());
                     log.info("reset token ");
