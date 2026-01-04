@@ -1,7 +1,9 @@
 package com.codingapi.springboot.security.redis;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.codingapi.springboot.framework.crypto.AESUtils;
 import com.codingapi.springboot.security.gateway.Token;
+import lombok.SneakyThrows;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.ArrayList;
@@ -25,7 +27,8 @@ public class RedisTokenGateway {
 
     public Token create(String username, String iv, List<String> authorities, String extra) {
         Token token = new Token(username, iv, extra, authorities, validTime, restTime);
-        String key = String.format("%s:%s", username, UUID.randomUUID().toString().replaceAll("-", ""));
+        String usernameEncode = this.encodeUsername(username);
+        String key = String.format("%s:%s", usernameEncode, UUID.randomUUID().toString().replaceAll("-", ""));
         token.setToken(key);
         redisTemplate.opsForValue().set(key, token.toJson(), validTime, TimeUnit.MILLISECONDS);
         return token;
@@ -63,13 +66,22 @@ public class RedisTokenGateway {
         redisTemplate.opsForValue().set(token.getToken(), token.toJson(), validTime, TimeUnit.MILLISECONDS);
     }
 
+
+
+    @SneakyThrows
+    private String encodeUsername(String username){
+        return AESUtils.getInstance().encode(username);
+    }
+
+
     /**
      * 删除用户
      *
      * @param username 用户名
      */
     public void removeUsername(String username) {
-        Set<String> keys = redisTemplate.keys(username + ":*");
+        String usernameEncode = this.encodeUsername(username);
+        Set<String> keys = redisTemplate.keys(usernameEncode + ":*");
         if (!keys.isEmpty()) {
             redisTemplate.delete(keys);
         }
@@ -83,7 +95,8 @@ public class RedisTokenGateway {
      * @return token列表
      */
     public List<String> getTokensByUsername(String username) {
-        Set<String> keys = redisTemplate.keys(username + ":*");
+        String usernameEncode = this.encodeUsername(username);
+        Set<String> keys = redisTemplate.keys(usernameEncode + ":*");
         return new ArrayList<>(keys);
     }
 
@@ -95,7 +108,8 @@ public class RedisTokenGateway {
      * @param predicate 条件
      */
     public void removeUsername(String username, Predicate<Token> predicate) {
-        Set<String> keys = redisTemplate.keys(username + ":*");
+        String usernameEncode = this.encodeUsername(username);
+        Set<String> keys = redisTemplate.keys(usernameEncode + ":*");
         if (!keys.isEmpty()) {
             for (String key : keys) {
                 Token token = getToken(key);
@@ -105,6 +119,5 @@ public class RedisTokenGateway {
             }
         }
     }
-
 
 }
