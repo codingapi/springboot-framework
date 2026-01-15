@@ -3,7 +3,8 @@ package com.codingapi.springboot.framework.dto.request;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.codingapi.springboot.framework.context.CurrentPageOffsetContext;
+import com.codingapi.springboot.framework.dto.offset.ICurrentOffset;
+import com.codingapi.springboot.framework.dto.offset.context.CurrentPageOffsetContext;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +22,7 @@ import java.util.List;
 /**
  * HttpServletRequest 请求参数解析成 PageRequest对象
  */
-public class SearchRequest {
+public class SearchRequest implements ICurrentOffset {
 
     @Getter
     private int current;
@@ -41,7 +42,7 @@ public class SearchRequest {
     }
 
     public void setCurrent(int current) {
-        this.current = CurrentPageOffsetContext.getInstance().getCurrentPage(current);
+        this.current = CurrentPageOffsetContext.getInstance().getCurrentPage(this,current);
         this.removeKeys.add("current");
     }
 
