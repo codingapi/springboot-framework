@@ -1,11 +1,12 @@
-package com.codingapi.springboot.framework.context;
+package com.codingapi.springboot.framework.dto.offset.context;
 
-import com.codingapi.springboot.framework.dto.ICurrentOffset;
+import com.codingapi.springboot.framework.dto.offset.ICurrentOffset;
+import com.codingapi.springboot.framework.dto.offset.ICurrentPageOffset;
 import com.codingapi.springboot.framework.dto.request.PageRequest;
 import lombok.Getter;
 import lombok.Setter;
 
-public class CurrentPageOffsetContext implements ICurrentPageOffset{
+public class CurrentPageOffsetContext implements ICurrentPageOffset {
 
     @Getter
     private static final CurrentPageOffsetContext instance = new CurrentPageOffsetContext();

@@ -1,7 +1,7 @@
 package com.codingapi.springboot.framework.dto.request;
 
-import com.codingapi.springboot.framework.context.CurrentPageOffsetContext;
-import com.codingapi.springboot.framework.dto.ICurrentOffset;
+import com.codingapi.springboot.framework.dto.offset.context.CurrentPageOffsetContext;
+import com.codingapi.springboot.framework.dto.offset.ICurrentOffset;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.Sort;

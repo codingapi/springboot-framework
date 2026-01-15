@@ -1,4 +1,4 @@
-package com.codingapi.springboot.framework.dto;
+package com.codingapi.springboot.framework.dto.offset;
 
 public interface ICurrentOffset {
 
