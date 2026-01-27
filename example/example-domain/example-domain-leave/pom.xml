@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.codingapi.springboot</groupId>
         <artifactId>example-domain</artifactId>
-        <version>3.4.30</version>
+        <version>3.4.31</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
