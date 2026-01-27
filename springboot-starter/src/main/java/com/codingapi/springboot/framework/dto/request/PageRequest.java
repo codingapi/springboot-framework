@@ -1,13 +1,14 @@
 package com.codingapi.springboot.framework.dto.request;
 
+import com.codingapi.springboot.framework.dto.offset.ICurrentOffset;
+import com.codingapi.springboot.framework.dto.offset.context.CurrentPageOffsetContext;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.Sort;
 
-public class PageRequest extends org.springframework.data.domain.PageRequest {
+public class PageRequest extends org.springframework.data.domain.PageRequest implements ICurrentOffset {
 
     @Getter
-    @Setter
     private int current;
 
     @Setter
@@ -30,6 +31,10 @@ public class PageRequest extends org.springframework.data.domain.PageRequest {
 
     public PageRequest() {
         this(0, 20, Sort.unsorted());
+    }
+
+    public void setCurrent(int current) {
+        this.current = CurrentPageOffsetContext.getInstance().getCurrentPage(this,current);
     }
 
     public String getStringFilter(String key) {
