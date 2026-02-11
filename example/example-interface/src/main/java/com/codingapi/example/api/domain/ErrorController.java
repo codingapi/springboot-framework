@@ -22,6 +22,6 @@ public class ErrorController {
 
     @GetMapping("/error3")
     public Response error3(){
-        throw new LocaleMessageException("error3",new Object[]{"my is arg"});
+        throw LocaleMessageException.of("error3","my is arg");
     }
 }
