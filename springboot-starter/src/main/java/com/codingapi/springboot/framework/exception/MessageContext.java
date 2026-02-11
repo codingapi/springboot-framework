@@ -27,4 +27,8 @@ class MessageContext {
         return localeMessage.getMessage(errCode);
     }
 
+    public String getErrorMsg(String errCode,Object[] args) {
+        return localeMessage.getMessage(errCode,args);
+    }
+
 }
