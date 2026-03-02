@@ -176,7 +176,8 @@ public class FlowNodeService {
             String preCode = FlowNode.CODE_START;
             if (flowRecord.getPreId() != 0) {
                 FlowRecord preRecord = flowRecordRepository.getFlowRecordById(flowRecord.getPreId());
-                if (preRecord != null) {
+                // 退回节点时，需要过滤历史退回的记录数据
+                if (preRecord != null && !preRecord.isReject()) {
                     preCode = preRecord.getNodeCode();
                     while (preCode.equals(flowRecord.getNodeCode())) {
                         preRecord = flowRecordRepository.getFlowRecordById(preRecord.getPreId());
