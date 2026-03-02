@@ -5,11 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public class Leave implements IBindData {
 
     private long id;
@@ -23,6 +25,11 @@ public class Leave implements IBindData {
     public Leave(String title, int days) {
         this.title = title;
         this.days = days;
+    }
+
+    public boolean get(String key){
+        log.info("get->{}",key);
+        return false;
     }
 
 }
