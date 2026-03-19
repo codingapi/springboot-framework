@@ -221,4 +221,46 @@ class SelectSQLAnalyzerTest {
         assertEquals("SELECT ade1_0.id, ade1_0.ba_dept_name, ade1_0.ba_org_shortname, ade1_0.ba_dept_code, ade1_0.ba_code, ade1_0.ba_dept_property_code, ade1_0.ba_parent_type, ade1_0.ba_real_super_org_id, ade1_0.ba_org_is_avoidance_dept, ade1_0.ba_real_super_org_id, ade1_0.ba_super_org_name FROM ba04_administrative_department ade1_0 WHERE ade1_0.id < 100 AND ade1_0.ba_parent_type = 0 " +
                 "UNION ALL SELECT ade2_0.id, ade2_0.ba_dept_name, ade2_0.ba_org_shortname, ade2_0.ba_dept_code, ade2_0.ba_code, ade2_0.ba_dept_property_code, ade2_0.ba_parent_type, ade2_0.ba_real_super_org_id, ade2_0.ba_org_is_avoidance_dept, ade3_0.ba_real_super_org_id, ade3_0.ba_super_org_name FROM ba04_administrative_department ade2_0 LEFT JOIN ba04_administrative_department ade3_0 ON ade2_0.ba_real_super_org_id = ade3_0.id WHERE ade3_0.id < 100 AND ade2_0.id < 100 AND ade2_0.ba_real_super_org_id = 1", newSQL);
     }
+
+
+    @Test
+    @Order(9)
+    void test9() throws Exception{
+        String sql = "select cd.id,cd.name,cd.parent_id from depart cd join depart pd on cd.id = pd.parent_id where cd.id = ?";
+
+        RowHandler rowHandler = (subSql, tableName, tableAlias) -> {
+            if (tableName.equalsIgnoreCase("depart") && tableAlias.equalsIgnoreCase("cd")) {
+                String conditionTemplate = "%s.id = 100 ";
+                return Condition.formatCondition(conditionTemplate, tableAlias);
+            }
+            return null;
+        };
+        DataPermissionSQLEnhancer builder = new DataPermissionSQLEnhancer(sql, rowHandler);
+        String newSQL = builder.getNewSQL();
+        System.out.println(newSQL);
+        System.out.println(builder.getTableAlias().getTableAlias());
+        assertEquals("SELECT cd.id, cd.name, cd.parent_id FROM depart cd JOIN depart pd ON cd.id = pd.parent_id WHERE cd.id = 100 AND cd.id = ?",newSQL);
+    }
+
+
+
+    @Test
+    @Order(10)
+    void test10() throws Exception{
+        String sql = "SELECT * FROM ( SELECT TMP.*, ROWNUM ROW_ID FROM ( SELECT t.id,t.parent_id,t.type,t.target_id,t.system_code,t.full_name,t.short_name,t.system_short_name,t.full_name_tair,t.short_name_tair,t.system_short_name_tair,t.tree_sort,t.sys_creator_id,t.sys_updater_id,t.sys_create_time,t.sys_update_time,t.sys_deleted,t.sys_enabled,parent.short_name AS parentName,parent.type AS parentType,if(parent.type=0,'单位','部门') AS parentTypeText FROM sys_u_organization t LEFT JOIN sys_u_organization parent ON (parent.id = t.parent_id AND parent.sys_deleted=0) LEFT JOIN sys_u_company t2 ON (t2.organization_id = t.id AND t2.sys_deleted=0) WHERE t.sys_deleted=0 AND (t.id <> ? AND t.type = ? AND t.system_code LIKE ?) ORDER BY t.tree_sort ASC,t.tree_sort ASC ) TMP WHERE ROWNUM <=?)  WHERE ROW_ID > ?";
+
+        RowHandler rowHandler = (subSql, tableName, tableAlias) -> {
+            if (tableName.equalsIgnoreCase("sys_u_organization")) {
+                String conditionTemplate = "%s.id < 100 ";
+                return Condition.formatCondition(conditionTemplate, tableAlias);
+            }
+            return null;
+        };
+        DataPermissionSQLEnhancer builder = new DataPermissionSQLEnhancer(sql, rowHandler);
+        String newSQL = builder.getNewSQL();
+        System.out.println(newSQL);
+        System.out.println(builder.getTableAlias().getTableAlias());
+        assertEquals("SELECT * FROM (SELECT TMP.*, ROWNUM ROW_ID FROM (SELECT t.id, t.parent_id, t.type, t.target_id, t.system_code, t.full_name, t.short_name, t.system_short_name, t.full_name_tair, t.short_name_tair, t.system_short_name_tair, t.tree_sort, t.sys_creator_id, t.sys_updater_id, t.sys_create_time, t.sys_update_time, t.sys_deleted, t.sys_enabled, parent.short_name AS parentName, parent.type AS parentType, if(parent.type = 0, '单位', '部门') AS parentTypeText FROM sys_u_organization t LEFT JOIN sys_u_organization parent ON (parent.id = t.parent_id AND parent.sys_deleted = 0) LEFT JOIN sys_u_company t2 ON (t2.organization_id = t.id AND t2.sys_deleted = 0) WHERE parent.id < 100 AND t.id < 100 AND t.sys_deleted = 0 AND (t.id <> ? AND t.type = ? AND t.system_code LIKE ?) ORDER BY t.tree_sort ASC, t.tree_sort ASC) TMP WHERE ROWNUM <= ?) WHERE ROW_ID > ?", newSQL);
+    }
+
 }

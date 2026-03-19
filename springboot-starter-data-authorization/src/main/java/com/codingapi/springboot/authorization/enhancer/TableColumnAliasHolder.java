@@ -64,7 +64,7 @@ public class TableColumnAliasHolder {
         if (fromItem instanceof Select) {
             PlainSelect subPlainSelect = ((Select) fromItem).getPlainSelect();
             this.appendColumnAlias(parent, null, plainSelect.getSelectItems());
-            parent = fromItem.getAlias().getName();
+            parent = fromItem.getAlias()!=null?fromItem.getAlias().getName():null;
             this.searchSubSelect(parent, subPlainSelect);
         }
 
