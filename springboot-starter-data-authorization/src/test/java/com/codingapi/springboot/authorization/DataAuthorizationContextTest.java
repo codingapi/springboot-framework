@@ -424,8 +424,8 @@ public class DataAuthorizationContextTest {
             public Condition rowAuthorization(String tableName, String tableAlias) {
                 String conditionTemplate = "%s.id > -100 ";
                 Condition condition = new Condition();
-                condition.addDynamicSQL(new WhereConditionSQL(conditionTemplate, tableAlias));
-                condition.addDynamicSQL(new JoinConditionSQL(
+                condition.addConditionSQL(new WhereConditionSQL(conditionTemplate, tableAlias));
+                condition.addConditionSQL(new JoinConditionSQL(
                         JoinConditionSQL.Type.INNER,
                         "t_unit",
                         "u",
