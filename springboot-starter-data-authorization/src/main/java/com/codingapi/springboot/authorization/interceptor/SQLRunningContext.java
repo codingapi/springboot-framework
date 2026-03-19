@@ -1,5 +1,6 @@
 package com.codingapi.springboot.authorization.interceptor;
 
+import com.codingapi.springboot.authorization.DataAuthorizationContext;
 import lombok.Getter;
 
 import java.sql.SQLException;
@@ -25,11 +26,12 @@ public class SQLRunningContext {
      * @return SQLInterceptState
      * @throws SQLException SQLException
      */
-    public SQLInterceptState intercept(String sql) throws SQLException {
+    public SQLExecuteState intercept(String sql) throws SQLException {
         SQLInterceptor sqlInterceptor = SQLInterceptorContext.getInstance().getSqlInterceptor();
 
         if (skipInterceptor.get()) {
-            return SQLInterceptState.unIntercept(sql);
+            sql = DataAuthorizationContext.getInstance().skipSQLFilter(sql);
+            return SQLExecuteState.unIntercept(sql);
         }
         try {
             if (sqlInterceptor.beforeHandler(sql)) {
@@ -37,7 +39,7 @@ public class SQLRunningContext {
                 skipInterceptor.set(true);
                 DataPermissionSQL dataPermissionSQL = sqlInterceptor.postHandler(sql);
                 sqlInterceptor.afterHandler(sql, dataPermissionSQL.getNewSql(), null);
-                return SQLInterceptState.intercept(sql, dataPermissionSQL.getNewSql(), dataPermissionSQL.getAliasContext());
+                return SQLExecuteState.intercept(sql, dataPermissionSQL.getNewSql(), dataPermissionSQL.getAliasContext());
             }
         } catch (SQLException exception) {
             sqlInterceptor.afterHandler(sql, null, exception);
@@ -45,7 +47,7 @@ public class SQLRunningContext {
             // 重置拦截器状态
             skipInterceptor.set(false);
         }
-        return SQLInterceptState.unIntercept(sql);
+        return SQLExecuteState.unIntercept(sql);
     }
 
 

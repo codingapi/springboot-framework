@@ -5,18 +5,30 @@ import com.codingapi.springboot.authorization.enhancer.TableColumnAliasContext;
 /**
  * SQL拦截状态
  */
-public class SQLInterceptState {
+public class SQLExecuteState {
 
-    private final boolean state;
+    /**
+     * 是否拦截SQL
+     */
+    private final boolean intercept;
 
+    /**
+     * 原始SQL
+     */
     private final String sql;
 
+    /**
+     * 处理后的SQL
+     */
     private final String newSql;
 
+    /**
+     * 表字段别名对象
+     */
     private final TableColumnAliasContext aliasContext;
 
-    private SQLInterceptState(boolean state, String sql, String newSql, TableColumnAliasContext aliasContext) {
-        this.state = state;
+    private SQLExecuteState(boolean intercept, String sql, String newSql, TableColumnAliasContext aliasContext) {
+        this.intercept = intercept;
         this.sql = sql;
         this.newSql = newSql;
         this.aliasContext = aliasContext;
@@ -25,15 +37,15 @@ public class SQLInterceptState {
     /**
      * 拦截
      */
-    public static SQLInterceptState intercept(String sql, String newSql, TableColumnAliasContext aliasContext) {
-        return new SQLInterceptState(true, sql, newSql, aliasContext);
+    public static SQLExecuteState intercept(String sql, String newSql, TableColumnAliasContext aliasContext) {
+        return new SQLExecuteState(true, sql, newSql, aliasContext);
     }
 
     /**
      * 不拦截
      */
-    public static SQLInterceptState unIntercept(String sql) {
-        return new SQLInterceptState(false, sql, sql, null);
+    public static SQLExecuteState unIntercept(String sql) {
+        return new SQLExecuteState(false, sql, sql, null);
     }
 
     public String getTableName(String tableName) {
@@ -45,7 +57,7 @@ public class SQLInterceptState {
     }
 
     public String getSql() {
-        if (state) {
+        if (intercept) {
             return newSql;
         } else {
             return sql;
@@ -53,7 +65,7 @@ public class SQLInterceptState {
     }
 
     public boolean hasIntercept() {
-        return state;
+        return intercept;
     }
 
 

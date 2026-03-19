@@ -1,6 +1,6 @@
 package com.codingapi.springboot.authorization.jdbc.proxy;
 
-import com.codingapi.springboot.authorization.interceptor.SQLInterceptState;
+import com.codingapi.springboot.authorization.interceptor.SQLExecuteState;
 import com.codingapi.springboot.authorization.interceptor.SQLRunningContext;
 import lombok.AllArgsConstructor;
 
@@ -17,7 +17,7 @@ public class CallableStatementProxy implements CallableStatement {
 
     private final CallableStatement callableStatement;
 
-    private SQLInterceptState interceptState;
+    private SQLExecuteState interceptState;
 
     @Override
     public void registerOutParameter(int parameterIndex, int sqlType) throws SQLException {

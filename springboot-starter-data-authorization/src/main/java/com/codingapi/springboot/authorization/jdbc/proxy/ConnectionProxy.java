@@ -1,6 +1,6 @@
 package com.codingapi.springboot.authorization.jdbc.proxy;
 
-import com.codingapi.springboot.authorization.interceptor.SQLInterceptState;
+import com.codingapi.springboot.authorization.interceptor.SQLExecuteState;
 import com.codingapi.springboot.authorization.interceptor.SQLRunningContext;
 
 import java.sql.*;
@@ -16,7 +16,7 @@ public class ConnectionProxy implements Connection {
         this.connection = connection;
     }
 
-    private SQLInterceptState interceptState;
+    private SQLExecuteState interceptState;
 
     @Override
     public Statement createStatement() throws SQLException {

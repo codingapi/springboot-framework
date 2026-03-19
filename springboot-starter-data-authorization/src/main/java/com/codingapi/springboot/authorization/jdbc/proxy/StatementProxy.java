@@ -1,6 +1,6 @@
 package com.codingapi.springboot.authorization.jdbc.proxy;
 
-import com.codingapi.springboot.authorization.interceptor.SQLInterceptState;
+import com.codingapi.springboot.authorization.interceptor.SQLExecuteState;
 import com.codingapi.springboot.authorization.interceptor.SQLRunningContext;
 import lombok.AllArgsConstructor;
 
@@ -10,7 +10,7 @@ import java.sql.*;
 public class StatementProxy implements Statement {
 
     private final Statement statement;
-    private SQLInterceptState interceptState;
+    private SQLExecuteState interceptState;
 
 
 

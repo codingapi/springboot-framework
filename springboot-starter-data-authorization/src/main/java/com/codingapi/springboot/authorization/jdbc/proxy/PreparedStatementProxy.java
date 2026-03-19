@@ -1,6 +1,6 @@
 package com.codingapi.springboot.authorization.jdbc.proxy;
 
-import com.codingapi.springboot.authorization.interceptor.SQLInterceptState;
+import com.codingapi.springboot.authorization.interceptor.SQLExecuteState;
 import com.codingapi.springboot.authorization.interceptor.SQLRunningContext;
 import lombok.AllArgsConstructor;
 
@@ -16,7 +16,7 @@ public class PreparedStatementProxy implements PreparedStatement {
 
     private final PreparedStatement preparedStatement;
 
-    private SQLInterceptState interceptState;
+    private SQLExecuteState interceptState;
 
 
     @Override

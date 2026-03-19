@@ -1,9 +1,12 @@
 package com.codingapi.springboot.authorization;
 
 import com.codingapi.springboot.authorization.filter.DataAuthorizationFilter;
+import com.codingapi.springboot.authorization.filter.DefaultSkipAuthorizationFilter;
+import com.codingapi.springboot.authorization.filter.SkipAuthorizationFilter;
 import com.codingapi.springboot.authorization.handler.Condition;
-import com.codingapi.springboot.authorization.interceptor.SQLInterceptState;
+import com.codingapi.springboot.authorization.interceptor.SQLExecuteState;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -19,9 +22,21 @@ public class DataAuthorizationContext {
 
     private final List<DataAuthorizationFilter> filters;
 
+    @Setter
+    private SkipAuthorizationFilter skipAuthorizationFilter;
+
     private DataAuthorizationContext() {
         this.filters = new ArrayList<>();
+        this.skipAuthorizationFilter = new DefaultSkipAuthorizationFilter();
     }
+
+    /**
+     * 跳过拦截的处理机制
+     */
+    public String skipSQLFilter(String sql){
+        return this.skipAuthorizationFilter.filter(sql);
+    }
+
 
     /**
      * 添加数据权限过滤器
@@ -47,7 +62,7 @@ public class DataAuthorizationContext {
      * @return T
      * @param <T> 泛型
      */
-    public <T> T columnAuthorization(SQLInterceptState interceptState, String tableName, String columnName, T value) {
+    public <T> T columnAuthorization(SQLExecuteState interceptState, String tableName, String columnName, T value) {
         if (interceptState != null && interceptState.hasIntercept()) {
             String realTableName = interceptState.getTableName(tableName);
             String realColumnName = interceptState.getColumnName(tableName,columnName);
