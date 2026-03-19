@@ -19,13 +19,13 @@ public class Condition {
         this.conditionList = new ArrayList<>();
     }
 
-    public void addDynamicSQL(IConditionSQL dynamicSQL){
+    public void addConditionSQL(IConditionSQL dynamicSQL){
         this.conditionList.add(dynamicSQL);
     }
 
     public static Condition customCondition(String condition) {
         Condition dynamicSQLContent = new Condition();
-        dynamicSQLContent.addDynamicSQL(new WhereConditionSQL(condition));
+        dynamicSQLContent.addConditionSQL(new WhereConditionSQL(condition));
         return dynamicSQLContent;
     }
 
