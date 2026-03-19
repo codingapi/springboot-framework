@@ -1,7 +1,7 @@
 package com.codingapi.springboot.authorization.jdbc.proxy;
 
 import com.codingapi.springboot.authorization.handler.ColumnHandlerContext;
-import com.codingapi.springboot.authorization.interceptor.SQLInterceptState;
+import com.codingapi.springboot.authorization.interceptor.SQLExecuteState;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.InputStream;
@@ -18,11 +18,11 @@ public class ResultSetProxy implements ResultSet {
 
     private final ResultSet resultSet;
     private final ResultSetMetaData metaData;
-    private final SQLInterceptState interceptState;
+    private final SQLExecuteState interceptState;
 
     private final Map<String, Integer> columnLabelMap = new HashMap<>();
 
-    public ResultSetProxy(ResultSet resultSet, SQLInterceptState interceptState) throws SQLException {
+    public ResultSetProxy(ResultSet resultSet, SQLExecuteState interceptState) throws SQLException {
         this.resultSet = resultSet;
         this.metaData = resultSet.getMetaData();
         this.interceptState = interceptState;
