@@ -1,5 +1,7 @@
 package com.codingapi.springboot.authorization;
 
+import com.codingapi.springboot.authorization.condition.JoinConditionSQL;
+import com.codingapi.springboot.authorization.condition.WhereConditionSQL;
 import com.codingapi.springboot.authorization.current.CurrentUser;
 import com.codingapi.springboot.authorization.entity.Depart;
 import com.codingapi.springboot.authorization.entity.Unit;
@@ -384,6 +386,80 @@ public class DataAuthorizationContextTest {
 
     }
 
+
+
+    @Test
+    @Order(6)
+    void test6() throws Exception{
+
+        unitRepository.deleteAll();
+        departRepository.deleteAll();
+        userRepository.deleteAll();
+
+        Unit rootUnit = new Unit("Coding总公司");
+        unitRepository.save(rootUnit);
+
+        Unit sdUnit = new Unit("Coding山东分公司", rootUnit.getId());
+        unitRepository.save(sdUnit);
+
+        Depart jgbDepart = new Depart("Coding架构部", rootUnit.getId());
+        departRepository.save(jgbDepart);
+
+        Depart xmbDepart = new Depart("Coding项目部", sdUnit.getId());
+        departRepository.save(xmbDepart);
+
+        User lorne = new User("lorne", LocalDate.parse("1991-01-01"), "beijing", "110105199003078999", "13812345678", jgbDepart);
+        User bob = new User("bob", LocalDate.parse("1991-01-01"), "beijing", "110105199003078999", "13812345678", xmbDepart);
+        User tom = new User("tom", LocalDate.parse("1991-01-01"), "beijing", "110105199003078999", "13812345678", xmbDepart);
+
+        userRepository.save(lorne);
+        userRepository.save(bob);
+        userRepository.save(tom);
+
+        String sql = "select u.* from t_user u where u.phone like '%1%' and u.id > 1 and u.depart_id in (select d.id from t_depart d where d.id > 0) ";
+
+        DataAuthorizationContext.getInstance().clearDataAuthorizationFilters();
+        DataAuthorizationContext.getInstance().addDataAuthorizationFilter(new DefaultDataAuthorizationFilter() {
+            @Override
+            public Condition rowAuthorization(String tableName, String tableAlias) {
+                String conditionTemplate = "%s.id > -100 ";
+                Condition condition = new Condition();
+                condition.addDynamicSQL(new WhereConditionSQL(conditionTemplate, tableAlias));
+                condition.addDynamicSQL(new JoinConditionSQL(
+                        JoinConditionSQL.Type.INNER,
+                        "t_unit",
+                        "u",
+                        "u.id = "+tableAlias+".id"));
+                return condition;
+            }
+
+            @Override
+            public <T> T columnAuthorization(String tableName, String columnName, T value) {
+                System.out.println("tableName:" + tableName + ",columnName:" + columnName + ",value:" + value);
+                return value;
+            }
+
+            @Override
+            public boolean supportColumnAuthorization(String tableName, String columnName, Object value) {
+                if ("t_depart".equalsIgnoreCase(tableName)) {
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean supportRowAuthorization(String tableName, String tableAlias) {
+                if ("t_depart".equalsIgnoreCase(tableName)) {
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        List<Map<String, Object>> data = jdbcTemplate.queryForList(sql);
+        System.out.println(data);
+
+    }
 
 
 }

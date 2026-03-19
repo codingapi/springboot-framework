@@ -1,6 +1,8 @@
 package com.codingapi.springboot.authorization.enhancer;
 
 
+import com.codingapi.springboot.authorization.condition.IConditionSQL;
+import com.codingapi.springboot.authorization.enhancer.handler.ConditionSQLHandlerContext;
 import com.codingapi.springboot.authorization.handler.Condition;
 import com.codingapi.springboot.authorization.handler.RowHandler;
 import net.sf.jsqlparser.expression.Expression;
@@ -154,12 +156,9 @@ public class DataPermissionSQLEnhancer {
         String aliaName = table.getAlias() != null ? table.getAlias().getName() : tableName;
         Condition condition = rowHandler.handler(plainSelect.toString(), tableName, aliaName);
         if (condition != null) {
-            // 添加自定义条件
-            Expression customExpression = CCJSqlParserUtil.parseCondExpression(condition.getCondition());
-            if (where != null) {
-                plainSelect.setWhere(new AndExpression(customExpression, where));
-            } else {
-                plainSelect.setWhere(customExpression);
+            List<IConditionSQL> conditionList = condition.getConditionList();
+            for (IConditionSQL conditionSQL : conditionList) {
+                ConditionSQLHandlerContext.getInstance().handler(conditionSQL, plainSelect, table, where);
             }
         }
     }
