@@ -19,6 +19,11 @@ public class Condition {
         this.conditionList = new ArrayList<>();
     }
 
+    public Condition(String condition) {
+        this.conditionList = new ArrayList<>();
+        this.addConditionSQL(new WhereConditionSQL(condition));
+    }
+
     public void addConditionSQL(IConditionSQL dynamicSQL){
         this.conditionList.add(dynamicSQL);
     }
