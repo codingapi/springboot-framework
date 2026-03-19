@@ -1,27 +1,21 @@
 package com.codingapi.springboot.authorization.enhancer;
 
 
+import com.codingapi.springboot.authorization.condition.IConditionSQL;
+import com.codingapi.springboot.authorization.enhancer.handler.ConditionSQLHandlerContext;
 import com.codingapi.springboot.authorization.handler.Condition;
 import com.codingapi.springboot.authorization.handler.RowHandler;
-import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.ExpressionVisitorAdapter;
-import net.sf.jsqlparser.expression.SignedExpression;
-import net.sf.jsqlparser.expression.operators.arithmetic.Subtraction;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
-import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.expression.operators.relational.InExpression;
-import net.sf.jsqlparser.expression.operators.relational.LikeExpression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
-import net.sf.jsqlparser.util.TablesNamesFinder;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 数据权限 SQL 增强器
@@ -162,12 +156,9 @@ public class DataPermissionSQLEnhancer {
         String aliaName = table.getAlias() != null ? table.getAlias().getName() : tableName;
         Condition condition = rowHandler.handler(plainSelect.toString(), tableName, aliaName);
         if (condition != null) {
-            // 添加自定义条件
-            Expression customExpression = CCJSqlParserUtil.parseCondExpression(condition.getCondition());
-            if (where != null) {
-                plainSelect.setWhere(new AndExpression(customExpression, where));
-            } else {
-                plainSelect.setWhere(customExpression);
+            List<IConditionSQL> conditionList = condition.getConditionList();
+            for (IConditionSQL conditionSQL:conditionList) {
+                ConditionSQLHandlerContext.getInstance().handler(conditionSQL,plainSelect,table,where);
             }
         }
     }
