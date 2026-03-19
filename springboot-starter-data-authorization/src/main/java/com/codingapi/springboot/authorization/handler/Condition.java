@@ -1,6 +1,11 @@
 package com.codingapi.springboot.authorization.handler;
 
+import com.codingapi.springboot.authorization.condition.IConditionSQL;
+import com.codingapi.springboot.authorization.condition.WhereConditionSQL;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *  查询条件
@@ -8,18 +13,24 @@ import lombok.Getter;
 @Getter
 public class Condition {
 
-    private final String condition;
+    private final List<IConditionSQL> conditionList;
 
-    private Condition(String condition) {
-        this.condition = condition;
+    public Condition() {
+        this.conditionList = new ArrayList<>();
+    }
+
+    public void addDynamicSQL(IConditionSQL dynamicSQL){
+        this.conditionList.add(dynamicSQL);
     }
 
     public static Condition customCondition(String condition) {
-        return new Condition(condition);
+        Condition dynamicSQLContent = new Condition();
+        dynamicSQLContent.addDynamicSQL(new WhereConditionSQL(condition));
+        return dynamicSQLContent;
     }
 
     public static Condition formatCondition(String condition, Object... args) {
-        return new Condition(String.format(condition, args));
+        return customCondition(String.format(condition, args));
     }
 
     public static Condition emptyCondition() {
@@ -27,7 +38,7 @@ public class Condition {
     }
 
     public static Condition defaultCondition() {
-        return new Condition("1=1");
+        return customCondition("1=1");
     }
 
 }
