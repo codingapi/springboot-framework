@@ -226,11 +226,13 @@ class SelectSQLAnalyzerTest {
     @Test
     @Order(9)
     void test9() throws Exception{
+
         String sql = "select cd.id,cd.name,cd.parent_id from depart cd join depart pd on cd.id = pd.parent_id where cd.id = ?";
+
 
         RowHandler rowHandler = (subSql, tableName, tableAlias) -> {
             if (tableName.equalsIgnoreCase("depart") && tableAlias.equalsIgnoreCase("cd")) {
-                String conditionTemplate = "%s.id = 100 ";
+                String conditionTemplate = "%s.id = 100";
                 return Condition.formatCondition(conditionTemplate, tableAlias);
             }
             return null;

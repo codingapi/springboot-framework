@@ -1,11 +1,15 @@
 package com.codingapi.springboot.authorization;
 
 import com.codingapi.springboot.authorization.current.CurrentUser;
+import com.codingapi.springboot.authorization.enhancer.DataPermissionSQLEnhancer;
 import com.codingapi.springboot.authorization.entity.Depart;
 import com.codingapi.springboot.authorization.entity.Unit;
 import com.codingapi.springboot.authorization.entity.User;
+import com.codingapi.springboot.authorization.filter.DataAuthorizationFilter;
 import com.codingapi.springboot.authorization.filter.DefaultDataAuthorizationFilter;
+import com.codingapi.springboot.authorization.filter.SkipAuthorizationFilter;
 import com.codingapi.springboot.authorization.handler.Condition;
+import com.codingapi.springboot.authorization.handler.RowHandler;
 import com.codingapi.springboot.authorization.interceptor.SQLRunningContext;
 import com.codingapi.springboot.authorization.mask.ColumnMaskContext;
 import com.codingapi.springboot.authorization.mask.impl.BankCardMask;
@@ -334,6 +338,55 @@ public class DataAuthorizationContextTest {
 
         List<Map<String, Object>> data = jdbcTemplate.queryForList(sql);
         System.out.println(data);
+    }
+
+
+
+
+    @Test
+    @Order(5)
+    void test5() throws Exception{
+
+        unitRepository.deleteAll();
+        departRepository.deleteAll();
+        userRepository.deleteAll();
+
+        Unit rootUnit = new Unit("Coding总公司");
+        unitRepository.save(rootUnit);
+
+        Unit sdUnit = new Unit("Coding山东分公司", rootUnit.getId());
+        unitRepository.save(sdUnit);
+
+        Depart jgbDepart = new Depart("Coding架构部", rootUnit.getId());
+        departRepository.save(jgbDepart);
+
+        Depart xmbDepart = new Depart("Coding项目部", sdUnit.getId());
+        departRepository.save(xmbDepart);
+
+        User lorne = new User("lorne", LocalDate.parse("1991-01-01"), "beijing", "110105199003078999", "13812345678", jgbDepart);
+        User bob = new User("bob", LocalDate.parse("1991-01-01"), "beijing", "110105199003078999", "13812345678", xmbDepart);
+        User tom = new User("tom", LocalDate.parse("1991-01-01"), "beijing", "110105199003078999", "13812345678", xmbDepart);
+
+        userRepository.save(lorne);
+        userRepository.save(bob);
+        userRepository.save(tom);
+
+        String sql = "select * from t_user where phone like '%1%' and id > 1 and depart_id in (select id from t_depart where id > 0) ";
+
+        DataAuthorizationContext.getInstance().clearDataAuthorizationFilters();
+
+        DataAuthorizationContext.getInstance().setSkipAuthorizationFilter(new SkipAuthorizationFilter(){
+            @Override
+            public String filter(String sql) {
+                return sql.replace("and depart_id in (select id from t_depart where id > 0) ","");
+            }
+        });
+
+        SQLRunningContext.getInstance().skipDataAuthorization(()->{
+            List<Map<String, Object>> data = jdbcTemplate.queryForList(sql);
+            System.out.println(data);
+        });
+
     }
 
 
