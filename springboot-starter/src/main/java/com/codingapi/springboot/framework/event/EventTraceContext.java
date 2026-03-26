@@ -61,8 +61,8 @@ public class EventTraceContext {
     void checkEventState() {
         String eventKey = threadLocal.get();
         if (eventKey != null) {
-            boolean state = eventKeyState.get(eventKey);
-            if (!state) {
+            Boolean state = eventKeyState.get(eventKey);
+            if (state!=null && !state) {
                 // event execute finish
                 String traceId = eventKey.split("#")[0];
                 traceKeys.remove(traceId);
