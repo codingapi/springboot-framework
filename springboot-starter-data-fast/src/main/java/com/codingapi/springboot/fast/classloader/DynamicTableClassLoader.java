@@ -31,6 +31,7 @@ public class DynamicTableClassLoader {
      */
     public void registerClass(String className, Class<?> clazz) {
         dynamicTableClassLoader.registerClass(className, clazz);
+        Thread.currentThread().setContextClassLoader(dynamicTableClassLoader);
     }
 
     /**
@@ -39,6 +40,7 @@ public class DynamicTableClassLoader {
      */
     public void registerClass(Class<?> clazz) {
         dynamicTableClassLoader.registerClass(clazz);
+        Thread.currentThread().setContextClassLoader(dynamicTableClassLoader);
     }
 
     /**
@@ -66,6 +68,7 @@ public class DynamicTableClassLoader {
      */
     public void cleanDynamicClass(String name) {
         dynamicTableClassLoader.cleanClass(name);
+        Thread.currentThread().setContextClassLoader(dynamicTableClassLoader);
     }
 
     /**
