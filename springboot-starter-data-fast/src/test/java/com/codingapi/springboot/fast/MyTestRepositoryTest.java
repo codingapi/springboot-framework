@@ -1,6 +1,7 @@
 package com.codingapi.springboot.fast;
 
-import com.codingapi.springboot.fast.repository.TestRepository;
+import com.codingapi.springboot.fast.entity.MyTest;
+import com.codingapi.springboot.fast.repository.MyTestRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,16 +9,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @Slf4j
 @SpringBootTest
-public class TestRepositoryTest {
+public class MyTestRepositoryTest {
 
     @Autowired
-    private TestRepository testRepository;
+    private MyTestRepository myTestRepository;
 
     @Test
-    void test1() {
-        com.codingapi.springboot.fast.entity.Test demo = new com.codingapi.springboot.fast.entity.Test();
+    void test() {
+        MyTest demo = new MyTest();
         demo.setName("123");
-        testRepository.save(demo);
+        myTestRepository.save(demo);
     }
 
 

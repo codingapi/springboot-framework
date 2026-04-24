@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "t_test")
-public class Test {
+public class MyTest {
 
     @Id
     @MyIdSequence
