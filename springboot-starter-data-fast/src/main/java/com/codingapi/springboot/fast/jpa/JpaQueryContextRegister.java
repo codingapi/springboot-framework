@@ -6,7 +6,7 @@ import org.springframework.beans.factory.InitializingBean;
 @AllArgsConstructor
 public class JpaQueryContextRegister implements InitializingBean {
 
-    private JpaQuery jpaQuery;
+    private final JpaQuery jpaQuery;
 
     @Override
     public void afterPropertiesSet() throws Exception {
