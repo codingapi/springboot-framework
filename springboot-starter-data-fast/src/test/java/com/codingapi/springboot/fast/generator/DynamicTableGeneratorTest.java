@@ -8,13 +8,13 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class DynamicTableGeneratorTest {
 
     @Test
     void generateTableDDL() {
-        DynamicTableGenerator dynamicTableGenerator = new DynamicTableGenerator(H2Dialect.class,"jdbc:h2:file:./test.db");
+        DynamicTableGenerator dynamicTableGenerator = new DynamicTableGenerator(H2Dialect.class, "jdbc:h2:file:./test.db");
         List<Exception> exceptions = dynamicTableGenerator.validatorTable(Demo.class);
         System.out.println(exceptions);
 
@@ -33,13 +33,13 @@ class DynamicTableGeneratorTest {
 
     @Test
     void dynamicGenerateTableDDL() {
-        DynamicTableGenerator dynamicTableGenerator = new DynamicTableGenerator(H2Dialect.class,"jdbc:h2:file:./test.db");
+        DynamicTableGenerator dynamicTableGenerator = new DynamicTableGenerator(H2Dialect.class, "jdbc:h2:file:./test.db");
 
         TableEntityMetadata tableEntityMetadata = new TableEntityMetadata("com.codingapi.entity.Test");
         tableEntityMetadata.setTable("test");
-        tableEntityMetadata.addPrimaryKeyColumn(Long.class,"id", GenerationType.IDENTITY,"主键");
-        tableEntityMetadata.addColumn(String.class,"name","姓名");
-        tableEntityMetadata.addColumn(String.class,"desc","描述",true);
+        tableEntityMetadata.addPrimaryKeyColumn(Long.class, "id", GenerationType.IDENTITY, "主键");
+        tableEntityMetadata.addColumn(String.class, "name", "姓名");
+        tableEntityMetadata.addColumn(String.class, "desc", "描述", true);
 
         Class<?> entityClass = tableEntityMetadata.buildClass();
 

@@ -12,6 +12,7 @@ import org.hibernate.annotations.Comment;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -145,6 +146,12 @@ class TableEntityClassBuilder {
     private List<AnnotationDescription> buildFieldAnnotations(
             TableEntityMetadata.ColumnMeta columnMeta) {
         List<AnnotationDescription> annotations = new ArrayList<>();
+
+        if (columnMeta.getAnnotationClasses() != null) {
+            for(Class<? extends Annotation> annotaionClass: columnMeta.getAnnotationClasses()) {
+                annotations.add(AnnotationDescription.Builder.ofType(annotaionClass).build());
+            }
+        }
 
         // @Id 注解
         if (columnMeta.isPrimaryKey()) {
