@@ -4,8 +4,10 @@ import javax.persistence.GenerationType;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 表实体元数据
@@ -64,6 +66,10 @@ public class TableEntityMetadata {
          * 主键自增策略
          */
         private GeneratedValueMeta generatedValue;
+        /**
+         * 字段注解
+         */
+        private Set<Class<? extends Annotation>> annotationClasses;
         /**
          * 备注
          */
@@ -149,8 +155,12 @@ public class TableEntityMetadata {
         this.setTable(name, null, null, null);
     }
 
+    public void addColumn(ColumnMeta column) {
+        this.columns.add(column);
+    }
+
     public void addPrimaryKeyColumn(Class<?> type, String fieldName, String columnName, GenerationType strategy,
-                                    String generator, String comment, boolean isLob, boolean unique, boolean nullable,
+                                    String generator, Set<Class<? extends Annotation>> annotationClasses, String comment, boolean isLob, boolean unique, boolean nullable,
                                     boolean insertable, boolean updatable, String columnDefinition,
                                     int length, int precision, int scale) {
         ColumnMeta column = new ColumnMeta();
@@ -161,6 +171,7 @@ public class TableEntityMetadata {
         GeneratedValueMeta generatedValueMeta = new GeneratedValueMeta();
         generatedValueMeta.setGenerator(generator);
         generatedValueMeta.setStrategy(strategy);
+        column.setAnnotationClasses(annotationClasses);
         column.setGeneratedValue(generatedValueMeta);
         column.setLob(isLob);
         column.setComment(comment);
@@ -172,7 +183,7 @@ public class TableEntityMetadata {
         column.setLength(length);
         column.setPrecision(precision);
         column.setScale(scale);
-        this.columns.add(column);
+        this.addColumn(column);
     }
 
     public void addColumn(Class<?> type, String fieldName, String columnName, String comment, boolean isLob,
@@ -194,7 +205,7 @@ public class TableEntityMetadata {
         column.setLength(length);
         column.setPrecision(precision);
         column.setScale(scale);
-        this.columns.add(column);
+        this.addColumn(column);
     }
 
     public void addColumn(Class<?> type, String name, String comment) {
@@ -214,15 +225,23 @@ public class TableEntityMetadata {
     }
 
     public void addPrimaryKeyColumn(Class<?> type, String name) {
-        this.addPrimaryKeyColumn(type, name, name, null, null, null, false, false, false, false, false, null, 255, 0, 0);
+        this.addPrimaryKeyColumn(type, name, name, null, null, null, null, false, false, false, false, false, null, 255, 0, 0);
+    }
+
+    public void addPrimaryKeyColumn(Class<?> type, String name, String comment) {
+        this.addPrimaryKeyColumn(type, name, name, null, null, null, comment, false, false, false, false, false, null, 255, 0, 0);
     }
 
     public void addPrimaryKeyColumn(Class<?> type, String name, GenerationType strategy) {
-        this.addPrimaryKeyColumn(type, name, name, strategy, null, null, false, false, false, false, false, null, 255, 0, 0);
+        this.addPrimaryKeyColumn(type, name, name, strategy, null, null, null, false, false, false, false, false, null, 255, 0, 0);
     }
 
     public void addPrimaryKeyColumn(Class<?> type, String name, GenerationType strategy, String comment) {
-        this.addPrimaryKeyColumn(type, name, name, strategy, null, comment, false, false, false, false, false, null, 255, 0, 0);
+        this.addPrimaryKeyColumn(type, name, name, strategy, null, null, comment, false, false, false, false, false, null, 255, 0, 0);
+    }
+
+    public void addPrimaryKeyColumn(Class<?> type, String name, Set<Class<? extends Annotation>> annotationClasses, String comment) {
+        this.addPrimaryKeyColumn(type, name, name, null, null, annotationClasses, comment, false, false, false, false, false, null, 255, 0, 0);
     }
 
     public void verify() {
