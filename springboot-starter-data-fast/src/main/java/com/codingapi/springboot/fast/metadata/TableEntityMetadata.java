@@ -3,6 +3,7 @@ package com.codingapi.springboot.fast.metadata;
 import jakarta.persistence.GenerationType;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.util.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -168,11 +169,13 @@ public class TableEntityMetadata {
         column.setFieldName(fieldName);
         column.setColumnName(columnName);
         column.setPrimaryKey(true);
-        GeneratedValueMeta generatedValueMeta = new GeneratedValueMeta();
-        generatedValueMeta.setGenerator(generator);
-        generatedValueMeta.setStrategy(strategy);
+        if (strategy != null || StringUtils.hasText(generator)) {
+            GeneratedValueMeta generatedValueMeta = new GeneratedValueMeta();
+            generatedValueMeta.setGenerator(generator);
+            generatedValueMeta.setStrategy(strategy);
+            column.setGeneratedValue(generatedValueMeta);
+        }
         column.setAnnotationClasses(annotationClasses);
-        column.setGeneratedValue(generatedValueMeta);
         column.setLob(isLob);
         column.setComment(comment);
         column.setUnique(unique);
