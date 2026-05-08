@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(/usr/libexec/java_home -V)",
+      "Bash(JAVA_HOME=/Users/lorne/Library/Java/JavaVirtualMachines/corretto-1.8.0_462/Contents/Home ./mvnw -pl springboot-starter -am test -Dtest=FrameworkApplicationEventTests -q)",
+      "Bash(JAVA_HOME=/Users/lorne/Library/Java/JavaVirtualMachines/corretto-1.8.0_462/Contents/Home ./mvnw -pl springboot-starter test -Dtest=FrameworkApplicationEventTests -q)",
+      "Bash(JAVA_HOME=/Users/lorne/Library/Java/JavaVirtualMachines/corretto-1.8.0_462/Contents/Home ./mvnw -pl springboot-starter test -Dtest=FrameworkApplicationEventTests)"
+    ]
+  }
+}

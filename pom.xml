@@ -15,7 +15,7 @@
 
     <groupId>com.codingapi.springboot</groupId>
     <artifactId>springboot-parent</artifactId>
-    <version>2.10.42</version>
+    <version>2.10.43</version>
 
     <url>https://github.com/codingapi/springboot-framewrok</url>
     <name>springboot-parent</name>
@@ -46,7 +46,7 @@
         <commons-crypto.version>1.2.0</commons-crypto.version>
         <snakeyaml.version>2.2</snakeyaml.version>
         <apache-groovy.version>4.0.24</apache-groovy.version>
-        <h2.version>2.3.232</h2.version>
+        <h2.version>1.4.200</h2.version>
         <esotericsoftware.kryo.version>5.6.2</esotericsoftware.kryo.version>
         <jsqlparser.version>5.0</jsqlparser.version>
     </properties>
