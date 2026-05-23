@@ -76,8 +76,7 @@ public class FlowButton {
         if (groovy != null) {
             //执行脚本
             FlowSession session = new FlowSession(flowRecord, flowWork, flowNode, createOperator, currentOperator, bindData, opinion, historyRecords);
-            GroovyShellContext.ShellScript script = GroovyShellContext.getInstance().parse(groovy);
-            return (MessageResult) script.invokeMethod("run", session);
+            return GroovyShellContext.getInstance().run(groovy,MessageResult.class,session);
         }
         return null;
     }

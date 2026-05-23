@@ -13,14 +13,12 @@ public class TitleGenerator {
     @Getter
     private final String script;
 
-    private final GroovyShellContext.ShellScript runtime;
 
     public TitleGenerator(String script) {
         if (!StringUtils.hasLength(script)) {
             throw new IllegalArgumentException("script is empty");
         }
         this.script = script;
-        this.runtime = GroovyShellContext.getInstance().parse(script);
     }
 
 
@@ -41,7 +39,7 @@ public class TitleGenerator {
      * @return 标题
      */
     public String generate(FlowSession flowSession) {
-        return (String) this.runtime.invokeMethod("run", flowSession);
+        return GroovyShellContext.getInstance().run(script,String.class,flowSession);
     }
 
 }

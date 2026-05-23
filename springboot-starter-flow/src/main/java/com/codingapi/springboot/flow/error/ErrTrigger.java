@@ -13,15 +13,11 @@ public class ErrTrigger {
     @Getter
     private final String script;
 
-    private final GroovyShellContext.ShellScript runtime;
-
-
     public ErrTrigger(String script) {
         if (!StringUtils.hasLength(script)) {
             throw new IllegalArgumentException("script is empty");
         }
         this.script = script;
-        this.runtime = GroovyShellContext.getInstance().parse(script);
     }
 
     /**
@@ -30,7 +26,7 @@ public class ErrTrigger {
      * @param flowSession 流程内容
      */
     public ErrorResult trigger(FlowSession flowSession) {
-        return (ErrorResult) runtime.invokeMethod("run", flowSession);
+        return GroovyShellContext.getInstance().run(script, ErrorResult.class, flowSession);
     }
 
 }

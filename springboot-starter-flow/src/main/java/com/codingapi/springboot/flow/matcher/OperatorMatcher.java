@@ -20,8 +20,6 @@ public class OperatorMatcher {
 
     private final int state;
 
-    private final GroovyShellContext.ShellScript runtime;
-
     // 指定用户
     public static final int STATE_SPECIFY = 1;
     // 创建者
@@ -63,7 +61,6 @@ public class OperatorMatcher {
         }
         this.script = script;
         this.state = state;
-        this.runtime = GroovyShellContext.getInstance().parse(script);
     }
 
     /**
@@ -114,7 +111,7 @@ public class OperatorMatcher {
      * @return 是否匹配
      */
     public List<Long> matcher(FlowSession flowSession) {
-        List<Object> values = (List<Object>) runtime.invokeMethod("run", flowSession);
+        List<Object> values = (List<Object>) GroovyShellContext.getInstance().run(script,List.class, flowSession);
         if (values == null) {
             return new ArrayList<>();
         }

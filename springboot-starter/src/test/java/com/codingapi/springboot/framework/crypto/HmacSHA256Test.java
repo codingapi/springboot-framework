@@ -12,7 +12,10 @@ class HmacSHA256Test {
 
     @Test
     void sha256() throws NoSuchAlgorithmException, InvalidKeyException {
-       String data = Base64.getEncoder().encodeToString(HmacSHA256.sha256("123456".getBytes(),"123456".getBytes()));
-       assertEquals("uK0Io6VH41gpuCG3U3AwHdjEsGvdd3H5tUGnWRQGhxg=",data);
+        long t1 = System.currentTimeMillis();
+        String data = Base64.getEncoder().encodeToString(HmacSHA256.sha256("123456".getBytes(), "123456".getBytes()));
+        assertEquals("uK0Io6VH41gpuCG3U3AwHdjEsGvdd3H5tUGnWRQGhxg=", data);
+        long t2 = System.currentTimeMillis();
+        System.out.println(t2 - t1);
     }
 }
