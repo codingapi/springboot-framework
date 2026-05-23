@@ -27,7 +27,7 @@ class GroovyScriptRunningContextTest {
     @Test
     void run() {
 
-        String script = " def run(request){ println($request.getRequest()) return request;} ";
+        String script = " def run(request){ println($request.getRequest()); return request;} ";
 
         GroovyMethodScript<Integer> request = new GroovyMethodScript<>(script, Integer.class, 100);
         request.addBindObject("$request", request);
