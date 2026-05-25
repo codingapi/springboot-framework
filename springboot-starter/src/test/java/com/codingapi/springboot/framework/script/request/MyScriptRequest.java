@@ -1,5 +1,7 @@
 package com.codingapi.springboot.framework.script.request;
 
+import com.codingapi.springboot.framework.entity.MyTest;
+import com.codingapi.springboot.framework.repository.MyTestRepository;
 import com.codingapi.springboot.framework.script.annotation.ScriptFunction;
 import com.codingapi.springboot.framework.script.annotation.ScriptType;
 import lombok.AllArgsConstructor;
@@ -36,4 +38,13 @@ public class MyScriptRequest {
     public MyScriptRequest(int count) {
         this.count = count;
     }
+
+
+    public void addData(MyTestRepository testRepository){
+        System.out.println(testRepository);
+        MyTest myTest = new MyTest();
+        myTest.setName("test");
+        testRepository.save(myTest);
+    }
+
 }

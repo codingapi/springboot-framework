@@ -40,7 +40,7 @@ public class GroovyRunningScript<T> {
     /**
      * 绑定数据对象
      */
-    private final List<GroovyBindObject> binds;
+    private List<GroovyBindObject> binds;
 
     /**
      * 脚本元数据信息
@@ -87,6 +87,9 @@ public class GroovyRunningScript<T> {
      * @param bind 绑定对象
      */
     public void addBindObject(String key, Object bind) {
+        if(this.binds==null){
+            this.binds = new ArrayList<>();
+        }
         this.binds.add(new GroovyBindObject(key, bind));
         this.resetMetaData();
     }

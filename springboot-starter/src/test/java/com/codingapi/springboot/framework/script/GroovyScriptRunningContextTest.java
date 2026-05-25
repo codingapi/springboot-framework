@@ -4,7 +4,7 @@ import com.codingapi.springboot.framework.script.request.GroovyRunningScript;
 import com.codingapi.springboot.framework.script.request.MyScriptRequest;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GroovyScriptRunningContextTest {
 
@@ -13,10 +13,9 @@ class GroovyScriptRunningContextTest {
 
         String script = """
                 def run(request){
-                    println($request.getRequest())
+                    println($request.getRequests())
                 }
                 """;
-
         GroovyScriptRunningContext.getInstance().compile(script);
 
         GroovyRunningScript<Void> request = new GroovyRunningScript<>(script, Void.class, 100);
@@ -55,7 +54,7 @@ class GroovyScriptRunningContextTest {
 
         String script = """
                 def run(request){
-                    println($request.getRequest())
+                    println($request.getRequests())
                     return request;
                 }
                 """;
