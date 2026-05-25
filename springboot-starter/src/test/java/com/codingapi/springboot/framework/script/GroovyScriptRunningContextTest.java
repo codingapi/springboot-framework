@@ -1,6 +1,7 @@
 package com.codingapi.springboot.framework.script;
 
-import com.codingapi.springboot.framework.script.request.GroovyMethodScript;
+import com.codingapi.springboot.framework.script.request.GroovyRunningScript;
+import com.codingapi.springboot.framework.script.request.MyScriptRequest;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,7 +19,7 @@ class GroovyScriptRunningContextTest {
 
         GroovyScriptRunningContext.getInstance().compile(script);
 
-        GroovyMethodScript<Void> request = new GroovyMethodScript<>(script, Void.class, 100);
+        GroovyRunningScript<Void> request = new GroovyRunningScript<>(script, Void.class, 100);
         request.addBindObject("$request", request);
 
         long t1 = System.currentTimeMillis();
@@ -26,6 +27,27 @@ class GroovyScriptRunningContextTest {
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
 
+    }
+
+
+    @Test
+    void metaTest(){
+        String script = """
+                def run(request){
+                    return request.count;
+                }
+                """;
+
+        MyScriptRequest request = new MyScriptRequest(100);
+        GroovyRunningScript<Integer> runningScript = new GroovyRunningScript<>(script, Integer.class, request);
+
+        assertEquals(1,runningScript.getGroovyMetadata().getRequests().size());
+
+        long t1 = System.currentTimeMillis();
+        int result = GroovyScriptRunningContext.getInstance().run(runningScript);
+        long t2 = System.currentTimeMillis();
+        System.out.println("groovy time:" + (t2 - t1));
+        assertEquals(100, result);
     }
 
     @Test
@@ -38,7 +60,7 @@ class GroovyScriptRunningContextTest {
                 }
                 """;
 
-        GroovyMethodScript<Integer> request = new GroovyMethodScript<>(script, Integer.class, 100);
+        GroovyRunningScript<Integer> request = new GroovyRunningScript<>(script, Integer.class, 100);
         request.addBindObject("$request", request);
 
         long t1 = System.currentTimeMillis();

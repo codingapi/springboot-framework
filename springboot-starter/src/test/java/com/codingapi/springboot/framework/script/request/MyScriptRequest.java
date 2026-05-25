@@ -1,0 +1,39 @@
+package com.codingapi.springboot.framework.script.request;
+
+import com.codingapi.springboot.framework.script.annotation.ScriptFunction;
+import com.codingapi.springboot.framework.script.annotation.ScriptType;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@ScriptType(
+        name = "request",
+        description = "请求参数",
+        dataType = MyScriptRequest.class
+)
+@AllArgsConstructor
+public class MyScriptRequest {
+
+    @ScriptType(name = "count", description = "总数量", dataType = Integer.class)
+    private final int count;
+
+    @ScriptType(name = "test", description = "test", dataType = MyScriptRequest.class)
+    private MyScriptRequest test;
+
+
+    @ScriptFunction(
+            name = "isSupport",
+            description = "是否匹配",
+            returnType = Boolean.class,
+            requests = {
+                    @ScriptType(name = "count", description = "描述信息", dataType = Integer.class),
+            }
+    )
+    public boolean isSupport(int count) {
+        return this.count == count;
+    }
+
+    public MyScriptRequest(int count) {
+        this.count = count;
+    }
+}

@@ -8,8 +8,15 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public class RuntimeBindObject {
+public class GroovyBindObject {
 
+    /**
+     * 绑定的访问对象
+     */
     private String key;
+    /**
+     * 绑定的对象实例
+     */
     private Object object;
+
 }

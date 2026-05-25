@@ -1,8 +1,8 @@
 package com.codingapi.springboot.framework.script;
 
 import com.codingapi.springboot.framework.crypto.SHA256;
-import com.codingapi.springboot.framework.script.request.RuntimeBindObject;
-import com.codingapi.springboot.framework.script.request.GroovyMethodScript;
+import com.codingapi.springboot.framework.script.request.GroovyBindObject;
+import com.codingapi.springboot.framework.script.request.GroovyRunningScript;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
@@ -99,7 +99,7 @@ public class GroovyScriptRunningContext {
      * @param args 函数参数
      * @return 返回数据
      */
-    public <T> T run(String method, String script, Class<T> returnType, List<RuntimeBindObject> binds, Object... args) {
+    public <T> T run(String method, String script, Class<T> returnType, List<GroovyBindObject> binds, Object... args) {
         String key = SHA256.sha256(script);
         Script runtime = this.cache.get(key);
         if (runtime == null) {
@@ -108,8 +108,8 @@ public class GroovyScriptRunningContext {
         }
 
         if (binds != null && !binds.isEmpty()) {
-            for (RuntimeBindObject runtimeBindObject : binds) {
-                runtime.setProperty(runtimeBindObject.getKey(), runtimeBindObject.getObject());
+            for (GroovyBindObject groovyBindObject : binds) {
+                runtime.setProperty(groovyBindObject.getKey(), groovyBindObject.getObject());
             }
         }
         return (T) runtime.invokeMethod(method, args);
@@ -133,7 +133,7 @@ public class GroovyScriptRunningContext {
      * @param request 脚本参数
      * @return 返回数据
      */
-    public <T> T run(GroovyMethodScript<T> request) {
+    public <T> T run(GroovyRunningScript<T> request) {
         return this.run(request.getMethod(),request.getScript(),request.getReturnType(),request.getBinds(),request.getParams());
     }
 
