@@ -8,10 +8,6 @@ import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 import lombok.Getter;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -130,39 +126,18 @@ public class GroovyScriptRunner {
 
         // 事务制只读模式
         if (transactionMode == TransactionMode.READONLY) {
-            PlatformTransactionManager transactionManager = TransactionManagerContext.getInstance().getPlatformTransactionManager();
-            if (transactionManager != null) {
-                DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-                def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-                def.setReadOnly(true);
-                TransactionStatus transactionStatus = transactionManager.getTransaction(def);
-                try {
-                    T result = (T) runtime.invokeMethod(method, args);
-                    transactionManager.rollback(transactionStatus);
-                    return result;
-                } catch (Exception e) {
-                    transactionManager.rollback(transactionStatus);
-                    throw e;
-                }
-            }
+            Script finalRuntime = runtime;
+            return TransactionManagerContext.getInstance().readOnly(()->{
+                return (T) finalRuntime.invokeMethod(method, args);
+            });
         }
 
         // 事务制提交模式
         if (transactionMode == TransactionMode.COMMIT) {
-            PlatformTransactionManager transactionManager = TransactionManagerContext.getInstance().getPlatformTransactionManager();
-            if (transactionManager != null) {
-                DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-                def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-                TransactionStatus transactionStatus = transactionManager.getTransaction(def);
-                try {
-                    T result = (T) runtime.invokeMethod(method, args);
-                    transactionManager.commit(transactionStatus);
-                    return result;
-                } catch (Exception e) {
-                    transactionManager.rollback(transactionStatus);
-                    throw e;
-                }
-            }
+            Script finalRuntime = runtime;
+            return TransactionManagerContext.getInstance().commit(()->{
+                return (T) finalRuntime.invokeMethod(method, args);
+            });
         }
 
         // 默认处理模式

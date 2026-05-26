@@ -28,7 +28,7 @@ class TransactionGroovyScriptRunningContextTest {
         String script = """
                 def run(request){
                     request.addData($repository);
-                    println($request.count);
+                    println(request.count);
                 }
                 """;
 
@@ -37,12 +37,12 @@ class TransactionGroovyScriptRunningContextTest {
         myTestRepository.deleteAll();
         List<MyTest> list = myTestRepository.findAll();
         assertTrue(list.isEmpty());
-        GroovyScriptRunner scriptRunner = new GroovyScriptRunner(100);
+        GroovyScriptRunner scriptRunner = new GroovyScriptRunner(100,GroovyScriptRunner.TransactionMode.COMMIT);
         scriptRunner.compile(script);
         GroovyRunningScript<Void> runningScript = new GroovyRunningScript<>(script,
                 Void.class,
-                GroovyBindObjectBuilder.builder().add("request",request),
-                GroovyBindObjectBuilder.builder().add("$repository",myTestRepository)
+                GroovyBindObjectBuilder.builder().add("$repository",myTestRepository),
+                GroovyBindObjectBuilder.builder().add("request",request)
         );
 
         long t1 = System.currentTimeMillis();
@@ -61,7 +61,7 @@ class TransactionGroovyScriptRunningContextTest {
         String script = """
                 def run(request){
                     request.addData($repository);
-                    println($request.count);
+                    println(request.count);
                 }
                 """;
 
@@ -72,13 +72,13 @@ class TransactionGroovyScriptRunningContextTest {
         List<MyTest> list = myTestRepository.findAll();
         assertTrue(list.isEmpty());
 
-        GroovyScriptRunner scriptRunner = new GroovyScriptRunner(100, true);
+        GroovyScriptRunner scriptRunner = new GroovyScriptRunner(100, GroovyScriptRunner.TransactionMode.READONLY);
         scriptRunner.compile(script);
 
         GroovyRunningScript<Void> runningScript = new GroovyRunningScript<>(script,
                 Void.class,
-                GroovyBindObjectBuilder.builder().add("request",request),
-                GroovyBindObjectBuilder.builder().add("$repository",myTestRepository)
+                GroovyBindObjectBuilder.builder().add("$repository",myTestRepository),
+                GroovyBindObjectBuilder.builder().add("request",request)
         );
 
         long t1 = System.currentTimeMillis();
