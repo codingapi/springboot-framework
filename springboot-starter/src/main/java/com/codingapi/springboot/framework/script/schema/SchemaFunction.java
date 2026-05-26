@@ -21,20 +21,16 @@ public class SchemaFunction {
     @Getter
     private String returnType;
     @Getter
-    private List<SchemaField> requests;
-
-    public SchemaFunction(GroovyFunction function) {
-        this(function,null);
-    }
+    private List<SchemaField> parameters;
 
     public SchemaFunction(GroovyFunction function,GroovySchema schema) {
         this.name = function.getName();
         this.description = function.getDescription();
         this.returnType = function.getReturnType().getDataClassName();
-        this.requests = new ArrayList<>();
+        this.parameters = new ArrayList<>();
 
-        for(GroovyType request: function.getRequests()){
-            this.requests.add(new SchemaField(request,schema));
+        for(GroovyType request: function.getParameters()){
+            this.parameters.add(new SchemaField(request,schema));
         }
 
         if(schema!=null){

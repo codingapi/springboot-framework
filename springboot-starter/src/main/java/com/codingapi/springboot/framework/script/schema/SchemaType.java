@@ -20,9 +20,16 @@ public class SchemaType {
 
     private final GroovySchema schema;
 
+    public SchemaType(List<SchemaFunction> functions, List<SchemaField> fields) {
+        this.functions = functions;
+        this.fields = fields;
+        this.schema = null;
+    }
+
     public boolean isEmpty(){
         return (fields==null || fields.isEmpty()) && (functions==null || functions.isEmpty());
     }
+
 
     public SchemaType(GroovyType groovyType,GroovySchema schema) {
         this.schema = schema;

@@ -87,7 +87,7 @@ public class GroovyTypeParser {
                         if (methodParameter != null) {
                             GroovyType requestObject = TempGroovyTypeCache.getInstance().getOrCreate(methodParameter.getType());
                             this.resetObjectMeta(requestObject, parameter);
-                            groovyFunction.addRequest(requestObject);
+                            groovyFunction.addParameter(requestObject);
                         }
                     }
                 }

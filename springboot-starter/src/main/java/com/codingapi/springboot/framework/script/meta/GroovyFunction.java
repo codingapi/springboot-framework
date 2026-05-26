@@ -32,14 +32,14 @@ public class GroovyFunction {
     /**
      * 参数类型
      */
-    private List<GroovyType> requests;
+    private List<GroovyType> parameters;
 
 
-    public void addRequest(GroovyType request){
-        if(this.requests ==null){
-            this.requests = new ArrayList<>();
+    public void addParameter(GroovyType parameter){
+        if(this.parameters ==null){
+            this.parameters = new ArrayList<>();
         }
-        this.requests.add(request);
+        this.parameters.add(parameter);
     }
 
 }
