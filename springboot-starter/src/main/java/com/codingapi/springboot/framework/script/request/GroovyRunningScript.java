@@ -1,5 +1,6 @@
 package com.codingapi.springboot.framework.script.request;
 
+import com.codingapi.springboot.framework.script.GroovyMetadataReloadGatewayContext;
 import com.codingapi.springboot.framework.script.meta.GroovyMetadata;
 import com.codingapi.springboot.framework.script.service.GroovyMetadataParserService;
 import lombok.Getter;
@@ -84,16 +85,22 @@ public class GroovyRunningScript<T> {
         return objects.toArray();
     }
 
+    /**
+     * 重新设置脚本元数据信息
+     * @param metadata 脚本元数据信息
+     */
     public void resetMetadata(GroovyMetadata metadata) {
         this.metadata = metadata;
+        GroovyMetadataReloadGatewayContext.getInstance().reload(this.metadata);
     }
 
     /**
-     * 构建元数据信息
+     * 构建脚本元数据信息
      */
     public void buildMetadata() {
         GroovyMetadataParserService groovyMetaDataParserService = new GroovyMetadataParserService(this);
         this.metadata = groovyMetaDataParserService.parser();
+        GroovyMetadataReloadGatewayContext.getInstance().reload(this.metadata);
     }
 
 }
