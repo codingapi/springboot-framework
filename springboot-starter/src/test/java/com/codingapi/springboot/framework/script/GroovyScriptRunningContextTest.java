@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class GroovyScriptRunningContextTest {
 
     @Test
-    void voidRun() {
+    void voidInvoke() {
 
         String script = """
                 def run(request){
@@ -26,7 +26,7 @@ class GroovyScriptRunningContextTest {
         );
 
         long t1 = System.currentTimeMillis();
-        GroovyScriptRunningContext.getInstance().run(request);
+        GroovyScriptRunningContext.getInstance().invoke(request);
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
 
@@ -53,7 +53,7 @@ class GroovyScriptRunningContextTest {
         assertEquals(1, runningScript.getMetadata().getRequests().size());
 
         long t1 = System.currentTimeMillis();
-        int result = GroovyScriptRunningContext.getInstance().run(runningScript);
+        int result = GroovyScriptRunningContext.getInstance().invoke(runningScript);
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
         assertEquals(100, result);
@@ -61,6 +61,26 @@ class GroovyScriptRunningContextTest {
 
     @Test
     void run() {
+
+        String script = " return $request; ";
+
+        GroovyRunningScript<Integer> request = new GroovyRunningScript<>(
+                script,
+                Integer.class,
+                GroovyBindObjectBuilder.builder().add("$request", 100),
+                null
+        );
+
+        long t1 = System.currentTimeMillis();
+        int result = GroovyScriptRunningContext.getInstance().invoke(request);
+        long t2 = System.currentTimeMillis();
+        System.out.println("groovy time:" + (t2 - t1));
+
+        assertEquals(100, result);
+    }
+
+    @Test
+    void invoke() {
 
         String script = """
                 def run(request){
@@ -74,7 +94,7 @@ class GroovyScriptRunningContextTest {
         );
 
         long t1 = System.currentTimeMillis();
-        int result = GroovyScriptRunningContext.getInstance().run(request);
+        int result = GroovyScriptRunningContext.getInstance().invoke(request);
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
 
@@ -82,12 +102,12 @@ class GroovyScriptRunningContextTest {
     }
 
     @Test
-    void batchTest() {
+    void batchInvoke() {
         int count = 100;
-        run();
+        invoke();
         long t1 = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
-            run();
+            invoke();
         }
         long t2 = System.currentTimeMillis();
         System.out.println("total time:" + (t2 - t1));

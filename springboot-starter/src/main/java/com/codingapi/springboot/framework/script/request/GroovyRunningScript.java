@@ -76,8 +76,10 @@ public class GroovyRunningScript<T> {
      */
     public Object[] getParams() {
         List<Object> objects = new ArrayList<>();
-        for(GroovyBindObject bindObject:this.requests){
-            objects.add(bindObject.getObject());
+        if(this.requests!=null) {
+            for (GroovyBindObject bindObject : this.requests) {
+                objects.add(bindObject.getObject());
+            }
         }
         return objects.toArray();
     }

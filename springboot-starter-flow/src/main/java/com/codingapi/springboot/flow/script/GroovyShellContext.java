@@ -20,7 +20,7 @@ public class GroovyShellContext {
 
 
     public <T> T run(String script, Class<T> returnType, Object... args) {
-        return scriptRunner.run("run", script, returnType, args);
+        return scriptRunner.invoke("run", script, returnType, args);
     }
 
 

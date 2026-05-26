@@ -29,7 +29,7 @@ public class GroovyScriptRunner {
     private final TransactionMode transactionMode;
 
 
-    public static enum TransactionMode {
+    public enum TransactionMode {
         // 默认不处理
         DEFAULT,
         // 事务提交模式
@@ -101,7 +101,7 @@ public class GroovyScriptRunner {
     }
 
     /**
-     * 执行脚本
+     * 执行函数脚本
      *
      * @param method     函数名称
      * @param script     脚本内容
@@ -110,7 +110,7 @@ public class GroovyScriptRunner {
      * @param args       函数参数
      * @return 返回数据
      */
-    public <T> T run(String method, String script, Class<T> returnType, List<GroovyBindObject> binds, Object... args) {
+    public <T> T invoke(String method, String script, Class<T> returnType, List<GroovyBindObject> binds, Object... args) {
         String key = SHA256.sha256(script);
         Script runtime = this.cache.get(key);
         if (runtime == null) {
@@ -127,7 +127,7 @@ public class GroovyScriptRunner {
         // 事务制只读模式
         if (transactionMode == TransactionMode.READONLY) {
             Script finalRuntime = runtime;
-            return TransactionManagerContext.getInstance().readOnly(()->{
+            return TransactionManagerContext.getInstance().readOnly(() -> {
                 return (T) finalRuntime.invokeMethod(method, args);
             });
         }
@@ -135,7 +135,7 @@ public class GroovyScriptRunner {
         // 事务制提交模式
         if (transactionMode == TransactionMode.COMMIT) {
             Script finalRuntime = runtime;
-            return TransactionManagerContext.getInstance().commit(()->{
+            return TransactionManagerContext.getInstance().commit(() -> {
                 return (T) finalRuntime.invokeMethod(method, args);
             });
         }
@@ -146,7 +146,61 @@ public class GroovyScriptRunner {
 
 
     /**
-     * 运行脚本
+     * 执行脚本
+     *
+     * @param script     脚本
+     * @param returnType 返回数据类型
+     * @param binds      绑定对象
+     * @return 返回数据
+     */
+    public <T> T run(String script, Class<T> returnType, List<GroovyBindObject> binds) {
+        String key = SHA256.sha256(script);
+        Script runtime = this.cache.get(key);
+        if (runtime == null) {
+            runtime = this.shell.parse(script);
+            this.cache.put(key, runtime);
+        }
+
+        if (binds != null && !binds.isEmpty()) {
+            for (GroovyBindObject groovyBindObject : binds) {
+                runtime.setProperty(groovyBindObject.getName(), groovyBindObject.getObject());
+            }
+        }
+
+        // 事务制只读模式
+        if (transactionMode == TransactionMode.READONLY) {
+            Script finalRuntime = runtime;
+            return TransactionManagerContext.getInstance().readOnly(() -> {
+                return (T) finalRuntime.run();
+            });
+        }
+
+        // 事务制提交模式
+        if (transactionMode == TransactionMode.COMMIT) {
+            Script finalRuntime = runtime;
+            return TransactionManagerContext.getInstance().commit(() -> {
+                return (T) finalRuntime.run();
+            });
+        }
+
+        // 默认处理模式
+        return (T) runtime.run();
+    }
+
+
+    /**
+     * 执行脚本
+     *
+     * @param script     脚本
+     * @param returnType 返回类型
+     * @return 返回数据
+     */
+    public <T> T run(String script, Class<T> returnType) {
+        return this.run(script, returnType, null);
+    }
+
+    /**
+     * 执行函数脚本
      *
      * @param method     函数名称
      * @param script     脚本内容
@@ -154,19 +208,19 @@ public class GroovyScriptRunner {
      * @param args       函数参数
      * @return 返回数据
      */
-    public <T> T run(String method, String script, Class<T> returnType, Object... args) {
-        return this.run(method, script, returnType, null, args);
+    public <T> T invoke(String method, String script, Class<T> returnType, Object... args) {
+        return this.invoke(method, script, returnType, null, args);
     }
 
 
     /**
-     * 执行脚本
+     * 执行函数脚本
      *
      * @param request 脚本参数
      * @return 返回数据
      */
-    public <T> T run(GroovyRunningScript<T> request) {
-        return this.run(request.getMethod(), request.getScript(), request.getReturnType(), request.getBinds(), request.getParams());
+    public <T> T invoke(GroovyRunningScript<T> request) {
+        return this.invoke(request.getMethod(), request.getScript(), request.getReturnType(), request.getBinds(), request.getParams());
     }
 
 }

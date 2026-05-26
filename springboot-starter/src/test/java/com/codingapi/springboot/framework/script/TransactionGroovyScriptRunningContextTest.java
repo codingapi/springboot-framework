@@ -46,7 +46,7 @@ class TransactionGroovyScriptRunningContextTest {
         );
 
         long t1 = System.currentTimeMillis();
-        scriptRunner.run(runningScript);
+        scriptRunner.invoke(runningScript);
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
 
@@ -82,7 +82,7 @@ class TransactionGroovyScriptRunningContextTest {
         );
 
         long t1 = System.currentTimeMillis();
-        scriptRunner.run(runningScript);
+        scriptRunner.invoke(runningScript);
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
 

@@ -29,7 +29,7 @@ public class ScriptMapping {
 
     @ResponseBody
     Response execute() {
-        Object result = ScriptRuntime.running(script);
+        Object result = ScriptRuntime.getInstance().running(script);
         if (result instanceof List || result.getClass().isArray()) {
             return SingleResponse.of(result);
         } else {

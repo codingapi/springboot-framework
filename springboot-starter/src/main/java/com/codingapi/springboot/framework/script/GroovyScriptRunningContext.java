@@ -64,7 +64,30 @@ public class GroovyScriptRunningContext {
     }
 
     /**
-     * 执行脚本
+     * 执行函数脚本
+     *
+     * @param script     脚本内容
+     * @param returnType 返回类型
+     * @return 返回数据
+     */
+    public <T> T run(String script, Class<T> returnType) {
+        return this.scriptRunner.run(script, returnType, null);
+    }
+
+    /**
+     * 执行函数脚本
+     *
+     * @param script     脚本内容
+     * @param returnType 返回类型
+     * @param binds      绑定数据对象
+     * @return 返回数据
+     */
+    public <T> T run(String script, Class<T> returnType, List<GroovyBindObject> binds) {
+        return this.scriptRunner.run(script, returnType, binds);
+    }
+
+    /**
+     * 执行函数脚本
      *
      * @param method     函数名称
      * @param script     脚本内容
@@ -73,8 +96,8 @@ public class GroovyScriptRunningContext {
      * @param args       函数参数
      * @return 返回数据
      */
-    public <T> T run(String method, String script, Class<T> returnType, List<GroovyBindObject> binds, Object... args) {
-        return this.scriptRunner.run(method,script,returnType,binds,args);
+    public <T> T invoke(String method, String script, Class<T> returnType, List<GroovyBindObject> binds, Object... args) {
+        return this.scriptRunner.invoke(method, script, returnType, binds, args);
     }
 
     /**
@@ -86,8 +109,8 @@ public class GroovyScriptRunningContext {
      * @param args       函数参数
      * @return 返回数据
      */
-    public <T> T run(String method, String script, Class<T> returnType, Object... args) {
-        return this.run(method, script, returnType, null, args);
+    public <T> T invoke(String method, String script, Class<T> returnType, Object... args) {
+        return this.invoke(method, script, returnType, null, args);
     }
 
 
@@ -97,8 +120,8 @@ public class GroovyScriptRunningContext {
      * @param request 脚本参数
      * @return 返回数据
      */
-    public <T> T run(GroovyRunningScript<T> request) {
-        return this.run(request.getMethod(), request.getScript(), request.getReturnType(), request.getBinds(), request.getParams());
+    public <T> T invoke(GroovyRunningScript<T> request) {
+        return this.invoke(request.getMethod(), request.getScript(), request.getReturnType(), request.getBinds(), request.getParams());
     }
 
 }
