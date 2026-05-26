@@ -4,11 +4,13 @@ import com.codingapi.springboot.framework.entity.MyTest;
 import com.codingapi.springboot.framework.repository.MyTestRepository;
 import com.codingapi.springboot.framework.script.annotation.ScriptField;
 import com.codingapi.springboot.framework.script.annotation.ScriptFunction;
+import com.codingapi.springboot.framework.script.annotation.ScriptType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
+@ScriptType(description = "我的测试对象")
 public class MyScriptRequest {
 
     @ScriptField(name = "count", description = "总数量")
