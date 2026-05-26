@@ -44,10 +44,8 @@ class TempGroovyTypeCache {
         }
         GroovyType object = map.get(clazz);
         if (object == null) {
-            object = new GroovyType();
-            object.setDataType(clazz);
-            object.initFields();
-            object.initFunctions();
+            GroovyTypeParser parser = new GroovyTypeParser(clazz);
+            object = parser.parser();
             map.put(clazz, object);
         }
         return object.cacheFieldsAndMethods();

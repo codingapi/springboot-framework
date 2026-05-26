@@ -2,6 +2,7 @@ package com.codingapi.springboot.framework.script;
 
 import com.codingapi.springboot.framework.script.request.GroovyRunningScript;
 import com.codingapi.springboot.framework.script.request.MyScriptRequest;
+import com.codingapi.springboot.framework.script.schema.GroovySchema;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,6 +41,8 @@ class GroovyScriptRunningContextTest {
         MyScriptRequest request = new MyScriptRequest(100);
         GroovyRunningScript<Integer> runningScript = new GroovyRunningScript<>(script, Integer.class, request);
 
+        GroovySchema schema = runningScript.getGroovyMetadata().toSchema();
+        System.out.println(schema.toJson());
         assertEquals(1,runningScript.getGroovyMetadata().getRequests().size());
 
         long t1 = System.currentTimeMillis();

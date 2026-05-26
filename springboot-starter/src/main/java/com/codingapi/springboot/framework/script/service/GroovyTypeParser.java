@@ -20,8 +20,10 @@ public class GroovyTypeParser {
 
     public GroovyTypeParser(Class<?> clazz) {
         this.clazz = clazz;
-        this.object = TempGroovyTypeCache.getInstance().getOrCreate(clazz);
+        this.object = new GroovyType();
         this.object.setDataType(clazz);
+        this.object.initFields();
+        this.object.initFunctions();
     }
 
 

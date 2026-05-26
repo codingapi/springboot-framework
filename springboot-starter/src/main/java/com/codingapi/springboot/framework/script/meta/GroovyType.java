@@ -51,6 +51,10 @@ public class GroovyType {
         }
     }
 
+    public String getDataClassName(){
+        return dataType.getSimpleName();
+    }
+
 
     public void initFunctions(){
         if(this.functions==null){

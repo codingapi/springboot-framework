@@ -1,5 +1,6 @@
 package com.codingapi.springboot.framework.script.meta;
 
+import com.codingapi.springboot.framework.script.schema.GroovySchema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,5 +50,9 @@ public class GroovyMetadata {
         this.binds.add(bind);
     }
 
+
+    public GroovySchema toSchema(){
+        return new GroovySchema(this);
+    }
 
 }
