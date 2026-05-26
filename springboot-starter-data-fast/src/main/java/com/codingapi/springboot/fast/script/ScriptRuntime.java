@@ -4,28 +4,36 @@ import com.codingapi.springboot.fast.jdbc.JdbcQuery;
 import com.codingapi.springboot.fast.jdbc.JdbcQueryContext;
 import com.codingapi.springboot.fast.jpa.JpaQuery;
 import com.codingapi.springboot.fast.jpa.JpaQueryContext;
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
-import groovy.lang.Script;
+import com.codingapi.springboot.framework.script.GroovyScriptRunner;
+import com.codingapi.springboot.framework.script.request.GroovyBindObjectBuilder;
+import lombok.Getter;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 
 public class ScriptRuntime {
 
-    static Object running(String script) {
-        Binding binding = new Binding();
+
+    @Getter
+    private final static ScriptRuntime instance = new ScriptRuntime();
+
+    private final GroovyScriptRunner scriptRunner;
+
+    private ScriptRuntime(){
+        this.scriptRunner = new GroovyScriptRunner(1000);
+    }
+
+    Object running(String script) {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         ScriptRequest request = new ScriptRequest(attributes.getRequest());
         JdbcQuery jdbcQuery = JdbcQueryContext.getInstance().getJdbcQuery();
         JpaQuery jpaQuery = JpaQueryContext.getInstance().getJpaQuery();
 
-        binding.setVariable("$request", request);
-        binding.setVariable("$jpa", jpaQuery);
-        binding.setVariable("$jdbc", jdbcQuery);
+        GroovyBindObjectBuilder bindBuilder = GroovyBindObjectBuilder.builder();
+        bindBuilder.add("$request", request);
+        bindBuilder.add("$jpa", jpaQuery);
+        bindBuilder.add("$jdbc", jdbcQuery);
 
-        GroovyShell groovyShell = new GroovyShell(binding);
-        Script userScript = groovyShell.parse(script);
-        return userScript.run();
+        return this.scriptRunner.run(script,Object.class,bindBuilder.build());
     }
 }

@@ -2,6 +2,7 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.codingapi.springboot.framework.AutoConfiguration,\
 com.codingapi.springboot.framework.event.SpringEventConfiguration,\
 com.codingapi.springboot.framework.exception.ExceptionConfiguration,\
+com.codingapi.springboot.framework.transaction.TransactionManagerContextConfiguration,\
 com.codingapi.springboot.framework.event.HandlerBeanDefinitionRegistrar,\
 com.codingapi.springboot.framework.event.SpringHandlerConfiguration,\
 com.codingapi.springboot.framework.servlet.BasicHandlerExceptionResolverConfiguration
