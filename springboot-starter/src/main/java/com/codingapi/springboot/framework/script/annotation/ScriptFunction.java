@@ -3,7 +3,7 @@ package com.codingapi.springboot.framework.script.annotation;
 import java.lang.annotation.*;
 
 /**
- *  脚本函数对象定义
+ *  脚本函数
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
@@ -23,6 +23,6 @@ public @interface ScriptFunction {
     /**
      * 参数
      */
-    ScriptType[] parameters() default {};
+    ScriptField[] parameters() default {};
 
 }

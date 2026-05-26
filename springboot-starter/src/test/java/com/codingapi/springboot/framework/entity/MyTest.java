@@ -1,6 +1,6 @@
 package com.codingapi.springboot.framework.entity;
 
-import com.codingapi.springboot.framework.script.annotation.ScriptType;
+import com.codingapi.springboot.framework.script.annotation.ScriptField;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,14 +9,13 @@ import lombok.Data;
 
 @Data
 @Entity
-@ScriptType
 public class MyTest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ScriptType(name = "id", description = "id")
+    @ScriptField(name = "id", description = "id")
     private Long id;
 
-    @ScriptType(name = "name", description = "name")
+    @ScriptField(name = "name", description = "name")
     private String name;
 }

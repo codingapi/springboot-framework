@@ -113,7 +113,7 @@ public class GroovyScriptRunner {
 
         if (binds != null && !binds.isEmpty()) {
             for (GroovyBindObject groovyBindObject : binds) {
-                runtime.setProperty(groovyBindObject.getKey(), groovyBindObject.getObject());
+                runtime.setProperty(groovyBindObject.getName(), groovyBindObject.getObject());
             }
         }
 

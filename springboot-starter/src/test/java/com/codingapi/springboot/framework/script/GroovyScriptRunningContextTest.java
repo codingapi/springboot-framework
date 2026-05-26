@@ -1,8 +1,8 @@
 package com.codingapi.springboot.framework.script;
 
+import com.codingapi.springboot.framework.script.request.GroovyBindObjectBuilder;
 import com.codingapi.springboot.framework.script.request.GroovyRunningScript;
 import com.codingapi.springboot.framework.script.request.MyScriptRequest;
-import com.codingapi.springboot.framework.script.schema.GroovySchema;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,13 +14,16 @@ class GroovyScriptRunningContextTest {
 
         String script = """
                 def run(request){
-                    println($request.getRequests())
+                    println(request)
                 }
                 """;
         GroovyScriptRunningContext.getInstance().compile(script);
 
-        GroovyRunningScript<Void> request = new GroovyRunningScript<>(script, Void.class, 100);
-        request.addBindObject("$request", request);
+        GroovyRunningScript<Void> request = new GroovyRunningScript<>(
+                script,
+                Void.class,
+                GroovyBindObjectBuilder.builder().add("request", 100)
+        );
 
         long t1 = System.currentTimeMillis();
         GroovyScriptRunningContext.getInstance().run(request);
@@ -31,7 +34,7 @@ class GroovyScriptRunningContextTest {
 
 
     @Test
-    void metaTest(){
+    void metaTest() {
         String script = """
                 def run(request){
                     return request.count;
@@ -39,11 +42,15 @@ class GroovyScriptRunningContextTest {
                 """;
 
         MyScriptRequest request = new MyScriptRequest(100);
-        GroovyRunningScript<Integer> runningScript = new GroovyRunningScript<>(script, Integer.class, request);
+        GroovyRunningScript<Integer> runningScript = new GroovyRunningScript<>(
+                script,
+                Integer.class,
+                GroovyBindObjectBuilder.builder().add("request", request)
+        );
 
-        GroovySchema schema = runningScript.getGroovyMetadata().toSchema();
-        System.out.println(schema.toJson());
-        assertEquals(1,runningScript.getGroovyMetadata().getRequests().size());
+        runningScript.buildMetadata();
+        System.out.println(runningScript.getMetadata());
+        assertEquals(1, runningScript.getMetadata().getRequests().size());
 
         long t1 = System.currentTimeMillis();
         int result = GroovyScriptRunningContext.getInstance().run(runningScript);
@@ -57,13 +64,14 @@ class GroovyScriptRunningContextTest {
 
         String script = """
                 def run(request){
-                    println($request.getRequests())
                     return request;
                 }
                 """;
 
-        GroovyRunningScript<Integer> request = new GroovyRunningScript<>(script, Integer.class, 100);
-        request.addBindObject("$request", request);
+        GroovyRunningScript<Integer> request = new GroovyRunningScript<>(script,
+                Integer.class,
+                GroovyBindObjectBuilder.builder().add("request", 100)
+        );
 
         long t1 = System.currentTimeMillis();
         int result = GroovyScriptRunningContext.getInstance().run(request);

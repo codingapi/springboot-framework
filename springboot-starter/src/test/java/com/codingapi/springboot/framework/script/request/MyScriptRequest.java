@@ -2,23 +2,19 @@ package com.codingapi.springboot.framework.script.request;
 
 import com.codingapi.springboot.framework.entity.MyTest;
 import com.codingapi.springboot.framework.repository.MyTestRepository;
+import com.codingapi.springboot.framework.script.annotation.ScriptField;
 import com.codingapi.springboot.framework.script.annotation.ScriptFunction;
-import com.codingapi.springboot.framework.script.annotation.ScriptType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@ScriptType(
-        name = "request",
-        description = "请求参数"
-)
 @AllArgsConstructor
 public class MyScriptRequest {
 
-    @ScriptType(name = "count", description = "总数量")
+    @ScriptField(name = "count", description = "总数量")
     private final int count;
 
-    @ScriptType(name = "test", description = "test")
+    @ScriptField(name = "test", description = "test")
     private MyTest test;
 
 
@@ -26,7 +22,7 @@ public class MyScriptRequest {
             name = "isSupport",
             description = "是否匹配",
             parameters = {
-                    @ScriptType(name = "count", description = "描述信息")
+                    @ScriptField(name = "count", description = "描述信息")
             }
     )
     public boolean isSupport(int count) {

@@ -3,10 +3,8 @@ package com.codingapi.springboot.framework.script.request;
 import com.codingapi.springboot.framework.script.meta.GroovyMetadata;
 import com.codingapi.springboot.framework.script.service.GroovyMetadataParserService;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -35,71 +33,65 @@ public class GroovyRunningScript<T> {
     /**
      * 请求参数对象
      */
-    private final List<Object> requests;
+    private final List<GroovyBindObject> requests;
 
     /**
      * 绑定数据对象
      */
-    private List<GroovyBindObject> binds;
+    private final List<GroovyBindObject> binds;
 
     /**
      * 脚本元数据信息
      */
-    @Setter
-    private GroovyMetadata groovyMetadata;
+    private GroovyMetadata metadata;
 
 
-    public GroovyRunningScript(String method, String script, Class<T> returnType, GroovyMetadata groovyMetadata, List<GroovyBindObject> binds, Object... requests) {
+    public GroovyRunningScript(String method, String script, Class<T> returnType, List<GroovyBindObject> binds, List<GroovyBindObject> requests) {
         this.method = method;
         this.script = script;
         this.returnType = returnType;
-        this.requests = new ArrayList<>();
+        this.requests = requests;
         this.binds = binds;
-        if (requests != null) {
-            this.requests.addAll(Arrays.asList(requests));
-        }
-        this.groovyMetadata = groovyMetadata;
-
-        if (this.groovyMetadata == null) {
-            this.resetMetaData();
-        }
     }
 
-    public GroovyRunningScript(String script, Class<T> returnType, GroovyMetadata groovyMetadata, List<GroovyBindObject> binds, Object... request) {
-        this("run", script, returnType, groovyMetadata, binds, request);
+    public GroovyRunningScript(String method, String script, Class<T> returnType, GroovyBindObjectBuilder bindBuilder, GroovyBindObjectBuilder requestBuilder) {
+        this(method, script, returnType, bindBuilder != null ? bindBuilder.build() : null, requestBuilder != null ? requestBuilder.build() : null);
     }
 
-    public GroovyRunningScript(String script, Class<T> returnType, Object... request) {
-        this("run", script, returnType, null, null, request);
+
+    public GroovyRunningScript(String method, String script, Class<T> returnType, GroovyBindObjectBuilder requestBuilder) {
+        this(method, script, returnType, null, requestBuilder);
+    }
+
+    public GroovyRunningScript(String script, Class<T> returnType, GroovyBindObjectBuilder bindBuilder, GroovyBindObjectBuilder requestBuilder) {
+        this("run", script, returnType, bindBuilder, requestBuilder);
+    }
+
+    public GroovyRunningScript(String script, Class<T> returnType, GroovyBindObjectBuilder requestBuilder) {
+        this("run", script, returnType, null, requestBuilder);
     }
 
     /**
      * 获取参数
      */
     public Object[] getParams() {
-        return this.requests.toArray();
-    }
-
-    /**
-     * 添加绑定对象
-     *
-     * @param key  绑定key
-     * @param bind 绑定对象
-     */
-    public void addBindObject(String key, Object bind) {
-        if(this.binds==null){
-            this.binds = new ArrayList<>();
+        List<Object> objects = new ArrayList<>();
+        for(GroovyBindObject bindObject:this.requests){
+            objects.add(bindObject.getObject());
         }
-        this.binds.add(new GroovyBindObject(key, bind));
-        this.resetMetaData();
+        return objects.toArray();
+    }
+
+    public void resetMetadata(GroovyMetadata metadata) {
+        this.metadata = metadata;
     }
 
     /**
-     * 重置元数据对象
+     * 构建元数据信息
      */
-    private void resetMetaData() {
+    public void buildMetadata() {
         GroovyMetadataParserService groovyMetaDataParserService = new GroovyMetadataParserService(this);
-        this.groovyMetadata = groovyMetaDataParserService.parser();
+        this.metadata = groovyMetaDataParserService.parser();
     }
 
 }

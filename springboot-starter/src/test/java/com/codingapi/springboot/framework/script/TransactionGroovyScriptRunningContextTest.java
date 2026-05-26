@@ -2,6 +2,7 @@ package com.codingapi.springboot.framework.script;
 
 import com.codingapi.springboot.framework.entity.MyTest;
 import com.codingapi.springboot.framework.repository.MyTestRepository;
+import com.codingapi.springboot.framework.script.request.GroovyBindObjectBuilder;
 import com.codingapi.springboot.framework.script.request.GroovyRunningScript;
 import com.codingapi.springboot.framework.script.request.MyScriptRequest;
 import org.junit.jupiter.api.Test;
@@ -38,9 +39,11 @@ class TransactionGroovyScriptRunningContextTest {
         assertTrue(list.isEmpty());
         GroovyScriptRunner scriptRunner = new GroovyScriptRunner(100);
         scriptRunner.compile(script);
-        GroovyRunningScript<Void> runningScript = new GroovyRunningScript<>(script, Void.class, request);
-        runningScript.addBindObject("$request", request);
-        runningScript.addBindObject("$repository", myTestRepository);
+        GroovyRunningScript<Void> runningScript = new GroovyRunningScript<>(script,
+                Void.class,
+                GroovyBindObjectBuilder.builder().add("request",request),
+                GroovyBindObjectBuilder.builder().add("$repository",myTestRepository)
+        );
 
         long t1 = System.currentTimeMillis();
         scriptRunner.run(runningScript);
@@ -72,9 +75,11 @@ class TransactionGroovyScriptRunningContextTest {
         GroovyScriptRunner scriptRunner = new GroovyScriptRunner(100, true);
         scriptRunner.compile(script);
 
-        GroovyRunningScript<Void> runningScript = new GroovyRunningScript<>(script, Void.class, request);
-        runningScript.addBindObject("$request", request);
-        runningScript.addBindObject("$repository", myTestRepository);
+        GroovyRunningScript<Void> runningScript = new GroovyRunningScript<>(script,
+                Void.class,
+                GroovyBindObjectBuilder.builder().add("request",request),
+                GroovyBindObjectBuilder.builder().add("$repository",myTestRepository)
+        );
 
         long t1 = System.currentTimeMillis();
         scriptRunner.run(runningScript);

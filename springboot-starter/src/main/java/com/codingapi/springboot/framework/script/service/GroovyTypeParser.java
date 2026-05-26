@@ -1,8 +1,10 @@
 package com.codingapi.springboot.framework.script.service;
 
+import com.codingapi.springboot.framework.script.annotation.ScriptField;
 import com.codingapi.springboot.framework.script.annotation.ScriptFunction;
-import com.codingapi.springboot.framework.script.annotation.ScriptType;
+import com.codingapi.springboot.framework.script.meta.GroovyField;
 import com.codingapi.springboot.framework.script.meta.GroovyFunction;
+import com.codingapi.springboot.framework.script.meta.GroovyMetadata;
 import com.codingapi.springboot.framework.script.meta.GroovyType;
 import org.springframework.util.StringUtils;
 
@@ -21,39 +23,33 @@ public class GroovyTypeParser {
 
     private final GroovyType object;
 
-    public GroovyTypeParser(Class<?> clazz) {
+    private final GroovyMetadata metadata;
+
+    public GroovyTypeParser(Class<?> clazz, GroovyMetadata metadata) {
         this.clazz = clazz;
+        this.metadata = metadata;
         this.object = new GroovyType();
-        this.object.setDataType(clazz);
-        this.object.initFields();
-        this.object.initFunctions();
     }
 
-
-    private void resetObjectMeta(GroovyType target, ScriptType scriptType) {
-        if (StringUtils.hasText(scriptType.name())) {
-            target.setName(scriptType.name());
-        }
-        if (StringUtils.hasText(scriptType.description())) {
-            target.setDescription(scriptType.description());
-        }
-    }
-
-    private void loadObjectMeta() {
-        ScriptType scriptType = clazz.getAnnotation(ScriptType.class);
-        if (scriptType != null) {
-            this.resetObjectMeta(object, scriptType);
-        }
-    }
 
     private void loadFields() {
         Field[] fields = this.clazz.getDeclaredFields();
         for (Field field : fields) {
-            ScriptType scriptType = field.getAnnotation(ScriptType.class);
-            if (scriptType != null) {
-                GroovyType groovyType = TempGroovyTypeCache.getInstance().getOrCreate(field.getType());
-                this.resetObjectMeta(groovyType, scriptType);
-                this.object.addField(groovyType);
+            ScriptField scriptField = field.getAnnotation(ScriptField.class);
+            if (scriptField != null) {
+                Class<?> clazz = field.getType();
+                this.metadata.buildType(field.getType());
+                GroovyField groovyField = new GroovyField();
+                groovyField.setDataType(clazz.getSimpleName());
+                groovyField.setName(field.getName());
+
+                if (StringUtils.hasText(scriptField.name())) {
+                    groovyField.setName(scriptField.name());
+                }
+                if (StringUtils.hasText(scriptField.description())) {
+                    groovyField.setDescription(scriptField.description());
+                }
+                this.object.addField(groovyField);
             }
         }
     }
@@ -64,10 +60,10 @@ public class GroovyTypeParser {
             ScriptFunction scriptFunction = method.getAnnotation(ScriptFunction.class);
             if (scriptFunction != null) {
                 GroovyFunction groovyFunction = new GroovyFunction();
+                groovyFunction.setName(method.getName());
+
                 if (StringUtils.hasText(scriptFunction.name())) {
                     groovyFunction.setName(scriptFunction.name());
-                } else {
-                    groovyFunction.setName(method.getName());
                 }
 
                 if (StringUtils.hasText(scriptFunction.description())) {
@@ -80,20 +76,32 @@ public class GroovyTypeParser {
                     parameterMap.put(parameter.getName(), parameter);
                 }
 
-                ScriptType[] parameters = scriptFunction.parameters();
+                ScriptField[] parameters = scriptFunction.parameters();
                 if (parameters != null) {
-                    for (ScriptType parameter : parameters) {
+                    for (ScriptField parameter : parameters) {
                         Parameter methodParameter = parameterMap.get(parameter.name());
                         if (methodParameter != null) {
-                            GroovyType requestObject = TempGroovyTypeCache.getInstance().getOrCreate(methodParameter.getType());
-                            this.resetObjectMeta(requestObject, parameter);
-                            groovyFunction.addParameter(requestObject);
+                            Class<?> clazz = methodParameter.getType();
+                            this.metadata.buildType(clazz);
+
+                            GroovyField groovyParameter = new GroovyField();
+                            groovyParameter.setDataType(clazz.getSimpleName());
+                            groovyParameter.setName(methodParameter.getName());
+
+                            if (StringUtils.hasText(parameter.name())) {
+                                groovyParameter.setName(parameter.name());
+                            }
+                            if (StringUtils.hasText(parameter.description())) {
+                                groovyParameter.setDescription(parameter.description());
+                            }
+
+                            groovyFunction.addParameter(groovyParameter);
                         }
                     }
                 }
 
                 Class<?> returnType = method.getReturnType();
-                groovyFunction.setReturnType(TempGroovyTypeCache.getInstance().getOrCreate(returnType));
+                this.metadata.buildType(returnType);
                 this.object.addFunction(groovyFunction);
             }
         }
@@ -101,7 +109,6 @@ public class GroovyTypeParser {
 
 
     public GroovyType parser() {
-        this.loadObjectMeta();
         this.loadFields();
         this.loadMethods();
         return this.object;
