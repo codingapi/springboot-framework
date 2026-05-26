@@ -1,5 +1,7 @@
 package com.codingapi.springboot.framework.script;
 
+import com.alibaba.fastjson.JSON;
+import com.codingapi.springboot.framework.script.meta.GroovyMetadata;
 import com.codingapi.springboot.framework.script.request.GroovyBindObjectBuilder;
 import com.codingapi.springboot.framework.script.request.GroovyRunningScript;
 import com.codingapi.springboot.framework.script.request.MyScriptRequest;
@@ -36,20 +38,29 @@ class GroovyScriptRunningContextTest {
     @Test
     void metaTest() {
         String script = """
+                
+                def test(request){
+                    return request.count
+                }
+                
                 def run(request){
-                    return request.count;
+                    return test(request);
                 }
                 """;
 
         MyScriptRequest request = new MyScriptRequest(100);
+
+        System.out.println(int[].class.getSimpleName());
+
         GroovyRunningScript<Integer> runningScript = new GroovyRunningScript<>(
                 script,
                 Integer.class,
+                GroovyBindObjectBuilder.builder().add("$request", request),
                 GroovyBindObjectBuilder.builder().add("request", request)
         );
 
         runningScript.buildMetadata();
-        System.out.println(runningScript.getMetadata());
+        System.out.println(JSON.toJSONString(runningScript.getMetadata()));
         assertEquals(1, runningScript.getMetadata().getRequests().size());
 
         long t1 = System.currentTimeMillis();

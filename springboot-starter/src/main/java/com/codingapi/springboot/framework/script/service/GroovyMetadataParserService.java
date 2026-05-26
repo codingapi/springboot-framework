@@ -50,6 +50,7 @@ public class GroovyMetadataParserService {
     private void loadReturnType() {
         Class<?> returnTypeClass = this.script.getReturnType();
         this.groovyMetadata.buildType(returnTypeClass);
+        this.groovyMetadata.setReturnType(returnTypeClass.getSimpleName());
     }
 
 
