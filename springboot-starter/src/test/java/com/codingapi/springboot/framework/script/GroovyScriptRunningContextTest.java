@@ -1,48 +1,78 @@
 package com.codingapi.springboot.framework.script;
 
-import com.codingapi.springboot.framework.script.request.GroovyMethodScript;
+import com.codingapi.springboot.framework.script.request.GroovyBindObjectBuilder;
+import com.codingapi.springboot.framework.script.request.GroovyRunningScript;
+import com.codingapi.springboot.framework.script.request.MyScriptRequest;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GroovyScriptRunningContextTest {
 
     @Test
-    void voidRun() {
+    void voidInvoke() {
 
         String script = """
                 def run(request){
-                    println($request.getRequest())
+                    println(request)
                 }
                 """;
-
         GroovyScriptRunningContext.getInstance().compile(script);
 
-        GroovyMethodScript<Void> request = new GroovyMethodScript<>(script, Void.class, 100);
-        request.addBindObject("$request", request);
+        GroovyRunningScript<Void> request = new GroovyRunningScript<>(
+                script,
+                Void.class,
+                GroovyBindObjectBuilder.builder().add("request", 100)
+        );
 
         long t1 = System.currentTimeMillis();
-        GroovyScriptRunningContext.getInstance().run(request);
+        GroovyScriptRunningContext.getInstance().invoke(request);
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
 
     }
 
-    @Test
-    void run() {
 
+    @Test
+    void metaTest() {
         String script = """
                 def run(request){
-                    println($request.getRequest())
-                    return request;
+                    return request.count;
                 }
                 """;
 
-        GroovyMethodScript<Integer> request = new GroovyMethodScript<>(script, Integer.class, 100);
-        request.addBindObject("$request", request);
+        MyScriptRequest request = new MyScriptRequest(100);
+        GroovyRunningScript<Integer> runningScript = new GroovyRunningScript<>(
+                script,
+                Integer.class,
+                GroovyBindObjectBuilder.builder().add("request", request)
+        );
+
+        runningScript.buildMetadata();
+        System.out.println(runningScript.getMetadata());
+        assertEquals(1, runningScript.getMetadata().getRequests().size());
 
         long t1 = System.currentTimeMillis();
-        int result = GroovyScriptRunningContext.getInstance().run(request);
+        int result = GroovyScriptRunningContext.getInstance().invoke(runningScript);
+        long t2 = System.currentTimeMillis();
+        System.out.println("groovy time:" + (t2 - t1));
+        assertEquals(100, result);
+    }
+
+    @Test
+    void run() {
+
+        String script = " return $request; ";
+
+        GroovyRunningScript<Integer> request = new GroovyRunningScript<>(
+                script,
+                Integer.class,
+                GroovyBindObjectBuilder.builder().add("$request", 100),
+                null
+        );
+
+        long t1 = System.currentTimeMillis();
+        int result = GroovyScriptRunningContext.getInstance().invoke(request);
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
 
@@ -50,12 +80,34 @@ class GroovyScriptRunningContextTest {
     }
 
     @Test
-    void batchTest() {
+    void invoke() {
+
+        String script = """
+                def run(request){
+                    return request;
+                }
+                """;
+
+        GroovyRunningScript<Integer> request = new GroovyRunningScript<>(script,
+                Integer.class,
+                GroovyBindObjectBuilder.builder().add("request", 100)
+        );
+
+        long t1 = System.currentTimeMillis();
+        int result = GroovyScriptRunningContext.getInstance().invoke(request);
+        long t2 = System.currentTimeMillis();
+        System.out.println("groovy time:" + (t2 - t1));
+
+        assertEquals(100, result);
+    }
+
+    @Test
+    void batchInvoke() {
         int count = 100;
-        run();
+        invoke();
         long t1 = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
-            run();
+            invoke();
         }
         long t2 = System.currentTimeMillis();
         System.out.println("total time:" + (t2 - t1));

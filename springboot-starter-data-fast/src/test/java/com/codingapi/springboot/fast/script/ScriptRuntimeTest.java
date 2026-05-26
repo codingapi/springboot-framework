@@ -10,7 +10,7 @@ class ScriptRuntimeTest {
 
     @Test
     void running() {
-        Object res = ScriptRuntime.running("return 1");
+        Object res = ScriptRuntime.getInstance().running("return 1");
         assertEquals(1, res);
     }
 }
