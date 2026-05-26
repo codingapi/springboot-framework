@@ -30,15 +30,26 @@ public class GroovyScriptRunner {
     private final int maxCacheSize;
 
     @Getter
-    private final boolean readOnly;
+    private final TransactionMode transactionMode;
 
-    public GroovyScriptRunner(int maxCacheSize){
-        this(maxCacheSize,false);
+
+    public static enum TransactionMode {
+        // 默认不处理
+        DEFAULT,
+        // 事务提交模式
+        COMMIT,
+        // 事务只读模式
+        READONLY
     }
 
-    public GroovyScriptRunner(int maxCacheSize, boolean readOnly) {
+
+    public GroovyScriptRunner(int maxCacheSize) {
+        this(maxCacheSize, TransactionMode.DEFAULT);
+    }
+
+    public GroovyScriptRunner(int maxCacheSize, TransactionMode transactionMode) {
         this.maxCacheSize = maxCacheSize;
-        this.readOnly = readOnly;
+        this.transactionMode = transactionMode;
         GroovyClassLoader groovyClassLoader = new GroovyClassLoader(getClass().getClassLoader());
         this.shell = new GroovyShell(groovyClassLoader);
         this.cache = new LinkedHashMap<>(16, 0.75F, true) {
@@ -117,27 +128,44 @@ public class GroovyScriptRunner {
             }
         }
 
-        PlatformTransactionManager transactionManager = TransactionManagerContext.getInstance().getPlatformTransactionManager();
-        if (transactionManager != null) {
-            DefaultTransactionDefinition def = new DefaultTransactionDefinition();
-            def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-            if (readOnly) {
+        // 事务制只读模式
+        if (transactionMode == TransactionMode.READONLY) {
+            PlatformTransactionManager transactionManager = TransactionManagerContext.getInstance().getPlatformTransactionManager();
+            if (transactionManager != null) {
+                DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+                def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
                 def.setReadOnly(true);
-            }
-            TransactionStatus transactionStatus = transactionManager.getTransaction(def);
-            try {
-                T result = (T) runtime.invokeMethod(method, args);
-                if (readOnly) {
+                TransactionStatus transactionStatus = transactionManager.getTransaction(def);
+                try {
+                    T result = (T) runtime.invokeMethod(method, args);
                     transactionManager.rollback(transactionStatus);
-                } else {
-                    transactionManager.commit(transactionStatus);
+                    return result;
+                } catch (Exception e) {
+                    transactionManager.rollback(transactionStatus);
+                    throw e;
                 }
-                return result;
-            } catch (Exception e) {
-                transactionManager.rollback(transactionStatus);
-                throw e;
             }
         }
+
+        // 事务制提交模式
+        if (transactionMode == TransactionMode.COMMIT) {
+            PlatformTransactionManager transactionManager = TransactionManagerContext.getInstance().getPlatformTransactionManager();
+            if (transactionManager != null) {
+                DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+                def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+                TransactionStatus transactionStatus = transactionManager.getTransaction(def);
+                try {
+                    T result = (T) runtime.invokeMethod(method, args);
+                    transactionManager.commit(transactionStatus);
+                    return result;
+                } catch (Exception e) {
+                    transactionManager.rollback(transactionStatus);
+                    throw e;
+                }
+            }
+        }
+
+        // 默认处理模式
         return (T) runtime.invokeMethod(method, args);
     }
 

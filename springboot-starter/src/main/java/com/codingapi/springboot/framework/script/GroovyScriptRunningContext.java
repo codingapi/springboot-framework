@@ -19,7 +19,7 @@ public class GroovyScriptRunningContext {
     private static GroovyScriptRunningContext instance = new GroovyScriptRunningContext(MAX_CACHE_SIZE);
 
     private GroovyScriptRunningContext(int maxCacheSize) {
-        this.scriptRunner = new GroovyScriptRunner(maxCacheSize, false);
+        this.scriptRunner = new GroovyScriptRunner(maxCacheSize);
     }
 
     /**
