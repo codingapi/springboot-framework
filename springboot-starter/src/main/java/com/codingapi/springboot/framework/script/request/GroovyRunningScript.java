@@ -27,6 +27,11 @@ public class GroovyRunningScript<T> {
     private final String script;
 
     /**
+     * 脚本说明
+     */
+    private final String description;
+
+    /**
      * 返回数据类型
      */
     private final Class<T> returnType;
@@ -47,29 +52,38 @@ public class GroovyRunningScript<T> {
     private GroovyMetadata metadata;
 
 
-    public GroovyRunningScript(String method, String script, Class<T> returnType, List<GroovyBindObject> binds, List<GroovyBindObject> requests) {
+    public GroovyRunningScript(String method, String script, String description, Class<T> returnType, List<GroovyBindObject> binds, List<GroovyBindObject> requests) {
         this.method = method;
         this.script = script;
+        this.description = description;
         this.returnType = returnType;
         this.requests = requests;
         this.binds = binds;
     }
 
-    public GroovyRunningScript(String method, String script, Class<T> returnType, GroovyBindObjectBuilder bindBuilder, GroovyBindObjectBuilder requestBuilder) {
-        this(method, script, returnType, bindBuilder != null ? bindBuilder.build() : null, requestBuilder != null ? requestBuilder.build() : null);
+    public GroovyRunningScript(String method, String script, String description, Class<T> returnType, GroovyBindObjectBuilder bindBuilder, GroovyBindObjectBuilder requestBuilder) {
+        this(method, script, description, returnType, bindBuilder != null ? bindBuilder.build() : null, requestBuilder != null ? requestBuilder.build() : null);
     }
 
 
-    public GroovyRunningScript(String method, String script, Class<T> returnType, GroovyBindObjectBuilder requestBuilder) {
-        this(method, script, returnType, null, requestBuilder);
+    public GroovyRunningScript(String method, String script, String description, Class<T> returnType, GroovyBindObjectBuilder requestBuilder) {
+        this(method, script, description, returnType, null, requestBuilder);
     }
 
-    public GroovyRunningScript(String script, Class<T> returnType, GroovyBindObjectBuilder bindBuilder, GroovyBindObjectBuilder requestBuilder) {
-        this("run", script, returnType, bindBuilder, requestBuilder);
+    public GroovyRunningScript(String script,  Class<T> returnType, GroovyBindObjectBuilder bindBuilder, GroovyBindObjectBuilder requestBuilder) {
+        this("run", script, null, returnType, bindBuilder, requestBuilder);
     }
 
-    public GroovyRunningScript(String script, Class<T> returnType, GroovyBindObjectBuilder requestBuilder) {
+    public GroovyRunningScript(String script, String description, Class<T> returnType, GroovyBindObjectBuilder bindBuilder, GroovyBindObjectBuilder requestBuilder) {
+        this("run", script, description, returnType, bindBuilder, requestBuilder);
+    }
+
+    public GroovyRunningScript(String script,String description, Class<T> returnType, GroovyBindObjectBuilder requestBuilder) {
         this("run", script, returnType, null, requestBuilder);
+    }
+
+    public GroovyRunningScript(String script,Class<T> returnType, GroovyBindObjectBuilder requestBuilder) {
+        this("run", script,null, returnType, null, requestBuilder);
     }
 
     /**
@@ -77,7 +91,7 @@ public class GroovyRunningScript<T> {
      */
     public Object[] getParams() {
         List<Object> objects = new ArrayList<>();
-        if(this.requests!=null) {
+        if (this.requests != null) {
             for (GroovyBindObject bindObject : this.requests) {
                 objects.add(bindObject.getObject());
             }
@@ -87,6 +101,7 @@ public class GroovyRunningScript<T> {
 
     /**
      * 重新设置脚本元数据信息
+     *
      * @param metadata 脚本元数据信息
      */
     public void resetMetadata(GroovyMetadata metadata) {
