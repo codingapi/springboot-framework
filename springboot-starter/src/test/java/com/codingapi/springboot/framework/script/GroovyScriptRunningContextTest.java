@@ -49,10 +49,9 @@ class GroovyScriptRunningContextTest {
 
         MyScriptRequest request = new MyScriptRequest(100);
 
-        System.out.println(int[].class.getSimpleName());
-
         GroovyRunningScript<Integer> runningScript = new GroovyRunningScript<>(
                 script,
+                "这是一个run函数，返回的格式为int类型。",
                 Integer.class,
                 GroovyBindObjectBuilder.builder().add("$request", request),
                 GroovyBindObjectBuilder.builder().add("request", request)
