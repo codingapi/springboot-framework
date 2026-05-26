@@ -23,41 +23,41 @@ public class TransactionManagerContext {
 
     public void setPlatformTransactionManager(PlatformTransactionManager platformTransactionManager) {
         this.platformTransactionManager = platformTransactionManager;
-        log.info("platformTransactionManager:{} load success", platformTransactionManager);
+        if (platformTransactionManager != null) {
+            log.info("platformTransactionManager:{} load success", platformTransactionManager);
+        }
     }
 
 
     public <T> T commit(Supplier<T> supplier) {
-        PlatformTransactionManager transactionManager = TransactionManagerContext.getInstance().getPlatformTransactionManager();
-        if (transactionManager != null) {
+        if (platformTransactionManager != null) {
             DefaultTransactionDefinition def = new DefaultTransactionDefinition();
             def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-            TransactionStatus transactionStatus = transactionManager.getTransaction(def);
+            TransactionStatus transactionStatus = platformTransactionManager.getTransaction(def);
             try {
                 T result = supplier.get();
-                transactionManager.commit(transactionStatus);
+                platformTransactionManager.commit(transactionStatus);
                 return result;
             } catch (Exception e) {
-                transactionManager.rollback(transactionStatus);
+                platformTransactionManager.rollback(transactionStatus);
                 throw e;
             }
         }
         return supplier.get();
     }
 
-    public <T> T readOnly(Supplier<T> supplier){
-        PlatformTransactionManager transactionManager = TransactionManagerContext.getInstance().getPlatformTransactionManager();
-        if (transactionManager != null) {
+    public <T> T readOnly(Supplier<T> supplier) {
+        if (platformTransactionManager != null) {
             DefaultTransactionDefinition def = new DefaultTransactionDefinition();
             def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
             def.setReadOnly(true);
-            TransactionStatus transactionStatus = transactionManager.getTransaction(def);
+            TransactionStatus transactionStatus = platformTransactionManager.getTransaction(def);
             try {
                 T result = supplier.get();
-                transactionManager.rollback(transactionStatus);
+                platformTransactionManager.rollback(transactionStatus);
                 return result;
             } catch (Exception e) {
-                transactionManager.rollback(transactionStatus);
+                platformTransactionManager.rollback(transactionStatus);
                 throw e;
             }
         }
