@@ -44,6 +44,12 @@ public class GroovyMetadata {
      */
     private final Map<String, GroovyType> types;
 
+    /**
+     * 脚本说明
+     */
+    @Setter
+    private String description;
+
 
     public GroovyMetadata() {
         this.types = new HashMap<>();

@@ -21,6 +21,7 @@ public class GroovyMetadataParserService {
         this.script = script;
         this.groovyMetadata = new GroovyMetadata();
         this.groovyMetadata.setMainMethod(script.getMethod());
+        this.groovyMetadata.setDescription(script.getDescription());
     }
 
 
