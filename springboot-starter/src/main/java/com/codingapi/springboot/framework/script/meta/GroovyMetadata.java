@@ -28,6 +28,12 @@ public class GroovyMetadata {
     private final List<GroovyField> binds;
 
     /**
+     * 程序主函数名称
+     */
+    @Setter
+    private String mainMethod;
+
+    /**
      * 返回类型
      */
     @Setter
