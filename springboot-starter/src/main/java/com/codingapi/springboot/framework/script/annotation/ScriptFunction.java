@@ -21,13 +21,8 @@ public @interface ScriptFunction {
     String description() default "";
 
     /**
-     * 参数对象
+     * 参数
      */
-    ScriptType[] requests() default {};
-
-    /**
-     * 返回数据类型
-     */
-    Class<?> returnType();
+    ScriptType[] parameters() default {};
 
 }

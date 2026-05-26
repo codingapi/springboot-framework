@@ -9,14 +9,14 @@ import lombok.Data;
 
 @Data
 @Entity
-@ScriptType(dataType = MyTest.class)
+@ScriptType
 public class MyTest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ScriptType(name = "id", description = "id", dataType = Long.class)
+    @ScriptType(name = "id", description = "id")
     private Long id;
 
-    @ScriptType(name = "name", description = "name", dataType = String.class)
+    @ScriptType(name = "name", description = "name")
     private String name;
 }

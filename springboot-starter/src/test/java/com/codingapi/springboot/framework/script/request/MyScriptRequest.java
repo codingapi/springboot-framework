@@ -10,25 +10,23 @@ import lombok.Getter;
 @Getter
 @ScriptType(
         name = "request",
-        description = "请求参数",
-        dataType = MyScriptRequest.class
+        description = "请求参数"
 )
 @AllArgsConstructor
 public class MyScriptRequest {
 
-    @ScriptType(name = "count", description = "总数量", dataType = int.class)
+    @ScriptType(name = "count", description = "总数量")
     private final int count;
 
-    @ScriptType(name = "test", description = "test", dataType = MyTest.class)
+    @ScriptType(name = "test", description = "test")
     private MyTest test;
 
 
     @ScriptFunction(
             name = "isSupport",
             description = "是否匹配",
-            returnType = Boolean.class,
-            requests = {
-                    @ScriptType(name = "count", description = "描述信息", dataType = int.class),
+            parameters = {
+                    @ScriptType(name = "count", description = "描述信息")
             }
     )
     public boolean isSupport(int count) {
@@ -40,7 +38,7 @@ public class MyScriptRequest {
     }
 
 
-    public void addData(MyTestRepository testRepository){
+    public void addData(MyTestRepository testRepository) {
         MyTest myTest = new MyTest();
         myTest.setName("test");
         testRepository.save(myTest);
