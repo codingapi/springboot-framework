@@ -28,6 +28,12 @@ public class GroovyMetadata {
     private final List<GroovyField> binds;
 
     /**
+     * 程序主函数名称
+     */
+    @Setter
+    private String mainMethod;
+
+    /**
      * 返回类型
      */
     @Setter
@@ -38,6 +44,12 @@ public class GroovyMetadata {
      */
     private final Map<String, GroovyType> types;
 
+    /**
+     * 脚本说明
+     */
+    @Setter
+    private String description;
+
 
     public GroovyMetadata() {
         this.types = new HashMap<>();
@@ -47,6 +59,7 @@ public class GroovyMetadata {
 
     /**
      * 通过class构建 脚本类型数据
+     *
      * @param clazz class类型
      */
     public void buildType(Class<?> clazz) {
@@ -57,7 +70,7 @@ public class GroovyMetadata {
             groovyType = groovyTypeParser.parser();
             groovyType.setDataType(dataType);
             ScriptType scriptType = clazz.getAnnotation(ScriptType.class);
-            if(scriptType!=null) {
+            if (scriptType != null) {
                 groovyType.setDescription(scriptType.description());
             }
             this.put(dataType, groovyType);
@@ -66,6 +79,7 @@ public class GroovyMetadata {
 
     /**
      * 增加请求参数数据对象
+     *
      * @param request 请求参数
      */
     public void addRequest(GroovyField request) {
@@ -74,26 +88,29 @@ public class GroovyMetadata {
 
     /**
      * 更新流程类型数据
-     * @param dataType 数据类型
+     *
+     * @param dataType   数据类型
      * @param groovyType 脚本类型
      */
-    public void put(String dataType,GroovyType groovyType){
+    public void put(String dataType, GroovyType groovyType) {
         this.types.put(dataType, groovyType);
     }
 
 
     /**
      * 获取流程类型数据
+     *
      * @param dataType 数据类型
      * @return 脚本类型
      */
-    public GroovyType getType(String dataType){
+    public GroovyType getType(String dataType) {
         return this.types.get(dataType);
     }
 
 
     /**
      * 增加绑定数据对象
+     *
      * @param bind 绑定数据
      */
     public void addBind(GroovyField bind) {

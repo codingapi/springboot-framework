@@ -1,7 +1,6 @@
 package com.codingapi.springboot.framework.script;
 
 import com.alibaba.fastjson.JSON;
-import com.codingapi.springboot.framework.script.meta.GroovyMetadata;
 import com.codingapi.springboot.framework.script.request.GroovyBindObjectBuilder;
 import com.codingapi.springboot.framework.script.request.GroovyRunningScript;
 import com.codingapi.springboot.framework.script.request.MyScriptRequest;
