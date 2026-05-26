@@ -45,6 +45,10 @@ public class GroovyMetadata {
         this.binds = new ArrayList<>();
     }
 
+    /**
+     * 通过class构建 脚本类型数据
+     * @param clazz class类型
+     */
     public void buildType(Class<?> clazz) {
         String dataType = clazz.getSimpleName();
         GroovyType groovyType = this.types.get(dataType);
@@ -56,20 +60,42 @@ public class GroovyMetadata {
             if(scriptType!=null) {
                 groovyType.setDescription(scriptType.description());
             }
-            this.types.put(dataType, groovyType);
+            this.put(dataType, groovyType);
         }
     }
 
+    /**
+     * 增加请求参数数据对象
+     * @param request 请求参数
+     */
     public void addRequest(GroovyField request) {
         this.requests.add(request);
     }
 
+    /**
+     * 更新流程类型数据
+     * @param dataType 数据类型
+     * @param groovyType 脚本类型
+     */
+    public void put(String dataType,GroovyType groovyType){
+        this.types.put(dataType, groovyType);
+    }
 
+
+    /**
+     * 获取流程类型数据
+     * @param dataType 数据类型
+     * @return 脚本类型
+     */
     public GroovyType getType(String dataType){
         return this.types.get(dataType);
     }
 
 
+    /**
+     * 增加绑定数据对象
+     * @param bind 绑定数据
+     */
     public void addBind(GroovyField bind) {
         this.binds.add(bind);
     }

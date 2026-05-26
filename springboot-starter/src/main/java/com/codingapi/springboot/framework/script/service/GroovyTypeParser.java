@@ -70,34 +70,34 @@ public class GroovyTypeParser {
                     groovyFunction.setDescription(scriptFunction.description());
                 }
 
-                Parameter[] methodParameters = method.getParameters();
-                Map<String, Parameter> parameterMap = new HashMap<>();
-                for (Parameter parameter : methodParameters) {
-                    parameterMap.put(parameter.getName(), parameter);
+                ScriptField[] parameters = scriptFunction.parameters();
+                Map<String, ScriptField> parameterMap = new HashMap<>();
+                if (parameters != null) {
+                    for (ScriptField scriptField : parameters) {
+                        parameterMap.put(scriptField.name(), scriptField);
+                    }
                 }
 
-                ScriptField[] parameters = scriptFunction.parameters();
-                if (parameters != null) {
-                    for (ScriptField parameter : parameters) {
-                        Parameter methodParameter = parameterMap.get(parameter.name());
-                        if (methodParameter != null) {
-                            Class<?> clazz = methodParameter.getType();
-                            this.metadata.buildType(clazz);
+                Parameter[] methodParameters = method.getParameters();
+                for (Parameter methodParameter : methodParameters) {
+                    Class<?> clazz = methodParameter.getType();
+                    this.metadata.buildType(clazz);
 
-                            GroovyField groovyParameter = new GroovyField();
-                            groovyParameter.setDataType(clazz.getSimpleName());
-                            groovyParameter.setName(methodParameter.getName());
+                    GroovyField groovyParameter = new GroovyField();
+                    groovyParameter.setDataType(clazz.getSimpleName());
+                    groovyParameter.setName(methodParameter.getName());
 
-                            if (StringUtils.hasText(parameter.name())) {
-                                groovyParameter.setName(parameter.name());
-                            }
-                            if (StringUtils.hasText(parameter.description())) {
-                                groovyParameter.setDescription(parameter.description());
-                            }
-
-                            groovyFunction.addParameter(groovyParameter);
+                    ScriptField scriptParameter = parameterMap.get(methodParameter.getName());
+                    if (scriptParameter != null) {
+                        if (StringUtils.hasText(scriptParameter.name())) {
+                            groovyParameter.setName(scriptParameter.name());
+                        }
+                        if (StringUtils.hasText(scriptParameter.description())) {
+                            groovyParameter.setDescription(scriptParameter.description());
                         }
                     }
+
+                    groovyFunction.addParameter(groovyParameter);
                 }
 
                 Class<?> returnType = method.getReturnType();
