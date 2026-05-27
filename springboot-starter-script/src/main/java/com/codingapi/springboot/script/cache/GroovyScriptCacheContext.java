@@ -146,4 +146,11 @@ public class GroovyScriptCacheContext {
         }
     }
 
+
+    /**
+     * 清空脚本数据
+     */
+    public void clear(){
+        this.cache.clear();
+    }
 }
