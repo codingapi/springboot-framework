@@ -2,15 +2,12 @@ package com.codingapi.springboot.script;
 
 import com.codingapi.springboot.framework.crypto.SHA256;
 import com.codingapi.springboot.framework.transaction.TransactionManagerContext;
-import com.codingapi.springboot.script.bind.ObjectBinder;
-import com.codingapi.springboot.script.em.TransactionMode;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 import lombok.Getter;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -95,7 +92,7 @@ public class GroovyScriptRuntime {
     public <T> T invoke(String method,
                         String script,
                         Class<T> returnType,
-                        List<ObjectBinder> binds,
+                        Map<String,Object> binds,
                         Object... args) {
         return this.invoke(method, script, returnType, TransactionMode.DEFAULT, binds, args);
     }
@@ -131,7 +128,7 @@ public class GroovyScriptRuntime {
                         String script,
                         Class<T> returnType,
                         TransactionMode transactionMode,
-                        List<ObjectBinder> binds,
+                        Map<String,Object> binds,
                         Object... args) {
         String key = SHA256.sha256(script);
         Script runtime = this.cache.get(key);
@@ -142,8 +139,8 @@ public class GroovyScriptRuntime {
 
 
         if (binds != null && !binds.isEmpty()) {
-            for (ObjectBinder objectBinder : binds) {
-                runtime.setProperty(objectBinder.getName(), objectBinder.getObject());
+            for (String bindKey : binds.keySet()) {
+                runtime.setProperty(bindKey, binds.get(bindKey));
             }
         }
 
@@ -175,7 +172,7 @@ public class GroovyScriptRuntime {
      * @param binds      绑定对象
      * @return 返回数据
      */
-    public <T> T run(String script, Class<T> returnType, List<ObjectBinder> binds) {
+    public <T> T run(String script, Class<T> returnType, Map<String,Object> binds) {
         return this.run(script, returnType, TransactionMode.DEFAULT, binds);
     }
 
@@ -188,7 +185,7 @@ public class GroovyScriptRuntime {
      * @param binds           绑定对象
      * @return 返回数据
      */
-    public <T> T run(String script, Class<T> returnType, TransactionMode transactionMode, List<ObjectBinder> binds) {
+    public <T> T run(String script, Class<T> returnType, TransactionMode transactionMode, Map<String,Object> binds) {
         String key = SHA256.sha256(script);
         Script runtime = this.cache.get(key);
         if (runtime == null) {
@@ -197,10 +194,11 @@ public class GroovyScriptRuntime {
         }
 
         if (binds != null && !binds.isEmpty()) {
-            for (ObjectBinder objectBinder : binds) {
-                runtime.setProperty(objectBinder.getName(), objectBinder.getObject());
+            for (String bindKey : binds.keySet()) {
+                runtime.setProperty(bindKey, binds.get(bindKey));
             }
         }
+
 
         // 事务制只读模式
         if (transactionMode == TransactionMode.READONLY) {

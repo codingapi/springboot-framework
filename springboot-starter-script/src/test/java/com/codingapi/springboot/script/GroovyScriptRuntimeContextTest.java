@@ -1,11 +1,11 @@
 package com.codingapi.springboot.script;
 
 import com.alibaba.fastjson.JSON;
-import com.codingapi.springboot.script.bind.ClassBinder;
-import com.codingapi.springboot.script.bind.ObjectBinder;
 import com.codingapi.springboot.script.meta.GroovyMetadata;
 import com.codingapi.springboot.script.request.MyScriptRequest;
 import org.junit.jupiter.api.Test;
+
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -20,9 +20,9 @@ class GroovyScriptRuntimeContextTest {
                 }
                 """;
 
-        GroovyScript groovyScript = GroovyScript.createInvoke("voidInvoke", script, "run", Void.class, ClassBinder.of("request", Integer.class));
+        GroovyScript groovyScript = GroovyScript.createInvoke("voidInvoke", script, "run", Void.class, Map.of("request", Integer.class));
         long t1 = System.currentTimeMillis();
-        groovyScript.invoke(ObjectBinder.of("request",100));
+        groovyScript.invoke(Map.of("request",100));
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
 
@@ -41,14 +41,14 @@ class GroovyScriptRuntimeContextTest {
         MyScriptRequest request = new MyScriptRequest(100);
 
         GroovyScript groovyScript = GroovyScript.createInvoke("metaTest",
-                script, "这是一个run函数，返回的格式为int类型。","run",  Integer.class, ClassBinder.of("request", MyScriptRequest.class));
+                script, "这是一个run函数，返回的格式为int类型。","run",  Integer.class, Map.of("request", MyScriptRequest.class));
 
         GroovyMetadata metadata = groovyScript.toMetadata();
         System.out.println(JSON.toJSONString(metadata));
         assertEquals(1, metadata.getRequests().size());
 
         long t1 = System.currentTimeMillis();
-        int result = groovyScript.invoke(ObjectBinder.of("request",request));
+        int result = groovyScript.invoke(request);
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
         assertEquals(100, result);
@@ -61,11 +61,11 @@ class GroovyScriptRuntimeContextTest {
 
 
         GroovyScript groovyScript = GroovyScript.createRun("run",
-                script, Integer.class, ClassBinder.of("$request", Integer.class));
+                script, Integer.class, Map.of("$request", Integer.class));
 
 
         long t1 = System.currentTimeMillis();
-        int result = groovyScript.run(ObjectBinder.of("$request",100));
+        int result = groovyScript.run(Map.of("$request",100));
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
 
@@ -82,10 +82,10 @@ class GroovyScriptRuntimeContextTest {
                 """;
 
         GroovyScript groovyScript = GroovyScript.createInvoke("invoke",
-                script, "run", Integer.class, ClassBinder.of("request", Integer.class));
+                script, "run", Integer.class, Map.of("request", Integer.class));
 
         long t1 = System.currentTimeMillis();
-        int result = groovyScript.invoke(ObjectBinder.of("request",100));
+        int result = groovyScript.invoke(100);
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
 

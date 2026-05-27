@@ -1,11 +1,8 @@
 package com.codingapi.springboot.script;
 
-import com.codingapi.springboot.script.bind.ObjectBinder;
-import com.codingapi.springboot.script.em.TransactionMode;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 public class GroovyScriptRuntimeContext {
 
@@ -42,24 +39,12 @@ public class GroovyScriptRuntimeContext {
         scriptRuntime.compile(script);
     }
 
-    public <T> T invoke(String method, String script, Class<T> returnType, TransactionMode transactionMode, List<ObjectBinder> binds, List<ObjectBinder> requests) {
-        return scriptRuntime.invoke(method, script, returnType, transactionMode, binds, this.toParams(requests));
+    public <T> T invoke(String method, String script, Class<T> returnType, TransactionMode transactionMode, Map<String,Object> binds, Object... requests) {
+        return scriptRuntime.invoke(method, script, returnType, transactionMode, binds, requests);
     }
 
 
-    private Object[] toParams(List<ObjectBinder> requests) {
-        List<Object> params = new ArrayList<>();
-        if (requests != null) {
-            for (ObjectBinder request : requests) {
-                params.add(request.getObject());
-            }
-        }
-
-        return params.toArray();
-    }
-
-
-    public <T> T run(String script, Class<T> returnType, TransactionMode transactionMode, List<ObjectBinder> binds) {
+    public <T> T run(String script, Class<T> returnType, TransactionMode transactionMode, Map<String,Object> binds) {
         return scriptRuntime.run(script, returnType, transactionMode, binds);
     }
 }

@@ -1,17 +1,13 @@
 package com.codingapi.springboot.script;
 
-import com.codingapi.springboot.script.bind.ClassBinder;
-import com.codingapi.springboot.script.bind.ClassBinderBuilder;
-import com.codingapi.springboot.script.bind.ObjectBinder;
-import com.codingapi.springboot.script.cache.GroovyScriptContext;
-import com.codingapi.springboot.script.em.TransactionMode;
+import com.codingapi.springboot.script.cache.GroovyScriptCacheContext;
 import com.codingapi.springboot.script.gateway.GroovyMetadataReloadGatewayContext;
 import com.codingapi.springboot.script.meta.GroovyMetadata;
 import com.codingapi.springboot.script.service.GroovyMetadataParserService;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * 脚本对象
@@ -43,81 +39,76 @@ public class GroovyScript {
     /**
      * 绑定数据类型
      */
-    private List<ClassBinder> binds;
+    private Map<String,Class<?>> binds;
     /**
      * 请求参数对象
      */
-    private List<ClassBinder> requests;
+    private Map<String,Class<?>> requests;
+    /**
+     * 备注信息
+     */
+    private String remark;
 
 
     private GroovyScript(String key,
                          String script,
+                         String remark,
                          String description,
                          String method,
                          Class<?> returnType,
-                         List<ClassBinder> binds,
-                         List<ClassBinder> requests) {
+                         Map<String,Class<?>> binds,
+                         Map<String,Class<?>> requests) {
         this.key = key;
         this.script = script;
+        this.remark = remark;
         this.description = description;
         this.method = method;
         this.returnType = returnType;
         this.binds = binds;
         this.requests = requests;
 
-        GroovyScriptContext.getInstance().update(this);
-    }
-
-    public static GroovyScript create(String key,
-                                      String script,
-                                      String description,
-                                      String method,
-                                      Class<?> returnType,
-                                      List<ClassBinder> binds,
-                                      List<ClassBinder> requests) {
-        return new GroovyScript(key, script, description, method, returnType, binds, requests);
+        GroovyScriptCacheContext.getInstance().update(this);
     }
 
 
     public static GroovyScript create(String key,
                                       String script,
+                                      String remark,
                                       String description,
                                       String method,
                                       Class<?> returnType,
-                                      ClassBinderBuilder binderBuilder,
-                                      ClassBinderBuilder requestBuilder) {
-        return new GroovyScript(key, script, description, method, returnType, binderBuilder.build(), requestBuilder.build());
+                                      Map<String,Class<?>> binds,
+                                      Map<String,Class<?>> requests) {
+        return new GroovyScript(key, script, remark, description, method, returnType, binds, requests);
     }
 
 
-    public static GroovyScript createRun(String key,
-                                         String script,
-                                         Class<?> returnType,
-                                         List<ClassBinder> binds) {
-        return new GroovyScript(key, script, null, null, returnType, binds, null);
-    }
 
     public static GroovyScript createRun(String key,
                                          String script,
                                          Class<?> returnType,
-                                         ClassBinderBuilder binderBuilder) {
-        return new GroovyScript(key, script, null, null, returnType, binderBuilder.build(), null);
+                                         Map<String,Class<?>> binds) {
+        return new GroovyScript(key, script, null, null, null, returnType, binds, null);
     }
+
+
 
     public static GroovyScript createRun(String key,
                                          String script,
                                          String description,
                                          Class<?> returnType,
-                                         List<ClassBinder> requests) {
-        return new GroovyScript(key, script, description, null, returnType, null, requests);
+                                         Map<String,Class<?>> binds) {
+        return new GroovyScript(key, script, description, null, null, returnType, binds, null);
     }
 
-    public static GroovyScript createRun(String key,
-                                         String script,
-                                         String description,
-                                         Class<?> returnType,
-                                         ClassBinderBuilder requestBuilder) {
-        return new GroovyScript(key, script, description, null, returnType, null, requestBuilder.build());
+    public static GroovyScript createInvoke(String key,
+                                            String script,
+                                            String remark,
+                                            String description,
+                                            String method,
+                                            Class<?> returnType,
+                                            Map<String,Class<?>> requests) {
+        return new GroovyScript(key, script, remark, description, method, returnType, null, requests);
     }
 
     public static GroovyScript createInvoke(String key,
@@ -125,24 +116,16 @@ public class GroovyScript {
                                             String description,
                                             String method,
                                             Class<?> returnType,
-                                            List<ClassBinder> requests) {
-        return new GroovyScript(key, script, description, method, returnType, null, requests);
+                                            Map<String,Class<?>> requests) {
+        return new GroovyScript(key, script, null, description, method, returnType, null, requests);
     }
 
     public static GroovyScript createInvoke(String key,
                                             String script,
                                             String method,
                                             Class<?> returnType,
-                                            List<ClassBinder> requests) {
-        return new GroovyScript(key, script, null, method, returnType, null, requests);
-    }
-
-    public static GroovyScript createInvoke(String key,
-                                            String script,
-                                            String method,
-                                            Class<?> returnType,
-                                            ClassBinderBuilder requestBuilder) {
-        return new GroovyScript(key, script, null, method, returnType, null, requestBuilder.build());
+                                            Map<String,Class<?>> requests) {
+        return new GroovyScript(key, script, null, null, method, returnType, null, requests);
     }
 
 
@@ -150,19 +133,12 @@ public class GroovyScript {
                                             String script,
                                             String method,
                                             Class<?> returnType,
-                                            List<ClassBinder> binds,
-                                            List<ClassBinder> requests) {
-        return new GroovyScript(key, script, null, method, returnType, binds, requests);
+                                            Map<String,Class<?>> binds,
+                                            Map<String,Class<?>> requests) {
+        return new GroovyScript(key, script, null, null, method, returnType, binds, requests);
     }
 
-    public static GroovyScript createInvoke(String key,
-                                            String script,
-                                            String method,
-                                            Class<?> returnType,
-                                            ClassBinderBuilder binderBuilder,
-                                            ClassBinderBuilder requestBuilder) {
-        return new GroovyScript(key, script, null, method, returnType, binderBuilder.build(), requestBuilder.build());
-    }
+
 
     /**
      * 编译脚本 并缓存
@@ -186,7 +162,7 @@ public class GroovyScript {
      * @param binds 绑定对象
      * @return 运行时对象
      */
-    public <T> T run(TransactionMode transactionMode, List<ObjectBinder> binds) {
+    public <T> T run(TransactionMode transactionMode, Map<String,Object> binds) {
         return (T) GroovyScriptRuntimeContext.getInstance().run(this.script, returnType, transactionMode, binds);
     }
 
@@ -196,7 +172,7 @@ public class GroovyScript {
      * @param binds 绑定对象
      * @return 运行时对象
      */
-    public <T> T run(List<ObjectBinder> binds) {
+    public <T> T run(Map<String,Object> binds) {
         return this.run(TransactionMode.DEFAULT, binds);
     }
 
@@ -223,21 +199,22 @@ public class GroovyScript {
      *
      * @param transactionMode 事务模式
      * @param binds           绑定对象
-     * @param args            运行参数
+     * @param requests        运行参数
      * @return 运行时对象
      */
-    public <T> T invoke(TransactionMode transactionMode, List<ObjectBinder> binds, List<ObjectBinder> requests) {
+    public <T> T invoke(TransactionMode transactionMode, Map<String,Object> binds, Object... requests) {
         return (T) GroovyScriptRuntimeContext.getInstance().invoke(this.method, this.script, this.returnType, transactionMode, binds, requests);
     }
+
 
     /**
      * 转化为函数运行时对象
      *
-     * @param binds 绑定对象
-     * @param requests  运行参数
+     * @param binds    绑定对象
+     * @param requests 运行参数
      * @return 运行时对象
      */
-    public <T> T invoke(List<ObjectBinder> binds, List<ObjectBinder> requests) {
+    public <T> T invoke(Map<String,Object> binds, Object... requests) {
         return this.invoke(TransactionMode.DEFAULT, binds, requests);
     }
 
@@ -248,7 +225,7 @@ public class GroovyScript {
      * @param requests 运行参数
      * @return 运行时对象
      */
-    public <T> T invoke(TransactionMode transactionMode, List<ObjectBinder> requests) {
+    public <T> T invoke(TransactionMode transactionMode,Object... requests) {
         return this.invoke(transactionMode, null, requests);
     }
 
@@ -258,7 +235,7 @@ public class GroovyScript {
      * @param requests 运行参数
      * @return 运行时对象
      */
-    public <T> T invoke(List<ObjectBinder> requests) {
+    public <T> T invoke(Object... requests) {
         return this.invoke(TransactionMode.DEFAULT, null, requests);
     }
 
