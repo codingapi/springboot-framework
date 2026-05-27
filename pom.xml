@@ -15,7 +15,7 @@
 
     <groupId>com.codingapi.springboot</groupId>
     <artifactId>springboot-parent</artifactId>
-    <version>2.10.49</version>
+    <version>2.10.50</version>
 
     <url>https://github.com/codingapi/springboot-framewrok</url>
     <name>springboot-parent</name>
@@ -167,6 +167,12 @@
 
             <dependency>
                 <groupId>com.codingapi.springboot</groupId>
+                <artifactId>springboot-starter-script</artifactId>
+                <version>${codingapi.framework.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.codingapi.springboot</groupId>
                 <artifactId>springboot-starter-security</artifactId>
                 <version>${codingapi.framework.version}</version>
             </dependency>
@@ -293,6 +299,7 @@
             </activation>
             <modules>
                 <module>springboot-starter</module>
+                <module>springboot-starter-script</module>
                 <module>springboot-starter-security</module>
                 <module>springboot-starter-data-authorization</module>
                 <module>springboot-starter-data-fast</module>
@@ -306,6 +313,7 @@
 
             <modules>
                 <module>springboot-starter</module>
+                <module>springboot-starter-script</module>
                 <module>springboot-starter-security</module>
                 <module>springboot-starter-data-authorization</module>
                 <module>springboot-starter-data-fast</module>
@@ -358,6 +366,7 @@
 
             <modules>
                 <module>springboot-starter</module>
+                <module>springboot-starter-script</module>
                 <module>springboot-starter-security</module>
                 <module>springboot-starter-data-authorization</module>
                 <module>springboot-starter-data-fast</module>
