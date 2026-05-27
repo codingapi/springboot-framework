@@ -3,8 +3,8 @@ package com.codingapi.springboot.script.service;
 import com.codingapi.springboot.script.meta.GroovyField;
 import com.codingapi.springboot.script.meta.GroovyMetadata;
 import com.codingapi.springboot.script.meta.GroovyType;
-import com.codingapi.springboot.script.request.GroovyBindObject;
-import com.codingapi.springboot.script.request.GroovyRunningScript;
+import com.codingapi.springboot.script.GroovyScript;
+import com.codingapi.springboot.script.bind.ClassBinder;
 
 import java.util.List;
 
@@ -13,11 +13,11 @@ import java.util.List;
  */
 public class GroovyMetadataParserService {
 
-    private final GroovyRunningScript<?> script;
+    private final GroovyScript script;
 
     private final GroovyMetadata groovyMetadata;
 
-    public GroovyMetadataParserService(GroovyRunningScript<?> script) {
+    public GroovyMetadataParserService(GroovyScript script) {
         this.script = script;
         this.groovyMetadata = new GroovyMetadata();
         this.groovyMetadata.setMainMethod(script.getMethod());
@@ -26,11 +26,11 @@ public class GroovyMetadataParserService {
 
 
     private void loadRequestTypes() {
-        List<GroovyBindObject> requests = script.getRequests();
+        List<ClassBinder> requests = script.getRequests();
         if (requests != null && !requests.isEmpty()) {
-            for (GroovyBindObject request : requests) {
+            for (ClassBinder request : requests) {
                 if (request != null) {
-                    Class<?> objClass = request.getObject().getClass();
+                    Class<?> objClass = request.getClazz();
                     this.groovyMetadata.buildType(objClass);
                 }
             }
@@ -38,11 +38,11 @@ public class GroovyMetadataParserService {
     }
 
     private void loadBindTypes() {
-        List<GroovyBindObject> binds = script.getBinds();
+        List<ClassBinder> binds = script.getBinds();
         if (binds != null && !binds.isEmpty()) {
-            for (GroovyBindObject bindObject : binds) {
+            for (ClassBinder bindObject : binds) {
                 if (bindObject != null) {
-                    Class<?> objClass = bindObject.getObject().getClass();
+                    Class<?> objClass = bindObject.getClazz();
                     this.groovyMetadata.buildType(objClass);
                 }
             }
@@ -57,11 +57,11 @@ public class GroovyMetadataParserService {
 
 
     private void loadRequests(){
-        List<GroovyBindObject> requests = script.getRequests();
+        List<ClassBinder> requests = script.getRequests();
         if (requests != null && !requests.isEmpty()) {
-            for (GroovyBindObject request : requests) {
+            for (ClassBinder request : requests) {
                 if (request != null) {
-                    Class<?> objClass = request.getObject().getClass();
+                    Class<?> objClass = request.getClazz();
                     String dataType = objClass.getSimpleName();
                     GroovyField groovyField = new GroovyField();
                     groovyField.setDataType(dataType);
@@ -77,11 +77,11 @@ public class GroovyMetadataParserService {
     }
 
     private void loadBinds(){
-        List<GroovyBindObject> binds = script.getBinds();
+        List<ClassBinder> binds = script.getBinds();
         if (binds != null && !binds.isEmpty()) {
-            for (GroovyBindObject bind : binds) {
+            for (ClassBinder bind : binds) {
                 if (bind != null) {
-                    Class<?> objClass = bind.getClass();
+                    Class<?> objClass = bind.getClazz();
                     GroovyField groovyField = new GroovyField();
                     String dataType = objClass.getSimpleName();
                     groovyField.setDataType(dataType);

@@ -39,6 +39,9 @@ public class GroovyType {
         this.functions = new ArrayList<>();
     }
 
+    public boolean isEmpty() {
+        return this.fields.isEmpty() && this.functions.isEmpty();
+    }
 
     public void addFunction(GroovyFunction function) {
         this.functions.add(function);

@@ -4,8 +4,8 @@ import com.codingapi.springboot.fast.jdbc.JdbcQuery;
 import com.codingapi.springboot.fast.jdbc.JdbcQueryContext;
 import com.codingapi.springboot.fast.jpa.JpaQuery;
 import com.codingapi.springboot.fast.jpa.JpaQueryContext;
-import com.codingapi.springboot.script.GroovyScriptRunner;
-import com.codingapi.springboot.script.request.GroovyBindObjectBuilder;
+import com.codingapi.springboot.script.GroovyScriptRuntime;
+import com.codingapi.springboot.script.bind.ObjectBinderBuilder;
 import lombok.Getter;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -17,10 +17,10 @@ public class ScriptRuntime {
     @Getter
     private final static ScriptRuntime instance = new ScriptRuntime();
 
-    private final GroovyScriptRunner scriptRunner;
+    private final GroovyScriptRuntime scriptRunner;
 
     private ScriptRuntime(){
-        this.scriptRunner = new GroovyScriptRunner(1000);
+        this.scriptRunner = new GroovyScriptRuntime(1000);
     }
 
     Object running(String script) {
@@ -29,7 +29,7 @@ public class ScriptRuntime {
         JdbcQuery jdbcQuery = JdbcQueryContext.getInstance().getJdbcQuery();
         JpaQuery jpaQuery = JpaQueryContext.getInstance().getJpaQuery();
 
-        GroovyBindObjectBuilder bindBuilder = GroovyBindObjectBuilder.builder();
+        ObjectBinderBuilder bindBuilder = ObjectBinderBuilder.builder();
         bindBuilder.add("$request", request);
         bindBuilder.add("$jpa", jpaQuery);
         bindBuilder.add("$jdbc", jdbcQuery);

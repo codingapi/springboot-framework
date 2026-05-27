@@ -1,6 +1,5 @@
-package com.codingapi.springboot.script;
+package com.codingapi.springboot.script.gateway;
 
-import com.codingapi.springboot.script.gateway.GroovyMetadataReloadGateway;
 import com.codingapi.springboot.script.meta.GroovyMetadata;
 import lombok.Getter;
 

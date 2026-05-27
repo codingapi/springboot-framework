@@ -1,14 +1,15 @@
 package com.codingapi.springboot.script;
 
 import com.alibaba.fastjson.JSON;
-import com.codingapi.springboot.script.request.GroovyBindObjectBuilder;
-import com.codingapi.springboot.script.request.GroovyRunningScript;
+import com.codingapi.springboot.script.bind.ClassBinder;
+import com.codingapi.springboot.script.bind.ObjectBinder;
+import com.codingapi.springboot.script.meta.GroovyMetadata;
 import com.codingapi.springboot.script.request.MyScriptRequest;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class GroovyScriptRunningContextTest {
+class GroovyScriptRuntimeContextTest {
 
     @Test
     void voidInvoke() {
@@ -18,16 +19,10 @@ class GroovyScriptRunningContextTest {
                     println(request)
                 }
                 """;
-        GroovyScriptRunningContext.getInstance().compile(script);
 
-        GroovyRunningScript<Void> request = new GroovyRunningScript<>(
-                script,
-                Void.class,
-                GroovyBindObjectBuilder.builder().add("request", 100)
-        );
-
+        GroovyScript groovyScript = GroovyScript.createInvoke("voidInvoke", script, "run", Void.class, ClassBinder.of("request", Integer.class));
         long t1 = System.currentTimeMillis();
-        GroovyScriptRunningContext.getInstance().invoke(request);
+        groovyScript.invoke(ObjectBinder.of("request",100));
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
 
@@ -45,20 +40,15 @@ class GroovyScriptRunningContextTest {
 
         MyScriptRequest request = new MyScriptRequest(100);
 
-        GroovyRunningScript<Integer> runningScript = new GroovyRunningScript<>(
-                script,
-                "这是一个run函数，返回的格式为int类型。",
-                Integer.class,
-                GroovyBindObjectBuilder.builder().add("$request", request),
-                GroovyBindObjectBuilder.builder().add("request", request)
-        );
+        GroovyScript groovyScript = GroovyScript.createInvoke("metaTest",
+                script, "这是一个run函数，返回的格式为int类型。","run",  Integer.class, ClassBinder.of("request", MyScriptRequest.class));
 
-        runningScript.buildMetadata();
-        System.out.println(JSON.toJSONString(runningScript.getMetadata()));
-        assertEquals(1, runningScript.getMetadata().getRequests().size());
+        GroovyMetadata metadata = groovyScript.toMetadata();
+        System.out.println(JSON.toJSONString(metadata));
+        assertEquals(1, metadata.getRequests().size());
 
         long t1 = System.currentTimeMillis();
-        int result = GroovyScriptRunningContext.getInstance().invoke(runningScript);
+        int result = groovyScript.invoke(ObjectBinder.of("request",request));
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
         assertEquals(100, result);
@@ -69,15 +59,13 @@ class GroovyScriptRunningContextTest {
 
         String script = " return $request; ";
 
-        GroovyRunningScript<Integer> request = new GroovyRunningScript<>(
-                script,
-                Integer.class,
-                GroovyBindObjectBuilder.builder().add("$request", 100),
-                null
-        );
+
+        GroovyScript groovyScript = GroovyScript.createRun("run",
+                script, Integer.class, ClassBinder.of("$request", Integer.class));
+
 
         long t1 = System.currentTimeMillis();
-        int result = GroovyScriptRunningContext.getInstance().invoke(request);
+        int result = groovyScript.run(ObjectBinder.of("$request",100));
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
 
@@ -93,13 +81,11 @@ class GroovyScriptRunningContextTest {
                 }
                 """;
 
-        GroovyRunningScript<Integer> request = new GroovyRunningScript<>(script,
-                Integer.class,
-                GroovyBindObjectBuilder.builder().add("request", 100)
-        );
+        GroovyScript groovyScript = GroovyScript.createInvoke("invoke",
+                script, "run", Integer.class, ClassBinder.of("request", Integer.class));
 
         long t1 = System.currentTimeMillis();
-        int result = GroovyScriptRunningContext.getInstance().invoke(request);
+        int result = groovyScript.invoke(ObjectBinder.of("request",100));
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
 
