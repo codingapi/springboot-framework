@@ -14,9 +14,21 @@
 v.2.x 为springboot 2.x版本,使用jdk8版本   
 v.3.x 为springboot 3.x版本,使用jdk17版本
 
+## Frontend Framework Version | 前端框架版本说明
+
+| Package                                                               | Description  | Version                                                                                                                   |
+|-----------------------------------------------------------------------|--------------|---------------------------------------------------------------------------------------------------------------------------|
+| [@codingapi/ui-framework](https://github.com/codingapi/ui-compoments)  | UI-Framework | [![npm](https://img.shields.io/npm/v/@codingapi/ui-framework.svg)](https://www.npmjs.com/package/@codingapi/ui-framework) |
+| [@codingapi/form-pc](https://github.com/codingapi/ui-compoments)            | Form-PC      | [![npm](https://img.shields.io/npm/v/@codingapi/form-pc.svg)](https://www.npmjs.com/package/@codingapi/form-pc)           |
+| [@codingapi/form-mobile](https://github.com/codingapi/ui-compoments)    | Form-Mobile  | [![npm](https://img.shields.io/npm/v/@codingapi/form-mobile.svg)](https://www.npmjs.com/package/@codingapi/form-mobile)   |
+| [@codingapi/flow-pc](https://github.com/codingapi/ui-compoments)            | Flow-PC      | [![npm](https://img.shields.io/npm/v/@codingapi/flow-pc.svg)](https://www.npmjs.com/package/@codingapi/flow-pc)           |
+| [@codingapi/flow-mobile](https://github.com/codingapi/ui-compoments)    | Flow-Mobile  | [![npm](https://img.shields.io/npm/v/@codingapi/flow-mobile.svg)](https://www.npmjs.com/package/@codingapi/flow-mobile)   |
+
+
 ## Project Modules Description | 项目模块介绍
 
 * springboot-starter | Springboot领域驱动框架
+* springboot-starter-script | 脚本引擎框架
 * springboot-starter-data-fast | 快速数据呈现框架
 * springboot-starter-data-authorization | 数据权限框架
 * springboot-starter-flow | 流程引擎框架
@@ -36,6 +48,13 @@ v.3.x 为springboot 3.x版本,使用jdk17版本
         <version>${last.version}</version>
     </dependency>
     
+    <!-- 脚本引擎框架 -->
+    <dependency>
+        <groupId>com.codingapi.springboot</groupId>
+        <artifactId>springboot-starter-script</artifactId>
+        <version>${last.version}</version>
+    </dependency>
+    
      <!-- 快速数据呈现框架 -->
      <dependency>
         <groupId>com.codingapi.springboot</groupId>
@@ -48,7 +67,7 @@ v.3.x 为springboot 3.x版本,使用jdk17版本
         <groupId>com.codingapi.springboot</groupId>
         <artifactId>springboot-starter-data-authorization</artifactId>
         <version>${last.version}</version>
-     </dependency>
+    </dependency>
     
      <!-- 流程引擎框架 -->
      <dependency>
@@ -79,7 +98,7 @@ https://github.com/codingapi/springboot-framework/wiki
 
 ## Example
 
-见 [springboot-example](https://github.com/codingapi/springboot-example)
+见 [example](./example)
 
 ## Reference Documentation
 
