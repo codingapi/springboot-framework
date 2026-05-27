@@ -1,6 +1,5 @@
 package com.codingapi.springboot.script;
 
-import com.codingapi.springboot.script.cache.GroovyScriptCacheContext;
 import com.codingapi.springboot.script.gateway.GroovyMetadataReloadGatewayContext;
 import com.codingapi.springboot.script.meta.GroovyMetadata;
 import com.codingapi.springboot.script.service.GroovyMetadataParserService;
@@ -67,7 +66,6 @@ public class GroovyScript {
         this.binds = binds;
         this.requests = requests;
 
-        GroovyScriptCacheContext.getInstance().update(this);
     }
 
 
