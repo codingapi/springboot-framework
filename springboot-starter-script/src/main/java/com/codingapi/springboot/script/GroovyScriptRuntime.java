@@ -1,9 +1,9 @@
 package com.codingapi.springboot.script;
 
 import com.codingapi.springboot.framework.crypto.SHA256;
-import com.codingapi.springboot.script.request.GroovyBindObject;
-import com.codingapi.springboot.script.request.GroovyRunningScript;
 import com.codingapi.springboot.framework.transaction.TransactionManagerContext;
+import com.codingapi.springboot.script.bind.ObjectBinder;
+import com.codingapi.springboot.script.em.TransactionMode;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * groovy script 执行上下文对象
  */
-public class GroovyScriptRunner {
+public class GroovyScriptRuntime {
 
     private final GroovyShell shell;
 
@@ -25,27 +25,9 @@ public class GroovyScriptRunner {
     @Getter
     private final int maxCacheSize;
 
-    @Getter
-    private final TransactionMode transactionMode;
 
-
-    public enum TransactionMode {
-        // 默认不处理
-        DEFAULT,
-        // 事务提交模式
-        COMMIT,
-        // 事务只读模式
-        READONLY
-    }
-
-
-    public GroovyScriptRunner(int maxCacheSize) {
-        this(maxCacheSize, TransactionMode.DEFAULT);
-    }
-
-    public GroovyScriptRunner(int maxCacheSize, TransactionMode transactionMode) {
+    public GroovyScriptRuntime(int maxCacheSize) {
         this.maxCacheSize = maxCacheSize;
-        this.transactionMode = transactionMode;
         GroovyClassLoader groovyClassLoader = new GroovyClassLoader(getClass().getClassLoader());
         this.shell = new GroovyShell(groovyClassLoader);
         this.cache = new LinkedHashMap<String,Script>(16, 0.75F, true) {
@@ -110,7 +92,47 @@ public class GroovyScriptRunner {
      * @param args       函数参数
      * @return 返回数据
      */
-    public <T> T invoke(String method, String script, Class<T> returnType, List<GroovyBindObject> binds, Object... args) {
+    public <T> T invoke(String method,
+                        String script,
+                        Class<T> returnType,
+                        List<ObjectBinder> binds,
+                        Object... args) {
+        return this.invoke(method, script, returnType, TransactionMode.DEFAULT, binds, args);
+    }
+
+    /**
+     * 执行函数脚本
+     *
+     * @param method     函数名称
+     * @param script     脚本内容
+     * @param returnType 返回类型
+     * @param args       函数参数
+     * @return 返回数据
+     */
+    public <T> T invoke(String method,
+                        String script,
+                        Class<T> returnType,
+                        Object... args) {
+        return this.invoke(method, script, returnType, TransactionMode.DEFAULT, null, args);
+    }
+
+    /**
+     * 执行函数脚本
+     *
+     * @param method          函数名称
+     * @param script          脚本内容
+     * @param returnType      返回类型
+     * @param transactionMode 事务模式
+     * @param binds           绑定数据对象
+     * @param args            函数参数
+     * @return 返回数据
+     */
+    public <T> T invoke(String method,
+                        String script,
+                        Class<T> returnType,
+                        TransactionMode transactionMode,
+                        List<ObjectBinder> binds,
+                        Object... args) {
         String key = SHA256.sha256(script);
         Script runtime = this.cache.get(key);
         if (runtime == null) {
@@ -118,9 +140,10 @@ public class GroovyScriptRunner {
             this.cache.put(key, runtime);
         }
 
+
         if (binds != null && !binds.isEmpty()) {
-            for (GroovyBindObject groovyBindObject : binds) {
-                runtime.setProperty(groovyBindObject.getName(), groovyBindObject.getObject());
+            for (ObjectBinder objectBinder : binds) {
+                runtime.setProperty(objectBinder.getName(), objectBinder.getObject());
             }
         }
 
@@ -144,7 +167,6 @@ public class GroovyScriptRunner {
         return (T) runtime.invokeMethod(method, args);
     }
 
-
     /**
      * 执行脚本
      *
@@ -153,7 +175,20 @@ public class GroovyScriptRunner {
      * @param binds      绑定对象
      * @return 返回数据
      */
-    public <T> T run(String script, Class<T> returnType, List<GroovyBindObject> binds) {
+    public <T> T run(String script, Class<T> returnType, List<ObjectBinder> binds) {
+        return this.run(script, returnType, TransactionMode.DEFAULT, binds);
+    }
+
+    /**
+     * 执行脚本
+     *
+     * @param script          脚本
+     * @param returnType      返回数据类型
+     * @param transactionMode 事务模式
+     * @param binds           绑定对象
+     * @return 返回数据
+     */
+    public <T> T run(String script, Class<T> returnType, TransactionMode transactionMode, List<ObjectBinder> binds) {
         String key = SHA256.sha256(script);
         Script runtime = this.cache.get(key);
         if (runtime == null) {
@@ -162,8 +197,8 @@ public class GroovyScriptRunner {
         }
 
         if (binds != null && !binds.isEmpty()) {
-            for (GroovyBindObject groovyBindObject : binds) {
-                runtime.setProperty(groovyBindObject.getName(), groovyBindObject.getObject());
+            for (ObjectBinder objectBinder : binds) {
+                runtime.setProperty(objectBinder.getName(), objectBinder.getObject());
             }
         }
 
@@ -187,40 +222,5 @@ public class GroovyScriptRunner {
         return (T) runtime.run();
     }
 
-
-    /**
-     * 执行脚本
-     *
-     * @param script     脚本
-     * @param returnType 返回类型
-     * @return 返回数据
-     */
-    public <T> T run(String script, Class<T> returnType) {
-        return this.run(script, returnType, null);
-    }
-
-    /**
-     * 执行函数脚本
-     *
-     * @param method     函数名称
-     * @param script     脚本内容
-     * @param returnType 返回类型
-     * @param args       函数参数
-     * @return 返回数据
-     */
-    public <T> T invoke(String method, String script, Class<T> returnType, Object... args) {
-        return this.invoke(method, script, returnType, null, args);
-    }
-
-
-    /**
-     * 执行函数脚本
-     *
-     * @param request 脚本参数
-     * @return 返回数据
-     */
-    public <T> T invoke(GroovyRunningScript<T> request) {
-        return this.invoke(request.getMethod(), request.getScript(), request.getReturnType(), request.getBinds(), request.getParams());
-    }
 
 }

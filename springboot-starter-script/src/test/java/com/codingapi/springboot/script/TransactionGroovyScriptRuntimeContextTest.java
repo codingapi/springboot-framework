@@ -1,9 +1,10 @@
 package com.codingapi.springboot.script;
 
+import com.codingapi.springboot.script.bind.ClassBinder;
+import com.codingapi.springboot.script.bind.ObjectBinder;
+import com.codingapi.springboot.script.em.TransactionMode;
 import com.codingapi.springboot.script.entity.MyTest;
 import com.codingapi.springboot.script.repository.MyTestRepository;
-import com.codingapi.springboot.script.request.GroovyBindObjectBuilder;
-import com.codingapi.springboot.script.request.GroovyRunningScript;
 import com.codingapi.springboot.script.request.MyScriptRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Transactional
-class TransactionGroovyScriptRunningContextTest {
+class TransactionGroovyScriptRuntimeContextTest {
 
     @Autowired
     private MyTestRepository myTestRepository;
@@ -25,23 +26,23 @@ class TransactionGroovyScriptRunningContextTest {
     @Test
     void transactionCommitRun() {
 
-        String script = "def run(request){request.addData($repository);println(request.count);}";
+        String script = "def run(request){ request.addData($repository);println(request.count);}";
 
         MyScriptRequest request = new MyScriptRequest(100);
 
         myTestRepository.deleteAll();
         List<MyTest> list = myTestRepository.findAll();
         assertTrue(list.isEmpty());
-        GroovyScriptRunner scriptRunner = new GroovyScriptRunner(100,GroovyScriptRunner.TransactionMode.COMMIT);
-        scriptRunner.compile(script);
-        GroovyRunningScript<Void> runningScript = new GroovyRunningScript<>(script,
+
+        GroovyScript groovyScript = GroovyScript.createInvoke("transactionCommitRun",
+                script,
+                "run",
                 Void.class,
-                GroovyBindObjectBuilder.builder().add("$repository",myTestRepository),
-                GroovyBindObjectBuilder.builder().add("request",request)
-        );
+                ClassBinder.of("$repository", myTestRepository.getClass()),
+                ClassBinder.of("request", request.getClass()));
 
         long t1 = System.currentTimeMillis();
-        scriptRunner.invoke(runningScript);
+        groovyScript.invoke(TransactionMode.COMMIT,ObjectBinder.of("$repository",myTestRepository), ObjectBinder.of("request",request));
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
 
@@ -53,7 +54,7 @@ class TransactionGroovyScriptRunningContextTest {
     @Test
     void transactionOnlyReadRun() {
 
-        String script = "def run(request){request.addData($repository);println(request.count);}";
+        String script = "def run(request){ request.addData($repository);println(request.count);}";
 
         MyScriptRequest request = new MyScriptRequest(100);
 
@@ -62,17 +63,10 @@ class TransactionGroovyScriptRunningContextTest {
         List<MyTest> list = myTestRepository.findAll();
         assertTrue(list.isEmpty());
 
-        GroovyScriptRunner scriptRunner = new GroovyScriptRunner(100, GroovyScriptRunner.TransactionMode.READONLY);
-        scriptRunner.compile(script);
-
-        GroovyRunningScript<Void> runningScript = new GroovyRunningScript<>(script,
-                Void.class,
-                GroovyBindObjectBuilder.builder().add("$repository",myTestRepository),
-                GroovyBindObjectBuilder.builder().add("request",request)
-        );
+        GroovyScript groovyScript = GroovyScript.createInvoke("transactionOnlyReadRun", script, "run", Void.class, ClassBinder.of("$repository", myTestRepository.getClass()), ClassBinder.of("request", request.getClass()));
 
         long t1 = System.currentTimeMillis();
-        scriptRunner.invoke(runningScript);
+        groovyScript.invoke(TransactionMode.READONLY,ObjectBinder.of("$repository",myTestRepository), ObjectBinder.of("request",request));
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
 
