@@ -4,7 +4,7 @@ import com.codingapi.springboot.fast.jdbc.JdbcQuery;
 import com.codingapi.springboot.fast.jdbc.JdbcQueryContext;
 import com.codingapi.springboot.fast.jpa.JpaQuery;
 import com.codingapi.springboot.fast.jpa.JpaQueryContext;
-import com.codingapi.springboot.framework.script.GroovyScriptRunner;
+import com.codingapi.springboot.script.GroovyScriptRunner;
 import com.codingapi.springboot.script.request.GroovyBindObjectBuilder;
 import lombok.Getter;
 import org.springframework.web.context.request.RequestContextHolder;
