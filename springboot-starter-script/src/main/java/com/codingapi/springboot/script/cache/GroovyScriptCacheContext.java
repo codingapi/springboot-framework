@@ -5,11 +5,7 @@ import com.codingapi.springboot.script.meta.GroovyMetadata;
 import com.codingapi.springboot.script.repository.GroovyScriptRepositoryContext;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * 脚本数据上下文管理对象
@@ -96,6 +92,21 @@ public class GroovyScriptCacheContext {
             return script.getScript();
         }
         return "";
+    }
+
+    /**
+     * 获取脚本编辑信息
+     *
+     * @param key 脚本可以
+     */
+    public Map<String, Object> getEditorScript(String key) {
+        Map<String, Object> map = new HashMap<>();
+        GroovyScript script = this.getGroovyScript(key);
+        if (script != null) {
+            map.put("script", script.getScript());
+            map.put("metadata", script.toMetadata());
+        }
+        return map;
     }
 
 
