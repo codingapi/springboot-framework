@@ -4,11 +4,13 @@ import com.codingapi.springboot.fast.jdbc.JdbcQuery;
 import com.codingapi.springboot.fast.jdbc.JdbcQueryContext;
 import com.codingapi.springboot.fast.jpa.JpaQuery;
 import com.codingapi.springboot.fast.jpa.JpaQueryContext;
-import com.codingapi.springboot.framework.script.GroovyScriptRunner;
-import com.codingapi.springboot.framework.script.request.GroovyBindObjectBuilder;
+import com.codingapi.springboot.script.GroovyScriptRuntime;
 import lombok.Getter;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class ScriptRuntime {
@@ -17,10 +19,10 @@ public class ScriptRuntime {
     @Getter
     private final static ScriptRuntime instance = new ScriptRuntime();
 
-    private final GroovyScriptRunner scriptRunner;
+    private final GroovyScriptRuntime scriptRunner;
 
     private ScriptRuntime(){
-        this.scriptRunner = new GroovyScriptRunner(1000);
+        this.scriptRunner = new GroovyScriptRuntime(1000);
     }
 
     Object running(String script) {
@@ -29,11 +31,12 @@ public class ScriptRuntime {
         JdbcQuery jdbcQuery = JdbcQueryContext.getInstance().getJdbcQuery();
         JpaQuery jpaQuery = JpaQueryContext.getInstance().getJpaQuery();
 
-        GroovyBindObjectBuilder bindBuilder = GroovyBindObjectBuilder.builder();
-        bindBuilder.add("$request", request);
-        bindBuilder.add("$jpa", jpaQuery);
-        bindBuilder.add("$jdbc", jdbcQuery);
+        Map<String,Object> bindBuilder = new HashMap<>();
+        bindBuilder.put("$request", request);
+        bindBuilder.put("$jpa", jpaQuery);
+        bindBuilder.put("$jdbc", jdbcQuery);
 
-        return this.scriptRunner.run(script,Object.class,bindBuilder.build());
+        return this.scriptRunner.run(script,Object.class,bindBuilder);
+
     }
 }

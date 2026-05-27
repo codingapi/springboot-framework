@@ -1,6 +1,6 @@
 package com.codingapi.springboot.flow.script;
 
-import com.codingapi.springboot.framework.script.GroovyScriptRunner;
+import com.codingapi.springboot.script.GroovyScriptRuntime;
 import lombok.Getter;
 
 public class GroovyShellContext {
@@ -11,11 +11,11 @@ public class GroovyShellContext {
     @Getter
     private final static GroovyShellContext instance = new GroovyShellContext();
 
-    private final GroovyScriptRunner scriptRunner;
+    private final GroovyScriptRuntime scriptRunner;
 
 
     private GroovyShellContext() {
-        scriptRunner = new GroovyScriptRunner(MAX_CACHE_SIZE);
+        scriptRunner = new GroovyScriptRuntime(MAX_CACHE_SIZE);
     }
 
 
