@@ -1,11 +1,9 @@
 package com.codingapi.springboot.script;
 
-import com.codingapi.springboot.script.bind.ClassBinder;
-import com.codingapi.springboot.script.bind.ObjectBinder;
-import com.codingapi.springboot.script.em.TransactionMode;
 import com.codingapi.springboot.script.entity.MyTest;
 import com.codingapi.springboot.script.repository.MyTestRepository;
 import com.codingapi.springboot.script.request.MyScriptRequest;
+import org.apache.groovy.util.Maps;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,11 +36,11 @@ class TransactionGroovyScriptRuntimeContextTest {
                 script,
                 "run",
                 Void.class,
-                ClassBinder.of("$repository", myTestRepository.getClass()),
-                ClassBinder.of("request", request.getClass()));
+                Maps.of("$repository", myTestRepository.getClass()),
+                Maps.of("request", request.getClass()));
 
         long t1 = System.currentTimeMillis();
-        groovyScript.invoke(TransactionMode.COMMIT,ObjectBinder.of("$repository",myTestRepository), ObjectBinder.of("request",request));
+        groovyScript.invoke(TransactionMode.COMMIT,Maps.of("$repository",myTestRepository), request);
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
 
@@ -63,10 +61,10 @@ class TransactionGroovyScriptRuntimeContextTest {
         List<MyTest> list = myTestRepository.findAll();
         assertTrue(list.isEmpty());
 
-        GroovyScript groovyScript = GroovyScript.createInvoke("transactionOnlyReadRun", script, "run", Void.class, ClassBinder.of("$repository", myTestRepository.getClass()), ClassBinder.of("request", request.getClass()));
+        GroovyScript groovyScript = GroovyScript.createInvoke("transactionOnlyReadRun", script, "run", Void.class, Maps.of("$repository", myTestRepository.getClass()), Maps.of("request", request.getClass()));
 
         long t1 = System.currentTimeMillis();
-        groovyScript.invoke(TransactionMode.READONLY,ObjectBinder.of("$repository",myTestRepository), ObjectBinder.of("request",request));
+        groovyScript.invoke(TransactionMode.READONLY, Maps.of("$repository",myTestRepository), request);
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
 
