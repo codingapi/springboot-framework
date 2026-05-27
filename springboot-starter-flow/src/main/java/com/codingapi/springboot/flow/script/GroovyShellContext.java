@@ -1,6 +1,6 @@
 package com.codingapi.springboot.flow.script;
 
-import com.codingapi.springboot.framework.script.GroovyScriptRunner;
+import com.codingapi.springboot.script.GroovyScriptRunner;
 import lombok.Getter;
 
 public class GroovyShellContext {

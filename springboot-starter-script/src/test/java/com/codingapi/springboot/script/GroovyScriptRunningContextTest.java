@@ -38,12 +38,8 @@ class GroovyScriptRunningContextTest {
     void metaTest() {
         String script = """
                 
-                def test(request){
-                    return request.get('count')
-                }
-                
                 def run(request){
-                    return test(request);
+                    return request.count;
                 }
                 """;
 
