@@ -37,12 +37,14 @@ class TransactionGroovyScriptRuntimeContextTest {
         List<MyTest> list = myTestRepository.findAll();
         assertTrue(list.isEmpty());
 
-        GroovyScript groovyScript = GroovyScript.createInvoke("transactionCommitRun",
-                script,
-                "run",
-                Void.class,
-                Map.of("$repository", myTestRepository.getClass()),
-                Map.of("request", request.getClass()));
+        GroovyScript groovyScript =
+                GroovyScript.builder("transactionCommitRun")
+                        .script(script)
+                        .method("run")
+                        .returnType(Void.class)
+                        .binds(Map.of("$repository", myTestRepository.getClass()))
+                        .requests(Map.of("request", request.getClass()))
+                        .build();
 
         long t1 = System.currentTimeMillis();
         groovyScript.invoke(TransactionMode.COMMIT, Map.of("$repository", myTestRepository), request);
@@ -71,7 +73,15 @@ class TransactionGroovyScriptRuntimeContextTest {
         List<MyTest> list = myTestRepository.findAll();
         assertTrue(list.isEmpty());
 
-        GroovyScript groovyScript = GroovyScript.createInvoke("transactionOnlyReadRun", script, "run", Void.class, Map.of("$repository", myTestRepository.getClass()), Map.of("request", request.getClass()));
+        GroovyScript groovyScript =
+                GroovyScript.builder("transactionOnlyReadRun")
+                        .script(script)
+                        .method("run")
+                        .returnType(Void.class)
+                        .binds(Map.of("$repository", myTestRepository.getClass()))
+                        .requests(Map.of("request", request.getClass()))
+                        .build();
+
 
         long t1 = System.currentTimeMillis();
         groovyScript.invoke(TransactionMode.READONLY, Map.of("$repository", myTestRepository), request);
