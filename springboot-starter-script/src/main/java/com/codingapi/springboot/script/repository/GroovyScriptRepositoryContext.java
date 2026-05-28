@@ -27,6 +27,11 @@ public class GroovyScriptRepositoryContext {
         public void delete(GroovyScript groovyScript) {
 
         }
+
+        @Override
+        public GroovyScript get(String key) {
+            return null;
+        }
     };
 
     public void save(GroovyScript groovyScript) {
@@ -38,5 +43,7 @@ public class GroovyScriptRepositoryContext {
         this.groovyScriptRepository.delete(groovyScript);
     }
 
-
+    public GroovyScript get(String key) {
+        return  this.groovyScriptRepository.get(key);
+    }
 }

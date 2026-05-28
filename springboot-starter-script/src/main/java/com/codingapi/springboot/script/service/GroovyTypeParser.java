@@ -1,11 +1,13 @@
 package com.codingapi.springboot.script.service;
 
+import com.codingapi.springboot.script.GroovyScript;
 import com.codingapi.springboot.script.annotation.ScriptField;
 import com.codingapi.springboot.script.annotation.ScriptFunction;
 import com.codingapi.springboot.script.meta.GroovyField;
 import com.codingapi.springboot.script.meta.GroovyFunction;
 import com.codingapi.springboot.script.meta.GroovyMetadata;
 import com.codingapi.springboot.script.meta.GroovyType;
+import com.codingapi.springboot.script.strategy.GroovyTypeReloadStrategyContext;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
@@ -102,15 +104,18 @@ public class GroovyTypeParser {
 
                 Class<?> returnType = method.getReturnType();
                 this.metadata.buildType(returnType);
+                groovyFunction.setReturnType(returnType.getSimpleName());
+
                 this.object.addFunction(groovyFunction);
             }
         }
     }
 
 
-    public GroovyType parser() {
+    public GroovyType parser(GroovyScript groovyScript) {
         this.loadFields();
         this.loadMethods();
+        GroovyTypeReloadStrategyContext.getInstance().reload(groovyScript.getTag(),this.clazz, this.object);
         return this.object;
     }
 }

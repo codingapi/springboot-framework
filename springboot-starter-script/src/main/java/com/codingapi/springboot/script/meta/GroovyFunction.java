@@ -26,7 +26,7 @@ public class GroovyFunction {
      * 返回类型
      */
     @Setter
-    private GroovyType returnType;
+    private String returnType;
     /**
      * 参数类型
      */

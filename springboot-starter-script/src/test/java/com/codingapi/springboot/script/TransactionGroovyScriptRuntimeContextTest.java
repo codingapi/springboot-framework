@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -32,12 +33,14 @@ class TransactionGroovyScriptRuntimeContextTest {
         List<MyTest> list = myTestRepository.findAll();
         assertTrue(list.isEmpty());
 
-        GroovyScript groovyScript = GroovyScript.createInvoke("transactionCommitRun",
-                script,
-                "run",
-                Void.class,
-                Maps.of("$repository", myTestRepository.getClass()),
-                Maps.of("request", request.getClass()));
+        GroovyScript groovyScript =
+                GroovyScript.builder("transactionCommitRun")
+                        .script(script)
+                        .method("run")
+                        .returnType(Void.class)
+                        .binds(Maps.of("$repository", myTestRepository.getClass()))
+                        .requests(Maps.of("request", request.getClass()))
+                        .build();
 
         long t1 = System.currentTimeMillis();
         groovyScript.invoke(TransactionMode.COMMIT,Maps.of("$repository",myTestRepository), request);
@@ -61,7 +64,14 @@ class TransactionGroovyScriptRuntimeContextTest {
         List<MyTest> list = myTestRepository.findAll();
         assertTrue(list.isEmpty());
 
-        GroovyScript groovyScript = GroovyScript.createInvoke("transactionOnlyReadRun", script, "run", Void.class, Maps.of("$repository", myTestRepository.getClass()), Maps.of("request", request.getClass()));
+        GroovyScript groovyScript =
+                GroovyScript.builder("transactionOnlyReadRun")
+                        .script(script)
+                        .method("run")
+                        .returnType(Void.class)
+                        .binds(Maps.of("$repository", myTestRepository.getClass()))
+                        .requests(Maps.of("request", request.getClass()))
+                        .build();
 
         long t1 = System.currentTimeMillis();
         groovyScript.invoke(TransactionMode.READONLY, Maps.of("$repository",myTestRepository), request);
