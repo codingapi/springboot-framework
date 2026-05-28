@@ -1,7 +1,6 @@
 package com.codingapi.springboot.script;
 
 import com.codingapi.springboot.script.cache.GroovyScriptCacheContext;
-import com.codingapi.springboot.script.gateway.GroovyMetadataReloadGatewayContext;
 import com.codingapi.springboot.script.meta.GroovyMetadata;
 import com.codingapi.springboot.script.service.GroovyMetadataParserService;
 import lombok.AllArgsConstructor;
@@ -78,63 +77,63 @@ public class GroovyScript {
         this.createTime = System.currentTimeMillis();
     }
 
-    public static Builder builder(String key){
+    public static Builder builder(String key) {
         return new Builder(key);
     }
 
-    public static class Builder{
+    public static class Builder {
         private final GroovyScript script;
 
         public Builder(String key) {
             this.script = new GroovyScript(key);
         }
 
-        public Builder script(String script){
+        public Builder script(String script) {
             this.script.script = script;
             return this;
         }
 
-        public Builder description(String description){
+        public Builder description(String description) {
             this.script.description = description;
             return this;
         }
 
-        public Builder method(String method){
+        public Builder method(String method) {
             this.script.method = method;
             return this;
         }
 
-        public Builder typeOne(String typeOne){
+        public Builder typeOne(String typeOne) {
             this.script.typeOne = typeOne;
             return this;
         }
 
-        public Builder typeTwo(String typeTwo){
+        public Builder typeTwo(String typeTwo) {
             this.script.typeTwo = typeTwo;
             return this;
         }
 
-        public Builder remark(String remark){
+        public Builder remark(String remark) {
             this.script.remark = remark;
             return this;
         }
 
-        public Builder returnType(Class<?> returnType){
+        public Builder returnType(Class<?> returnType) {
             this.script.returnType = returnType;
             return this;
         }
 
-        public Builder binds(Map<String,Class<?>> binds){
+        public Builder binds(Map<String, Class<?>> binds) {
             this.script.binds = binds;
             return this;
         }
 
-        public Builder requests(Map<String,Class<?>> requests){
+        public Builder requests(Map<String, Class<?>> requests) {
             this.script.requests = requests;
             return this;
         }
 
-        public GroovyScript build(){
+        public GroovyScript build() {
             return this.script;
         }
 
@@ -273,9 +272,7 @@ public class GroovyScript {
      */
     public GroovyMetadata toMetadata() {
         GroovyMetadataParserService groovyMetaDataParserService = new GroovyMetadataParserService(this);
-        GroovyMetadata metadata = groovyMetaDataParserService.parser();
-        GroovyMetadataReloadGatewayContext.getInstance().reload(metadata);
-        return metadata;
+        return groovyMetaDataParserService.parser();
     }
 
 

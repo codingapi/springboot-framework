@@ -6,6 +6,7 @@ import com.codingapi.springboot.script.meta.GroovyField;
 import com.codingapi.springboot.script.meta.GroovyFunction;
 import com.codingapi.springboot.script.meta.GroovyMetadata;
 import com.codingapi.springboot.script.meta.GroovyType;
+import com.codingapi.springboot.script.strategy.GroovyTypeReloadStrategyContext;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
@@ -111,6 +112,7 @@ public class GroovyTypeParser {
     public GroovyType parser() {
         this.loadFields();
         this.loadMethods();
+        GroovyTypeReloadStrategyContext.getInstance().reload(this.clazz, this.object);
         return this.object;
     }
 }
