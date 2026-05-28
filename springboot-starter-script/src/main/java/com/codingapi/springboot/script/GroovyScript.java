@@ -62,9 +62,20 @@ public class GroovyScript {
      */
     private String remark;
 
+    /**
+     * 创建时间
+     */
+    private long createTime;
+
+    /**
+     * 更新时间
+     */
+    private long updateTime;
+
 
     private GroovyScript(String key) {
         this.key = key;
+        this.createTime = System.currentTimeMillis();
     }
 
     public static Builder builder(String key){
@@ -134,6 +145,7 @@ public class GroovyScript {
      * 保存缓存并持久化
      */
     public void save() {
+        this.updateTime = System.currentTimeMillis();
         GroovyScriptCacheContext.getInstance().update(this);
     }
 
