@@ -23,4 +23,9 @@ public class DefaultGroovyScriptRepository implements GroovyScriptRepository {
     public void delete(GroovyScript groovyScript) {
         this.data.remove(groovyScript.getKey());
     }
+
+    @Override
+    public GroovyScript get(String key) {
+        return this.data.get(key);
+    }
 }

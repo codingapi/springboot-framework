@@ -62,7 +62,7 @@ public class GroovyMetadata {
      *
      * @param clazz class类型
      */
-    public void buildType(Class<?> clazz) {
+    public GroovyType buildType(Class<?> clazz) {
         String dataType = clazz.getSimpleName();
         GroovyType groovyType = this.types.get(dataType);
         if (groovyType == null) {
@@ -75,6 +75,7 @@ public class GroovyMetadata {
             }
             this.put(dataType, groovyType);
         }
+        return groovyType;
     }
 
     /**

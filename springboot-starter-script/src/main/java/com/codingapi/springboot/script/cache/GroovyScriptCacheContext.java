@@ -20,8 +20,15 @@ public class GroovyScriptCacheContext {
 
     private final Map<String, GroovyScript> cache;
 
+    private final static int MAX_CACHE_SIZE = 10 * 1024;
+
     private GroovyScriptCacheContext() {
-        this.cache = new LinkedHashMap<>(16, 0.75f);
+        this.cache = new LinkedHashMap<>(16, 0.75f, true) {
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<String, GroovyScript> eldest) {
+                return size() > MAX_CACHE_SIZE;
+            }
+        };
     }
 
     /**
@@ -72,7 +79,14 @@ public class GroovyScriptCacheContext {
      * @return 脚本对象
      */
     public GroovyScript getGroovyScript(String key) {
-        return this.cache.get(key);
+        GroovyScript groovyScript = this.cache.get(key);
+        if (groovyScript == null) {
+            groovyScript = GroovyScriptRepositoryContext.getInstance().get(key);
+            if (groovyScript != null) {
+                this.cache.put(key, groovyScript);
+            }
+        }
+        return groovyScript;
     }
 
     /**
@@ -125,7 +139,7 @@ public class GroovyScriptCacheContext {
      *
      * @param scriptList 脚本数据
      */
-    public void loadAll(List<GroovyScript> scriptList) {
+    public void setBatchCache(List<GroovyScript> scriptList) {
         if (scriptList != null) {
             for (GroovyScript script : scriptList) {
                 if (script != null) {
@@ -150,7 +164,7 @@ public class GroovyScriptCacheContext {
     /**
      * 清空脚本数据
      */
-    public void clear(){
+    public void clear() {
         this.cache.clear();
     }
 }

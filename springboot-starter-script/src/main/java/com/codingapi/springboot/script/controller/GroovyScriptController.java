@@ -7,6 +7,7 @@ import com.codingapi.springboot.framework.exception.LocaleMessageException;
 import com.codingapi.springboot.script.GroovyScript;
 import com.codingapi.springboot.script.GroovyScriptRuntimeContext;
 import com.codingapi.springboot.script.cache.GroovyScriptCacheContext;
+import com.codingapi.springboot.script.meta.GroovyMetadata;
 import com.codingapi.springboot.script.pojo.ScriptCompileRequest;
 import com.codingapi.springboot.script.pojo.ScriptSaveRequest;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,15 @@ public class GroovyScriptController {
         GroovyScript groovyScript = GroovyScriptCacheContext.getInstance().getGroovyScript(key);
         if (groovyScript != null) {
             return SingleResponse.of(groovyScript.getScript());
+        }
+        throw new LocaleMessageException("script.null", "脚本对象不存在");
+    }
+
+    @GetMapping("/getMetadata")
+    public SingleResponse<GroovyMetadata> getMetadata(@RequestParam(name = "key") String key) {
+        GroovyScript groovyScript = GroovyScriptCacheContext.getInstance().getGroovyScript(key);
+        if (groovyScript != null) {
+            return SingleResponse.of(groovyScript.toMetadata());
         }
         throw new LocaleMessageException("script.null", "脚本对象不存在");
     }

@@ -102,7 +102,9 @@ public class GroovyTypeParser {
                 }
 
                 Class<?> returnType = method.getReturnType();
-                this.metadata.buildType(returnType);
+                GroovyType returnGroovyType = this.metadata.buildType(returnType);
+                groovyFunction.setReturnType(returnGroovyType);
+
                 this.object.addFunction(groovyFunction);
             }
         }
