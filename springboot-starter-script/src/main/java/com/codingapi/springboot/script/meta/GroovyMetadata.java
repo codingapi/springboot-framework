@@ -1,5 +1,6 @@
 package com.codingapi.springboot.script.meta;
 
+import com.codingapi.springboot.script.GroovyScript;
 import com.codingapi.springboot.script.annotation.ScriptType;
 import com.codingapi.springboot.script.service.GroovyTypeParser;
 import lombok.Getter;
@@ -14,47 +15,56 @@ import java.util.Map;
 /**
  * 脚本对象元数据结构
  */
-@Getter
 public class GroovyMetadata {
 
     /**
      * 请求参数
      */
+    @Getter
     private final List<GroovyField> requests;
 
     /**
      * 绑定参数
      */
+    @Getter
     private final List<GroovyField> binds;
 
     /**
      * 程序主函数名称
      */
-    @Setter
+    @Getter
     private String mainMethod;
 
     /**
      * 返回类型
      */
-    @Setter
+    @Getter
     private String returnType;
 
     /**
      * 字段类型
      */
+    @Getter
     private final Map<String, GroovyType> types;
 
     /**
      * 脚本说明
      */
-    @Setter
+    @Getter
     private String description;
 
 
-    public GroovyMetadata() {
+    private transient final GroovyScript groovyScript;
+
+
+    public GroovyMetadata(GroovyScript groovyScript) {
+        this.groovyScript = groovyScript;
         this.types = new HashMap<>();
         this.requests = new ArrayList<>();
         this.binds = new ArrayList<>();
+        this.description = groovyScript.getDescription();
+        this.mainMethod = groovyScript.getMethod();
+        this.returnType = groovyScript.getReturnType().getSimpleName();
     }
 
     /**
@@ -62,12 +72,12 @@ public class GroovyMetadata {
      *
      * @param clazz class类型
      */
-    public GroovyType buildType(Class<?> clazz) {
+    public void buildType(Class<?> clazz) {
         String dataType = clazz.getSimpleName();
         GroovyType groovyType = this.types.get(dataType);
         if (groovyType == null) {
             GroovyTypeParser groovyTypeParser = new GroovyTypeParser(clazz, this);
-            groovyType = groovyTypeParser.parser();
+            groovyType = groovyTypeParser.parser(this.groovyScript);
             groovyType.setDataType(dataType);
             ScriptType scriptType = clazz.getAnnotation(ScriptType.class);
             if (scriptType != null) {
@@ -75,7 +85,6 @@ public class GroovyMetadata {
             }
             this.put(dataType, groovyType);
         }
-        return groovyType;
     }
 
     /**

@@ -18,9 +18,7 @@ public class GroovyMetadataParserService {
 
     public GroovyMetadataParserService(GroovyScript script) {
         this.script = script;
-        this.groovyMetadata = new GroovyMetadata();
-        this.groovyMetadata.setMainMethod(script.getMethod());
-        this.groovyMetadata.setDescription(script.getDescription());
+        this.groovyMetadata = new GroovyMetadata(script);
     }
 
 
@@ -45,7 +43,6 @@ public class GroovyMetadataParserService {
     private void loadReturnType() {
         Class<?> returnTypeClass = this.script.getReturnType();
         this.groovyMetadata.buildType(returnTypeClass);
-        this.groovyMetadata.setReturnType(returnTypeClass.getSimpleName());
     }
 
 

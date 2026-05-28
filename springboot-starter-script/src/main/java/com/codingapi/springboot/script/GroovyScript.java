@@ -57,6 +57,11 @@ public class GroovyScript {
     private String typeTwo;
 
     /**
+     * 标记参数
+     */
+    private String tag;
+
+    /**
      * 备注信息
      */
     private String remark;
@@ -95,6 +100,11 @@ public class GroovyScript {
 
         public Builder description(String description) {
             this.script.description = description;
+            return this;
+        }
+
+        public Builder tag(String tag) {
+            this.script.tag = tag;
             return this;
         }
 
@@ -145,7 +155,7 @@ public class GroovyScript {
      */
     public void save() {
         this.updateTime = System.currentTimeMillis();
-        GroovyScriptCacheContext.getInstance().update(this);
+        GroovyScriptCacheContext.getInstance().save(this);
     }
 
 

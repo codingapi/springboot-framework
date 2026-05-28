@@ -9,6 +9,11 @@ public interface GroovyTypeReloadStrategy {
 
     boolean support(Class<?> clazz);
 
-    void reload(GroovyType groovyType);
+    /**
+     * 刷新元数据结构
+     * @param tag 数据标记
+     * @param groovyType 类型元数据结构（扫描后）
+     */
+    void reload(String tag,GroovyType groovyType);
 
 }

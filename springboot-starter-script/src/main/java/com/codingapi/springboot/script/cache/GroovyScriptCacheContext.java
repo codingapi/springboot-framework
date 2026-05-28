@@ -36,12 +36,24 @@ public class GroovyScriptCacheContext {
      *
      * @param script 脚本对象
      */
-    public void update(GroovyScript script) {
+    public void save(GroovyScript script) {
         if (script != null) {
             this.cache.put(script.getKey(), script);
             GroovyScriptRepositoryContext.getInstance().save(script);
         }
     }
+
+
+    /**
+     * 保存缓存数据
+     * @param script 脚本对象
+     */
+    public void cache(GroovyScript script){
+        if (script != null) {
+            this.cache.put(script.getKey(), script);
+        }
+    }
+
 
     /**
      * 删除脚本

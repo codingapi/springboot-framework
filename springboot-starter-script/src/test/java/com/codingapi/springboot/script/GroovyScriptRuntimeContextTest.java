@@ -45,13 +45,14 @@ class GroovyScriptRuntimeContextTest {
                 }
                 """;
 
-        MyScriptRequest request = new MyScriptRequest(100);
+
 
         GroovyScript groovyScript =
                 GroovyScript.builder("metaTest")
                         .script(script)
                         .description("这是一个run函数，返回的格式为int类型。")
                         .method("run")
+                        .tag("123")
                         .returnType(Integer.class)
                         .requests(Map.of("request", MyScriptRequest.class))
                         .build();
@@ -60,6 +61,7 @@ class GroovyScriptRuntimeContextTest {
         System.out.println(JSON.toJSONString(metadata));
         assertEquals(1, metadata.getRequests().size());
 
+        MyScriptRequest request = new MyScriptRequest(100);
         long t1 = System.currentTimeMillis();
         int result = groovyScript.invoke(request);
         long t2 = System.currentTimeMillis();

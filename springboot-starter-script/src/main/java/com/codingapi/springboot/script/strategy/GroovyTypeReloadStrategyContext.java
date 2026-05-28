@@ -21,10 +21,10 @@ public class GroovyTypeReloadStrategyContext {
         this.strategies.add(gateway);
     }
 
-    public void reload(Class<?> clazz, GroovyType groovyType) {
+    public void reload(String tag, Class<?> clazz, GroovyType groovyType) {
         for (GroovyTypeReloadStrategy strategy : strategies) {
             if (strategy.support(clazz)) {
-                strategy.reload(groovyType);
+                strategy.reload(tag, groovyType);
             }
         }
     }
