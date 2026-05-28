@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.codingapi.springboot.script.GroovyScriptConfiguration
+com.codingapi.springboot.script.AutoConfiguration

@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ComponentScan(basePackages = "com.codingapi.springboot.script")
-public class GroovyScriptConfiguration {
+public class AutoConfiguration {
 
 
     @Bean
