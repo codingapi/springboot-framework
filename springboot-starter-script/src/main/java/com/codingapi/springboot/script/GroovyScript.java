@@ -6,6 +6,7 @@ import com.codingapi.springboot.script.meta.GroovyMetadata;
 import com.codingapi.springboot.script.service.GroovyMetadataParserService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import java.util.Map;
  * 脚本对象
  */
 @Getter
+@Setter
 @AllArgsConstructor
 public class GroovyScript {
 
