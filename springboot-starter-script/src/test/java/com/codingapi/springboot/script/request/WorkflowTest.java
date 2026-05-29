@@ -1,6 +1,6 @@
 package com.codingapi.springboot.script.request;
 
-import com.codingapi.springboot.script.parser.GroovyScriptParser;
+import com.codingapi.springboot.script.parser.GroovyScriptParserService;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -20,7 +20,7 @@ class WorkflowTest {
         node.setScript("K123123");
         workflow.addNode(node);
 
-        GroovyScriptParser parser = new GroovyScriptParser(workflow);
+        GroovyScriptParserService parser = new GroovyScriptParserService(workflow);
         List<String> keys = parser.parser();
         assertEquals(1, keys.size());
         assertEquals("K123123",keys.get(0));

@@ -7,6 +7,7 @@ import com.codingapi.springboot.framework.exception.LocaleMessageException;
 import com.codingapi.springboot.script.GroovyScript;
 import com.codingapi.springboot.script.GroovyScriptRuntimeContext;
 import com.codingapi.springboot.script.cache.GroovyScriptCacheContext;
+import com.codingapi.springboot.script.cache.TempGroovyScriptContext;
 import com.codingapi.springboot.script.meta.GroovyMetadata;
 import com.codingapi.springboot.script.pojo.ScriptCompileRequest;
 import com.codingapi.springboot.script.pojo.ScriptSaveRequest;
@@ -48,12 +49,20 @@ public class GroovyScriptController {
     @PostMapping("/save")
     public Response save(@RequestBody ScriptSaveRequest request) {
         try {
-            GroovyScript groovyScript = GroovyScriptCacheContext.getInstance().getGroovyScript(request.getKey());
+            GroovyScript groovyScript = TempGroovyScriptContext.getInstance().getGroovyScript(request.getKey());
             if (groovyScript != null) {
                 groovyScript.setScript(request.getScript());
                 groovyScript.compile(true);
-                groovyScript.save();
+                groovyScript.temp();
                 return Response.buildSuccess();
+            } else {
+                groovyScript = GroovyScriptCacheContext.getInstance().getGroovyScript(request.getKey());
+                if (groovyScript != null) {
+                    groovyScript.setScript(request.getScript());
+                    groovyScript.compile(true);
+                    groovyScript.save();
+                    return Response.buildSuccess();
+                }
             }
             throw new LocaleMessageException("script.null", "脚本对象不存在");
         } catch (Exception exception) {

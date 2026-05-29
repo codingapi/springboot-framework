@@ -2,14 +2,21 @@ package com.codingapi.springboot.script.runner;
 
 import com.codingapi.springboot.framework.dto.request.PageRequest;
 import com.codingapi.springboot.script.cache.TempGroovyScriptContext;
+import com.codingapi.springboot.script.repository.TempGroovyScriptRepository;
 import com.codingapi.springboot.script.repository.TempGroovyScriptRepositoryContext;
 import com.codingapi.springboot.script.temp.TempGroovyScript;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.data.domain.Page;
 
-public class TempClearRunner implements InitializingBean {
+import java.util.List;
 
-    public void start() {
+@Slf4j
+public class TempClearRunner implements InitializingBean, DisposableBean {
+
+    public void addTempCache() {
+        log.info("init temp cache");
         PageRequest request = PageRequest.of(0, 100);
         Page<TempGroovyScript> page = TempGroovyScriptRepositoryContext.getInstance().find(request);
         while (page.hasNext()) {
@@ -21,6 +28,18 @@ public class TempClearRunner implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.start();
+        this.addTempCache();
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        log.info("destroy temp cache");
+
+        List<TempGroovyScript> tempGroovyScriptList = TempGroovyScriptContext.getInstance().findAll();
+        if(!tempGroovyScriptList.isEmpty()){
+            for (TempGroovyScript groovyScript:tempGroovyScriptList){
+                TempGroovyScriptRepositoryContext.getInstance().save(groovyScript);
+            }
+        }
     }
 }

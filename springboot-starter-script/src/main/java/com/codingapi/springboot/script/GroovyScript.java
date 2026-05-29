@@ -174,7 +174,7 @@ public class GroovyScript {
      * 删除对象
      */
     public void remove(){
-        GroovyScriptRepositoryContext.getInstance().delete(this);
+        GroovyScriptRepositoryContext.getInstance().delete(this.getKey());
         // 清理临时数据
         TempGroovyScriptContext.getInstance().remove(this.getKey());
     }

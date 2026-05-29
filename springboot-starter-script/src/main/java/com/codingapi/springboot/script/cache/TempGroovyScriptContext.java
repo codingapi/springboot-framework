@@ -2,7 +2,6 @@ package com.codingapi.springboot.script.cache;
 
 import com.codingapi.springboot.script.GroovyScript;
 import com.codingapi.springboot.script.meta.GroovyMetadata;
-import com.codingapi.springboot.script.repository.GroovyScriptRepositoryContext;
 import com.codingapi.springboot.script.repository.TempGroovyScriptRepositoryContext;
 import com.codingapi.springboot.script.temp.TempGroovyScript;
 import lombok.Getter;
@@ -26,20 +25,21 @@ public class TempGroovyScriptContext {
         this.cache = new HashMap<>();
     }
 
-    public static class ClearJob {
+    private static class ClearJob {
 
-        private final TempGroovyScript groovyScript;
+        @Getter
+        private final TempGroovyScript tempGroovyScript;
 
         private final Timer timer;
 
         public ClearJob(TempGroovyScript groovyScript) {
-            this.groovyScript = groovyScript;
+            this.tempGroovyScript = groovyScript;
             this.timer = new Timer();
             this.initTimer();
         }
 
         public GroovyScript getGroovyScript() {
-            return this.groovyScript.getGroovyScript();
+            return this.tempGroovyScript.getGroovyScript();
         }
 
         private void initTimer() {
@@ -48,11 +48,11 @@ public class TempGroovyScriptContext {
                 public void run() {
                     TempGroovyScriptContext.getInstance().remove(getKey());
                 }
-            }, groovyScript.getClearTime());
+            }, tempGroovyScript.getClearTime());
         }
 
         public String getKey() {
-            return groovyScript.getKey();
+            return tempGroovyScript.getKey();
         }
     }
 
@@ -78,6 +78,13 @@ public class TempGroovyScriptContext {
         }
     }
 
+    /**
+     * 获取当前缓存的数据
+     */
+    public List<TempGroovyScript> findAll(){
+        return this.cache.values().stream().map(ClearJob::getTempGroovyScript).toList();
+    }
+
 
     /**
      * 删除脚本
@@ -85,11 +92,8 @@ public class TempGroovyScriptContext {
      * @param key 脚本key
      */
     public void remove(String key) {
-        GroovyScript groovyScript = this.getGroovyScript(key);
-        if (groovyScript != null) {
-            this.cache.remove(key);
-            GroovyScriptRepositoryContext.getInstance().delete(groovyScript);
-        }
+        this.cache.remove(key);
+        TempGroovyScriptRepositoryContext.getInstance().delete(key);
     }
 
 
@@ -119,34 +123,6 @@ public class TempGroovyScriptContext {
             return null;
         }
         return job.getGroovyScript();
-    }
-
-    /**
-     * 获取脚本元数据信息
-     *
-     * @param key 脚本keu
-     * @return 元数据信息
-     */
-    public GroovyMetadata getGroovyMetadata(String key) {
-        GroovyScript script = this.getGroovyScript(key);
-        if (script != null) {
-            return script.toMetadata();
-        }
-        return null;
-    }
-
-    /**
-     * 获取脚本内容
-     *
-     * @param key 脚本key
-     * @return 脚本数据
-     */
-    public String getScript(String key) {
-        GroovyScript script = this.getGroovyScript(key);
-        if (script != null) {
-            return script.getScript();
-        }
-        return "";
     }
 
 

@@ -7,16 +7,19 @@ import org.springframework.util.ClassUtils;
 import java.lang.reflect.Field;
 import java.util.*;
 
-public class GroovyScriptParser {
+class GroovyScriptParser {
 
     private final Object target;
+    private final GroovyScriptParserService parserService;
 
     private final Class<?> clazz;
 
     private final List<String> list;
 
-    public GroovyScriptParser(Object target) {
+
+    public GroovyScriptParser(Object target,GroovyScriptParserService parserService) {
         this.target = target;
+        this.parserService = parserService;
         this.clazz = target.getClass();
         this.list = new ArrayList<>();
     }
@@ -24,6 +27,10 @@ public class GroovyScriptParser {
 
     @SneakyThrows
     private void loadObjectFields() {
+        if(parserService.hasTarget(this.target)){
+            return;
+        }
+        parserService.addTarget(this.target);
         Field[] fields = this.clazz.getDeclaredFields();
         for (Field field : fields) {
             field.setAccessible(true);
@@ -40,7 +47,7 @@ public class GroovyScriptParser {
                         }
                     }
                 } else {
-                    GroovyScriptParser parser = new GroovyScriptParser(value);
+                    GroovyScriptParser parser = new GroovyScriptParser(value,this.parserService);
                     this.list.addAll(parser.parser());
                 }
             }
@@ -49,18 +56,18 @@ public class GroovyScriptParser {
 
     public List<String> parser() {
         if (this.target instanceof Collection<?>) {
-            for(Object item:(Collection)this.target){
-                GroovyScriptParser groovyScriptParser = new GroovyScriptParser(item);
+            for (Object item : (Collection) this.target) {
+                GroovyScriptParser groovyScriptParser = new GroovyScriptParser(item,this.parserService);
                 this.list.addAll(groovyScriptParser.parser());
             }
         } else if (this.target instanceof Map<?, ?>) {
-            for(Object item:((Map)this.target).values()){
-                GroovyScriptParser groovyScriptParser = new GroovyScriptParser(item);
+            for (Object item : ((Map) this.target).values()) {
+                GroovyScriptParser groovyScriptParser = new GroovyScriptParser(item,this.parserService);
                 this.list.addAll(groovyScriptParser.parser());
             }
         } else if (this.target instanceof Set<?>) {
-            for(Object item:((Set)this.target)){
-                GroovyScriptParser groovyScriptParser = new GroovyScriptParser(item);
+            for (Object item : ((Set) this.target)) {
+                GroovyScriptParser groovyScriptParser = new GroovyScriptParser(item,this.parserService);
                 this.list.addAll(groovyScriptParser.parser());
             }
         } else {

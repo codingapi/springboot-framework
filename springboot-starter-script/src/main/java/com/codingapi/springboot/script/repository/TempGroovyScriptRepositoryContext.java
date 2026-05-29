@@ -12,17 +12,19 @@ public class TempGroovyScriptRepositoryContext {
     @Getter
     private final static TempGroovyScriptRepositoryContext instance = new TempGroovyScriptRepositoryContext();
 
-    private TempGroovyScriptRepositoryContext(){}
+    private TempGroovyScriptRepositoryContext(){
+        this.tempGroovyScriptRepository = new DefaultTempGroovyScriptRepository();
+    }
 
     @Setter
-    private TempGroovyScriptRepository tempGroovyScriptRepository = new DefaultTempGroovyScriptRepository();
+    private TempGroovyScriptRepository tempGroovyScriptRepository;
 
     public void save(TempGroovyScript tempGroovyScript) {
         tempGroovyScriptRepository.save(tempGroovyScript);
     }
 
-    public void delete(TempGroovyScript tempGroovyScript) {
-        tempGroovyScriptRepository.delete(tempGroovyScript);
+    public void delete(String key) {
+        tempGroovyScriptRepository.delete(key);
     }
 
     public TempGroovyScript get(String key) {

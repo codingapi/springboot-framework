@@ -10,25 +10,26 @@ import java.util.*;
 
 public class DefaultTempGroovyScriptRepository implements TempGroovyScriptRepository {
 
-    private final Map<String, TempGroovyScript> groovyScripts;
+    private final Map<String, TempGroovyScript> data;
 
     public DefaultTempGroovyScriptRepository() {
-        this.groovyScripts = new HashMap<>();
+        this.data = new HashMap<>();
     }
 
     @Override
     public void save(TempGroovyScript tempGroovyScript) {
-        groovyScripts.put(tempGroovyScript.getKey(), tempGroovyScript);
+        data.put(tempGroovyScript.getKey(), tempGroovyScript);
     }
 
+
     @Override
-    public void delete(TempGroovyScript tempGroovyScript) {
-        groovyScripts.remove(tempGroovyScript.getKey());
+    public void delete(String key) {
+        this.data.remove(key);
     }
 
     @Override
     public TempGroovyScript get(String key) {
-        return groovyScripts.get(key);
+        return data.get(key);
     }
 
     @Override
@@ -36,7 +37,7 @@ public class DefaultTempGroovyScriptRepository implements TempGroovyScriptReposi
         int form = request.getPageNumber() * request.getPageSize();
         int to = (request.getPageNumber() + 1) * request.getPageSize();
 
-        List<TempGroovyScript> list = this.groovyScripts.values()
+        List<TempGroovyScript> list = this.data.values()
                 .stream()
                 .sorted(Comparator.comparing(TempGroovyScript::getClearTime))
                 .toList();
@@ -51,6 +52,6 @@ public class DefaultTempGroovyScriptRepository implements TempGroovyScriptReposi
                 data = list.subList(form, list.size());
             }
         }
-        return new PageImpl<>(data, request, this.groovyScripts.size());
+        return new PageImpl<>(data, request, this.data.size());
     }
 }

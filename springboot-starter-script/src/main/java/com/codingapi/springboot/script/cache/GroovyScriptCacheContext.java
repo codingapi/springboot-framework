@@ -92,9 +92,12 @@ public class GroovyScriptCacheContext {
     public GroovyScript getGroovyScript(String key) {
         GroovyScript groovyScript = this.cache.get(key);
         if (groovyScript == null) {
-            groovyScript = GroovyScriptRepositoryContext.getInstance().get(key);
-            if (groovyScript != null) {
-                this.cache.put(key, groovyScript);
+            groovyScript = TempGroovyScriptContext.getInstance().getGroovyScript(key);
+            if(groovyScript==null) {
+                groovyScript = GroovyScriptRepositoryContext.getInstance().get(key);
+                if (groovyScript != null) {
+                    this.cache.put(key, groovyScript);
+                }
             }
         }
         return groovyScript;

@@ -14,18 +14,19 @@ public class GroovyScriptRepositoryContext {
     private final static GroovyScriptRepositoryContext instance = new GroovyScriptRepositoryContext();
 
     private GroovyScriptRepositoryContext() {
+        this.groovyScriptRepository = new DefaultGroovyScriptRepository();
     }
 
     @Setter
-    private GroovyScriptRepository groovyScriptRepository = new DefaultGroovyScriptRepository();
+    private GroovyScriptRepository groovyScriptRepository;
 
     public void save(GroovyScript groovyScript) {
         this.groovyScriptRepository.save(groovyScript);
     }
 
 
-    public void delete(GroovyScript groovyScript) {
-        this.groovyScriptRepository.delete(groovyScript);
+    public void delete(String key) {
+        this.groovyScriptRepository.delete(key);
     }
 
     public GroovyScript get(String key) {
