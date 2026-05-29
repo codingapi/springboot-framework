@@ -1,5 +1,6 @@
 package com.codingapi.springboot.script.strategy;
 
+import com.codingapi.springboot.script.GroovyScript;
 import com.codingapi.springboot.script.meta.GroovyType;
 import lombok.Getter;
 
@@ -21,10 +22,11 @@ public class GroovyTypeReloadStrategyContext {
         this.strategies.add(gateway);
     }
 
-    public void reload(String tag, Class<?> clazz, GroovyType groovyType) {
+
+    public void reload(GroovyScript groovyScript, Class<?> clazz, GroovyType groovyType) {
         for (GroovyTypeReloadStrategy strategy : strategies) {
             if (strategy.support(clazz)) {
-                strategy.reload(tag, groovyType);
+                strategy.reload(groovyScript, groovyType);
             }
         }
     }

@@ -4,7 +4,6 @@ import com.codingapi.springboot.script.GroovyScript;
 import com.codingapi.springboot.script.annotation.ScriptType;
 import com.codingapi.springboot.script.service.GroovyTypeParser;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.HashMap;

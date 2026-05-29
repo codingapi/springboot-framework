@@ -111,11 +111,10 @@ public class GroovyTypeParser {
         }
     }
 
-
     public GroovyType parser(GroovyScript groovyScript) {
         this.loadFields();
         this.loadMethods();
-        GroovyTypeReloadStrategyContext.getInstance().reload(groovyScript.getTag(),this.clazz, this.object);
+        GroovyTypeReloadStrategyContext.getInstance().reload(groovyScript, this.clazz, this.object);
         return this.object;
     }
 }

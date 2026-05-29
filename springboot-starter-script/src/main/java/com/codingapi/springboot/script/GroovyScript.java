@@ -3,6 +3,7 @@ package com.codingapi.springboot.script;
 import com.codingapi.springboot.script.cache.GroovyScriptCacheContext;
 import com.codingapi.springboot.script.meta.GroovyMetadata;
 import com.codingapi.springboot.script.service.GroovyMetadataParserService;
+import com.codingapi.springboot.script.strategy.GroovyMetadataGenerateStrategyContext;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -77,7 +78,7 @@ public class GroovyScript {
     private long updateTime;
 
 
-    private GroovyScript(String key) {
+    public GroovyScript(String key) {
         this.key = key;
         this.createTime = System.currentTimeMillis();
     }
@@ -149,9 +150,16 @@ public class GroovyScript {
 
     }
 
+    /**
+     *
+     */
+    public void cache(){
+
+    }
+
 
     /**
-     * 保存缓存并持久化
+     * 保存并持久化
      */
     public void save() {
         this.updateTime = System.currentTimeMillis();
@@ -281,6 +289,10 @@ public class GroovyScript {
      * 构建脚本元数据信息
      */
     public GroovyMetadata toMetadata() {
+        GroovyMetadata metadata = GroovyMetadataGenerateStrategyContext.getInstance().generate(this);
+        if (metadata != null) {
+            return metadata;
+        }
         GroovyMetadataParserService groovyMetaDataParserService = new GroovyMetadataParserService(this);
         return groovyMetaDataParserService.parser();
     }
