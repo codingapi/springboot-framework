@@ -39,16 +39,16 @@ public class GroovyScriptCacheContext {
     public void save(GroovyScript script) {
         if (script != null) {
             this.cache.put(script.getKey(), script);
-            GroovyScriptRepositoryContext.getInstance().save(script);
         }
     }
 
 
     /**
      * 保存缓存数据
+     *
      * @param script 脚本对象
      */
-    public void cache(GroovyScript script){
+    public void cache(GroovyScript script) {
         if (script != null) {
             this.cache.put(script.getKey(), script);
         }
@@ -64,7 +64,6 @@ public class GroovyScriptCacheContext {
         GroovyScript groovyScript = this.getGroovyScript(key);
         if (groovyScript != null) {
             this.cache.remove(key);
-            GroovyScriptRepositoryContext.getInstance().delete(groovyScript);
         }
     }
 

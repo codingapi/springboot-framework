@@ -2,7 +2,7 @@ package com.codingapi.springboot.script.meta;
 
 import com.codingapi.springboot.script.GroovyScript;
 import com.codingapi.springboot.script.annotation.ScriptType;
-import com.codingapi.springboot.script.service.GroovyTypeParser;
+import com.codingapi.springboot.script.parser.GroovyTypeParser;
 import lombok.Getter;
 
 import java.util.ArrayList;

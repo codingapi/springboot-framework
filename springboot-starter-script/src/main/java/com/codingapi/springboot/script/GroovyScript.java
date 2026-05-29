@@ -1,8 +1,9 @@
 package com.codingapi.springboot.script;
 
-import com.codingapi.springboot.script.cache.GroovyScriptCacheContext;
+import com.codingapi.springboot.script.cache.TempGroovyScriptContext;
 import com.codingapi.springboot.script.meta.GroovyMetadata;
-import com.codingapi.springboot.script.service.GroovyMetadataParserService;
+import com.codingapi.springboot.script.repository.GroovyScriptRepositoryContext;
+import com.codingapi.springboot.script.parser.GroovyMetadataParserService;
 import com.codingapi.springboot.script.strategy.GroovyMetadataGenerateStrategyContext;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -151,19 +152,31 @@ public class GroovyScript {
     }
 
     /**
-     *
+     * 临时存储
+     * 数据将会定时清理
      */
-    public void cache(){
-
+    public void temp(){
+        TempGroovyScriptContext.getInstance().save(this);
     }
 
 
     /**
-     * 保存并持久化
+     * 保存对象
      */
     public void save() {
         this.updateTime = System.currentTimeMillis();
-        GroovyScriptCacheContext.getInstance().save(this);
+        GroovyScriptRepositoryContext.getInstance().save(this);
+        // 清理临时数据
+        TempGroovyScriptContext.getInstance().remove(this.getKey());
+    }
+
+    /**
+     * 删除对象
+     */
+    public void remove(){
+        GroovyScriptRepositoryContext.getInstance().delete(this);
+        // 清理临时数据
+        TempGroovyScriptContext.getInstance().remove(this.getKey());
     }
 
 

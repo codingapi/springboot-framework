@@ -1,4 +1,4 @@
-package com.codingapi.springboot.script.service;
+package com.codingapi.springboot.script.parser;
 
 import com.codingapi.springboot.script.GroovyScript;
 import com.codingapi.springboot.script.meta.GroovyField;

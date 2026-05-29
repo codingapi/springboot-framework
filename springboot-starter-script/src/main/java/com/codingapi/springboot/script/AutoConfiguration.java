@@ -1,8 +1,6 @@
 package com.codingapi.springboot.script;
 
-import com.codingapi.springboot.script.repository.DefaultGroovyScriptRepository;
-import com.codingapi.springboot.script.repository.GroovyScriptRepository;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import com.codingapi.springboot.script.runner.TempClearRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -11,11 +9,9 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan(basePackages = "com.codingapi.springboot.script")
 public class AutoConfiguration {
 
-
     @Bean
-    @ConditionalOnMissingBean
-    public GroovyScriptRepository groovyScriptRepository() {
-        return new DefaultGroovyScriptRepository();
+    public TempClearRunner tempClearRunner() {
+        return new TempClearRunner();
     }
 
 }
