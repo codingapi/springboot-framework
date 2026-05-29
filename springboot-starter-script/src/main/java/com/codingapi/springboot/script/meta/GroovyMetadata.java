@@ -1,8 +1,7 @@
 package com.codingapi.springboot.script.meta;
 
 import com.codingapi.springboot.script.GroovyScript;
-import com.codingapi.springboot.script.annotation.ScriptType;
-import com.codingapi.springboot.script.service.GroovyTypeParser;
+import com.codingapi.springboot.script.strategy.ScriptTypeMappingContext;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -14,77 +13,49 @@ import java.util.Map;
 /**
  * 脚本对象元数据结构
  */
+@Getter
 public class GroovyMetadata {
 
     /**
      * 请求参数
      */
-    @Getter
     private final List<GroovyField> requests;
 
     /**
      * 绑定参数
      */
-    @Getter
     private final List<GroovyField> binds;
 
     /**
      * 程序主函数名称
      */
-    @Getter
-    private String mainMethod;
+    private final String mainMethod;
 
     /**
      * 返回类型
      */
-    @Getter
-    private String returnType;
+    private final String returnType;
 
     /**
      * 字段类型
      */
-    @Getter
     private final Map<String, GroovyType> types;
 
     /**
      * 脚本说明
      */
-    @Getter
-    private String description;
-
-
-    private transient final GroovyScript groovyScript;
+    private final String description;
 
 
     public GroovyMetadata(GroovyScript groovyScript) {
-        this.groovyScript = groovyScript;
         this.types = new HashMap<>();
         this.requests = new ArrayList<>();
         this.binds = new ArrayList<>();
         this.description = groovyScript.getDescription();
         this.mainMethod = groovyScript.getMethod();
-        this.returnType = groovyScript.getReturnType().getSimpleName();
+        this.returnType = ScriptTypeMappingContext.getInstance().mapping(groovyScript.getReturnType()).getSimpleName();
     }
 
-    /**
-     * 通过class构建 脚本类型数据
-     *
-     * @param clazz class类型
-     */
-    public void buildType(Class<?> clazz) {
-        String dataType = clazz.getSimpleName();
-        GroovyType groovyType = this.types.get(dataType);
-        if (groovyType == null) {
-            GroovyTypeParser groovyTypeParser = new GroovyTypeParser(clazz, this);
-            groovyType = groovyTypeParser.parser(this.groovyScript);
-            groovyType.setDataType(dataType);
-            ScriptType scriptType = clazz.getAnnotation(ScriptType.class);
-            if (scriptType != null) {
-                groovyType.setDescription(scriptType.description());
-            }
-            this.put(dataType, groovyType);
-        }
-    }
 
     /**
      * 增加请求参数数据对象

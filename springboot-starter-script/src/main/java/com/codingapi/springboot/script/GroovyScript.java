@@ -1,8 +1,9 @@
 package com.codingapi.springboot.script;
 
-import com.codingapi.springboot.script.cache.GroovyScriptCacheContext;
+import com.codingapi.springboot.script.temp.TempGroovyScriptContext;
 import com.codingapi.springboot.script.meta.GroovyMetadata;
-import com.codingapi.springboot.script.service.GroovyMetadataParserService;
+import com.codingapi.springboot.script.repository.GroovyScriptRepositoryContext;
+import com.codingapi.springboot.script.scanner.GroovyMetadataScannerUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -77,7 +78,7 @@ public class GroovyScript {
     private long updateTime;
 
 
-    private GroovyScript(String key) {
+    public GroovyScript(String key) {
         this.key = key;
         this.createTime = System.currentTimeMillis();
     }
@@ -149,13 +150,42 @@ public class GroovyScript {
 
     }
 
+    /**
+     * 临时存储
+     * 数据将会定时清理
+     */
+    public void temp() {
+        TempGroovyScriptContext.getInstance().save(this);
+    }
+
 
     /**
-     * 保存缓存并持久化
+     * 保存对象
      */
     public void save() {
         this.updateTime = System.currentTimeMillis();
-        GroovyScriptCacheContext.getInstance().save(this);
+        GroovyScriptRepositoryContext.getInstance().save(this);
+        // 清理临时数据
+        TempGroovyScriptContext.getInstance().remove(this.getKey());
+    }
+
+    /**
+     * 删除对象
+     */
+    public void remove() {
+        GroovyScriptRepositoryContext.getInstance().delete(this.getKey());
+        // 清理临时数据
+        TempGroovyScriptContext.getInstance().remove(this.getKey());
+    }
+
+    /**
+     * 复制对象
+     *
+     * @param key 新的key
+     * @return 脚本对象
+     */
+    public GroovyScript copy(String key) {
+        return new GroovyScript(key, script, description, method, returnType, binds, requests, typeOne, typeTwo, tag, remark, createTime, updateTime);
     }
 
 
@@ -281,8 +311,7 @@ public class GroovyScript {
      * 构建脚本元数据信息
      */
     public GroovyMetadata toMetadata() {
-        GroovyMetadataParserService groovyMetaDataParserService = new GroovyMetadataParserService(this);
-        return groovyMetaDataParserService.parser();
+        return GroovyMetadataScannerUtils.scanner(this);
     }
 
 

@@ -1,6 +1,7 @@
-package com.codingapi.springboot.script.repository;
+package com.codingapi.springboot.script.repository.impl;
 
 import com.codingapi.springboot.script.GroovyScript;
+import com.codingapi.springboot.script.repository.GroovyScriptRepository;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +12,6 @@ public class DefaultGroovyScriptRepository implements GroovyScriptRepository {
 
     public DefaultGroovyScriptRepository() {
         this.data = new HashMap<>();
-        GroovyScriptRepositoryContext.getInstance().setGroovyScriptRepository(this);
     }
 
     @Override
@@ -20,8 +20,8 @@ public class DefaultGroovyScriptRepository implements GroovyScriptRepository {
     }
 
     @Override
-    public void delete(GroovyScript groovyScript) {
-        this.data.remove(groovyScript.getKey());
+    public void delete(String key) {
+        this.data.remove(key);
     }
 
     @Override

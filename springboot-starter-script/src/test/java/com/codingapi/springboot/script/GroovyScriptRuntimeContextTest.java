@@ -13,7 +13,7 @@ class GroovyScriptRuntimeContextTest {
     @Test
     void voidInvoke() {
 
-        String script = " def run(request){ println(request)}";
+        String script = "def run(request){  println(request)}";
 
         GroovyScript groovyScript =
                 GroovyScript.builder("voidInvoke")
@@ -24,7 +24,7 @@ class GroovyScriptRuntimeContextTest {
                         .build();
 
         long t1 = System.currentTimeMillis();
-        groovyScript.invoke(100);
+        groovyScript.invoke(Maps.of("request", 100));
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
 
@@ -33,9 +33,8 @@ class GroovyScriptRuntimeContextTest {
 
     @Test
     void metaTest() {
-        String script = "def run(request){return request.count;}";
 
-        MyScriptRequest request = new MyScriptRequest(100);
+        String script = "def run(request){  return request.count;}";
 
         GroovyScript groovyScript =
                 GroovyScript.builder("metaTest")
@@ -51,6 +50,7 @@ class GroovyScriptRuntimeContextTest {
         System.out.println(JSON.toJSONString(metadata));
         assertEquals(1, metadata.getRequests().size());
 
+        MyScriptRequest request = new MyScriptRequest(100);
         long t1 = System.currentTimeMillis();
         int result = groovyScript.invoke(request);
         long t2 = System.currentTimeMillis();
@@ -63,7 +63,6 @@ class GroovyScriptRuntimeContextTest {
 
         String script = " return $request; ";
 
-
         GroovyScript groovyScript =
                 GroovyScript.builder("run")
                         .script(script)
@@ -71,9 +70,8 @@ class GroovyScriptRuntimeContextTest {
                         .binds(Maps.of("$request", Integer.class))
                         .build();
 
-
         long t1 = System.currentTimeMillis();
-        int result = groovyScript.run(Maps.of("$request",100));
+        int result = groovyScript.run(Maps.of("$request", 100));
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
 
@@ -82,9 +80,7 @@ class GroovyScriptRuntimeContextTest {
 
     @Test
     void invoke() {
-
-        String script = "def run(request){return request;}";
-
+        String script = "def run(request){  return request;}";
         GroovyScript groovyScript =
                 GroovyScript.builder("invoke")
                         .method("run")

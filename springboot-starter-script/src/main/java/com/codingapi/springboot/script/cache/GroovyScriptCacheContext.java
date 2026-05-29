@@ -3,12 +3,16 @@ package com.codingapi.springboot.script.cache;
 import com.codingapi.springboot.script.GroovyScript;
 import com.codingapi.springboot.script.meta.GroovyMetadata;
 import com.codingapi.springboot.script.repository.GroovyScriptRepositoryContext;
+import com.codingapi.springboot.script.temp.TempGroovyScriptContext;
 import lombok.Getter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * 脚本数据上下文管理对象
+ * 脚本数据缓存上下文管理对象
  */
 public class GroovyScriptCacheContext {
 
@@ -36,16 +40,16 @@ public class GroovyScriptCacheContext {
     public void save(GroovyScript script) {
         if (script != null) {
             this.cache.put(script.getKey(), script);
-            GroovyScriptRepositoryContext.getInstance().save(script);
         }
     }
 
 
     /**
      * 保存缓存数据
+     *
      * @param script 脚本对象
      */
-    public void cache(GroovyScript script){
+    public void cache(GroovyScript script) {
         if (script != null) {
             this.cache.put(script.getKey(), script);
         }
@@ -61,7 +65,6 @@ public class GroovyScriptCacheContext {
         GroovyScript groovyScript = this.getGroovyScript(key);
         if (groovyScript != null) {
             this.cache.remove(key);
-            GroovyScriptRepositoryContext.getInstance().delete(groovyScript);
         }
     }
 
@@ -90,9 +93,13 @@ public class GroovyScriptCacheContext {
     public GroovyScript getGroovyScript(String key) {
         GroovyScript groovyScript = this.cache.get(key);
         if (groovyScript == null) {
-            groovyScript = GroovyScriptRepositoryContext.getInstance().get(key);
-            if (groovyScript != null) {
-                this.cache.put(key, groovyScript);
+            // 临时的数据不存到cache对象下
+            groovyScript = TempGroovyScriptContext.getInstance().getGroovyScript(key);
+            if (groovyScript == null) {
+                groovyScript = GroovyScriptRepositoryContext.getInstance().get(key);
+                if (groovyScript != null) {
+                    this.cache.put(key, groovyScript);
+                }
             }
         }
         return groovyScript;
@@ -125,23 +132,6 @@ public class GroovyScriptCacheContext {
         }
         return "";
     }
-
-
-    /**
-     * 获取脚本编辑信息
-     *
-     * @param key 脚本可以
-     */
-    public Map<String, Object> getEditorScript(String key) {
-        Map<String, Object> map = new HashMap<>();
-        GroovyScript script = this.getGroovyScript(key);
-        if (script != null) {
-            map.put("script", script.getScript());
-            map.put("metadata", script.toMetadata());
-        }
-        return map;
-    }
-
 
     /**
      * 批量加载脚本

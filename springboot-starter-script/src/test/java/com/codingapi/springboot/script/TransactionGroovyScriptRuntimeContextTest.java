@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -25,7 +24,7 @@ class TransactionGroovyScriptRuntimeContextTest {
     @Test
     void transactionCommitRun() {
 
-        String script = "def run(request){ request.addData($repository);println(request.count);}";
+        String script = " def run(request){  request.addData($repository);  println(request.count); } ";
 
         MyScriptRequest request = new MyScriptRequest(100);
 
@@ -43,7 +42,7 @@ class TransactionGroovyScriptRuntimeContextTest {
                         .build();
 
         long t1 = System.currentTimeMillis();
-        groovyScript.invoke(TransactionMode.COMMIT,Maps.of("$repository",myTestRepository), request);
+        groovyScript.invoke(TransactionMode.COMMIT, Maps.of("$repository", myTestRepository), request);
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
 
@@ -55,7 +54,7 @@ class TransactionGroovyScriptRuntimeContextTest {
     @Test
     void transactionOnlyReadRun() {
 
-        String script = "def run(request){ request.addData($repository);println(request.count);}";
+        String script = " def run(request){  request.addData($repository);  println(request.count); } ";
 
         MyScriptRequest request = new MyScriptRequest(100);
 
@@ -73,8 +72,9 @@ class TransactionGroovyScriptRuntimeContextTest {
                         .requests(Maps.of("request", request.getClass()))
                         .build();
 
+
         long t1 = System.currentTimeMillis();
-        groovyScript.invoke(TransactionMode.READONLY, Maps.of("$repository",myTestRepository), request);
+        groovyScript.invoke(TransactionMode.READONLY, Maps.of("$repository", myTestRepository), request);
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
 
