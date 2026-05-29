@@ -179,6 +179,15 @@ public class GroovyScript {
         TempGroovyScriptContext.getInstance().remove(this.getKey());
     }
 
+    /**
+     * 复制对象
+     * @param key 新的key
+     * @return 脚本对象
+     */
+    public GroovyScript copy(String key){
+        return new GroovyScript(key,script,description,method,returnType,binds,requests,typeOne,typeTwo,tag,remark,createTime,updateTime);
+    }
+
 
     /**
      * 编译脚本 并缓存
