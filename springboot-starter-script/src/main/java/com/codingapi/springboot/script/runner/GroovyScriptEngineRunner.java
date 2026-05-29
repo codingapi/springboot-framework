@@ -1,8 +1,7 @@
 package com.codingapi.springboot.script.runner;
 
 import com.codingapi.springboot.framework.dto.request.PageRequest;
-import com.codingapi.springboot.script.cache.TempGroovyScriptContext;
-import com.codingapi.springboot.script.repository.TempGroovyScriptRepository;
+import com.codingapi.springboot.script.temp.TempGroovyScriptContext;
 import com.codingapi.springboot.script.repository.TempGroovyScriptRepositoryContext;
 import com.codingapi.springboot.script.temp.TempGroovyScript;
 import lombok.extern.slf4j.Slf4j;
@@ -13,10 +12,12 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 @Slf4j
-public class TempClearRunner implements InitializingBean, DisposableBean {
+public class GroovyScriptEngineRunner implements InitializingBean, DisposableBean {
 
-    public void addTempCache() {
-        log.info("init temp cache");
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        log.info("load temp groovy script data to cache ...");
         PageRequest request = PageRequest.of(0, 100);
         Page<TempGroovyScript> page = TempGroovyScriptRepositoryContext.getInstance().find(request);
         while (page.hasNext()) {
@@ -24,16 +25,12 @@ public class TempClearRunner implements InitializingBean, DisposableBean {
             request = PageRequest.of(request.getCurrent() + 1, 100);
             page = TempGroovyScriptRepositoryContext.getInstance().find(request);
         }
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        this.addTempCache();
+        log.info("load temp groovy script data to cache success.");
     }
 
     @Override
     public void destroy() throws Exception {
-        log.info("destroy temp cache");
+        log.info("save temp groovy script data to disk ...");
 
         List<TempGroovyScript> tempGroovyScriptList = TempGroovyScriptContext.getInstance().findAll();
         if(!tempGroovyScriptList.isEmpty()){
@@ -41,5 +38,7 @@ public class TempClearRunner implements InitializingBean, DisposableBean {
                 TempGroovyScriptRepositoryContext.getInstance().save(groovyScript);
             }
         }
+
+        log.info("save temp groovy script data to disk success.");
     }
 }

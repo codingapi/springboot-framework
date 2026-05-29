@@ -3,6 +3,7 @@ package com.codingapi.springboot.script.cache;
 import com.codingapi.springboot.script.GroovyScript;
 import com.codingapi.springboot.script.meta.GroovyMetadata;
 import com.codingapi.springboot.script.repository.GroovyScriptRepositoryContext;
+import com.codingapi.springboot.script.temp.TempGroovyScriptContext;
 import lombok.Getter;
 
 import java.util.HashMap;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 脚本数据上下文管理对象
+ * 脚本数据缓存上下文管理对象
  */
 public class GroovyScriptCacheContext {
 
@@ -92,8 +93,9 @@ public class GroovyScriptCacheContext {
     public GroovyScript getGroovyScript(String key) {
         GroovyScript groovyScript = this.cache.get(key);
         if (groovyScript == null) {
+            // 临时的数据不存到cache对象下
             groovyScript = TempGroovyScriptContext.getInstance().getGroovyScript(key);
-            if(groovyScript==null) {
+            if (groovyScript == null) {
                 groovyScript = GroovyScriptRepositoryContext.getInstance().get(key);
                 if (groovyScript != null) {
                     this.cache.put(key, groovyScript);
@@ -130,23 +132,6 @@ public class GroovyScriptCacheContext {
         }
         return "";
     }
-
-
-    /**
-     * 获取脚本编辑信息
-     *
-     * @param key 脚本可以
-     */
-    public Map<String, Object> getEditorScript(String key) {
-        Map<String, Object> map = new HashMap<>();
-        GroovyScript script = this.getGroovyScript(key);
-        if (script != null) {
-            map.put("script", script.getScript());
-            map.put("metadata", script.toMetadata());
-        }
-        return map;
-    }
-
 
     /**
      * 批量加载脚本

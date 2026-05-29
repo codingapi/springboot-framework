@@ -1,7 +1,10 @@
 package com.codingapi.springboot.framework;
 
+import com.codingapi.springboot.framework.properties.FrameworkProperties;
 import com.codingapi.springboot.framework.utils.VersionUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
@@ -11,6 +14,12 @@ public class AutoConfiguration implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         String version = VersionUtils.getDriverVersion();
         this.printBanner(version);
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "codingapi.framework")
+    public FrameworkProperties frameworkProperties() {
+        return new FrameworkProperties();
     }
 
     public void printBanner(String version) {

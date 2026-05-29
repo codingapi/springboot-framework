@@ -1,9 +1,8 @@
-package com.codingapi.springboot.script.cache;
+package com.codingapi.springboot.script.temp;
 
 import com.codingapi.springboot.script.GroovyScript;
-import com.codingapi.springboot.script.meta.GroovyMetadata;
+import com.codingapi.springboot.script.properties.PropertiesContext;
 import com.codingapi.springboot.script.repository.TempGroovyScriptRepositoryContext;
-import com.codingapi.springboot.script.temp.TempGroovyScript;
 import lombok.Getter;
 
 import java.util.*;
@@ -15,9 +14,6 @@ public class TempGroovyScriptContext {
 
     @Getter
     private final static TempGroovyScriptContext instance = new TempGroovyScriptContext();
-
-    // 缓存时间 默认3分钟
-    public static final long CACHE_TIME = 1000 * 60 * 3;
 
     private final Map<String, ClearJob> cache;
 
@@ -63,7 +59,8 @@ public class TempGroovyScriptContext {
      */
     public void save(GroovyScript script) {
         if (script != null) {
-            this.cache.put(script.getKey(), new ClearJob(new TempGroovyScript(script, CACHE_TIME + System.currentTimeMillis())));
+            long tempValidTime =  PropertiesContext.getInstance().getTempValidTime();
+            this.cache.put(script.getKey(), new ClearJob(new TempGroovyScript(script, tempValidTime + System.currentTimeMillis())));
         }
     }
 
@@ -73,7 +70,11 @@ public class TempGroovyScriptContext {
     public void loadAll(List<TempGroovyScript> groovyScripts) {
         if (groovyScripts != null) {
             for (TempGroovyScript groovyScript : groovyScripts) {
-                this.cache.put(groovyScript.getKey(), new ClearJob(groovyScript));
+                if (groovyScript.isExpired()) {
+                    this.remove(groovyScript.getKey());
+                } else {
+                    this.cache.put(groovyScript.getKey(), new ClearJob(groovyScript));
+                }
             }
         }
     }
@@ -81,7 +82,7 @@ public class TempGroovyScriptContext {
     /**
      * 获取当前缓存的数据
      */
-    public List<TempGroovyScript> findAll(){
+    public List<TempGroovyScript> findAll() {
         return this.cache.values().stream().map(ClearJob::getTempGroovyScript).toList();
     }
 

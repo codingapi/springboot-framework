@@ -1,4 +1,4 @@
-package com.codingapi.springboot.script.parser.pojo;
+package com.codingapi.springboot.script.scanner;
 
 import com.codingapi.springboot.framework.reflect.pojo.AnnotationTargetFieldResult;
 import lombok.AllArgsConstructor;

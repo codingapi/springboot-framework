@@ -3,12 +3,17 @@ package com.codingapi.springboot.script.annotation;
 import java.lang.annotation.*;
 
 /**
- * 脚本对象类型
+ * 脚本函数参数
  */
-@Target({ElementType.TYPE})
+@Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface ScriptType {
+public @interface ScriptParameter {
+
+    /**
+     * 名称
+     */
+    String name() default "";
 
     /**
      * 描述

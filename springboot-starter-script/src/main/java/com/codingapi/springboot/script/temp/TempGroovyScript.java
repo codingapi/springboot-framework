@@ -21,4 +21,10 @@ public class TempGroovyScript {
     public String getKey() {
         return this.groovyScript.getKey();
     }
+
+
+    public boolean isExpired(){
+        return System.currentTimeMillis() - this.clearTime >= 0;
+    }
+
 }

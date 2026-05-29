@@ -7,7 +7,7 @@ import com.codingapi.springboot.framework.exception.LocaleMessageException;
 import com.codingapi.springboot.script.GroovyScript;
 import com.codingapi.springboot.script.GroovyScriptRuntimeContext;
 import com.codingapi.springboot.script.cache.GroovyScriptCacheContext;
-import com.codingapi.springboot.script.cache.TempGroovyScriptContext;
+import com.codingapi.springboot.script.temp.TempGroovyScriptContext;
 import com.codingapi.springboot.script.meta.GroovyMetadata;
 import com.codingapi.springboot.script.pojo.ScriptCompileRequest;
 import com.codingapi.springboot.script.pojo.ScriptSaveRequest;
