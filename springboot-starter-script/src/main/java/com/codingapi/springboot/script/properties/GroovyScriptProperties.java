@@ -18,7 +18,4 @@ public class GroovyScriptProperties {
     private int shellMaxCacheSize = 10 * 1024;
 
 
-    public GroovyScriptProperties() {
-        PropertiesContext.getInstance().setProperties(this);
-    }
 }

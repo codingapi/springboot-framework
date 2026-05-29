@@ -1,6 +1,7 @@
 package com.codingapi.springboot.framework;
 
 import com.codingapi.springboot.framework.properties.FrameworkProperties;
+import com.codingapi.springboot.framework.properties.PropertiesContext;
 import com.codingapi.springboot.framework.utils.VersionUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -19,7 +20,9 @@ public class AutoConfiguration implements InitializingBean {
     @Bean
     @ConfigurationProperties(prefix = "codingapi.framework")
     public FrameworkProperties frameworkProperties() {
-        return new FrameworkProperties();
+        FrameworkProperties properties = new FrameworkProperties();
+        PropertiesContext.getInstance().setProperties(properties);
+        return properties;
     }
 
     public void printBanner(String version) {

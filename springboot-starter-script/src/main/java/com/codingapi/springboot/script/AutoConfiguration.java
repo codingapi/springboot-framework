@@ -1,6 +1,7 @@
 package com.codingapi.springboot.script;
 
 import com.codingapi.springboot.script.properties.GroovyScriptProperties;
+import com.codingapi.springboot.script.properties.PropertiesContext;
 import com.codingapi.springboot.script.runner.GroovyScriptEngineRunner;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +20,9 @@ public class AutoConfiguration {
     @Bean
     @ConfigurationProperties(prefix = "codingapi.script")
     public GroovyScriptProperties groovyScriptProperties(){
-        return new GroovyScriptProperties();
+        GroovyScriptProperties properties = new GroovyScriptProperties();
+        PropertiesContext.getInstance().setProperties(properties);
+        return properties;
     }
 
 }

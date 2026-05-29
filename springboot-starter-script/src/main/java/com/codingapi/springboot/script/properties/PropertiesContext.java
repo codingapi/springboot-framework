@@ -15,7 +15,7 @@ public class PropertiesContext {
     private GroovyScriptProperties properties;
 
     private PropertiesContext(){
-
+        properties = new GroovyScriptProperties();
     }
 
     public long getTempValidTime() {

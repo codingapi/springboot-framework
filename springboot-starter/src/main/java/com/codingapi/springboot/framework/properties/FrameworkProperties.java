@@ -13,7 +13,4 @@ public class FrameworkProperties {
     private int handlerThreadPoolSize = 20;
 
 
-    public FrameworkProperties() {
-        PropertiesContext.getInstance().setProperties(this);
-    }
 }
