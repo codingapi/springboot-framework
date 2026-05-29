@@ -15,7 +15,14 @@ public interface GroovyScriptRepository {
 
     /**
      * 删除脚本
-     * @param groovyScript 脚本对象
+     * @param key 脚本key
      */
-    void delete(GroovyScript groovyScript);
+    void delete(String key);
+
+
+    /**
+     * 获取脚本
+     * @param key 脚本key
+     */
+    GroovyScript get(String key);
 }

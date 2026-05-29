@@ -28,6 +28,7 @@ v.3.x 为springboot 3.x版本,使用jdk17版本
 ## Project Modules Description | 项目模块介绍
 
 * springboot-starter | Springboot领域驱动框架
+* springboot-starter-script | 脚本引擎框架
 * springboot-starter-data-fast | 快速数据呈现框架
 * springboot-starter-data-authorization | 数据权限框架
 * springboot-starter-flow | 流程引擎框架
@@ -47,6 +48,13 @@ v.3.x 为springboot 3.x版本,使用jdk17版本
     <dependency>
         <groupId>com.codingapi.springboot</groupId>
         <artifactId>springboot-starter</artifactId>
+        <version>${last.version}</version>
+    </dependency>
+    
+    <!-- 脚本引擎框架 -->
+    <dependency>
+        <groupId>com.codingapi.springboot</groupId>
+        <artifactId>springboot-starter-script</artifactId>
         <version>${last.version}</version>
     </dependency>
     

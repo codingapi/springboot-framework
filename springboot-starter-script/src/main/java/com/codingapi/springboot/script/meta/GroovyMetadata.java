@@ -1,9 +1,8 @@
 package com.codingapi.springboot.script.meta;
 
-import com.codingapi.springboot.script.annotation.ScriptType;
-import com.codingapi.springboot.script.service.GroovyTypeParser;
+import com.codingapi.springboot.script.GroovyScript;
+import com.codingapi.springboot.script.strategy.ScriptTypeMappingContext;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,14 +29,12 @@ public class GroovyMetadata {
     /**
      * 程序主函数名称
      */
-    @Setter
-    private String mainMethod;
+    private final String mainMethod;
 
     /**
      * 返回类型
      */
-    @Setter
-    private String returnType;
+    private final String returnType;
 
     /**
      * 字段类型
@@ -47,35 +44,18 @@ public class GroovyMetadata {
     /**
      * 脚本说明
      */
-    @Setter
-    private String description;
+    private final String description;
 
 
-    public GroovyMetadata() {
+    public GroovyMetadata(GroovyScript groovyScript) {
         this.types = new HashMap<>();
         this.requests = new ArrayList<>();
         this.binds = new ArrayList<>();
+        this.description = groovyScript.getDescription();
+        this.mainMethod = groovyScript.getMethod();
+        this.returnType = ScriptTypeMappingContext.getInstance().mapping(groovyScript.getReturnType()).getSimpleName();
     }
 
-    /**
-     * 通过class构建 脚本类型数据
-     *
-     * @param clazz class类型
-     */
-    public void buildType(Class<?> clazz) {
-        String dataType = clazz.getSimpleName();
-        GroovyType groovyType = this.types.get(dataType);
-        if (groovyType == null) {
-            GroovyTypeParser groovyTypeParser = new GroovyTypeParser(clazz, this);
-            groovyType = groovyTypeParser.parser();
-            groovyType.setDataType(dataType);
-            ScriptType scriptType = clazz.getAnnotation(ScriptType.class);
-            if (scriptType != null) {
-                groovyType.setDescription(scriptType.description());
-            }
-            this.put(dataType, groovyType);
-        }
-    }
 
     /**
      * 增加请求参数数据对象

@@ -20,9 +20,16 @@ class GroovyScriptRuntimeContextTest {
                 }
                 """;
 
-        GroovyScript groovyScript = GroovyScript.createInvoke("voidInvoke", script, "run", Void.class, Map.of("request", Integer.class));
+        GroovyScript groovyScript =
+                GroovyScript.builder("voidInvoke")
+                        .script(script)
+                        .method("run")
+                        .returnType(Void.class)
+                        .requests(Map.of("request", Integer.class))
+                        .build();
+
         long t1 = System.currentTimeMillis();
-        groovyScript.invoke(Map.of("request",100));
+        groovyScript.invoke(Map.of("request", 100));
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
 
@@ -38,15 +45,23 @@ class GroovyScriptRuntimeContextTest {
                 }
                 """;
 
-        MyScriptRequest request = new MyScriptRequest(100);
 
-        GroovyScript groovyScript = GroovyScript.createInvoke("metaTest",
-                script, "这是一个run函数，返回的格式为int类型。","run",  Integer.class, Map.of("request", MyScriptRequest.class));
+
+        GroovyScript groovyScript =
+                GroovyScript.builder("metaTest")
+                        .script(script)
+                        .description("这是一个run函数，返回的格式为int类型。")
+                        .method("run")
+                        .tag("123")
+                        .returnType(Integer.class)
+                        .requests(Map.of("request", MyScriptRequest.class))
+                        .build();
 
         GroovyMetadata metadata = groovyScript.toMetadata();
         System.out.println(JSON.toJSONString(metadata));
         assertEquals(1, metadata.getRequests().size());
 
+        MyScriptRequest request = new MyScriptRequest(100);
         long t1 = System.currentTimeMillis();
         int result = groovyScript.invoke(request);
         long t2 = System.currentTimeMillis();
@@ -59,13 +74,15 @@ class GroovyScriptRuntimeContextTest {
 
         String script = " return $request; ";
 
-
-        GroovyScript groovyScript = GroovyScript.createRun("run",
-                script, Integer.class, Map.of("$request", Integer.class));
-
+        GroovyScript groovyScript =
+                GroovyScript.builder("run")
+                        .script(script)
+                        .returnType(Integer.class)
+                        .binds(Map.of("$request", Integer.class))
+                        .build();
 
         long t1 = System.currentTimeMillis();
-        int result = groovyScript.run(Map.of("$request",100));
+        int result = groovyScript.run(Map.of("$request", 100));
         long t2 = System.currentTimeMillis();
         System.out.println("groovy time:" + (t2 - t1));
 
@@ -80,9 +97,13 @@ class GroovyScriptRuntimeContextTest {
                     return request;
                 }
                 """;
-
-        GroovyScript groovyScript = GroovyScript.createInvoke("invoke",
-                script, "run", Integer.class, Map.of("request", Integer.class));
+        GroovyScript groovyScript =
+                GroovyScript.builder("invoke")
+                        .method("run")
+                        .script(script)
+                        .returnType(Integer.class)
+                        .binds(Map.of("request", Integer.class))
+                        .build();
 
         long t1 = System.currentTimeMillis();
         int result = groovyScript.invoke(100);

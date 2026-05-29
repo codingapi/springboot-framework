@@ -3,7 +3,7 @@ package com.codingapi.springboot.script.annotation;
 import java.lang.annotation.*;
 
 /**
- * 脚本对象
+ * 脚本对象类型
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

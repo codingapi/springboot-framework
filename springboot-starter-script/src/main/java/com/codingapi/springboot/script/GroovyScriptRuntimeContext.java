@@ -1,5 +1,6 @@
 package com.codingapi.springboot.script;
 
+import com.codingapi.springboot.script.properties.PropertiesContext;
 import lombok.Getter;
 
 import java.util.Map;
@@ -9,12 +10,10 @@ public class GroovyScriptRuntimeContext {
     @Getter
     private final static GroovyScriptRuntimeContext instance = new GroovyScriptRuntimeContext();
 
-    public static final int DEFAULT_MAX_CACHE_SIZE = 10 * 1024;
-
     private final GroovyScriptRuntime scriptRuntime;
 
     private GroovyScriptRuntimeContext() {
-        int maxCacheSize = Integer.parseInt(System.getProperty("DEFAULT_MAX_CACHE_SIZE", String.valueOf(DEFAULT_MAX_CACHE_SIZE)));
+        int maxCacheSize = PropertiesContext.getInstance().getShellMaxCacheSize();
         System.out.println("GroovyScriptRuntimeContext max cache size:" + maxCacheSize);
         this.scriptRuntime = new GroovyScriptRuntime(maxCacheSize);
     }

@@ -20,9 +20,4 @@ public @interface ScriptFunction {
      */
     String description() default "";
 
-    /**
-     * 参数
-     */
-    ScriptField[] parameters() default {};
-
 }
