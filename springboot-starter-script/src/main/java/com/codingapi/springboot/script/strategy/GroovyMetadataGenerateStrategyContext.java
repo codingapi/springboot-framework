@@ -21,7 +21,7 @@ public class GroovyMetadataGenerateStrategyContext {
         this.strategies = new ArrayList<>();
     }
 
-    public void addLoadStrategy(GroovyMetadataGenerateStrategy strategy) {
+    public void addGenerateStrategy(GroovyMetadataGenerateStrategy strategy) {
         this.strategies.add(strategy);
     }
 
