@@ -28,6 +28,13 @@ public class ScriptTypeMappingContext {
     }
 
 
+    /**
+     * 清空策略
+     */
+    public void clear(){
+        this.mappings.clear();
+    }
+
 
     /**
      * 映射

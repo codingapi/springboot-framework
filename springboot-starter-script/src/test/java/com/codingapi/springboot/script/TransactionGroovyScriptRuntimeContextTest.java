@@ -3,7 +3,11 @@ package com.codingapi.springboot.script;
 import com.codingapi.springboot.script.entity.MyTest;
 import com.codingapi.springboot.script.repository.MyTestRepository;
 import com.codingapi.springboot.script.request.MyScriptRequest;
+import com.codingapi.springboot.script.strategy.GroovyMetadataGenerateStrategyContext;
+import com.codingapi.springboot.script.strategy.GroovyTypeFixStrategyContext;
+import com.codingapi.springboot.script.strategy.ScriptTypeMappingContext;
 import org.apache.groovy.util.Maps;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +24,13 @@ class TransactionGroovyScriptRuntimeContextTest {
 
     @Autowired
     private MyTestRepository myTestRepository;
+
+    @BeforeEach
+    void beforeRun(){
+        GroovyMetadataGenerateStrategyContext.getInstance().clear();
+        GroovyTypeFixStrategyContext.getInstance().clear();
+        ScriptTypeMappingContext.getInstance().clear();
+    }
 
     @Test
     void transactionCommitRun() {

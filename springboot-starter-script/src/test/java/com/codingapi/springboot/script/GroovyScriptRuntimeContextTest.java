@@ -3,12 +3,24 @@ package com.codingapi.springboot.script;
 import com.alibaba.fastjson.JSON;
 import com.codingapi.springboot.script.meta.GroovyMetadata;
 import com.codingapi.springboot.script.request.MyScriptRequest;
+import com.codingapi.springboot.script.strategy.GroovyMetadataGenerateStrategyContext;
+import com.codingapi.springboot.script.strategy.GroovyTypeFixStrategyContext;
+import com.codingapi.springboot.script.strategy.ScriptTypeMappingContext;
 import org.apache.groovy.util.Maps;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GroovyScriptRuntimeContextTest {
+
+
+    @BeforeEach
+    void beforeRun(){
+        GroovyMetadataGenerateStrategyContext.getInstance().clear();
+        GroovyTypeFixStrategyContext.getInstance().clear();
+        ScriptTypeMappingContext.getInstance().clear();
+    }
 
     @Test
     void voidInvoke() {

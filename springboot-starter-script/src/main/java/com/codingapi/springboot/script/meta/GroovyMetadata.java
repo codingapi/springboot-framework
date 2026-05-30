@@ -57,6 +57,16 @@ public class GroovyMetadata {
     }
 
 
+    public GroovyMetadata(String mainMethod,String returnType, String description) {
+        this.returnType = returnType;
+        this.description = description;
+        this.mainMethod = mainMethod;
+        this.types = new HashMap<>();
+        this.requests = new ArrayList<>();
+        this.binds = new ArrayList<>();
+    }
+
+
     /**
      * 增加请求参数数据对象
      *

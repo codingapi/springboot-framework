@@ -22,6 +22,12 @@ public class GroovyTypeFixStrategyContext {
         this.strategies.add(gateway);
     }
 
+    /**
+     * 清空策略
+     */
+    public void clear(){
+        this.strategies.clear();
+    }
 
     public void fix(GroovyScript groovyScript, Class<?> clazz, GroovyType groovyType) {
         for (GroovyTypeFixStrategy strategy : strategies) {
