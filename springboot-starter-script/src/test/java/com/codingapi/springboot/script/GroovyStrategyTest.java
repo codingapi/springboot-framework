@@ -6,6 +6,7 @@ import com.codingapi.springboot.script.meta.GroovyMetadata;
 import com.codingapi.springboot.script.meta.GroovyType;
 import com.codingapi.springboot.script.request.MyScriptRequest;
 import com.codingapi.springboot.script.strategy.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -13,6 +14,13 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GroovyStrategyTest {
+
+    @BeforeEach
+    void beforeRun(){
+        GroovyMetadataGenerateStrategyContext.getInstance().clear();
+        GroovyTypeFixStrategyContext.getInstance().clear();
+        ScriptTypeMappingContext.getInstance().clear();
+    }
 
 
     @Test

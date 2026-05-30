@@ -25,6 +25,12 @@ public class GroovyMetadataGenerateStrategyContext {
         this.strategies.add(strategy);
     }
 
+    /**
+     * 清空策略
+     */
+    public void clear(){
+        this.strategies.clear();
+    }
 
     public GroovyMetadata generate(GroovyScript groovyScript) {
         for (GroovyMetadataGenerateStrategy strategy : this.strategies) {
