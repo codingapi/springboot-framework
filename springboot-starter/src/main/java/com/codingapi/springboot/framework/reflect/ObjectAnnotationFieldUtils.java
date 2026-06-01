@@ -32,6 +32,20 @@ public class ObjectAnnotationFieldUtils {
 
 
     /**
+     * 是否简单数据结构
+     * @param fieldType 字段类型
+     */
+    public static boolean isSimpleType(Class<?> fieldType) {
+        return fieldType.isPrimitive()
+                || ClassUtils.isPrimitiveOrWrapper(fieldType)
+                || fieldType == String.class
+                || fieldType.isEnum()
+                || Number.class.isAssignableFrom(fieldType)
+                || CharSequence.class.isAssignableFrom(fieldType);
+    }
+
+
+    /**
      * 注解目标字段持有对象
      * @param <T> 字段类型
      */
@@ -131,6 +145,9 @@ public class ObjectAnnotationFieldUtils {
          * 扫描对象
          */
         public void scanner() {
+            if(ObjectAnnotationFieldUtils.isSimpleType(this.targetClass)) {
+                return;
+            }
             if (this.target instanceof Collection<?>) {
                 for (Object item : (Collection) this.target) {
                     ObjectAnnotationScanner<T> scanner = new ObjectAnnotationScanner<>(item, this.valueHolder);
@@ -164,7 +181,7 @@ public class ObjectAnnotationFieldUtils {
                 Object value = ReflectionUtils.getField(field, target);
                 Class<?> fieldTypeClass = field.getType();
                 if (value != null) {
-                    if (isSimpleType(fieldTypeClass)) {
+                    if (ObjectAnnotationFieldUtils.isSimpleType(fieldTypeClass)) {
                         Annotation annotation = field.getAnnotation(this.valueHolder.getAnnotationClass());
                         if (annotation != null) {
                             this.valueHolder.addFiled(field, target, (T) value);
@@ -175,19 +192,6 @@ public class ObjectAnnotationFieldUtils {
                     }
                 }
             });
-        }
-
-        /**
-         * 是否简单数据结构
-         * @param fieldType 字段类型
-         */
-        private boolean isSimpleType(Class<?> fieldType) {
-            return fieldType.isPrimitive()
-                    || ClassUtils.isPrimitiveOrWrapper(fieldType)
-                    || fieldType == String.class
-                    || fieldType.isEnum()
-                    || Number.class.isAssignableFrom(fieldType)
-                    || CharSequence.class.isAssignableFrom(fieldType);
         }
     }
 }

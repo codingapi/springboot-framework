@@ -1,19 +1,19 @@
 package com.codingapi.springboot.script.scanner;
 
+import com.codingapi.springboot.framework.reflect.ObjectAnnotationFieldUtils;
 import com.codingapi.springboot.script.GroovyScript;
 import com.codingapi.springboot.script.annotation.ScriptField;
 import com.codingapi.springboot.script.annotation.ScriptFunction;
 import com.codingapi.springboot.script.annotation.ScriptParameter;
 import com.codingapi.springboot.script.annotation.ScriptType;
-import com.codingapi.springboot.script.strategy.ScriptTypeMappingContext;
 import com.codingapi.springboot.script.meta.GroovyField;
 import com.codingapi.springboot.script.meta.GroovyFunction;
 import com.codingapi.springboot.script.meta.GroovyMetadata;
 import com.codingapi.springboot.script.meta.GroovyType;
 import com.codingapi.springboot.script.strategy.GroovyMetadataGenerateStrategyContext;
 import com.codingapi.springboot.script.strategy.GroovyTypeFixStrategyContext;
+import com.codingapi.springboot.script.strategy.ScriptTypeMappingContext;
 import lombok.Getter;
-import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -209,92 +209,91 @@ public class GroovyMetadataScannerUtils {
          * 加载字段信息
          */
         private void loadFields() {
-            ReflectionUtils.doWithFields(this.clazz, field -> {
-                ScriptField scriptField = field.getAnnotation(ScriptField.class);
-                if (scriptField != null) {
-                    Class<?> clazz = this.holder.getTargetClass(field.getType());
+            try {
+                ReflectionUtils.doWithFields(this.clazz, field -> {
+                    ScriptField scriptField = field.getAnnotation(ScriptField.class);
+                    if (scriptField != null) {
+                        Class<?> clazz = this.holder.getTargetClass(field.getType());
 
-                    GroovyTypeScanner scanner = new GroovyTypeScanner(clazz, this.holder);
-                    scanner.scanner();
+                        GroovyTypeScanner scanner = new GroovyTypeScanner(clazz, this.holder);
+                        scanner.scanner();
 
-                    GroovyField groovyField = new GroovyField();
-                    groovyField.setDataType(clazz.getSimpleName());
-                    groovyField.setName(field.getName());
+                        GroovyField groovyField = new GroovyField();
+                        groovyField.setDataType(clazz.getSimpleName());
+                        groovyField.setName(field.getName());
 
-                    if (StringUtils.hasText(scriptField.name())) {
-                        groovyField.setName(scriptField.name());
+                        if (StringUtils.hasText(scriptField.name())) {
+                            groovyField.setName(scriptField.name());
+                        }
+                        if (StringUtils.hasText(scriptField.description())) {
+                            groovyField.setDescription(scriptField.description());
+                        }
+                        this.object.addField(groovyField);
                     }
-                    if (StringUtils.hasText(scriptField.description())) {
-                        groovyField.setDescription(scriptField.description());
-                    }
-                    this.object.addField(groovyField);
-                }
-            });
+                });
+            }catch (Exception e){
+                System.out.println(this.clazz);
+                throw e;
+            }
         }
 
         /**
          * 加载函数信息
          */
         private void loadMethods() {
-            ReflectionUtils.doWithMethods(this.clazz, method -> {
-                ScriptFunction scriptFunction = method.getAnnotation(ScriptFunction.class);
-                if (scriptFunction != null) {
-                    GroovyFunction groovyFunction = new GroovyFunction();
-                    groovyFunction.setName(method.getName());
+            try {
+                ReflectionUtils.doWithMethods(this.clazz, method -> {
+                    ScriptFunction scriptFunction = method.getAnnotation(ScriptFunction.class);
+                    if (scriptFunction != null) {
+                        GroovyFunction groovyFunction = new GroovyFunction();
+                        groovyFunction.setName(method.getName());
 
-                    if (StringUtils.hasText(scriptFunction.name())) {
-                        groovyFunction.setName(scriptFunction.name());
-                    }
-
-                    if (StringUtils.hasText(scriptFunction.description())) {
-                        groovyFunction.setDescription(scriptFunction.description());
-                    }
-
-                    Parameter[] methodParameters = method.getParameters();
-                    for (Parameter methodParameter : methodParameters) {
-                        Class<?> parameterClass = this.holder.getTargetClass(methodParameter.getType());
-
-                        GroovyTypeScanner scanner = new GroovyTypeScanner(parameterClass, this.holder);
-                        scanner.scanner();
-
-                        GroovyField groovyParameter = new GroovyField();
-                        groovyParameter.setDataType(parameterClass.getSimpleName());
-                        groovyParameter.setName(methodParameter.getName());
-
-                        ScriptParameter scriptParameter = methodParameter.getAnnotation(ScriptParameter.class);
-                        if (scriptParameter != null) {
-                            if (StringUtils.hasText(scriptParameter.name())) {
-                                groovyParameter.setName(scriptParameter.name());
-                            }
-                            if (StringUtils.hasText(scriptParameter.description())) {
-                                groovyParameter.setDescription(scriptParameter.description());
-                            }
+                        if (StringUtils.hasText(scriptFunction.name())) {
+                            groovyFunction.setName(scriptFunction.name());
                         }
 
-                        groovyFunction.addParameter(groovyParameter);
+                        if (StringUtils.hasText(scriptFunction.description())) {
+                            groovyFunction.setDescription(scriptFunction.description());
+                        }
+
+                        Parameter[] methodParameters = method.getParameters();
+                        for (Parameter methodParameter : methodParameters) {
+                            Class<?> parameterClass = this.holder.getTargetClass(methodParameter.getType());
+
+                            GroovyTypeScanner scanner = new GroovyTypeScanner(parameterClass, this.holder);
+                            scanner.scanner();
+
+                            GroovyField groovyParameter = new GroovyField();
+                            groovyParameter.setDataType(parameterClass.getSimpleName());
+                            groovyParameter.setName(methodParameter.getName());
+
+                            ScriptParameter scriptParameter = methodParameter.getAnnotation(ScriptParameter.class);
+                            if (scriptParameter != null) {
+                                if (StringUtils.hasText(scriptParameter.name())) {
+                                    groovyParameter.setName(scriptParameter.name());
+                                }
+                                if (StringUtils.hasText(scriptParameter.description())) {
+                                    groovyParameter.setDescription(scriptParameter.description());
+                                }
+                            }
+
+                            groovyFunction.addParameter(groovyParameter);
+                        }
+
+                        Class<?> returnType = this.holder.getTargetClass(method.getReturnType());
+                        GroovyTypeScanner scanner = new GroovyTypeScanner(returnType, this.holder);
+                        scanner.scanner();
+                        groovyFunction.setReturnType(returnType.getSimpleName());
+
+                        this.object.addFunction(groovyFunction);
                     }
-
-                    Class<?> returnType = this.holder.getTargetClass(method.getReturnType());
-                    GroovyTypeScanner scanner = new GroovyTypeScanner(returnType, this.holder);
-                    scanner.scanner();
-                    groovyFunction.setReturnType(returnType.getSimpleName());
-
-                    this.object.addFunction(groovyFunction);
-                }
-            });
+                });
+            }catch (Exception e){
+                System.out.println(this.clazz);
+                throw e;
+            }
         }
 
-        /**
-         * 是否简单数据结构
-         */
-        private boolean isSimpleType() {
-            return this.clazz.isPrimitive()
-                    || ClassUtils.isPrimitiveOrWrapper(this.clazz)
-                    || this.clazz == String.class
-                    || this.clazz.isEnum()
-                    || Number.class.isAssignableFrom(this.clazz)
-                    || CharSequence.class.isAssignableFrom(this.clazz);
-        }
 
 
         /**
@@ -308,7 +307,7 @@ public class GroovyMetadataScannerUtils {
             }
 
             // 简单数据类型不处理
-            if (this.isSimpleType()) {
+            if (ObjectAnnotationFieldUtils.isSimpleType(this.clazz)) {
                 return;
             }
 
