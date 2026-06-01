@@ -1,5 +1,6 @@
 package com.codingapi.springboot.script.scanner;
 
+import com.codingapi.springboot.framework.reflect.ObjectAnnotationFieldUtils;
 import com.codingapi.springboot.script.GroovyScript;
 import com.codingapi.springboot.script.annotation.ScriptField;
 import com.codingapi.springboot.script.annotation.ScriptFunction;
@@ -284,18 +285,6 @@ public class GroovyMetadataScannerUtils {
             });
         }
 
-        /**
-         * 是否简单数据结构
-         */
-        private boolean isSimpleType() {
-            return this.clazz.isPrimitive()
-                    || ClassUtils.isPrimitiveOrWrapper(this.clazz)
-                    || this.clazz == String.class
-                    || this.clazz.isEnum()
-                    || Number.class.isAssignableFrom(this.clazz)
-                    || CharSequence.class.isAssignableFrom(this.clazz);
-        }
-
 
         /**
          * 扫描类对象
@@ -308,7 +297,7 @@ public class GroovyMetadataScannerUtils {
             }
 
             // 简单数据类型不处理
-            if (this.isSimpleType()) {
+            if (ObjectAnnotationFieldUtils.isSimpleType(this.clazz)) {
                 return;
             }
 
