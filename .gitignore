@@ -34,5 +34,12 @@ build/
 *.db
 *.trace.db
 
+### macOS ###
+.DS_Store
+
 ### jars ###
 /jars/
+
+
+### qwen ###
+.qwen/
