@@ -1,5 +1,4 @@
 package com.codingapi.springboot.framework.event;
-
 import com.codingapi.springboot.framework.exception.EventLoopException;
 import com.codingapi.springboot.framework.utils.RandomGenerator;
 import lombok.Getter;
