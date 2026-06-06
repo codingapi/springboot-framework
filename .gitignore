@@ -43,3 +43,6 @@ build/
 
 ### qwen ###
 .qwen/
+
+### codegraph ###
+.codegraph
