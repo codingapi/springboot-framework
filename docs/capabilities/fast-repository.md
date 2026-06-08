@@ -1,213 +1,140 @@
 ---
 name: fast-repository
-description: JPA Repository 增强，支持基于 PageRequest 的动态过滤查询、HQL 构建和 SearchRequest 自动解析
+description: JPA Repository 增强，支持动态过滤查询（RequestFilter + Relation 操作符）、HQL 自动构建、排序
 status: 已实现
 scope: 后端
 source: 项目自有
+last_commit: 44ba20df
+code_files:
+  - springboot-starter-data-fast/src/main/java/com/codingapi/springboot/fast/jpa/repository/FastRepository.java
+  - springboot-starter-data-fast/src/main/java/com/codingapi/springboot/fast/jpa/repository/BaseRepository.java
+  - springboot-starter-data-fast/src/main/java/com/codingapi/springboot/fast/jpa/repository/DynamicRepository.java
+  - springboot-starter-data-fast/src/main/java/com/codingapi/springboot/fast/jpa/repository/SortRepository.java
+  - springboot-starter/src/main/java/com/codingapi/springboot/framework/dto/request/PageRequest.java
+  - springboot-starter/src/main/java/com/codingapi/springboot/framework/dto/request/RequestFilter.java
 ---
 
 ## 解决什么问题
 
-Spring Data JPA 的 `JpaRepository` 提供了基础的 CRUD 操作，但在实际业务中存在以下不足：
+Spring Data JPA 原生的 `JpaRepository` 在处理复杂查询时存在以下痛点：
 
-1. **动态条件查询繁琐**：需要手动编写 `Specification` 或 `@Query`，每个查询场景都要新建方法
-2. **前端过滤条件无法直传**：前端传来的 JSON 过滤参数需要逐字段解析再拼装查询
-3. **Example 查询局限**：Spring Data Example 只支持等值和部分模糊匹配，不支持 BETWEEN、IN、大于小于等关系
-4. **分页与过滤割裂**：分页参数和过滤条件分散在不同对象中，缺乏统一封装
-5. **原生 SQL 构建困难**：复杂动态查询需要手写字符串拼接，容易出错且不安全
+- **动态条件拼接繁琐**：需要手动编写 `Specification` 或 `@Query`，无法根据前端传入的过滤参数自动构建查询
+- **分页与过滤分离**：Spring 原生 `PageRequest` 不支持携带过滤条件，业务代码需要在 Controller/Service 层反复组装查询逻辑
+- **缺少丰富的比较操作符**：LIKE、BETWEEN、IN、IS_NULL 等常用操作符没有统一的抽象
 
-`FastRepository` 扩展了 `JpaRepository` + `JpaSpecificationExecutor`，内置三种查询模式：
-- `findAll(PageRequest)` — 使用 Spring Data Example 进行简单等值/模糊查询
-- `pageRequest(PageRequest)` — 使用 HQL 动态构建，支持全部 `Relation` 关系
-- `searchRequest(SearchRequest)` — 直接从 HTTP 请求参数解析并执行查询
+本能力通过扩展 `PageRequest` 和提供 `FastRepository` 接口，实现了：
+
+- `RequestFilter` + `Relation` 枚举统一表达 14 种查询操作符
+- `FastRepository.findAll(PageRequest)` 自动根据 Filter 构建 Example 查询
+- `FastRepository.pageRequest(PageRequest)` 自动构建 HQL 动态查询
+- `DynamicRepository` 支持原生 SQL / SQLBuilder 的动态列表和分页查询
+- `SortRepository` 提供拖拽排序的 `reSort()` 方法
 
 ## 如何使用
 
-### 1. 定义 Repository 接口
+### 核心接口
 
-只需继承 `FastRepository<T, ID>`，无需额外代码：
+| 接口/类 | 说明 |
+|---------|------|
+| `FastRepository<T, ID>` | 增强型 Repository，继承 JpaRepository + JpaSpecificationExecutor + DynamicRepository |
+| `BaseRepository<T, ID>` | 基础 Repository，提供 `getEntityClass()` 反射获取泛型类型 |
+| `DynamicRepository<T, ID>` | 动态查询 Repository，支持 SQLBuilder 和原生 SQL 查询 |
+| `SortRepository<T extends ISort, ID>` | 排序 Repository，提供 `reSort(SortRequest)` 拖拽排序 |
+| `PageRequest` | 扩展 Spring Data PageRequest，内置 `RequestFilter` |
+| `RequestFilter` | 过滤条件容器，管理多个 `Filter` |
+| `Filter` | 单个过滤条件，包含 key、relation、value |
+| `Relation` | 查询操作符枚举 |
+
+### Relation 操作符
+
+```
+EQUAL, NOT_EQUAL, LIKE, LEFT_LIKE, RIGHT_LIKE,
+BETWEEN, IN, NOT_IN, IS_NULL, IS_NOT_NULL,
+GREATER_THAN, LESS_THAN, GREATER_THAN_EQUAL, LESS_THAN_EQUAL
+```
+
+### 注入方式
+
+让实体 Repository 继承 `FastRepository` 即可：
 
 ```java
 public interface UserRepository extends FastRepository<User, Long> {
-    // 自动获得 findAll(PageRequest)、pageRequest(PageRequest)、searchRequest(SearchRequest) 等方法
 }
 ```
 
-### 2. 使用 findAll(PageRequest) — Example 模式
+## 使用实例
 
-适用于简单的等值和 LIKE 查询，底层使用 Spring Data Example：
+### 1. 基础动态过滤查询（Example 模式）
 
 ```java
+// 创建分页请求并添加过滤条件
 PageRequest request = PageRequest.of(0, 20);
-request.addFilter("name", "张三");      // EQUAL
-request.addFilter("email", Relation.LIKE, "@example.com");
+request.addFilter("name", "张三");                    // 默认 EQUAL
+request.addFilter("age", Relation.GREATER_THAN, 18);   // 大于
+request.addFilter("email", Relation.LIKE, "gmail");    // 模糊匹配
 
 Page<User> page = userRepository.findAll(request);
 ```
 
-> **注意**：Example 模式仅支持有限的 Relation 类型。如需完整关系支持，请使用 `pageRequest()` 方法。
-
-### 3. 使用 pageRequest(PageRequest) — HQL 模式
-
-支持所有 `Relation` 枚举定义的比较关系，底层动态生成 HQL：
+### 2. HQL 动态查询
 
 ```java
-PageRequest request = PageRequest.of(0, 20)
-    .addFilter("age", Relation.GREATER_THAN, 18)
-    .addFilter("createTime", Relation.BETWEEN, startDate, endDate)
-    .addFilter("status", Relation.IN, 1, 2, 3)
-    .addSort(Sort.by("createTime").descending());
+PageRequest request = PageRequest.of(0, 20);
+request.addFilter("status", Relation.IN, "ACTIVE", "PENDING");
+request.addFilter("createTime", Relation.BETWEEN, startDate, endDate);
 
+// pageRequest() 使用 HQL 构建查询，适合复杂条件
 Page<User> page = userRepository.pageRequest(request);
 ```
 
-### 4. 使用 searchRequest(SearchRequest) — HTTP 自动解析模式
-
-直接将 HTTP 请求参数转为查询条件，适合前后端联调：
+### 3. AND/OR 组合条件
 
 ```java
-@GetMapping("/users")
-public MultiResponse<User> list(SearchRequest searchRequest) {
-    Page<User> page = userRepository.searchRequest(searchRequest);
-    return MultiResponse.of(page);
-}
+PageRequest request = PageRequest.of(0, 20);
+
+// OR 组合：name='张三' OR name='李四'
+request.orFilters(
+    Filter.as("name", "张三"),
+    Filter.as("name", "李四")
+);
+
+// AND 组合
+request.andFilters(
+    Filter.as("age", Relation.GREATER_THAN_EQUAL, 18),
+    Filter.as("status", "ACTIVE")
+);
 ```
 
-前端可通过 URL 参数传递过滤条件：
-```
-GET /api/users?current=0&pageSize=20&name=张三&age=18
-```
-
-或通过 Base64 编码的 filter/sort 参数传递复杂条件。
-
-### 5. 结合 DynamicNativeRepository
-
-`FastRepository` 同时继承了 `DynamicNativeRepository`，支持原生 SQL 动态查询（具体用法参见相关文档）。
-
-## 使用实例
-
-### 完整的用户管理 CRUD + 动态查询
+### 4. 从请求中读取过滤值
 
 ```java
-// Entity
-@Entity
-@Table(name = "t_user")
-public class User {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
-    private String name;
-    private String email;
-    private Integer age;
-    private Integer status;
-    private LocalDateTime createTime;
-}
-
-// Repository
-public interface UserRepository extends FastRepository<User, Long> {
-    // 可继续添加自定义查询方法
-    List<User> findByStatus(Integer status);
-}
-
-// Service
-@Service
-public class UserService {
-
-    @Autowired
-    private UserRepository userRepository;
-
-    /**
-     * 简单等值查询
-     */
-    public Page<User> findByName(String name, int page, int size) {
-        PageRequest request = PageRequest.of(page, size);
-        request.addFilter("name", name);
-        return userRepository.findAll(request);
-    }
-
-    /**
-     * 复杂条件查询
-     */
-    public Page<User> advancedSearch(UserSearchCriteria criteria) {
-        PageRequest request = PageRequest.of(criteria.getPage(), criteria.getSize())
-            .addSort(Sort.by("createTime").descending());
-
-        if (StringUtils.hasText(criteria.getName())) {
-            request.addFilter("name", Relation.LIKE, criteria.getName());
-        }
-        if (criteria.getMinAge() != null) {
-            request.addFilter("age", Relation.GREATER_THAN_EQUAL, criteria.getMinAge());
-        }
-        if (criteria.getMaxAge() != null) {
-            request.addFilter("age", Relation.LESS_THAN_EQUAL, criteria.getMaxAge());
-        }
-        if (criteria.getStatuses() != null && !criteria.getStatuses().isEmpty()) {
-            request.addFilter("status", Relation.IN, 
-                criteria.getStatuses().toArray());
-        }
-        if (criteria.getStartDate() != null && criteria.getEndDate() != null) {
-            request.addFilter("createTime", Relation.BETWEEN, 
-                criteria.getStartDate(), criteria.getEndDate());
-        }
-
-        return userRepository.pageRequest(request);
-    }
-
-    /**
-     * HTTP 参数自动解析查询
-     */
-    public Page<User> searchFromHttp(SearchRequest searchRequest) {
-        return userRepository.searchRequest(searchRequest);
-    }
-}
-
-// Controller
-@RestController
-@RequestMapping("/api/users")
-public class UserController {
-
-    @Autowired
-    private UserService userService;
-
-    @GetMapping("/simple")
-    public MultiResponse<User> simpleSearch(
-            @RequestParam(required = false) String name,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
-        Page<User> result = userService.findByName(name, page, size);
-        return MultiResponse.of(result);
-    }
-
-    @GetMapping("/advanced")
-    public MultiResponse<User> advancedSearch(UserSearchCriteria criteria) {
-        Page<User> result = userService.advancedSearch(criteria);
-        return MultiResponse.of(result);
-    }
-
-    @GetMapping
-    public MultiResponse<User> autoSearch(SearchRequest searchRequest) {
-        Page<User> result = userService.searchFromHttp(searchRequest);
-        return MultiResponse.of(result);
-    }
-}
+// 在 Service 层获取前端传入的过滤参数
+String name = request.getStringFilter("name", "default");
+int age = request.getIntFilter("age", 0);
+boolean hasFilter = request.hasFilter();
 ```
 
-### 三种查询模式对比
+### 5. 原生 SQL 动态查询
 
-| 特性 | `findAll(PageRequest)` | `pageRequest(PageRequest)` | `searchRequest(SearchRequest)` |
-|------|------------------------|----------------------------|--------------------------------|
-| 底层实现 | Spring Data Example | 动态 HQL | 转 PageRequest → HQL |
-| 支持的 Relation | EQUAL, LIKE (有限) | 全部 14 种 | 全部 14 种 |
-| 组合条件 (AND/OR) | ❌ | ✅ | ✅ |
-| HTTP 参数自动解析 | ❌ | ❌ | ✅ |
-| 嵌套属性查询 | 有限支持 | ✅ | ✅ |
-| 性能 | 较好 | 良好 | 良好 |
-| 适用场景 | 简单等值筛选 | 复杂业务查询 | 前后端联调/通用列表页 |
+```java
+// 使用 DynamicRepository 的原生 SQL 查询
+List<User> users = userRepository.dynamicListQuery(
+    "SELECT * FROM user WHERE status = ?", "ACTIVE"
+);
 
-### 注意事项
+// 分页查询
+Page<User> page = userRepository.dynamicPageQuery(
+    "SELECT * FROM user WHERE dept_id = ?",
+    "SELECT COUNT(*) FROM user WHERE dept_id = ?",
+    PageRequest.of(0, 20),
+    deptId
+);
+```
 
-1. **实体类要求**：过滤字段名必须与实体类的属性名一致（不是数据库列名）
-2. **类型匹配**：过滤值的类型应与实体字段类型兼容，框架会尝试自动转换
-3. **空值处理**：当过滤值为 null 或空字符串时，该条件会被跳过
-4. **SQL 注入防护**：HQL 模式使用参数化查询，不存在 SQL 注入风险
-5. **分页起始页**：`PageRequest.of(page, size)` 中 page 从 0 开始
+### 6. 拖拽排序
+
+```java
+// 实体需实现 ISort 接口
+SortRequest sortRequest = new SortRequest(List.of(3L, 1L, 2L));
+userRepository.reSort(sortRequest);
+```

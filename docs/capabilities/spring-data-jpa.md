@@ -1,77 +1,106 @@
 ---
 name: spring-data-jpa
-description: ORM 映射、Repository 抽象、自动分页
+description: Spring Data JPA 数据访问能力，提供 ORM 映射、Repository 抽象、分页查询等基础设施，框架在此基础上扩展了 FastRepository 动态查询
 status: 已实现
 scope: 后端
-source: 框架:Spring Data JPA
+source: 框架:spring-data-jpa
+framework_version: Managed by Spring Boot BOM (3.3.5)
 ---
 
 ## 解决什么问题
 
-Spring Data JPA 是项目中数据持久化的基础层，解决了以下问题：
+Spring Data JPA 是框架数据持久层的基石，解决了以下问题：
 
-- **ORM 映射**：将数据库表映射为 Java Entity，减少手写 SQL
-- **Repository 抽象**：通过接口定义数据访问方法，由框架自动生成实现
-- **自动分页**：内置 `Pageable` / `Page` 支持，简化分页查询逻辑
-- **作为 FastRepository 的底层**：项目的 `springboot-starter-data-fast` 模块在此基础上扩展了动态过滤查询能力
+- **ORM 映射**：通过 JPA 注解将领域实体映射到关系数据库表，框架中所有领域对象（如 `FlowWork`、`FlowRecord`、`FlowNode` 等）均基于 JPA Entity 定义
+- **Repository 抽象**：提供 `JpaRepository` 接口，自动生成 CRUD 实现，消除样板代码
+- **分页查询**：原生支持 `Pageable` / `Page` 分页抽象，框架在此基础上扩展了 `PageRequest` + `RequestFilter` 动态过滤能力
+
+框架的 `springboot-starter-data-fast` 模块在 Spring Data JPA 之上构建了 `FastRepository`，支持基于 Filter 的动态 Example 查询和 HQL 构建，大幅简化复杂条件查询的开发。
 
 ## 如何使用
 
-项目使用 `spring-boot-starter-data-jpa`（随 Spring Boot 3.3.5），在 DDD 架构中处于 infra 层：
+### 依赖引入
 
-1. **Entity 定义**：在 `example-infra-jpa` 模块中定义 JPA Entity（如 `UserEntity`）
-2. **JPA Repository**：继承 `JpaRepository` 或 `FastRepository` 获得 CRUD + 动态查询能力
-3. **Domain Repository 实现**：在 infra 层实现 domain 层定义的 Repository 接口，内部委托给 JPA Repository
-4. **Convertor 转换**：使用 Convertor 类在 Entity 与 Domain Entity 之间转换，隔离持久化细节
+```xml
+<dependency>
+    <groupId>com.codingapi.springboot</groupId>
+    <artifactId>springboot-starter-data-fast</artifactId>
+</dependency>
+```
+
+该模块已传递依赖 `spring-boot-starter-data-jpa`，无需单独引入。
+
+### Repository 定义
+
+继承 `FastRepository` 而非原生的 `JpaRepository`，即可获得动态过滤查询能力：
+
+```java
+public interface UserRepository extends FastRepository<UserEntity, Long> {
+    // 自动拥有 findAll(PageRequest)、pageRequest(PageRequest)、searchRequest(SearchRequest) 等方法
+}
+```
+
+### 动态过滤查询
+
+`PageRequest` 扩展了 Spring Data 的 `org.springframework.data.domain.PageRequest`，增加了 `RequestFilter`：
+
+```java
+PageRequest request = PageRequest.of(0, 20);
+request.addFilter("name", "张三");
+request.addFilter("age", Relation.GT, 18);
+Page<UserEntity> page = userRepository.findAll(request);
+```
+
+当 Filter 存在时，`findAll` 自动构建 Example 查询；`pageRequest` 方法则构建 HQL 动态 SQL，支持更复杂的关联查询。
 
 ## 使用实例
 
-### JPA Repository 定义
+### 基础 CRUD + 动态过滤
 
 ```java
-// example-infra-jpa 模块
-public interface UserEntityRepository extends FastRepository<UserEntity, Long> {
-
-    UserEntity getUserEntityByUsername(String username);
-
-    UserEntity getUserEntityById(long id);
-}
-```
-
-### Domain Repository 接口（domain 层）
-
-```java
-// example-domain-user 模块 —— 仅定义接口，不依赖 JPA
-public interface UserRepository {
-    User getUserByUsername(String username);
-    User getUserById(long id);
-    void save(User user);
-    void delete(long id);
-}
-```
-
-### Infra 层实现（桥接 Domain 与 JPA）
-
-```java
-@Repository
+@Service
 @AllArgsConstructor
-public class UserRepositoryImpl implements UserRepository {
+public class UserQueryService {
 
-    private final UserEntityRepository userEntityRepository;
+    private final UserRepository userRepository;
 
-    @Override
-    public User getUserByUsername(String username) {
-        return UserConvertor.convert(
-            userEntityRepository.getUserEntityByUsername(username),
-            userEntityRepository
-        );
+    // 简单分页（无过滤）
+    public Page<UserEntity> listUsers(int page, int size) {
+        return userRepository.findAll(PageRequest.of(page, size));
     }
 
-    @Override
-    public void save(User user) {
-        UserEntity entity = UserConvertor.convert(user);
-        entity = userEntityRepository.save(entity);
-        user.setId(entity.getId());
+    // 带动态过滤的分页查询
+    public Page<UserEntity> searchUsers(String name, Integer minAge) {
+        PageRequest request = PageRequest.of(0, 20);
+        if (name != null) {
+            request.addFilter("name", name);
+        }
+        if (minAge != null) {
+            request.addFilter("age", Relation.GTE, minAge);
+        }
+        return userRepository.findAll(request);
     }
+
+    // 使用 HQL 动态查询（支持关联字段、OR 条件等）
+    public Page<UserEntity> advancedSearch(SearchRequest searchRequest) {
+        return userRepository.searchRequest(searchRequest);
+    }
+}
+```
+
+### JPA Entity 定义
+
+```java
+@Entity
+@Table(name = "t_user")
+@Getter @Setter
+public class UserEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+    private Integer age;
+    private String email;
 }
 ```

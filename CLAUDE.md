@@ -170,14 +170,15 @@ codingapi.framework.handler-thread-pool-size=20  # 事件异步线程池大小
 计划方案中必须包含：
 1. **复用了哪些已有能力** — 列出从 PKR 中找到并复用的 Capability
 2. **遵循了哪些规范** — 列出遵守的 Convention
-3. **是否有新增能力** — 如果本次开发产生了可复用的新能力，完成后通过 `/pkr-scan add` 注册
+3. **是否有新增能力** — 如果本次开发产生了可复用的新能力，完成后通过 `/pkr-add` 注册
 
 ### 知识管理命令
 
 | 命令 | 用途 |
 |------|------|
-| `/pkr-scan init` | 首次扫描项目，发现候选能力和规范 |
-| `/pkr-scan sync` | 全量同步，对比代码变更 |
-| `/pkr-scan update <name>` | 单项更新指定能力或规范 |
-| `/pkr-scan add` | 手动注册新的能力或规范 |
+| `/pkr-init` | 首次扫描项目，发现候选能力和规范 |
+| `/pkr-sync` | 全量同步，对比代码变更 |
+| `/pkr-update <name> [desc]` | 单项更新，可带描述指导更新 |
+| `/pkr-add [name] <desc>` | 从代码/框架扫描注册（名称可省略） |
+| `/pkr-add plan [name] <desc>` | 注册计划中的能力（名称可省略） |
 <!-- PKR-END -->

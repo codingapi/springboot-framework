@@ -1,66 +1,109 @@
 ---
 name: spring-security
-description: 认证授权框架，提供 Filter Chain、CSRF 防护
+description: Spring Security 安全认证与授权能力，框架在此基础上封装了 JWT 无状态认证和 Redis 有状态认证两种模式
 status: 已实现
 scope: 后端
-source: 框架:Spring Security
+source: 框架:spring-security
+framework_version: Managed by Spring Boot BOM (3.3.5)
 ---
 
 ## 解决什么问题
 
-Spring Security 为项目提供安全基础设施，解决了以下问题：
+Spring Security 为框架提供了完整的安全基础设施，解决了以下问题：
 
-- **认证**：验证用户身份，支持 JWT 无状态认证和 Redis 有状态认证两种模式
-- **授权**：基于 URL 模式和角色的访问控制
-- **Filter Chain**：通过过滤器链拦截请求，统一处理安全逻辑
-- **密码加密**：提供 PasswordEncoder 接口进行安全的密码哈希
+- **认证（Authentication）**：框架的 `springboot-starter-security` 模块基于 Spring Security 过滤器链，实现了两种 Token 认证模式：
+  - **JWT 无状态模式**：通过 `JwtTokenGateway` + JJWT 库签发/验证 JWT Token，适用于分布式部署
+  - **Redis 有状态模式**：通过 `RedisTokenGateway` + `RedisTemplate` 将 Token 存储在 Redis 中，支持服务端主动失效、单点登录等场景
+- **授权（Authorization）**：基于 Spring Security 的权限模型，`Token.authorities` 携带用户角色/权限列表，通过 `UsernamePasswordAuthenticationToken` 注入 SecurityContext
+- **CSRF 防护**：REST API 场景下默认禁用 CSRF（无状态 Token 认证不需要），表单场景可按需启用
+- **统一安全过滤链**：`MyAuthenticationFilter` 拦截请求解析 Token，`MyLoginFilter` 处理登录请求生成 Token，`SecurityLoginHandler` 统一登录成功/失败响应
 
 ## 如何使用
 
-项目使用 `spring-boot-starter-security`（随 Spring Boot 3.3.5），被 `springboot-starter-security` 模块封装：
+### 依赖引入
 
-1. **JWT 模式**：配置 `codingapi.security.jwt.enable=true`，使用 `JwtTokenGateway` 签发和验证 Token
-2. **Redis 模式**：配置 `codingapi.security.redis.enable=true`，Token 存储在 Redis 中
-3. **免认证 URL**：通过 `codingapi.security.ignore-urls` 配置白名单路径
-4. **自定义 Filter**：框架提供 `MyAuthenticationFilter`、`MyLoginFilter`、`MyLogoutSuccessHandler` 等组件
-5. **异常处理**：`MyAccessDeniedHandler` 和 `MyUnAuthenticationEntryPoint` 统一返回 `Response` 格式的错误响应
+```xml
+<dependency>
+    <groupId>com.codingapi.springboot</groupId>
+    <artifactId>springboot-starter-security</artifactId>
+</dependency>
+```
+
+### 配置认证模式
+
+在 `application.properties` 中选择认证方式：
+
+```properties
+# JWT 无状态认证
+codingapi.security.jwt.enable=true
+codingapi.security.jwt.secret-key=your-secret-key-at-least-256-bits
+codingapi.security.jwt.valid-time=86400000     # Token 有效期（毫秒）
+codingapi.security.jwt.rest-time=3600000       # Token 刷新提醒时间（毫秒）
+
+# Redis 有状态认证（二选一）
+codingapi.security.redis.enable=true
+codingapi.security.redis.valid-time=86400000
+codingapi.security.redis.rest-time=3600000
+
+# 免认证 URL 列表
+codingapi.security.ignore-urls=/open/**,/#/**,/api/login
+```
+
+### TokenGateway 接口
+
+两种模式均实现统一的 `TokenGateway` 接口，业务代码无需关心底层存储：
+
+```java
+public interface TokenGateway {
+    Token create(String username, String iv, List<String> authorities, String extra);
+    Token parser(String sign);
+}
+```
 
 ## 使用实例
 
-### 安全配置项
-
-```properties
-# application.properties
-codingapi.security.jwt.enable=true
-codingapi.security.redis.enable=false
-codingapi.security.ignore-urls=/open/**,/#/**,/api/query/**
-```
-
-### Controller 中使用认证信息
+### 自定义登录逻辑
 
 ```java
-@RestController
-@RequestMapping("/api/cmd/user")
+@Service
 @AllArgsConstructor
-public class UserDomainCmdController {
+public class LoginService {
 
-    private final UserRouter userRouter;
+    private final TokenGateway tokenGateway;
 
-    @PostMapping("/save")
-    public Response save(@RequestBody UserCmd.UpdateRequest request) {
-        // 请求已通过 Security Filter Chain 认证
-        userRouter.createOrUpdate(request);
-        return Response.buildSuccess();
+    public Token login(String username, String password) {
+        // 1. 验证用户名密码（自行实现）
+        UserDetails user = authenticate(username, password);
+
+        // 2. 生成 Token（自动根据配置选择 JWT 或 Redis 模式）
+        return tokenGateway.create(
+            user.getUsername(),
+            null,                              // iv（AES 加密向量，可选）
+            user.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList()),
+            "{\"userId\":1}"                   // extra 扩展信息
+        );
     }
 }
 ```
 
-### Domain 层定义密码加密网关
+### 获取当前用户信息
 
 ```java
-// domain 层定义接口，不依赖 Spring Security
-public interface PasswordEncoder {
-    String encode(String rawPassword);
-    boolean matches(String rawPassword, String encodedPassword);
+@RestController
+public class ProfileController {
+
+    @GetMapping("/api/profile")
+    public SingleResponse<Map<String, Object>> profile() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Token token = (Token) auth.getPrincipal();
+
+        Map<String, Object> info = new HashMap<>();
+        info.put("username", token.getUsername());
+        info.put("authorities", token.getAuthorities());
+        info.put("extra", token.parseExtra(Map.class));
+        return SingleResponse.of(info);
+    }
 }
 ```
