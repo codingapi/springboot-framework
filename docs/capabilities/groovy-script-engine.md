@@ -1,133 +1,93 @@
 ---
 name: groovy-script-engine
-description: Groovy 动态脚本引擎，支持运行时编译执行、LRU 缓存、热更新和 REST API
+description: Groovy 脚本运行时引擎，支持动态编译、LRU 缓存、类型映射、元数据扫描与临时脚本持久化
 status: 已实现
 scope: 后端
 source: 项目自有
-last_commit: fbfb901b
-code_files:
-  - springboot-starter-script/src/main/java/com/codingapi/springboot/script/GroovyScriptRuntime.java
-  - springboot-starter-script/src/main/java/com/codingapi/springboot/script/GroovyScriptRuntimeContext.java
-  - springboot-starter-script/src/main/java/com/codingapi/springboot/script/cache/GroovyScriptCacheContext.java
-  - springboot-starter-script/src/main/java/com/codingapi/springboot/script/repository/GroovyScriptRepository.java
-  - springboot-starter-script/src/main/java/com/codingapi/springboot/script/repository/TempGroovyScriptRepository.java
-  - springboot-starter-script/src/main/java/com/codingapi/springboot/script/strategy/GroovyTypeFixStrategy.java
-  - springboot-starter-script/src/main/java/com/codingapi/springboot/script/strategy/GroovyMetadataGenerateStrategy.java
-  - springboot-starter-script/src/main/java/com/codingapi/springboot/script/controller/GroovyScriptController.java
-  - springboot-starter-script/src/main/java/com/codingapi/springboot/script/runner/GroovyScriptEngineRunner.java
+import: com.codingapi.springboot:springboot-starter-script
+symbols:
+  - GroovyScript
+  - GroovyScriptRuntimeContext
+  - GroovyScriptRuntime
+  - GroovyScriptEngineRunner
+  - GroovyScriptCacheContext
+  - GroovyMetadataScannerUtils
+  - GroovyMetadata
+  - GroovyType
+  - GroovyField
+  - GroovyFunction
+  - ScriptTypeMappingContext
+  - ScriptTypeMapping
+  - GroovyTypeFixStrategyContext
+  - GroovyTypeFixStrategy
+  - GroovyMetadataGenerateStrategyContext
+  - GroovyScriptController
+  - GroovyScriptRepository
+  - TempGroovyScriptContext
+  - TransactionMode
+content_hash: 913fcdb49caf0b894a3d6cbff60bb519566caf888e292724c652766cc4fa9c90
 ---
 
 ## 解决什么问题
 
-业务规则频繁变更时，硬编码需要重新编译部署。Groovy 脚本引擎提供运行时动态编译执行能力，让业务规则可以通过脚本形式热加载，无需重启应用。典型场景：
+在企业应用中，某些业务规则需要动态调整而不想重新部署（如工作流条件表达式、表单校验规则、动态报表查询）。本 Groovy 脚本引擎解决了以下问题：
 
-- 动态表单校验规则
-- 工作流节点审批脚本
-- 数据转换/映射规则
-- 临时数据处理脚本
+- **运行时编译执行**：Groovy 脚本在运行时编译为 Java 字节码并执行
+- **LRU 编译缓存**：编译后的 Class 缓存在 LRU Cache 中，避免重复编译
+- **类型映射**：解决 Groovy 与 Java 之间的类型差异（如 `int` → `Integer`）
+- **元数据扫描**：通过注解扫描脚本的字段、函数、参数信息
+- **临时脚本持久化**：临时脚本在应用重启时自动持久化到数据库并恢复
 
 ## 如何使用
 
-### 核心运行时（GroovyScriptRuntime）
+### 构建与执行脚本
 
 ```java
-// 初始化运行时（指定 LRU 缓存最大容量）
-GroovyScriptRuntime runtime = new GroovyScriptRuntime(100);
-
-// 编译脚本（带缓存 — 以 SHA256 哈希为 Key）
-runtime.compile("def add(a, b) { return a + b }", true);
-
-// 编译脚本（不带缓存）
-runtime.compile("println 'hello'", false);
+GroovyScript script = GroovyScript.builder("calc-discount")
+    .script("def calc(BigDecimal price, int level) { return price * (1 - level * 0.1) }")
+    .description("计算折扣价")
+    .returnType(BigDecimal.class)
+    .build();
 
 // 执行脚本
-Object result = runtime.execute("return 1 + 2");
-
-// 执行脚本并绑定变量
-Map<String, Object> bindings = new HashMap<>();
-bindings.put("name", "张三");
-Object result = runtime.execute("return 'Hello, ' + name", bindings);
+BigDecimal result = script.invoke(TransactionMode.none, 
+    Map.of(), new BigDecimal("100"), 2);
+// result = 80.0
 ```
 
-### LRU 缓存机制
+### 带事务执行
 
-- 缓存 Key 为脚本内容的 SHA256 哈希值
-- 采用 `LinkedHashMap` 实现 LRU 淘汰策略
-- 超过 `maxCacheSize` 时自动移除最久未使用的条目
-- 通过 `clearCache()` 手动清空缓存
-- 通过 `cacheSize()` 查看当前缓存数量
-
-### 脚本仓库（GroovyScriptRepository）
-
-持久化存储脚本，支持 CRUD 和按名称查找：
 ```java
-// 保存脚本
-repository.save("calc_discount", scriptContent);
-
-// 按名称执行
-Object result = runtime.executeByName("calc_discount", bindings);
+// 在 Spring 事务中执行脚本
+Object result = script.invoke(TransactionMode.required, bindMap, arg1, arg2);
 ```
 
-### 临时脚本（TempGroovyScriptRepository）
+### REST API 管理脚本
 
-一次性执行的临时脚本，执行后自动清理：
+引擎提供 `GroovyScriptController`，通过 HTTP 接口管理脚本的编译、保存和执行。
+
+### 类型映射扩展
+
 ```java
-// 提交临时脚本
-tempRepo.submit("return data.collect { it.name }", dataBindings);
+// 注册自定义类型映射
+ScriptTypeMappingContext.getInstance().addMapping(new ScriptTypeMapping() {
+    public boolean support(Class<?> target) { return target == PageRequest.class; }
+    public Class<?> mapping(Class<?> target) { return CustomPageRequest.class; }
+});
 ```
-
-### 元数据扫描
-
-通过注解扫描提取脚本元数据，用于前端展示：
-```java
-@GroovyScript
-class DiscountCalc {
-    @ScriptFunction(description = "计算折扣")
-    static BigDecimal calc(@ScriptParameter("金额") BigDecimal amount) {
-        return amount.multiply(new BigDecimal("0.9"))
-    }
-}
-```
-
-### 策略扩展点
-
-- `GroovyMetadataGenerateStrategy` — 自定义元数据生成逻辑
-- `GroovyTypeFixStrategy` — 自定义类型元数据修正（如补充泛型信息）
-
-### REST API（GroovyScriptController）
-
-| 端点 | 方法 | 说明 |
-|------|------|------|
-| `/open/script/save` | POST | 保存脚本 |
-| `/open/script/compile` | POST | 编译检查（不执行） |
-| `/open/script/run` | POST | 执行脚本 |
-| `/open/script/list` | GET | 列出所有脚本 |
 
 ## 使用实例
 
 ```java
-// 1. 基本执行
-GroovyScriptRuntime runtime = new GroovyScriptRuntime(50);
-Object result = runtime.execute("return [1,2,3].sum()");
-assert result.equals(6);
+// 工作流中使用 Groovy 脚本匹配审批人
+GroovyScript script = GroovyScript.builder("match-operator")
+    .script("""
+        def matcher(session) {
+            if (session.amount > 10000) return [1001L] // 总经理审批
+            return [session.createOperatorId]           // 直属上级
+        }
+    """)
+    .build();
 
-// 2. 缓存模式 — 相同内容只编译一次
-String script = "def discount(amount) { return amount * 0.85 }";
-runtime.compile(script, true); // 首次编译并缓存
-Object r1 = runtime.execute(script); // 命中缓存
-Object r2 = runtime.execute(script); // 命中缓存
-
-// 3. 绑定变量执行
-Map<String, Object> vars = new HashMap<>();
-vars.put("price", new BigDecimal("100"));
-vars.put("quantity", 3);
-Object total = runtime.execute(
-    "return price.multiply(new BigDecimal(quantity))",
-    vars
-);
-// total = 300
-
-// 4. 清空缓存
-runtime.clearCache();
-assert runtime.cacheSize() == 0;
+List<Long> operatorIds = script.invoke(TransactionMode.none, Map.of(), session);
 ```

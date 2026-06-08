@@ -1,135 +1,104 @@
 ---
 name: workflow-engine
-description: 工作流引擎，支持流程定义、节点流转、审批、委托、会签、数据快照和事件通知
+description: 轻量级工作流引擎，支持流程定义、节点流转、审批、退回、委托、会签、抄送、数据快照与事件通知
 status: 已实现
 scope: 后端
 source: 项目自有
-last_commit: 0fc02aca
-code_files:
-  - springboot-starter-flow/src/main/java/com/codingapi/springboot/flow/FlowConfiguration.java
-  - springboot-starter-flow/src/main/java/com/codingapi/springboot/flow/record/FlowProcess.java
-  - springboot-starter-flow/src/main/java/com/codingapi/springboot/flow/record/FlowRecord.java
-  - springboot-starter-flow/src/main/java/com/codingapi/springboot/flow/record/FlowBackup.java
-  - springboot-starter-flow/src/main/java/com/codingapi/springboot/flow/record/FlowMerge.java
-  - springboot-starter-flow/src/main/java/com/codingapi/springboot/flow/service/FlowService.java
-  - springboot-starter-flow/src/main/java/com/codingapi/springboot/flow/service/FlowNodeService.java
-  - springboot-starter-flow/src/main/java/com/codingapi/springboot/flow/service/impl/FlowStartService.java
-  - springboot-starter-flow/src/main/java/com/codingapi/springboot/flow/service/impl/FlowSubmitService.java
-  - springboot-starter-flow/src/main/java/com/codingapi/springboot/flow/service/impl/FlowRecallService.java
-  - springboot-starter-flow/src/main/java/com/codingapi/springboot/flow/service/impl/FlowStopService.java
-  - springboot-starter-flow/src/main/java/com/codingapi/springboot/flow/service/impl/FlowTrySubmitService.java
-  - springboot-starter-flow/src/main/java/com/codingapi/springboot/flow/repository/FlowWorkRepository.java
-  - springboot-starter-flow/src/main/java/com/codingapi/springboot/flow/repository/FlowProcessRepository.java
-  - springboot-starter-flow/src/main/java/com/codingapi/springboot/flow/repository/FlowRecordRepository.java
-  - springboot-starter-flow/src/main/java/com/codingapi/springboot/flow/repository/FlowBackupRepository.java
+import: com.codingapi.springboot:springboot-starter-flow
+symbols:
+  - FlowWork
+  - FlowNode
+  - FlowRelation
+  - FlowRecord
+  - FlowBackup
+  - FlowProcess
+  - FlowWorkBuilder
+  - SchemaReader
+  - FlowNodeService
+  - FlowStartService
+  - FlowStepService
+  - FlowSubmitService
+  - FlowBackService
+  - FlowRecallService
+  - FlowTransferService
+  - FlowSession
+  - FlowApprovalEvent
+  - TitleGenerator
+  - OperatorMatcher
+  - OutTrigger
+  - IFlowOperator
+  - FlowRecordRepository
+  - FlowWorkRepository
+  - FlowOperatorRepository
+  - BindDataSnapshot
+  - IBindData
+content_hash: 42954fc1cb16f19b5ed4693dfa2ba2887cc9a90673dbb5bafd1dd7c291631712
 ---
 
 ## 解决什么问题
 
-企业级审批场景（请假、报销、采购等）需要标准化的流程引擎来管理：
-- **流程定义与版本管理**：流程模板可修改、可版本化，运行中流程不受定义变更影响
-- **节点流转规则**：支持串行、并行（会签）、条件分支等多种流转模式
-- **审批操作**：通过、驳回、退回、撤回、转办、催办、终止等完整操作集
-- **数据快照**：发起时锁定流程定义版本，确保审批过程一致性
-- **事件通知**：每个状态变更自动推送 `FlowApprovalEvent`，驱动业务联动
+企业应用中审批流程（请假、报销、合同审批等）是高频需求。本工作流引擎解决了以下问题：
+
+- **流程定义与构建**：通过 `FlowWorkBuilder` 或 JSON Schema 定义流程节点和流转关系
+- **灵活的节点流转**：支持条件分支、退回、委托、抄送、会签等多种流转模式
+- **操作者匹配**：通过 Groovy 脚本动态匹配节点审批人
+- **数据快照**：使用 Kryo 深拷贝保存审批时的业务数据快照
+- **事件驱动**：每个状态变更推送 `FlowApprovalEvent`，与事件系统集成
 
 ## 如何使用
 
-### 核心数据模型
+### 核心领域模型
 
-```
-FlowWork（流程定义）
-    └── FlowNode（节点）
-        └── FlowSource（连线/分支条件）
+- `FlowWork` — 流程定义（包含节点和关系）
+- `FlowNode` — 流程节点（开始/审批/传阅/结束）
+- `FlowRelation` — 节点间关系（含条件触发器）
+- `FlowRecord` — 审批记录
+- `FlowBackup` — 流程版本快照
 
-FlowProcess（流程实例）
-    └── FlowRecord（审批记录）
-        └── FlowBackup（版本快照）
-```
-
-| 模型 | 说明 |
-|------|------|
-| `FlowWork` | 流程模板定义，包含节点列表和连线关系 |
-| `FlowProcess` | 流程实例（由 `FlowStartService` 创建），关联 backupId 锁定版本 |
-| `FlowRecord` | 审批记录，记录每个节点的审批人、结果、意见、时间 |
-| `FlowBackup` | 流程定义快照（Kryo 序列化），确保运行中流程不受模板修改影响 |
-
-### 服务层 API
-
-| 服务 | 方法 | 说明 |
-|------|------|------|
-| `FlowStartService` | `startFlow(...)` | 发起流程，创建 FlowProcess + FlowBackup + 初始 FlowRecord |
-| `FlowSubmitService` | `submitFlow(...)` | 提交审批（通过/驳回） |
-| `FlowRecallService` | `recallFlow(...)` | 撤回已提交的流程 |
-| `FlowTrySubmitService` | `trySubmitFlow(...)` | 试提交 — 获取下一节点审批人（不实际流转） |
-| `FlowStopService` | `stopFlow(...)` | 终止流程 |
-| `FlowUrgeService` | `urgeFlow(...)` | 催办 |
-| `FlowNodeService` | `getFlowRecords(...)` | 获取流程审批记录 |
-| `FlowStepService` | `getFlowSteps(...)` | 获取流程步骤图 |
-| `FlowCustomEventService` | `customEvent(...)` | 触发自定义按钮事件 |
-
-### 流程状态（FlowStatus）
-
-```
-RUNNING → FINISH / VOIDED / STOP
-```
-
-### 审批操作类型（FlowType）
-
-CREATE、SAVE、PASS、REJECT、RECALL、DELETE、VOIDED、BACK、FINISH、TRANSFER、URGE、STOP
-
-### 事件通知
-
-每次状态变更通过 `EventPusher` 推送 `FlowApprovalEvent`，业务侧通过 `IHandler<FlowApprovalEvent>` 监听：
+### 流程发起
 
 ```java
-@Component
+@Autowired
+private FlowService flowService;
+
+// 发起流程
+FlowResult result = flowService.start("leave-approval", bindData, createOperator);
+```
+
+### 流程审批
+
+```java
+// 提交审批意见
+Opinion opinion = Opinion.builder()
+    .pass(true)
+    .comment("同意")
+    .build();
+flowService.submit(processId, opinion, currentOperator);
+```
+
+### 流程退回
+
+```java
+flowService.back(processId, opinion, currentOperator);
+```
+
+### 监听审批事件
+
+```java
+@Service
 public class LeaveHandler implements IHandler<FlowApprovalEvent> {
     @Override
     public void handler(FlowApprovalEvent event) {
-        if (event.getFlowType() == FlowType.FINISH) {
-            // 审批完成 — 更新请假状态
+        if (event.isFinish() && event.match(LeaveForm.class)) {
+            // 审批通过，执行业务逻辑
         }
     }
 }
 ```
 
-### 配置
-
-```java
-@Configuration
-public class FlowConfiguration {
-    // 自动注册所有 Flow Repository 和 Service
-    // 通过 FlowFrameworkRegister 注册框架级触发器
-}
-```
-
 ## 使用实例
 
-```java
-// 1. 发起请假流程
-FlowProcess process = flowStartService.startFlow(
-    workId,        // 流程定义ID
-    operatorId,    // 发起人ID
-    bindDataId     // 关联业务数据ID
-);
-
-// 2. 试提交 — 查看下一节点审批人
-List<IFlowOperator> nextApprovers = flowTrySubmitService.trySubmitFlow(
-    process.getProcessId(), operatorId, "同意请假"
-);
-
-// 3. 正式提交审批
-flowSubmitService.submitFlow(
-    process.getProcessId(), operatorId, "同意请假", ApprovalType.PASS
-);
-
-// 4. 撤回（仅在下一节点未审批前可撤回）
-flowRecallService.recallFlow(process.getProcessId(), operatorId);
-
-// 5. 查询审批记录
-List<FlowRecord> records = flowNodeService.getFlowRecords(process.getProcessId());
-
-// 6. 终止流程
-flowStopService.stopFlow(process.getProcessId(), operatorId, "业务取消");
-```
+参考 `example` 模块中的请假流程示例：
+- 流程定义：`FlowWorkCmd` 通过 `FlowWorkBuilder` 构建
+- 审批处理：`LeaveHandler` 监听 `FlowApprovalEvent`
+- 数据绑定：`LeaveForm implements IBindData`
