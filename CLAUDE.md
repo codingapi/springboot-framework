@@ -156,7 +156,6 @@ codingapi.framework.handler-thread-pool-size=20  # 事件异步线程池大小
 见根 `pom.xml` 的 `<properties>` 区块。主要版本：Groovy 4.0.24、JSqlParser 5.0、Fastjson 2.0.53、JJWT 0.12.6、H2 2.3.232、Kryo 5.6.2。
 
 
-
 <!-- PKR-START -->
 ## PKR 知识查阅（编码前必须）
 
@@ -186,9 +185,10 @@ codingapi.framework.handler-thread-pool-size=20  # 事件异步线程池大小
 
 | 命令 | 用途 |
 |------|------|
-| `/pkr-init` | 首次扫描项目，发现候选能力和规范 |
+| `/pkr-init` | 扫描项目，发现候选能力和规范（自动跳过已有文档） |
 | `/pkr-sync` | 全量同步，对比代码变更 |
-| `/pkr-update <name> [desc]` | 单项更新，可带描述指导更新 |
-| `/pkr-add [name] <desc>` | 从代码/框架扫描注册（名称可省略） |
-| `/pkr-add plan [name] <desc>` | 注册计划中的能力（名称可省略） |
+| `/pkr-update <module>/<name> [desc]` | 单项更新，可带描述指导更新 |
+| `/pkr-add <module>/<name> <desc>` | 从代码/框架扫描注册 |
+| `/pkr-add plan <module>/<name> <desc>` | 注册计划中的能力 |
+| `/pkr-export <module> ...` | 导出模块文档供其他项目使用 |
 <!-- PKR-END -->
