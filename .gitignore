@@ -43,3 +43,9 @@ build/
 
 ### qwen ###
 .qwen/
+
+### codegraph ###
+.codegraph
+
+### serena ###
+.serena

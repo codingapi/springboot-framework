@@ -3,5 +3,8 @@
     "allow": [
       "Bash(echo \"exit: $?\")"
     ]
+  },
+  "enabledPlugins": {
+    "pkr@pkr-marketplace": true
   }
 }
