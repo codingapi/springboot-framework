@@ -6,35 +6,24 @@
 
 | 名称 | 描述 | 范围 | 来源 |
 |------|------|------|------|
-| [crypto-tools](./crypto-tools.md) | 密码学工具套件，AES（CBC 模式）/RSA（BouncyCastle）/DES 加解密 + SHA256/HmacSHA256 哈希签名，提供实例化工... | 后端 | 项目自有 |
-| [data-authorization](./data-authorization.md) | 完整的数据权限框架，包含行级权限（WHERE/JOIN 条件注入）和列级权限（数据脱敏），基于 JSqlParser 的 SQL 增强引擎，提供 Colu... | 后端 | 项目自有 |
-| [domain-change-interceptor](./domain-change-interceptor.md) | 通过 CGLIB 代理拦截领域实体字段的 setter 方法，自动检测变更并发布 DomainChangeEvent | 后端 | 项目自有 |
-| [dynamic-application](./dynamic-application.md) | 支持外部 JAR 加载和 Spring 上下文热重启的应用启动器 | 后端 | 项目自有 |
-| [dynamic-mvc-mapping](./dynamic-mvc-mapping.md) | 运行时动态注册/注销 Spring MVC REST 端点，支持将 Groovy 脚本绑定到动态 API 路径 | 后端 | 项目自有 |
-| [event-system](./event-system.md) | 自建的领域事件发布-订阅系统，支持同步/异步事件、事务后提交、Handler自动注册排序 | 后端 | 项目自有 |
-| [fast-repository](./fast-repository.md) | JPA Repository 增强，支持动态过滤查询（RequestFilter + Relation 操作符）、HQL 自动构建、排序 | 后端 | 项目自有 |
-| [groovy-script-engine](./groovy-script-engine.md) | Groovy 动态脚本引擎，支持运行时编译执行、LRU 缓存、热更新和 REST API | 后端 | 项目自有 |
-| [jackson](./jackson.md) | Jackson JSON 序列化/反序列化能力，由 Spring Boot Web 自动配置，框架中用于 REST API 响应序列化、请求参数绑定等场景 | 后端 | 框架:jackson |
-| [jdbc-proxy-chain](./jdbc-proxy-chain.md) | 完整的 JDBC 装饰器代理链，透明拦截 SQL 执行以实现数据权限控制 | 后端 | 项目自有 |
-| [locale-exception](./locale-exception.md) | 支持 i18n 的业务异常体系，errCode + errMessage，通过 MessageSource 实现国际化 | 后端 | 项目自有 |
-| [rest-client](./rest-client.md) | 出站 HTTP 客户端框架，提供 HttpClient（底层 HTTP 封装）、RestClient（REST 高级客户端）、SessionClient（... | 后端 | 项目自有 |
-| [spring-data-jpa](./spring-data-jpa.md) | Spring Data JPA 数据访问能力，提供 ORM 映射、Repository 抽象、分页查询等基础设施，框架在此基础上扩展了 FastRepos... | 后端 | 框架:spring-data-jpa |
-| [spring-data-redis](./spring-data-redis.md) | Spring Data Redis 数据存储能力，框架中主要用于 Token/Session 的有状态存储，支持服务端主动失效和多端登录管理 | 后端 | 框架:spring-data-redis |
-| [spring-framework](./spring-framework.md) | Spring Framework / Spring Boot 核心基础能力，提供 IoC 容器、事件发布、AOP、Web MVC、事务管理等基础设施 | 后端 | 框架:spring-framework |
-| [spring-security](./spring-security.md) | Spring Security 安全认证与授权能力，框架在此基础上封装了 JWT 无状态认证和 Redis 有状态认证两种模式 | 后端 | 框架:spring-security |
-| [sql-interceptor](./sql-interceptor.md) | 基于 JSqlParser 的 SQL 解析改写拦截器，在 SQL 执行前透明注入数据权限条件 | 后端 | 项目自有 |
-| [token-gateway](./token-gateway.md) | JWT/Redis 双模式 Token 认证网关，统一创建、解析和管理认证令牌 | 后端 | 项目自有 |
-| [transaction-manager-context](./transaction-manager-context.md) | 单例编程式事务上下文，支持 REQUIRES_NEW 语义，在非 Spring 管理上下文中也能使用事务 | 后端 | 项目自有 |
-| [trigger-system](./trigger-system.md) | 触发器框架，支持定时/条件触发，提供统一的触发上下文管理 | 后端 | 项目自有 |
-| [user-context](./user-context.md) | 线程级用户身份上下文，通过 ThreadLocal 持有当前登录用户，支持跨层传递 | 后端 | 项目自有 |
-| [workflow-engine](./workflow-engine.md) | 工作流引擎，支持流程定义、节点流转、审批、委托、会签、数据快照和事件通知 | 后端 | 项目自有 |
-
-## 🗓️ 计划中
-
-| 名称 | 描述 | 范围 | 来源 |
-|------|------|------|------|
-| [flow-postpone-event](./flow-postpone-event.md) | 延期流程操作的事件通知 — 当前 FlowPostponedService 未发送 FlowApprovalEvent | 后端 | 计划 |
+| [data-authorization](./data-authorization.md) | 数据权限 SQL 拦截器，通过 JDBC 代理链在 SQL 执行前透明注入权限条件，支持行级过滤与列级脱敏 | 后端 | 项目自有 |
+| [domain-proxy](./domain-proxy.md) | 基于 CGLIB 的领域实体代理，自动拦截字段变更并推送 DomainChangeEvent 领域事件 | 后端 | 项目自有 |
+| [dynamic-data-query](./dynamic-data-query.md) | 动态数据查询体系，基于 FastRepository + PageRequest/Filter/SearchRequest 自动构建 Example 或 ... | 后端 | 项目自有 |
+| [event-system](./event-system.md) | 发布-订阅事件系统，支持同步/异步事件、Handler排序、循环检测与事务集成 | 后端 | 项目自有 |
+| [global-exception-handler](./global-exception-handler.md) | 全局异常处理器，统一捕获 Controller 层异常并转换为标准 Response 格式返回 | 后端 | 项目自有 |
+| [groovy-runtime](./groovy-runtime.md) | Apache Groovy 运行时 — 动态脚本编译、执行与类型系统桥接 | 后端 | 框架:Groovy |
+| [groovy-script-engine](./groovy-script-engine.md) | Groovy 脚本运行时引擎，支持动态编译、LRU 缓存、类型映射、元数据扫描与临时脚本持久化 | 后端 | 项目自有 |
+| [jjwt](./jjwt.md) | JJWT 库 — JWT Token 的创建、签名、解析与验证 | 后端 | 框架:JJWT |
+| [jsqlparser](./jsqlparser.md) | JSqlParser SQL 解析库 — 解析和改写 SQL 语句，用于数据权限条件注入 | 后端 | 框架:JSqlParser |
+| [jwt-auth-gateway](./jwt-auth-gateway.md) | JWT 认证网关，集成 Spring Security 与 JJWT，支持 Token 创建、解析、Redis 有状态/无状态双模式 | 后端 | 项目自有 |
+| [kryo](./kryo.md) | Kryo 高性能序列化库 — 用于工作流数据快照的深拷贝与持久化 | 后端 | 框架:Kryo |
+| [rest-client](./rest-client.md) | REST HTTP 客户端封装，支持自动重试、代理配置、请求/响应拦截器与信任所有证书模式 | 后端 | 项目自有 |
+| [spring-data-jpa](./spring-data-jpa.md) | Spring Data JPA — ORM 映射、Repository 抽象、分页查询、Specification 动态查询 | 后端 | 框架:Spring Data JPA |
+| [spring-framework](./spring-framework.md) | Spring Framework / Spring Boot 核心能力 — IoC 容器、自动配置、事件发布、AOP、Web MVC | 后端 | 框架:Spring Boot |
+| [spring-security](./spring-security.md) | Spring Security 认证与授权框架 — 提供 Filter 链、CSRF 防护、密码编码、权限控制 | 后端 | 框架:Spring Security |
+| [unified-response](./unified-response.md) | 统一响应封装体系（Response / SingleResponse / MultiResponse / MapResponse），标准化 API 返回格式 | 后端 | 项目自有 |
+| [workflow-engine](./workflow-engine.md) | 轻量级工作流引擎，支持流程定义、节点流转、审批、退回、委托、会签、抄送、数据快照与事件通知 | 后端 | 项目自有 |
 
 ---
 
-**统计**: 共 23 篇 — 已实现 22 / 计划中 1 / 已废弃 0
+**统计**: 共 17 篇 — 已实现 17 / 计划中 0 / 已废弃 0
