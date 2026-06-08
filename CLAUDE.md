@@ -154,3 +154,30 @@ codingapi.framework.handler-thread-pool-size=20  # 事件异步线程池大小
 ## 关键依赖版本
 
 见根 `pom.xml` 的 `<properties>` 区块。主要版本：Groovy 4.0.24、JSqlParser 5.0、Fastjson 2.0.53、JJWT 0.12.6、H2 2.3.232、Kryo 5.6.2。
+
+
+<!-- PKR-START -->
+## PKR 知识查阅（编码前必须）
+
+进入计划模式或实现功能前，必须查阅：
+1. [docs/capabilities/index.md](./docs/capabilities/index.md) — 已有可复用能力
+2. [docs/conventions/index.md](./docs/conventions/index.md) — 开发规范
+
+已有能力必须复用，禁止重新实现。编码必须遵循已注册的规范。
+
+### 计划模式约束
+
+计划方案中必须包含：
+1. **复用了哪些已有能力** — 列出从 PKR 中找到并复用的 Capability
+2. **遵循了哪些规范** — 列出遵守的 Convention
+3. **是否有新增能力** — 如果本次开发产生了可复用的新能力，完成后通过 `/pkr-scan add` 注册
+
+### 知识管理命令
+
+| 命令 | 用途 |
+|------|------|
+| `/pkr-scan init` | 首次扫描项目，发现候选能力和规范 |
+| `/pkr-scan sync` | 全量同步，对比代码变更 |
+| `/pkr-scan update <name>` | 单项更新指定能力或规范 |
+| `/pkr-scan add` | 手动注册新的能力或规范 |
+<!-- PKR-END -->
