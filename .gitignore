@@ -33,3 +33,7 @@ build/
 .vscode/
 *.db
 *.trace.db
+
+### Claude Code & CodeGraph ###
+.claude/
+.codegraph/
