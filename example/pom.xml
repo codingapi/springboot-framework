@@ -14,12 +14,12 @@
     <parent>
         <groupId>com.codingapi.springboot</groupId>
         <artifactId>springboot-parent</artifactId>
-        <version>3.3.5</version>
+        <version>3.4.55</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>springboot-example</artifactId>
-    <version>3.4.54</version>
+    <version>3.4.55</version>
 
     <name>springboot-example</name>
     <description>springboot-example project for Spring Boot</description>

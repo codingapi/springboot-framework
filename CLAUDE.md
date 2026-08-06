@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 项目概述
 
-springboot-framework 是一个基于 Spring Boot 3.3.5（Java 17）的多模块企业级开发框架，由 CodingApi 团队维护。核心定位是为领域驱动设计（DDD）与事件风暴提供开箱即用的基础设施，当前版本为 `3.4.54`。
+springboot-framework 是一个基于 Spring Boot 3.3.5（Java 17）的多模块企业级开发框架，由 CodingApi 团队维护。核心定位是为领域驱动设计（DDD）与事件风暴提供开箱即用的基础设施，当前版本为 `3.4.55`。
 
 **回复语言**：请使用中文进行回答。
 
