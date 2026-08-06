@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 项目概览
 
-`com.codingapi.springboot:springboot-parent`（v2.10.54）是一套基于 Spring Boot 2.7.18 + JDK 8 的**领域驱动设计（DDD）落地框架**，围绕"事件风暴 + 流程编排 + 数据权限 + 动态脚本"四大支柱提供可插拔的 starter 模块。框架代码本身即是规范，业务方按需引入 starter 即可获得对应能力，无需重复造轮子。
+`com.codingapi.springboot:springboot-parent`（v2.10.55）是一套基于 Spring Boot 2.7.18 + JDK 8 的**领域驱动设计（DDD）落地框架**，围绕"事件风暴 + 流程编排 + 数据权限 + 动态脚本"四大支柱提供可插拔的 starter 模块。框架代码本身即是规范，业务方按需引入 starter 即可获得对应能力，无需重复造轮子。
 
 详细能力文档见 `docs/capabilities/index.md`（共 9 篇），开发规范见 `docs/conventions/index.md`。
 
