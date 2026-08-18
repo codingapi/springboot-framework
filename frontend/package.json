@@ -1,0 +1,25 @@
+{
+  "name": "springboot-framework-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "springboot-framework frontend monorepo (pnpm workspace)",
+  "packageManager": "pnpm@10.32.1",
+  "scripts": {
+    "dev:pc": "pnpm -F @springboot-framework/pc dev",
+    "dev:mobile": "pnpm -F @springboot-framework/mobile dev",
+    "mock:pc": "pnpm -F @springboot-framework/pc mock",
+    "mock:mobile": "pnpm -F @springboot-framework/mobile mock",
+    "build:pc": "pnpm -F @springboot-framework/pc build",
+    "build:mobile": "pnpm -F @springboot-framework/mobile build",
+    "build": "pnpm run build:pc && pnpm run build:mobile",
+    "test:pc": "pnpm -F @springboot-framework/pc test",
+    "test:mobile": "pnpm -F @springboot-framework/mobile test",
+    "test": "pnpm run test:pc && pnpm run test:mobile"
+  },
+  "pnpm": {
+    "overrides": {
+      "antd": "^5.20.6",
+      "antd-mobile": "^5.40.0"
+    }
+  }
+}

@@ -6,7 +6,7 @@ status: 已实现
 scope: 后端
 source: 框架:springboot-starter
 import: "com.codingapi.springboot:springboot-starter"
-framework_version: "3.4.54"
+framework_version: "17.3.0-SNAPSHOT"
 ---
 
 ## 解决什么问题
@@ -38,7 +38,7 @@ framework_version: "3.4.54"
 
 ### 规则 2：事件处理器必须实现 IHandler<T extends IEvent> 接口
 
-Handler 通过泛型参数声明订阅的事件类型。框架在启动时通过 `HandlerBeanDefinitionRegistrar` 自动扫描所有 `IHandler` 实现并注册到 `ApplicationHandlerUtils`。
+Handler 通过泛型参数声明订阅的事件类型。框架的 Handler 注册机制分为两个阶段：① `HandlerBeanDefinitionRegistrar` 只扫描带 `@Handler` 注解的类并注册为 Spring BeanDefinition（使用 `@Component`/`@Service` 标注的 Handler 则由 Spring 组件扫描注册为 Bean）；② `SpringHandlerConfiguration` 收集容器中所有 `IHandler` Bean，在构造 `SpringDefaultEventHandler`/`SpringTransactionEventHandler` 时通过 `addHandlers` 统一注册到 `ApplicationHandlerUtils`。
 
 ```java
 public interface IHandler<T extends IEvent> {

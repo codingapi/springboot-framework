@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.codingapi.springboot</groupId>
         <artifactId>springboot-example</artifactId>
-        <version>3.4.55</version>
+        <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <packaging>pom</packaging>
@@ -18,7 +18,6 @@
     </properties>
 
     <modules>
-        <module>example-infra-flow</module>
         <module>example-infra-jpa</module>
         <module>example-infra-security</module>
     </modules>
@@ -27,12 +26,6 @@
         <dependency>
             <groupId>com.codingapi.springboot</groupId>
             <artifactId>example-domain-user</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.codingapi.springboot</groupId>
-            <artifactId>example-domain-leave</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

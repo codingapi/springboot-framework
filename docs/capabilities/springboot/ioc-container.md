@@ -215,4 +215,4 @@ public class CacheWarmupService {
 }
 ```
 
-以上示例展示了 Spring IoC 容器在日常开发中最常用的能力。在本项目中，框架的事件系统（`IEvent`、`EventPusher`）、数据权限 SQL 拦截、工作流引擎等高级特性均构建于 IoC 容器之上，理解 IoC 是掌握整个框架的基础。
+以上示例展示了 Spring IoC 容器在日常开发中最常用的能力。在本项目中，框架的事件系统（`IEvent`、`EventPusher`）、数据权限 SQL 拦截等高级特性均构建于 IoC 容器之上，理解 IoC 是掌握整个框架的基础。

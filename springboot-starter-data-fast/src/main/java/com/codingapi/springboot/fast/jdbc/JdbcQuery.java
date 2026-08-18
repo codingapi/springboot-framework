@@ -32,7 +32,8 @@ public class JdbcQuery {
             Map<String, Object> map = new HashMap<>(columnCount);
             for (int i = 1; i <= columnCount; i++) {
                 String columnName = metaData.getColumnLabel(i);
-                map.put(CaseUtils.toCamelCase(columnName, false), rs.getObject(i));
+                // 修复：必须显式指定下划线分隔符，否则 CaseUtils 不做任何驼峰转换
+                map.put(CaseUtils.toCamelCase(columnName, false, '_'), rs.getObject(i));
             }
             return map;
         }
@@ -86,12 +87,16 @@ public class JdbcQuery {
 
 
     private long countQuery(String sql, Object... params) {
-        int paramsLength = params.length;
-        int countSqlParamsLength = sql.split("\\?").length - 1;
-        Object[] newParams = new Object[countSqlParamsLength];
-        if (paramsLength > countSqlParamsLength) {
-            System.arraycopy(params, 0, newParams, 0, countSqlParamsLength);
+        int countSqlParamsLength = sql.split("\\?", -1).length - 1;
+        Long count;
+        if (countSqlParamsLength <= 0) {
+            count = jdbcTemplate.queryForObject(sql, Long.class);
+        } else {
+            Object[] newParams = new Object[countSqlParamsLength];
+            // 修复：原实现仅在 params 数量大于占位符数量时才拷贝，数量相等时参数全部丢失导致 SQL 参数未绑定
+            System.arraycopy(params, 0, newParams, 0, Math.min(params.length, countSqlParamsLength));
+            count = jdbcTemplate.queryForObject(sql, Long.class, newParams);
         }
-        return jdbcTemplate.queryForObject(sql, Long.class, newParams);
+        return count == null ? 0L : count;
     }
 }

@@ -11,7 +11,17 @@ Please make sure to read and observe our [Code of Conduct](./CODE_OF_CONDUCT.md)
 
 ### Setting up your development environment
 
-You should have JDK 1.8 or later installed in your system.
+You should have JDK 17 or later installed in your system.
+
+The project ships with the Maven Wrapper, so there is no need to install Maven separately.
+
+```bash
+# Full build
+./mvnw clean install
+
+# Run the tests only (the same command CI uses)
+./mvnw clean test -P travis
+```
 
 ## Contributing
 
@@ -23,7 +33,13 @@ We are very glad to accept improvements for these aspects.
 
 ### GitHub workflow
 
-We use the `dev` branch as the development branch, which indicates that this is a unstable branch.
+Development mainly happens on version branches (e.g. `17.3.x`, `8.2.x`) and on the `dev` branch,
+which is an unstable branch. The `main` branch stays stable, and CI runs on pushes and pull requests
+targeting `main`, `dev`, `2.x`, `8.2.x` and `17.3.x`.
+
+The project version (e.g. `17.3.0-SNAPSHOT`, where `17` is the JDK version, `3` is the Spring Boot
+major version and the last number is the patch version) is managed with the Maven `${revision}`
+CI-Friendly mechanism, so no `pom.xml` needs to be modified during development or for a release.
 
 Here are the workflow for contributors:
 
@@ -74,4 +90,4 @@ All code should be well reviewed by one or more committers. Some principles:
 
 #### Mailing list
 
-If you have any questions or advice, please contact 1991wangliang@gmail.com.
+If you have any questions or advice, please contact wangliang@codingapi.com.

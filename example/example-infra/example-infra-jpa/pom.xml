@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.codingapi.springboot</groupId>
         <artifactId>example-infra</artifactId>
-        <version>3.4.55</version>
+        <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -21,12 +21,6 @@
         <dependency>
             <groupId>com.codingapi.springboot</groupId>
             <artifactId>example-domain-user</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.codingapi.springboot</groupId>
-            <artifactId>example-domain-leave</artifactId>
             <version>${project.version}</version>
         </dependency>
 

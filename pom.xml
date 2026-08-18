@@ -12,13 +12,15 @@
 
     <groupId>com.codingapi.springboot</groupId>
     <artifactId>springboot-parent</artifactId>
-    <version>3.4.55</version>
+    <version>${revision}</version>
 
-    <url>https://github.com/codingapi/springboot-framewrok</url>
+    <url>https://github.com/codingapi/springboot-framework</url>
     <name>springboot-parent</name>
     <description>springboot-parent project for Spring Boot</description>
 
     <properties>
+        <!-- 版本号约定：17=JDK版本，3=SpringBoot大版本，第三位为补丁版本；开发期锁定SNAPSHOT，发版时必须用 -Drevision=x.y.z 指定正式版本 -->
+        <revision>17.3.0-SNAPSHOT</revision>
         <java.version>17</java.version>
 
         <!-- maven properties-->
@@ -44,7 +46,6 @@
         <snakeyaml.version>2.2</snakeyaml.version>
         <apache-groovy.version>4.0.24</apache-groovy.version>
         <h2.version>2.3.232</h2.version>
-        <esotericsoftware.kryo.version>5.6.2</esotericsoftware.kryo.version>
         <jsqlparser.version>5.0</jsqlparser.version>
     </properties>
 
@@ -78,12 +79,6 @@
 
     <dependencyManagement>
         <dependencies>
-
-            <dependency>
-                <groupId>com.esotericsoftware</groupId>
-                <artifactId>kryo</artifactId>
-                <version>${esotericsoftware.kryo.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>com.h2database</groupId>
@@ -179,12 +174,6 @@
 
             <dependency>
                 <groupId>com.codingapi.springboot</groupId>
-                <artifactId>springboot-starter-flow</artifactId>
-                <version>${codingapi.framework.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.codingapi.springboot</groupId>
                 <artifactId>springboot-starter-data-fast</artifactId>
                 <version>${codingapi.framework.version}</version>
             </dependency>
@@ -250,6 +239,20 @@
                     </archive>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution><id>flatten</id><phase>process-resources</phase><goals><goal>flatten</goal></goals></execution>
+                    <execution><id>flatten.clean</id><phase>clean</phase><goals><goal>clean</goal></goals></execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -298,7 +301,6 @@
                 <module>springboot-starter-security</module>
                 <module>springboot-starter-data-authorization</module>
                 <module>springboot-starter-data-fast</module>
-                <module>springboot-starter-flow</module>
                 <module>example</module>
             </modules>
         </profile>
@@ -313,7 +315,6 @@
                 <module>springboot-starter-security</module>
                 <module>springboot-starter-data-authorization</module>
                 <module>springboot-starter-data-fast</module>
-                <module>springboot-starter-flow</module>
             </modules>
 
             <build>
@@ -366,7 +367,6 @@
                 <module>springboot-starter-security</module>
                 <module>springboot-starter-data-authorization</module>
                 <module>springboot-starter-data-fast</module>
-                <module>springboot-starter-flow</module>
             </modules>
 
 

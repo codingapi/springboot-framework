@@ -10,6 +10,8 @@ import com.codingapi.springboot.fast.repository.ProfileRepository;
 import com.codingapi.springboot.fast.repository.UserRepository;
 import com.codingapi.springboot.framework.dto.request.PageRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,6 +33,27 @@ public class UserRepositoryTest {
 
     @Autowired
     private ProfileRepository profileRepository;
+
+    /**
+     * 测试数据与其他测试类共享同一个 H2 库（user→profile→demo 存在外键链），
+     * 必须按外键顺序清理，且前后都要清理，避免测试类执行顺序不同导致
+     * DemoRepositoryTest/JdbcQueryTest 的 deleteAll 触发外键约束冲突。
+     */
+    @BeforeEach
+    void cleanBefore() {
+        cleanAll();
+    }
+
+    @AfterEach
+    void cleanAfter() {
+        cleanAll();
+    }
+
+    private void cleanAll() {
+        userRepository.deleteAll();
+        profileRepository.deleteAll();
+        demoRepository.deleteAll();
+    }
 
 
     @Test

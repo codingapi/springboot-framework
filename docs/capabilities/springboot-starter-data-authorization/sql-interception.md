@@ -48,17 +48,23 @@ SQL 拦截数据权限通过 JDBC 代理层实现了完全透明的权限注入�
 整个拦截链路由以下组件构成：
 
 ```
-DataSource → ConnectionProxy → PreparedStatementProxy / StatementProxy
-                                        ↓
-                               SQLRunningContext.intercept(sql)
-                                        ↓
-                               SQLInterceptor (DefaultSQLInterceptor)
-                                        ↓
-                               DataPermissionSQLEnhancer (JSqlParser)
-                                        ↓
-                               RowHandler.handler(tableName, alias)
-                                        ↓
-                               Condition (WHERE / JOIN 条件注入)
+JDBC Driver(AuthorizationJdbcDriver) → ConnectionProxy → PreparedStatementProxy / StatementProxy
+                                                                  ↓
+                                                         SQLRunningContext.intercept(sql)
+                                                                  ↓
+                                                         SQLInterceptor (DefaultSQLInterceptor)
+                                                                  ↓
+                                                         DataPermissionSQLEnhancer (JSqlParser)
+                                                                  ↓
+                                                         RowHandler.handler(tableName, alias)
+                                                                  ↓
+                                                         Condition (WHERE / JOIN 条件注入)
+```
+
+Connection 的包装实际发生在 `AuthorizationJdbcDriver.connect()`。该类是一个 JDBC Driver 装饰器，类加载时自动向 `DriverManager` 注册；建立连接时根据 JDBC URL 查找真实的数据库驱动并委托建连，再将返回的 `Connection` 包装为 `ConnectionProxy`。使用时需将数据源的 driver 指向该类（JDBC URL 保持不变）：
+
+```properties
+spring.datasource.driver-class-name=com.codingapi.springboot.authorization.jdbc.AuthorizationJdbcDriver
 ```
 
 ### 3. 核心组件说明
@@ -85,7 +91,7 @@ SQL 拦截的核心调度器（单例模式），负责：
 默认的 SQL 拦截器实现，包含三个阶段的处理：
 - `beforeHandler(sql)`：通过 `SQLUtils.isQuerySql()` 判断是否为查询语句，仅 SELECT 会被拦截
 - `postHandler(sql)`：创建 `DataPermissionSQLEnhancer`，使用 JSqlParser 解析 SQL 并通过 `RowHandler` 获取权限条件，返回增强后的 SQL
-- `afterHandler(sql, newSql, exception)`：日志记录，当配置 `showSql=true` 时输出改写后的 SQL
+- `afterHandler(sql, newSql, exception)`：日志记录，当配置 `codingapi.data-authorization.show-sql=true` 时输出改写后的 SQL
 
 #### RowHandler
 
@@ -162,9 +168,11 @@ public class ProjectRowHandler implements RowHandler {
         if ("project".equalsIgnoreCase(tableName)) {
             Condition condition = new Condition();
             // 通过 JOIN 关联成员表，只查询当前用户参与的项目
+            // 构造器参数顺序：(Type type, String tableName, String tableAlias, String onCondition)
             JoinConditionSQL joinSQL = new JoinConditionSQL(
-                "project_member pm",
                 JoinConditionSQL.Type.INNER,
+                "project_member",
+                "pm",
                 String.format("pm.project_id = %s.id AND pm.user_id = %d",
                     tableAlias, SecurityContext.getCurrentUserId())
             );
@@ -214,7 +222,7 @@ public class AuditSQLInterceptor implements SQLInterceptor {
 
 ### 内部工作原理
 
-1. **连接代理**：DataSource 返回的 `Connection` 被包装为 `ConnectionProxy`
+1. **连接代理**：`AuthorizationJdbcDriver.connect()` 将真实驱动返回的 `Connection` 包装为 `ConnectionProxy`
 2. **SQL 拦截时机**：当调用 `connection.prepareStatement(sql)` 时，`ConnectionProxy` 立即调用 `SQLRunningContext.intercept(sql)` 对 SQL 进行改写
 3. **递归解析**：`DataPermissionSQLEnhancer` 使用 JSqlParser 解析 SQL AST，深度遍历 PlainSelect、SetOperationList（UNION）、子查询、JOIN 中的子 Select，对每个涉及的表调用 `RowHandler`
 4. **条件注入**：`WhereConditionSQLHandler` 将 WHERE 条件通过 AND 拼接到原有 WHERE 子句；`JoinConditionSQLHandler` 向 FROM 子句追加 JOIN 关联

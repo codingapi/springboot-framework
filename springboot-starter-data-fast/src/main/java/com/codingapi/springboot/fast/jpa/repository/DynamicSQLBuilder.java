@@ -44,13 +44,16 @@ class DynamicSQLBuilder {
         RequestFilter requestFilter = request.getRequestFilter();
         if (requestFilter.hasFilter()) {
             List<Filter> filters = requestFilter.getFilters();
-            for (int i = 0; i < filters.size(); i++) {
-                Filter filter = filters.get(i);
-                this.buildSQL(filter, querySQL);
-                if (i != filters.size() - 1) {
-                    querySQL.append(" AND ");
+            // 逐条构建后过滤空片段（如空的 OR/AND 组合），避免拼出 "WHERE  AND " 这类非法 HQL
+            List<String> segments = new ArrayList<>();
+            for (Filter filter : filters) {
+                StringBuilder segmentSQL = new StringBuilder();
+                this.buildSQL(filter, segmentSQL);
+                if (segmentSQL.length() > 0) {
+                    segments.add(segmentSQL.toString());
                 }
             }
+            querySQL.append(String.join(" AND ", segments));
         }
 
         Sort sort = request.getSort();

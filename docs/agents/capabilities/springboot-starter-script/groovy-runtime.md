@@ -6,7 +6,7 @@ status: 已实现
 scope: 后端
 source: 框架:springboot-starter-script
 import: "com.codingapi.springboot:springboot-starter-script"
-framework_version: "3.4.54"
+framework_version: "17.3.0-SNAPSHOT"
 ---
 
 ## 解决什么问题
@@ -15,7 +15,6 @@ framework_version: "3.4.54"
 
 - **动态规则计算**：促销折扣、费率计算、风控阈值等业务规则经常变化
 - **自定义报表/导出**：不同租户或部门的报表格式差异大，用脚本比硬编码更灵活
-- **流程条件表达式**：工作流节点的条件判断、操作者匹配等需要运行时求值
 - **临时数据处理**：运维脚本、数据修复等一次性任务
 
 `groovy-runtime` 提供了嵌入式的 Groovy 脚本执行引擎，具备以下特性：

@@ -101,3 +101,57 @@ DataAuthorizationContext.getInstance().addDataAuthorizationFilter(new DataAuthor
 实现的拦截器，需要添加到DataAuthorizationContext.getInstance()中才可以使用。可以通过上述实例的手动模式添加，
 也可以通过定义DataAuthorizationFilter的@Bean方式添加，当设置为@Bean时既可以自动加入到DataAuthorizationContext.getInstance()中。
 
+## 配置项
+
+在`application.properties`中可用的配置项（配置前缀为`codingapi.data-authorization`）：
+
+```properties
+# 是否打印拦截后的SQL，便于调试数据权限条件，默认false
+codingapi.data-authorization.show-sql=false
+```
+
+| 配置项 | 对应字段 | 默认值 | 说明 |
+|--------|----------|--------|------|
+| `codingapi.data-authorization.show-sql` | `DataAuthorizationProperties.showSql` | `false` | 设置为`true`时，SQL被拦截改写后会以INFO日志打印拦截后的SQL（`newSql`），便于调试数据权限条件 |
+
+## 扩展点
+
+### 跳过特定SQL的拦截
+
+`DataAuthorizationContext`支持设置跳过拦截时的SQL处理器`SkipAuthorizationFilter`，默认为`DefaultSkipAuthorizationFilter`（原样返回SQL不做任何处理）。
+配合`SQLRunningContext.getInstance().skipDataAuthorization()`使用时，被跳过拦截的SQL会先经过`SkipAuthorizationFilter.filter(sql)`处理，
+可以通过自定义实现跳过特定SQL的拦截或对SQL进行改写，例如：
+
+```java
+DataAuthorizationContext.getInstance().setSkipAuthorizationFilter(sql -> sql);
+
+SQLRunningContext.getInstance().skipDataAuthorization(() -> {
+    // 该代码块内的SQL查询不会经过数据权限拦截
+    List<Map<String, Object>> data = jdbcTemplate.queryForList(sql);
+});
+```
+
+### 自定义处理器（@Bean自动注册）
+
+在`DataAuthorizationConfiguration`中，通过定义以下类型的`@Bean`即可自动替换框架的默认实现（均以`@Autowired(required = false)`方式注入，未提供时使用默认实现）：
+
+| Bean类型 | 默认实现 | 职责 |
+|----------|----------|------|
+| `RowHandler` | `DefaultRowHandler` | 行权限处理器，负责为查询SQL构建行级权限过滤条件 |
+| `ColumnHandler` | `DefaultColumnHandler` | 列权限处理器，负责对结果集（ResultSet）的列值进行拦截处理 |
+| `SQLInterceptor` | `DefaultSQLInterceptor` | SQL拦截器，负责SQL的前置判断（`beforeHandler`）、改写（`postHandler`）与后置处理（`afterHandler`） |
+
+示例：
+
+```java
+@Bean
+public RowHandler rowHandler() {
+    return (subSql, tableName, tableAlias) -> {
+        if (tableName.equalsIgnoreCase("t_user")) {
+            return Condition.formatCondition("%s.id > 1 ", tableAlias);
+        }
+        return null;
+    };
+}
+```
+

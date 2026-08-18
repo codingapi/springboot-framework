@@ -84,7 +84,7 @@ EventPusher.push(new MyEvent(data), true);
 # 启用事务事件模式（事件在事务提交后触发）
 codingapi.framework.event.transaction.enable=true
 
-# 异步事件线程池大小（默认值见 PropertiesContext）
+# 异步事件线程池大小（默认值 20）
 codingapi.framework.handler-thread-pool-size=20
 ```
 

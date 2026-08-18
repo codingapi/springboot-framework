@@ -6,6 +6,7 @@ import com.codingapi.springboot.script.meta.GroovyMetadata;
 import com.codingapi.springboot.script.meta.GroovyType;
 import com.codingapi.springboot.script.request.MyScriptRequest;
 import com.codingapi.springboot.script.strategy.*;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +18,14 @@ public class GroovyStrategyTest {
 
     @BeforeEach
     void beforeRun(){
+        GroovyMetadataGenerateStrategyContext.getInstance().clear();
+        GroovyTypeFixStrategyContext.getInstance().clear();
+        ScriptTypeMappingContext.getInstance().clear();
+    }
+
+    @AfterEach
+    void afterRun(){
+        // 避免自定义策略泄漏到其他测试类（跨类共享单例上下文）
         GroovyMetadataGenerateStrategyContext.getInstance().clear();
         GroovyTypeFixStrategyContext.getInstance().clear();
         ScriptTypeMappingContext.getInstance().clear();

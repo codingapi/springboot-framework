@@ -1,0 +1,22 @@
+{
+  "name": "@springboot-framework/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared utilities for pc & mobile apps",
+  "exports": {
+    ".": "./src/index.ts",
+    "./mocks/user": "./src/mocks/user.ts",
+    "./mocks/product": "./src/mocks/product.ts"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@codingapi/ui-framework": "^0.0.65",
+    "mockjs": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/mockjs": "^1.0.10",
+    "typescript": "^5.6.2"
+  }
+}

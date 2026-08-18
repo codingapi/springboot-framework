@@ -6,7 +6,7 @@ status: 已实现
 scope: 后端
 source: 框架:springboot-starter
 import: "com.codingapi.springboot:springboot-starter"
-framework_version: "3.4.54"
+framework_version: "17.3.0-SNAPSHOT"
 ---
 
 ## 解决什么问题
@@ -73,7 +73,7 @@ EventPusher.push(new MyEvent(data), true);
 # 启用事务事件模式（事件在事务提交后触发）
 codingapi.framework.event.transaction.enable=true
 
-# 异步事件线程池大小（默认值见 PropertiesContext）
+# 异步事件线程池大小（默认值 20）
 codingapi.framework.handler-thread-pool-size=20
 ```
 

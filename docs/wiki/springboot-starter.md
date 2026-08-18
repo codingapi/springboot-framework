@@ -177,11 +177,11 @@ class DomainProxyFactoryTest {
     void createEntity() {
         // 在domain对象创建的时候会触发DomainCreateEvent事件
         Demo demo = DomainProxyFactory.create(Demo.class, "test");
-        //这里将会抛出FieldChangeEvent事件
+        //这里将会抛出DomainChangeEvent事件
         demo.changeAnimalName("123");
         //这里将不会触发事件，因为name值还是test
         demo.changeName("test");
-        //这里将会抛出FieldChangeEvent事件
+        //这里将会抛出DomainChangeEvent事件
         demo.changeName("test123");
         //这里将会抛出DomainPersistEvent事件
         demo.persist();
@@ -195,12 +195,13 @@ class DomainProxyFactoryTest {
 执行的打印如下：
 ```
 2023-05-28T08:57:00.505+08:00  INFO 13748 --- [           main] c.c.s.f.handler.DemoCreateHandler        : create domain -> com.codingapi.springboot.framework.domain.Demo@4cc12db2
-2023-05-28T08:57:00.507+08:00  INFO 13748 --- [           main] c.c.s.f.h.EntityFiledChangeHandler       : field change event -> FieldChangeEvent(simpleName=Demo, timestamp=1685235420507, fieldName=animal.name, oldValue=cat, newValue=123)
-2023-05-28T08:57:00.512+08:00  INFO 13748 --- [           main] c.c.s.f.h.EntityFiledChangeHandler       : field change event -> FieldChangeEvent(simpleName=Demo, timestamp=1685235420512, fieldName=name, oldValue=test, newValue=test123)
-2023-05-28T08:57:00.513+08:00  INFO 13748 --- [           main] c.c.s.f.handler.DemoPersistEventHandler  : DomainPersistEvent handler DomainPersistEvent(entity=com.codingapi.springboot.framework.domain.Demo@4cc12db2, simpleName=Demo, timestamp=1685235420513)
+2023-05-28T08:57:00.507+08:00  INFO 13748 --- [           main] c.c.s.f.h.EntityFiledChangeHandler       : field change event -> DomainChangeEvent(super=DomainEvent(entityClass=class com.codingapi.springboot.framework.domain.Demo, timestamp=1685235420507), fieldName=animal.name, oldValue=cat, newValue=123)
+2023-05-28T08:57:00.512+08:00  INFO 13748 --- [           main] c.c.s.f.h.EntityFiledChangeHandler       : field change event -> DomainChangeEvent(super=DomainEvent(entityClass=class com.codingapi.springboot.framework.domain.Demo, timestamp=1685235420512), fieldName=name, oldValue=test, newValue=test123)
+2023-05-28T08:57:00.513+08:00  INFO 13748 --- [           main] c.c.s.f.handler.DemoPersistEventHandler  : DomainPersistEvent handler DomainEvent(entityClass=class com.codingapi.springboot.framework.domain.Demo, timestamp=1685235420513)
 2023-05-28T08:57:00.516+08:00  INFO 13748 --- [           main] c.c.s.f.handler.DemoDeleteHandler        : delete domain -> com.codingapi.springboot.framework.domain.Demo@4cc12db2
 
 ```
+以上输出与事件的`toString()`行为一致：`DomainEvent`基类包含`entityClass`、`timestamp`、`entity`三个字段，且通过`@ToString(exclude = "entity")`排除了`entity`；`DomainChangeEvent`在此基础上通过`@ToString(callSuper = true)`追加了`fieldName`、`oldValue`、`newValue`字段，因此输出形如`DomainChangeEvent(super=DomainEvent(entityClass=class ...Demo, timestamp=...), fieldName=..., oldValue=..., newValue=...)`。`DomainCreateEvent`、`DomainPersistEvent`、`DomainDeleteEvent`未重写`toString()`，输出继承自`DomainEvent`。
 
 ## 转换工具
 该框架提供了一系列的转换工具，将BeanA转换为BeanB，转换工具的使用方式如下：
@@ -210,12 +211,24 @@ class DomainProxyFactoryTest {
 ```
 
 ## 序列化能力
-该框架提供了一系列的序列化工具，将对象转换为JSON对象，序列化工具的使用方式如下：
+该框架提供了一系列的序列化工具，将对象转换为JSON对象。`toJson()`是`com.codingapi.springboot.framework.serializable.JsonSerializable`接口提供的默认方法（基于Fastjson实现），`Demo`类需要实现该接口后才可调用，如下：
+```java
+public class Demo implements JsonSerializable {
+    // ...
+}
+```
+使用方式如下：
 ```java
   Demo demo = new Demo("xiaoming");
   JSONObject json = JSONObject.parseObject(demo.toJson());
 ```
-将对象转换为Map对象，序列化工具的使用方式如下：
+将对象转换为Map对象。`toMap()`是`com.codingapi.springboot.framework.serializable.MapSerializable`接口提供的默认方法，`Demo`类需要实现该接口后才可调用，如下：
+```java
+public class Demo implements MapSerializable {
+    // ...
+}
+```
+使用方式如下：
 ```java
   Demo demo = new Demo("xiaoming");
   Map<String, Object> map = demo.toMap();
@@ -432,7 +445,7 @@ class ArithmeticTest {
 
     @Test
     void test() {
-        // 1 + 1 x 3 / 4 = 1.25
+        // ((1 + 1) x 3) / 4 = 1.5
         assertEquals(Arithmetic.one().add(1).mul(3).div(4).getDoubleValue(),1.5);
 
         // 0.1+0.2=0.3
@@ -516,3 +529,12 @@ public class FrameWorkApplication {
 ```
 
 只要当前运行环境的./jars路径下存在第三方的jar，可以通过执行`DynamicApplication.restart()`方法，动态的加载第三方的jar包，实现动态的服务能力。
+
+## 框架配置项
+
+在`application.properties`中可用的配置项如下：
+
+| 配置项 | 说明 | 默认值 |
+|--------|------|--------|
+| `codingapi.framework.handler-thread-pool-size` | 事件异步线程池大小，对应`FrameworkProperties.handlerThreadPoolSize`（绑定前缀`codingapi.framework`） | 20 |
+| `codingapi.framework.event.transaction.enable` | 开启事务事件处理器。配置为`true`时，`SpringHandlerConfiguration`通过`@ConditionalOnProperty`注册`SpringTransactionEventHandler`，否则使用默认的`SpringDefaultEventHandler` | 不开启 |

@@ -5,7 +5,7 @@
     <parent>
         <artifactId>springboot-example</artifactId>
         <groupId>com.codingapi.springboot</groupId>
-       <version>3.4.55</version>
+       <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -28,12 +28,6 @@
         <dependency>
             <groupId>com.codingapi.springboot</groupId>
             <artifactId>example-infra-jpa</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.codingapi.springboot</groupId>
-            <artifactId>example-infra-flow</artifactId>
             <version>${project.version}</version>
         </dependency>
 
