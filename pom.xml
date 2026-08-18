@@ -370,8 +370,8 @@
         </profile>
 
         <profile>
-            <!-- mvn clean deploy -P ossrh  -->
-            <!-- mvn clean deploy -P ossrh -Dgpg.passphrase="你的GPG密码" -->
+            <!-- mvn clean deploy -P ossrh  -Drevision=0.1.0 -Dgpg.passphrase="你的GPG密码" -->
+            <!-- mvn clean deploy -P ossrh  -Drevision=version -Dgpg.passphrase="你的GPG密码" -->
             <!-- gpg: signing failed: Inappropriate ioctl for device -->
             <!-- fix command : export GPG_TTY=$(tty)  -->
             <!-- https://github.com/keybase/keybase-issues/issues/2798 -->
