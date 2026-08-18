@@ -16,8 +16,6 @@ public class User {
 
     private long id;
     private UserMetric userMetric;
-    private boolean isFlowManager;
-    private User entrustOperator;
     private long createTime;
 
     public static User admin(PasswordEncoder passwordEncoder) {
@@ -39,14 +37,6 @@ public class User {
 
     public String getPassword(){
         return userMetric.getPassword();
-    }
-
-    public void removeEntrust() {
-        this.entrustOperator = null;
-    }
-
-    public void changeManager() {
-        this.isFlowManager = !this.isFlowManager;
     }
 
     public void encodePassword(PasswordEncoder passwordEncoder) {

@@ -25,8 +25,8 @@ React 18 + Ant Design 5 的组合提供了声明式 UI 编程模型与开箱即�
 ### 依赖安装
 
 ```bash
-# 在 admin-ui 或 mobile-ui 目录下
-npm install react@^18.3.1 react-dom@^18.3.1 antd@^5.x
+# 在 frontend 目录下（pnpm workspace），通过 -F 指定目标应用
+pnpm -F @springboot-framework/pc add react@^18.3.1 react-dom@^18.3.1 antd@^5.x
 ```
 
 ### 项目集成要点
@@ -35,7 +35,7 @@ npm install react@^18.3.1 react-dom@^18.3.1 antd@^5.x
 2. **主题定制**：通过 Ant Design 5 的 ConfigProvider + Design Token 体系统一管理品牌色、圆角、字号等设计变量，确保多模块视觉一致。
 3. **与后端对接**：封装统一的 HTTP 请求层，将后端 `Response.errCode / errMessage` 映射为全局提示；将 `MultiResponse.data` + `PageRequest` 参数直接绑定到 ProTable / ProList 的 `request` 属性，实现分页筛选零胶水代码。
 4. **状态管理**：轻量场景使用 React Context + useReducer；跨模块共享状态推荐使用 Zustand 或 valtio，避免过度引入 Redux。
-5. **微前端集成**：admin-ui 与 mobile-ui 均通过 Module Federation 暴露/消费远程模块，React 作为共享依赖（shared singleton）确保运行时只存在一个实例。
+5. **微前端集成**：apps/pc 与 apps/mobile 均通过 Module Federation 暴露/消费远程模块，React 作为共享依赖（shared singleton）确保运行时只存在一个实例。
 
 ### 关键 API
 

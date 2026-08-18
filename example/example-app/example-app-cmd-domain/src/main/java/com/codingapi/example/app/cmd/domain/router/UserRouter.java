@@ -13,22 +13,10 @@ public class UserRouter {
 
     public void createOrUpdate(UserCmd.UpdateRequest request) {
         if (request.hasId()) {
-            userService.update(request.getId(), request.toMetric(),request.isFlowManager());
+            userService.update(request.getId(), request.toMetric());
         } else {
-            userService.create(request.toMetric(),request.isFlowManager());
+            userService.create(request.toMetric());
         }
-    }
-
-    public void removeEntrust(long id) {
-        userService.removeEntrust(id);
-    }
-
-    public void createEntrust(UserCmd.EntrustRequest request) {
-        userService.createEntrust(request.getId(),request.getEntrustUserId());
-    }
-
-    public void changeManager(long id) {
-        userService.changeManager(id);
     }
 
     public void removeUser(long id) {

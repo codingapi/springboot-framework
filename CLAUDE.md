@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 项目概述
 
-springboot-framework 是一个基于 Spring Boot 3.3.5（Java 17）的多模块企业级开发框架，由 CodingApi 团队维护。核心定位是为领域驱动设计（DDD）与事件风暴提供开箱即用的基础设施，当前版本为 `3.4.55`。
+springboot-framework 是一个基于 Spring Boot 3.3.5（Java 17）的多模块企业级开发框架，由 CodingApi 团队维护。核心定位是为领域驱动设计（DDD）与事件风暴提供开箱即用的基础设施。当前开发版本为 `17.3.0-SNAPSHOT`，采用 Maven `${revision}` CI-Friendly 版本机制，正式发布时通过 `-Drevision=x.y.z` 指定正式版本号。版本号含义：17 = JDK 版本，3 = Spring Boot 大版本，第三位为补丁版本。
 
 **回复语言**：请使用中文进行回答。
 
@@ -19,7 +19,6 @@ springboot-framework 是一个基于 Spring Boot 3.3.5（Java 17）的多模块�
 
 # 运行单个模块的测试
 ./mvnw test -pl springboot-starter
-./mvnw test -pl springboot-starter-flow
 ./mvnw test -pl springboot-starter-security
 
 # 运行单个测试类
@@ -27,22 +26,29 @@ springboot-framework 是一个基于 Spring Boot 3.3.5（Java 17）的多模块�
 
 # 运行 example 示例应用（端口 8090，H2 文件数据库）
 ./mvnw spring-boot:run -pl example/example-server
+
+# 正式发布（通过 -Drevision 指定正式版本号，无需修改 pom）
+./mvnw clean deploy -P ossrh -Drevision=17.3.0
 ```
 
-### 前端（admin-ui / mobile-ui）
+### 前端（frontend monorepo）
 
 ```bash
-cd admin-ui     # 或 mobile-ui
-npm install
-npm run dev     # 开发模式（代理后端）
-npm run mock    # Mock 模式（前端 mock 数据）
-npm run build   # 生产构建
-npm test        # Jest 测试
+cd frontend
+pnpm install
+pnpm dev:pc        # PC 端开发模式（代理后端）
+pnpm dev:mobile    # 移动端开发模式（代理后端）
+pnpm mock:pc       # PC 端 Mock 模式（前端 mock 数据）
+pnpm mock:mobile   # 移动端 Mock 模式（前端 mock 数据）
+pnpm build:pc      # PC 端生产构建
+pnpm build:mobile  # 移动端生产构建
+pnpm test:pc       # PC 端 Jest 测试
+pnpm test:mobile   # 移动端 Jest 测试
 ```
 
-- admin-ui 基于 React 18 + Ant Design 5 + Ant Design Pro Components + Rsbuild
-- mobile-ui 基于 React 18 + Ant Design Mobile 5 + Rsbuild
-- 两者都使用 Module Federation 做微前端集成
+- apps/pc（原 admin-ui）基于 React 18 + Ant Design 5 + Ant Design Pro Components + Rsbuild
+- apps/mobile（原 mobile-ui）基于 React 18 + Ant Design Mobile 5 + Rsbuild
+- 两者由 pnpm workspace 统一管理，公共代码位于 packages/shared（@springboot-framework/shared）；均使用 Module Federation 做微前端集成
 
 ## 模块架构
 
@@ -54,7 +60,6 @@ npm test        # Jest 测试
 | `springboot-starter-security` | Spring Security + JWT 无状态认证 / Redis 有状态认证，加解密支持 |
 | `springboot-starter-data-fast` | JPA 增强：FastRepository 支持动态过滤查询、HQL 构建、SearchRequest |
 | `springboot-starter-data-authorization` | 数据权限：通过 JDBC Connection/Statement 代理拦截 SQL，透明注入权限条件 |
-| `springboot-starter-flow` | 工作流引擎：流程定义、节点流转、审批、委托、会签、数据快照、事件通知 |
 | `springboot-starter-script` | Groovy 脚本引擎：运行时编译、LRU 缓存、热更新，提供 REST API |
 
 ### 自动配置注册
@@ -68,7 +73,6 @@ springboot-starter (核心，无外部依赖)
     ├── springboot-starter-security      (依赖 starter)
     ├── springboot-starter-data-fast     (依赖 starter)
     ├── springboot-starter-data-authorization (依赖 starter + JSqlParser)
-    ├── springboot-starter-flow          (依赖 starter)
     └── springboot-starter-script        (依赖 starter + Groovy)
 ```
 
@@ -112,10 +116,6 @@ Page<User> page = userRepository.findAll(request);
 
 `ConnectionProxy` → `PreparedStatementProxy` / `StatementProxy` 代理链，在 SQL 执行前通过 `SQLRunningContext.intercept(sql)` 注入权限条件，实现透明的行级数据过滤。使用 JSqlParser 解析和改写 SQL。
 
-### 工作流引擎
-
-核心流程：`FlowWork`（流程定义）→ `FlowNode`（节点）→ `FlowRecord`（审批记录）→ `FlowBackup`（版本快照）。发起流程通过 `FlowStartService.startFlow()` 驱动，审批通过 `FlowNodeService` 逐节点流转，每个状态变更推送 `FlowApprovalEvent`。
-
 ## DDD 示例项目结构（example 模块）
 
 ```
@@ -127,11 +127,9 @@ example/
     example-app-cmd-domain — 命令服务（CQRS Command 侧，领域编排）
     example-app-cmd-meta   — 元数据命令服务
   example-domain          — 领域层
-    example-domain-leave  — 请假领域（Entity、Repository、Service）
     example-domain-user   — 用户领域（Entity、Repository、Service、Event、Gateway）
   example-infra           — 基础设施层
     example-infra-jpa     — JPA 持久化实现
-    example-infra-flow    — 工作流集成
     example-infra-security — 安全配置
 ```
 
@@ -153,7 +151,7 @@ codingapi.framework.handler-thread-pool-size=20  # 事件异步线程池大小
 
 ## 关键依赖版本
 
-见根 `pom.xml` 的 `<properties>` 区块。主要版本：Groovy 4.0.24、JSqlParser 5.0、Fastjson 2.0.53、JJWT 0.12.6、H2 2.3.232、Kryo 5.6.2。
+见根 `pom.xml` 的 `<properties>` 区块。主要版本：Groovy 4.0.24、JSqlParser 5.0、Fastjson 2.0.53、JJWT 0.12.6、H2 2.3.232。
 
 
 <!-- PKR-START -->

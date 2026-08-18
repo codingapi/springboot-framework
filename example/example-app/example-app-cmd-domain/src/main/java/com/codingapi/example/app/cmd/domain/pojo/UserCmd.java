@@ -18,19 +18,8 @@ public class UserCmd {
             return new UserMetric(name, username, password);
         }
 
-        private boolean flowManager;
-
         public boolean hasId(){
             return id > 0;
         }
-    }
-
-
-    @Setter
-    @Getter
-    public static class EntrustRequest{
-        private long id;
-        private long entrustUserId;
-
     }
 }

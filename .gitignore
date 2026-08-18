@@ -49,3 +49,6 @@ build/
 
 ### serena ###
 .serena
+
+### flatten-maven-plugin ###
+.flattened-pom.xml

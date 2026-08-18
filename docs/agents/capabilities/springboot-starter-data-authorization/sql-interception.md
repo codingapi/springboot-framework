@@ -6,7 +6,7 @@ status: 已实现
 scope: 后端
 source: 框架:springboot-starter-data-authorization
 import: "com.codingapi.springboot:springboot-starter-data-authorization"
-framework_version: "3.4.54"
+framework_version: "17.3.0-SNAPSHOT"
 ---
 
 ## 解决什么问题

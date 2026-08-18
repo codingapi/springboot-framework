@@ -20,7 +20,7 @@ framework_version: 2.2.7
 - **TypeScript 友好**：完整类型推导，减少手写类型注解的负担
 - **性能优化内置**：提供 `createSelector`（Reselect）用于派生数据的记忆化计算，避免不必要的重渲染
 
-适用于需要全局状态共享、复杂业务状态流转、多组件协同的前端应用，如 admin-ui 的管理后台、mobile-ui 的业务流程等场景。
+适用于需要全局状态共享、复杂业务状态流转、多组件协同的前端应用，如 apps/pc（原 admin-ui）的管理后台、apps/mobile（原 mobile-ui）的业务流程等场景。
 
 ## 如何使用
 
@@ -305,4 +305,4 @@ function UserList() {
 }
 ```
 
-此模式在 admin-ui 和 mobile-ui 中广泛使用，配合 Module Federation 微前端架构，各子应用可独立管理自身状态切片，同时通过共享 Store 实现跨应用状态同步。
+此模式在 apps/pc 和 apps/mobile 中广泛使用，配合 Module Federation 微前端架构，各子应用可独立管理自身状态切片，同时通过共享 Store 实现跨应用状态同步。

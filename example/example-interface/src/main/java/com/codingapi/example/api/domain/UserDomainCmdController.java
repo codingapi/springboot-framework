@@ -23,24 +23,6 @@ public class UserDomainCmdController {
         return Response.buildSuccess();
     }
 
-    @PostMapping("/removeEntrust")
-    public Response removeEntrust(@RequestBody IdRequest request) {
-        userRouter.removeEntrust(request.getLongId());
-        return Response.buildSuccess();
-    }
-
-    @PostMapping("/entrust")
-    public Response entrust(@RequestBody UserCmd.EntrustRequest request) {
-        userRouter.createEntrust(request);
-        return Response.buildSuccess();
-    }
-
-    @PostMapping("/changeManager")
-    public Response changeManager(@RequestBody IdRequest request) {
-        userRouter.changeManager(request.getLongId());
-        return Response.buildSuccess();
-    }
-
     @PostMapping("/remove")
     public Response remove(@RequestBody IdRequest request) {
         userRouter.removeUser(request.getLongId());

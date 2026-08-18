@@ -21,12 +21,6 @@ public class UserEntity {
 
     private String password;
 
-    private boolean isFlowManager;
-
-    private long entrustOperatorId;
-
-    private String entrustOperatorName;
-
     private long createTime;
 
     public UserMetric getUserMetric() {
