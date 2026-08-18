@@ -96,8 +96,15 @@ public class SearchRequest implements ICurrentOffset {
     }
 
 
+    /**
+     * Base64 解码，非法的 Base64 输入返回 null（由调用方按未消费参数处理），避免抛出 IllegalArgumentException
+     */
     private String decode(String value) {
-        return new String(Base64.getDecoder().decode(value));
+        try {
+            return new String(Base64.getDecoder().decode(value));
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
 
@@ -186,7 +193,7 @@ public class SearchRequest implements ICurrentOffset {
         String params = request.getParameter("params");
         if (StringUtils.hasLength(params)) {
             params = decode(params);
-            if (JSON.isValid(params)) {
+            if (params != null && JSON.isValid(params)) {
                 removeKeys.add("params");
                 return JSON.parseArray(params, ParamOperation.class);
             }
@@ -205,7 +212,7 @@ public class SearchRequest implements ICurrentOffset {
         String sort = request.getParameter("sort");
         if (StringUtils.hasLength(sort)) {
             sort = decode(sort);
-            if (JSON.isValid(sort)) {
+            if (sort != null && JSON.isValid(sort)) {
                 removeKeys.add("sort");
                 JSONObject jsonObject = JSON.parseObject(sort);
                 for (String key : jsonObject.keySet()) {
@@ -223,7 +230,7 @@ public class SearchRequest implements ICurrentOffset {
         String filter = request.getParameter("filter");
         if (StringUtils.hasLength(filter)) {
             filter = decode(filter);
-            if (JSON.isValid(filter)) {
+            if (filter != null && JSON.isValid(filter)) {
                 removeKeys.add("filter");
                 JSONObject jsonObject = JSON.parseObject(filter);
                 if(jsonObject!=null) {

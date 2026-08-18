@@ -56,6 +56,87 @@ public class DemoRepositoryTest {
         assertEquals(1, page.getTotalElements());
     }
 
+    /**
+     * findAll 遇到 LIKE 等复杂条件时自动切换 HQL 查询，而非被 Example 降级为等值匹配
+     */
+    @Test
+    void findAllWithLikeFilterSwitchesToHql() {
+        demoRepository.deleteAll();
+        Demo demo1 = new Demo();
+        demo1.setName("123");
+        demoRepository.save(demo1);
+
+        Demo demo2 = new Demo();
+        demo2.setName("456");
+        demoRepository.save(demo2);
+
+        PageRequest request = new PageRequest();
+        request.setCurrent(0);
+        request.setPageSize(10);
+        request.addFilter("name", Relation.LIKE, "%2%");
+
+        Page<Demo> page = demoRepository.findAll(request);
+        assertEquals(1, page.getTotalElements());
+        assertEquals("123", page.getContent().get(0).getName());
+    }
+
+    /**
+     * findAll 遇到范围条件时自动切换 HQL 查询
+     */
+    @Test
+    void findAllWithGreaterThanFilterSwitchesToHql() {
+        demoRepository.deleteAll();
+        Demo demo1 = new Demo();
+        demo1.setName("a");
+        demo1.setSort(10);
+        demoRepository.save(demo1);
+
+        Demo demo2 = new Demo();
+        demo2.setName("b");
+        demo2.setSort(20);
+        demoRepository.save(demo2);
+
+        Demo demo3 = new Demo();
+        demo3.setName("c");
+        demo3.setSort(30);
+        demoRepository.save(demo3);
+
+        PageRequest request = new PageRequest();
+        request.setCurrent(0);
+        request.setPageSize(10);
+        request.addFilter("sort", Relation.GREATER_THAN, 15);
+
+        Page<Demo> page = demoRepository.findAll(request);
+        assertEquals(2, page.getTotalElements());
+    }
+
+    /**
+     * findAll 遇到 OR 组合条件时自动切换 HQL 查询
+     */
+    @Test
+    void findAllWithOrFiltersSwitchesToHql() {
+        demoRepository.deleteAll();
+        Demo demo1 = new Demo();
+        demo1.setName("123");
+        demoRepository.save(demo1);
+
+        Demo demo2 = new Demo();
+        demo2.setName("456");
+        demoRepository.save(demo2);
+
+        Demo demo3 = new Demo();
+        demo3.setName("789");
+        demoRepository.save(demo3);
+
+        PageRequest request = new PageRequest();
+        request.setCurrent(0);
+        request.setPageSize(10);
+        request.orFilters(Filter.as("name", "123"), Filter.as("name", "456"));
+
+        Page<Demo> page = demoRepository.findAll(request);
+        assertEquals(2, page.getTotalElements());
+    }
+
     @Test
     void pageRequestIsNull() {
         demoRepository.deleteAll();

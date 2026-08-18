@@ -18,9 +18,14 @@ public interface FastRepository<T, ID> extends JpaRepository<T, ID>, JpaSpecific
 
     default Page<T> findAll(PageRequest request) {
         if (request.hasFilter()) {
-            Class<T> clazz = getEntityClass();
-            ExampleBuilder exampleBuilder = new ExampleBuilder(request, clazz);
-            return findAll(exampleBuilder.getExample(), request);
+            // 全部为简单等值条件时走 Example 查询；包含 LIKE/范围/IN/OR 等复杂条件时自动切换 HQL 动态查询，
+            // 避免非等值条件被 Example 静默降级为等值匹配
+            if (request.getRequestFilter().isAllEqualFilter()) {
+                Class<T> clazz = getEntityClass();
+                ExampleBuilder exampleBuilder = new ExampleBuilder(request, clazz);
+                return findAll(exampleBuilder.getExample(), request);
+            }
+            return pageRequest(request);
         }
         return findAll((org.springframework.data.domain.PageRequest) request);
     }
