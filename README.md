@@ -1,7 +1,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/codingapi/springboot-framework/blob/main/LICENSE)
 [![Maven Central](https://img.shields.io/maven-central/v/com.codingapi.springboot/springboot-starter.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.codingapi.springboot%22%20AND%20a:%22springboot-starter%22)
-[![Build Status](https://app.travis-ci.com/codingapi/springboot-framework.svg?branch=main)](https://app.travis-ci.com/codingapi/springboot-framework)
-[![codecov](https://codecov.io/gh/codingapi/springboot-framework/branch/main/graph/badge.svg?token=Gl9LjJV6y4)](https://codecov.io/gh/codingapi/springboot-framework)
+[![Build](https://img.shields.io/github/actions/workflow/status/codingapi/springboot-framework/ci.yml?label=Build&logo=github)](https://github.com/codingapi/springboot-framework/actions)
+[![Codecov](https://codecov.io/gh/codingapi/springboot-framework/branch/17.3.x/graph/badge.svg)](https://codecov.io/gh/codingapi/springboot-framework)
 
 # springboot-framework | Springboot领域驱动开发
 
