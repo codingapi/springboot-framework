@@ -100,7 +100,7 @@ class ColumnHandlerContextTest {
         when(columnHandler.getClob(any(), anyInt(), anyString(), anyString(), any())).thenReturn(clob);
         Array array = mock(Array.class);
         when(columnHandler.getArray(any(), anyInt(), anyString(), anyString(), any())).thenReturn(array);
-        URL url = mock(URL.class);
+        URL url = toUrl();
         when(columnHandler.getURL(any(), anyInt(), anyString(), anyString(), any())).thenReturn(url);
         NClob nClob = mock(NClob.class);
         when(columnHandler.getNClob(any(), anyInt(), anyString(), anyString(), any())).thenReturn(nClob);
@@ -150,4 +150,16 @@ class ColumnHandlerContextTest {
         verify(columnHandler).getInt(state, 1, "t", "c", 0);
         verify(columnHandler).getObject(state, 1, "t", "c", "v", String.class);
     }
+
+    /**
+     * JDK 8 兼容: 构造真实 URL 代替 mock(URL.class)(final 类在 Mockito 4 默认不可 mock)
+     */
+    private static URL toUrl() {
+        try {
+            return new URL("http://mock.local/");
+        } catch (java.net.MalformedURLException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
 }

@@ -57,7 +57,7 @@ class DefaultColumnHandlerTest {
         Blob blob = mock(Blob.class);
         Clob clob = mock(Clob.class);
         Array array = mock(Array.class);
-        URL url = mock(URL.class);
+        URL url = toUrl();
         NClob nClob = mock(NClob.class);
         SQLXML sqlxml = mock(SQLXML.class);
         RowId rowId = mock(RowId.class);
@@ -137,4 +137,16 @@ class DefaultColumnHandlerTest {
         assertEquals("MASKED-obj", handler.getObject(state, 1, "t_user", "name", "obj"));
         assertEquals("MASKED-typed", handler.getObject(state, 1, "t_user", "name", "typed", String.class));
     }
+
+    /**
+     * JDK 8 兼容: 构造真实 URL 代替 mock(URL.class)(final 类在 Mockito 4 默认不可 mock)
+     */
+    private static URL toUrl() {
+        try {
+            return new URL("http://mock.local/");
+        } catch (java.net.MalformedURLException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
 }

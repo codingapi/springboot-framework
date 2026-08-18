@@ -321,7 +321,7 @@ class ResultSetProxyTest {
         NClob nClob = mock(NClob.class);
         SQLXML sqlxml = mock(SQLXML.class);
         RowId rowId = mock(RowId.class);
-        URL url = mock(URL.class);
+        URL url = toUrl();
         Date date = new Date(1000L);
 
         when(resultSet.getRef(1)).thenReturn(ref);
@@ -360,7 +360,7 @@ class ResultSetProxyTest {
         NClob nClob = mock(NClob.class);
         SQLXML sqlxml = mock(SQLXML.class);
         RowId rowId = mock(RowId.class);
-        URL url = mock(URL.class);
+        URL url = toUrl();
         Date date = new Date(1000L);
 
         when(resultSet.getRef(1)).thenReturn(ref);
@@ -633,4 +633,16 @@ class ResultSetProxyTest {
         ResultSetProxy interceptProxy = new ResultSetProxy(resultSet, interceptState);
         assertEquals("plain", interceptProxy.getString(1));
     }
+
+    /**
+     * JDK 8 兼容: 构造真实 URL 代替 mock(URL.class)(final 类在 Mockito 4 默认不可 mock)
+     */
+    private static URL toUrl() {
+        try {
+            return new URL("http://mock.local/");
+        } catch (java.net.MalformedURLException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
 }

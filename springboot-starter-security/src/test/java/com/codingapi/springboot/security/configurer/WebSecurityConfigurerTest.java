@@ -23,7 +23,7 @@ class WebSecurityConfigurerTest {
         WebSecurity webSecurity = Mockito.mock(WebSecurity.class, Mockito.RETURNS_DEEP_STUBS);
         configurer.customize(webSecurity);
 
-        verify(webSecurity.ignoring()).requestMatchers("/open/**", "/public/**");
+        verify(webSecurity.ignoring()).antMatchers("/open/**", "/public/**");
     }
 
 }

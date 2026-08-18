@@ -4,7 +4,7 @@ import com.codingapi.springboot.security.dto.request.LoginRequest;
 import com.codingapi.springboot.security.dto.request.LoginRequestContext;
 import com.codingapi.springboot.security.gateway.TokenGateway;
 import com.codingapi.springboot.security.properties.CodingApiSecurityProperties;
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

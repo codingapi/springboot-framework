@@ -18,7 +18,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Savepoint;
-import java.sql.ShardingKey;
 import java.sql.SQLXML;
 import java.sql.Statement;
 import java.sql.Struct;
@@ -252,22 +251,8 @@ class ConnectionProxyTest {
         verify(connection).setNetworkTimeout(executor, 100);
         assertEquals(100, proxy.getNetworkTimeout());
 
-        proxy.beginRequest();
-        verify(connection).beginRequest();
-        proxy.endRequest();
-        verify(connection).endRequest();
-
-        ShardingKey shardingKey = mock(ShardingKey.class);
-        ShardingKey superShardingKey = mock(ShardingKey.class);
-        when(connection.setShardingKeyIfValid(shardingKey, superShardingKey, 1)).thenReturn(true);
-        when(connection.setShardingKeyIfValid(shardingKey, 1)).thenReturn(true);
-
-        assertTrue(proxy.setShardingKeyIfValid(shardingKey, superShardingKey, 1));
-        assertTrue(proxy.setShardingKeyIfValid(shardingKey, 1));
-        proxy.setShardingKey(shardingKey, superShardingKey);
-        verify(connection).setShardingKey(shardingKey, superShardingKey);
-        proxy.setShardingKey(shardingKey);
-        verify(connection).setShardingKey(shardingKey);
+        // 注：beginRequest/endRequest/setShardingKey* 为 JDK 9+ 的 JDBC 方法，
+        // 8.2.x（JDK 8）的 ConnectionProxy 未覆写，故不做委托验证
     }
 
     @Test

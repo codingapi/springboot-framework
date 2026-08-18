@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.codingapi.springboot.security.gateway.Token;
 import com.codingapi.springboot.security.gateway.TokenGateway;
 import com.codingapi.springboot.security.properties.CodingApiSecurityProperties;
-import jakarta.servlet.FilterChain;
+import javax.servlet.FilterChain;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
