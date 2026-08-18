@@ -84,6 +84,22 @@ public class RequestFilter {
         return !this.filterMap.isEmpty();
     }
 
+    /**
+     * 判断所有过滤条件是否均为简单等值匹配（无 OR/AND 组合、无 LIKE/范围/IN 等复杂条件），
+     * 用于决定走 Example 查询还是 HQL 动态查询
+     */
+    public boolean isAllEqualFilter() {
+        if (filterList.isEmpty()) {
+            return false;
+        }
+        for (Filter filter : filterList) {
+            if (!filter.isEqual()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     public Filter getFilter(String name) {
         return this.filterMap.get(name);
