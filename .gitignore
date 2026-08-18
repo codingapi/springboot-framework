@@ -39,3 +39,4 @@ build/
 .codegraph/
 
 .flattened-pom.xml
+test.db*

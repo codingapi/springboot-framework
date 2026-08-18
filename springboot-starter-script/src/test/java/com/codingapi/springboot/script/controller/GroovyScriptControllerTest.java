@@ -42,6 +42,8 @@ class GroovyScriptControllerTest {
         GroovyScriptCacheContext.getInstance().clear();
         TempGroovyScriptContext.getInstance().clear();
         GroovyScriptRuntimeContext.getInstance().clearCache();
+        // 防御其他测试类泄漏的全局元数据策略
+        com.codingapi.springboot.script.strategy.GroovyMetadataGenerateStrategyContext.getInstance().clear();
     }
 
     @AfterEach
