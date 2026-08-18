@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, dev, 2.x, 8.2.x ]
+  pull_request:
+    branches: [ main, dev, 2.x, 8.2.x ]
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 11
+          cache: maven
+
+      - name: Compile
+        run: ./mvnw clean compile -P travis
+
+      - name: Test
+        run: ./mvnw test -P travis
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: springboot-starter/target/site/jacoco/jacoco.xml,springboot-starter-script/target/site/jacoco/jacoco.xml,springboot-starter-security/target/site/jacoco/jacoco.xml,springboot-starter-data-fast/target/site/jacoco/jacoco.xml,springboot-starter-data-authorization/target/site/jacoco/jacoco.xml
+          fail_ci_if_error: true
+          verbose: true
+
+      - name: Install
+        run: ./mvnw install -P travis -DskipTests

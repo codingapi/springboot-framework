@@ -4,24 +4,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 项目概览
 
-`com.codingapi.springboot:springboot-parent`（v2.10.55）是一套基于 Spring Boot 2.7.18 + JDK 8 的**领域驱动设计（DDD）落地框架**，围绕"事件风暴 + 流程编排 + 数据权限 + 动态脚本"四大支柱提供可插拔的 starter 模块。框架代码本身即是规范，业务方按需引入 starter 即可获得对应能力，无需重复造轮子。
+`com.codingapi.springboot:springboot-parent`（当前开发版本 `8.2.0-SNAPSHOT`）是一套基于 Spring Boot 2.7.18 + JDK 8 的**领域驱动设计（DDD）落地框架**，围绕"事件风暴 + 数据权限 + 动态脚本"三大支柱提供可插拔的 starter 模块。框架代码本身即是规范，业务方按需引入 starter 即可获得对应能力，无需重复造轮子。
 
-详细能力文档见 `docs/capabilities/index.md`（共 9 篇），开发规范见 `docs/conventions/index.md`。
+版本采用 CI-Friendly 机制：pom 版本声明为 `${revision}`，开发期锁定 `8.2.0-SNAPSHOT`（版本号含义：8 = JDK 8，2 = Spring Boot 2.x 大版本，第三位为补丁版本），正式发布时通过 `-Drevision=x.y.z` 指定正式版本号，无需修改 pom。
+
+详细能力文档见 `docs/capabilities/index.md`（共 8 篇），开发规范见 `docs/conventions/index.md`。
 
 ## 模块拓扑与依赖
 
-多模块项目，根 `pom.xml` 中只激活 `springboot-starter-data-authorization`；完整 6 模块通过 `dev` / `travis` / `ossrh` profile 激活。模块依赖**严格单向**，不得反向依赖：
+多模块项目，根 `pom.xml` 中只激活 `springboot-starter-data-authorization`；完整 5 模块通过 `dev` / `travis` / `ossrh` profile 激活。模块依赖**严格单向**，不得反向依赖：
 
 ```
 springboot-starter          (基础 DDD 框架：领域事件、代理、异常、加密、HTTP 代理)
         │
         ├─→ springboot-starter-script          (Groovy 脚本引擎，依赖 starter)
         │       │
-        │       ├─→ springboot-starter-data-fast   (JPA 增强 + 脚本映射，依赖 starter+script)
-        │       │       │
-        │       │       └─→ springboot-starter-flow (流程引擎，依赖 starter+script)
-        │       │
-        │       └─→ springboot-starter-flow (同上路径)
+        │       └─→ springboot-starter-data-fast   (JPA 增强 + 脚本映射，依赖 starter+script)
         │
         └─→ springboot-starter-security        (JWT/Redis 双模 Token 网关，依赖 starter)
         │
@@ -51,21 +49,21 @@ springboot-starter          (基础 DDD 框架：领域事件、代理、异常�
 
 # 单模块测试
 ./mvnw -pl springboot-starter -am test
-./mvnw -pl springboot-starter-flow -Dtest=FlowServiceTest test
+./mvnw -pl springboot-starter-script -Dtest=GroovyScriptRuntimeContextTest test
 
 # 部署 profile
 ./mvnw clean test -P travis               # 启用 jacoco + clover
-./mvnw clean deploy -P ossrh              # 推送到 Sonatype（需 GPG）
+
+# 正式发布（通过 -Drevision 指定正式版本号，无需修改 pom）
+./mvnw clean deploy -P ossrh -Drevision=8.2.0   # 推送到 Sonatype（需 GPG）
 ```
 
-测试基于 H2 内存库（`com.h2database:h2` scope=test），无需外部 DB；流程引擎测试会触发 `DemoChangeLogHandler` 的大量并发日志输出（H2 关闭时的告警是正常的）。
+测试基于 H2 内存库（`com.h2database:h2` scope=test），无需外部 DB（H2 关闭时的告警是正常的）。
 
 ## 文档与知识库
 
 - `README.md` — 模块列表、maven 依赖、版本说明
-- `event.md` — 流程引擎事件触发机制（CREATE/SAVE/PASS/REJECT/RECALL/DELETE/VOIDED/BACK/FINISH/TRANSFER/URGE/STOP）
-- `springboot-starter-flow/README.md` — 流程引擎功能矩阵（流程管理/设计/能力 9 大类）
-- `docs/capabilities/` — 9 篇核心能力文档（DDD 事件、领域代理、Groovy 脚本、JDBC 代理、SQL 拦截器、JPA 仓储、流程 Schema、Token 网关、Spring Boot 基础）
+- `docs/capabilities/` — 8 篇核心能力文档（DDD 事件、领域代理、Groovy 脚本、JDBC 代理、SQL 拦截器、JPA 仓储、Token 网关、Spring Boot 基础）
 - `docs/conventions/` — 项目开发规范（待补全）
 - Wiki：https://github.com/codingapi/springboot-framework/wiki
 

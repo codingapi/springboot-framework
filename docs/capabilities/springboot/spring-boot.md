@@ -43,7 +43,6 @@ com.codingapi.springboot.framework.AutoConfiguration
 com.codingapi.springboot.script.AutoConfiguration
 com.codingapi.springboot.security.AutoConfiguration
 com.codingapi.springboot.fast.DataFastConfiguration
-com.codingapi.springboot.flow.FlowConfiguration
 com.codingapi.springboot.authorization.DataAuthorizationConfiguration
 ```
 
@@ -72,8 +71,7 @@ com.codingapi.springboot.authorization.DataAuthorizationConfiguration
 spring-boot-starter (基础)
     ├── springboot-starter (DDD 领域框架)
     │   ├── springboot-starter-script
-    │   │   ├── springboot-starter-data-fast
-    │   │   └── springboot-starter-flow
+    │   │   └── springboot-starter-data-fast
     │   ├── springboot-starter-security
     │   └── springboot-starter-data-authorization
 ```

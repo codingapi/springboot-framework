@@ -8,26 +8,26 @@ maven install
     <dependency>
         <groupId>com.codingapi.springboot</groupId>
         <artifactId>springboot-starter</artifactId>
-        <version>${last.version}</version>
+        <version>8.2.0</version>
     </dependency>
     
      <!-- 快速数据呈现框架 -->
      <dependency>
         <groupId>com.codingapi.springboot</groupId>
         <artifactId>springboot-starter-data-fast</artifactId>
-        <version>${last.version}</version>
+        <version>8.2.0</version>
     </dependency>   
     
      <!-- security&jwt权限框架 -->
      <dependency>
         <groupId>com.codingapi.springboot</groupId>
-        <artifactId>springboot-starter-security-jwt</artifactId>
-        <version>${last.version}</version>
+        <artifactId>springboot-starter-security</artifactId>
+        <version>8.2.0</version>
      </dependency>
 ```
 
 
 [springboot-starter](./springboot-starter)  
-[springboot-starter-security-jwt](./springboot-starter-security-jwt)  
+[springboot-starter-security](./springboot-starter-security)  
 [springboot-starter-data-fast](./springboot-starter-data-fast.md)  
  

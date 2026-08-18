@@ -12,10 +12,9 @@
 | [springboot-starter-data-authorization/jdbc-proxy](./springboot-starter-data-authorization/jdbc-proxy.md) | springboot-starter-data-authorization | 自定义 JDBC 驱动代理（Connection/Statement/PreparedStatement/CallableStatement/Result... | 后端 | 项目自有 |
 | [springboot-starter-data-authorization/sql-interceptor](./springboot-starter-data-authorization/sql-interceptor.md) | springboot-starter-data-authorization | 基于 JSqlParser 的 SQL 拦截器，对 SELECT 语句递归改写以注入行级数据权限条件 | 后端 | 项目自有 |
 | [springboot-starter-data-fast/jpa-repository](./springboot-starter-data-fast/jpa-repository.md) | springboot-starter-data-fast | 增强版 JPA Repository 接口体系，支持动态 SQL、原生查询、Map 返回、分页、排序与高级搜索 | 后端 | 项目自有 |
-| [springboot-starter-flow/schema-reader](./springboot-starter-flow/schema-reader.md) | springboot-starter-flow | 流程设计图（Schema）解析器，将 JSON 描述的节点/边转换为 FlowNode/FlowRelation 内存模型 | 后端 | 项目自有 |
 | [springboot-starter-script/groovy-script-runtime](./springboot-starter-script/groovy-script-runtime.md) | springboot-starter-script | 基于 Groovy 的动态脚本运行时，支持函数调用与脚本执行两类入口、LRU 缓存、临时脚本落盘与启动恢复 | 后端 | 项目自有 |
 | [springboot-starter-security/token-gateway](./springboot-starter-security/token-gateway.md) | springboot-starter-security | 无状态 JWT 与有状态 Redis 双模 Token 网关，统一 Token 生命周期、过期/续期与权限注入 | 后端 | 项目自有 |
 
 ---
 
-**统计**: 共 9 篇 — 已实现 9 / 计划中 0 / 已废弃 0
+**统计**: 共 8 篇 — 已实现 8 / 计划中 0 / 已废弃 0
