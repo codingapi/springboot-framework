@@ -31,13 +31,13 @@ content_hash: f34034d99b0e32ca0ef9f72cf98793135fd15e335facfaca548ab3caa9e14cc1
 4. **无数据操作成功返回**：使用 `Response.buildSuccess()`。
 5. **失败返回**：使用 `Response.buildFailure(errCode, errMessage)`。
 6. **禁止直接返回 Map 或自定义 DTO 作为 API 响应**。
-7. **响应 JSON 结构固定包含**：`success`（boolean）、`errCode`（string）、`errMessage`（string）、`data`（业务数据，仅 SingleResponse/MultiResponse 携带）。
+7. **响应 JSON 结构固定包含**：`success`（boolean）、`errCode`（string）、`errMessage`（string）、`data`（业务数据，仅 SingleResponse/MultiResponse/MapResponse 携带，`Response` 本身不携带）。
 
 ### 补充说明
 
 - `SingleResponse.empty()` 用于查询可能为空但语义上成功的场景，返回 `{ success: true, data: null }`。
 - `MultiResponse.of(collection, total)` 用于手动分页场景；`MultiResponse.of(page)` 自动从 Spring Data Page 提取 total。
-- `MultiResponse.empty()` 返回空列表 `{ success: true, data: { total: 0, list: [] } }`。
+- `MultiResponse.empty()` 返回空结果 `{ success: true, data: { total: 0, list: null } }`（注意：内部 `Content.list` 未初始化，序列化结果为 `null` 而非空数组；如需空数组语义，可改用 `MultiResponse.of(Collections.emptyList())`）。
 - 异常处理应通过全局异常处理器统一转换为 `Response.buildFailure(...)`，Controller 内不要 try-catch 后自行拼装错误响应。
 
 ## 使用实例

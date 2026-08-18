@@ -22,7 +22,7 @@ frontend/
 
 ## 环境要求 | Prerequisites
 
-- Node.js >= 20
+- Node.js >= 18.12（pnpm 10 要求），推荐 Node.js 20+
 - pnpm >= 10（仓库已通过 `packageManager` 字段锁定 pnpm@10.32.1）
 
 ## 快速开始 | Getting Started

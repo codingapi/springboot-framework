@@ -16,6 +16,13 @@ The examples below use an official release version (e.g. `17.3.0`; see the Maven
         <version>17.3.0</version>
     </dependency>
     
+     <!-- 脚本引擎框架 -->
+     <dependency>
+        <groupId>com.codingapi.springboot</groupId>
+        <artifactId>springboot-starter-script</artifactId>
+        <version>17.3.0</version>
+     </dependency>
+    
      <!-- 快速数据呈现框架 -->
      <dependency>
         <groupId>com.codingapi.springboot</groupId>
@@ -39,7 +46,8 @@ The examples below use an official release version (e.g. `17.3.0`; see the Maven
 ```
 
 
-[springboot-starter](./springboot-starter)  
-[springboot-starter-security](./springboot-starter-security)  
+[springboot-starter](./springboot-starter.md)  
+[springboot-starter-script](./springboot-starter-script.md)  
+[springboot-starter-security](./springboot-starter-security.md)  
 [springboot-starter-data-fast](./springboot-starter-data-fast.md)   
 [springboot-starter-data-authorization](./springboot-starter-data-authorization.md)   

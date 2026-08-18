@@ -106,7 +106,7 @@ MapResponse       // Map 响应
 ```java
 PageRequest request = PageRequest.of(0, 20);
 request.addFilter("name", "张三");
-request.addFilter("age", Relation.GT, 18);
+request.addFilter("age", Relation.GREATER_THAN, 18);
 Page<User> page = userRepository.findAll(request);
 ```
 

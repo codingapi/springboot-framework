@@ -26,20 +26,23 @@ framework_version: "17.3.0-SNAPSHOT"
 所有业务校验失败、参数非法、权限不足等场景，必须抛出 `LocaleMessageException`，禁止直接使用 `RuntimeException`、`IllegalArgumentException` 等原生异常。
 
 ```java
-// 构造方式一：errCode + 默认消息（推荐用于简单场景）
-throw new LocaleMessageException("user.not.found", "用户不存在");
-
-// 构造方式二：仅 errCode，消息从 message.properties 自动解析
+// 构造方式一（推荐）：仅 errCode，消息从 message.properties 中按当前 Locale 自动解析
 throw new LocaleMessageException("user.not.found");
 
-// 构造方式三：带占位符参数，对应 properties 中 user.duplicate=用户名 {0} 已存在
+// 构造方式二：errCode + 占位符参数，对应 properties 中 user.duplicate=用户名 {0} 已存在
 throw LocaleMessageException.of("user.duplicate", username);
+
+// 构造方式三：errCode + 自定义消息，第二个参数直接使用、不走国际化（仅用于无需 i18n 的场景）
+throw new LocaleMessageException("custom.error", "自定义错误描述");
 ```
 
-### 规则 2：异常消息采用 message key + 默认消息格式
+**需要国际化消息时，必须使用单参构造 `LocaleMessageException(errCode)` 或静态工厂 `LocaleMessageException.of(errCode, args)`**，消息由框架从 message.properties 中按请求 Locale 解析。
+
+### 规则 2：异常消息通过 message key 国际化解析
 
 - 第一个参数为 **errCode**（即 i18n message key），用于前端匹配和国际化查找。
-- 第二个参数为 **默认消息**（defaultMessage），当 message.properties 中未配置该 key 时作为兜底展示。
+- 需要国际化的消息使用单参构造 `LocaleMessageException(errCode)` 或 `LocaleMessageException.of(errCode, args)`，消息从 message.properties 中按当前请求 Locale 解析。
+- 两参构造 `LocaleMessageException(errCode, errMessage)` 的第二个参数是**直接使用、不走国际化的自定义消息**：该构造函数直接以 errMessage 构造异常，**不会查询 MessageSource / message.properties，也不随 Locale 切换**，并非 "key 未配置时的兜底默认消息"。仅在确定无需国际化的场景使用。
 - errCode 命名采用 **点分隔小写** 格式，如 `order.status.invalid`、`auth.token.expired`。
 
 ### 规则 3：依赖 ExceptionConfiguration 全局拦截
@@ -83,7 +86,8 @@ public class UserService {
 
     public User getUser(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new LocaleMessageException("user.not.found", "用户不存在"));
+                // 单参构造：消息从 messages.properties 中按 Locale 自动解析
+                .orElseThrow(() -> new LocaleMessageException("user.not.found"));
     }
 
     public void createUser(String username) {
@@ -147,6 +151,6 @@ public ResponseEntity<?> getUser(@PathVariable Long id) {
     }
 }
 
-// 错误 4：硬编码中文消息，不支持国际化
+// 错误 4：硬编码中文消息，两参构造的第二个参数直接使用、不走国际化
 throw new LocaleMessageException("err001", "这个用户找不到啊");
 ```

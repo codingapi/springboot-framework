@@ -29,12 +29,13 @@ content_hash: 0369b4e3ba19d679dea69480cf4c5f6e4687c186c515e56883c004884711ab83
    - 禁止直接使用 Spring Data 原生 `org.springframework.data.domain.PageRequest` 来承载业务过滤条件。
 
 2. **动态过滤条件通过 `PageRequest.addFilter()` 方法添加**
-   - 简单等值过滤：`pageRequest.addFilter("name", "张三")`，默认使用 `Relation.EQ`。
-   - 指定关系过滤：`pageRequest.addFilter("age", Relation.GT, 18)`。
+   - 简单等值过滤：`pageRequest.addFilter("name", "张三")`，默认使用 `Relation.EQUAL`。
+   - 指定关系过滤：`pageRequest.addFilter("age", Relation.GREATER_THAN, 18)`。
    - 组合过滤：使用 `andFilter(Filter...)` 和 `orFilters(Filter...)` 构建复杂条件。
 
 3. **过滤关系使用 `Relation` 枚举**
-   - 可用关系包括：`EQ`、`GT`、`LT`、`GTE`、`LTE`、`LIKE`、`IN` 等。
+   - 枚举位于 `com.codingapi.springboot.framework.dto.request.Relation`，使用前必须显式导入（`import com.codingapi.springboot.framework.dto.request.Relation;`）。
+   - 可用关系共 14 种：`EQUAL`、`NOT_EQUAL`、`LIKE`、`LEFT_LIKE`、`RIGHT_LIKE`、`BETWEEN`、`IN`、`NOT_IN`、`IS_NULL`、`IS_NOT_NULL`、`GREATER_THAN`、`LESS_THAN`、`GREATER_THAN_EQUAL`、`LESS_THAN_EQUAL`。
    - 所有过滤关系必须通过枚举表达，禁止硬编码字符串比较运算符。
 
 4. **Repository 接口需继承 `FastRepository`**
@@ -66,6 +67,9 @@ content_hash: 0369b4e3ba19d679dea69480cf4c5f6e4687c186c515e56883c004884711ab83
 ### ✅ 正确示例
 
 ```java
+import com.codingapi.springboot.framework.dto.request.Relation;
+import com.codingapi.springboot.framework.dto.response.MultiResponse;
+
 // 1. Repository 继承 FastRepository
 public interface UserRepository extends FastRepository<User, Long> {
 }
@@ -85,7 +89,7 @@ public class UserQueryService {
             request.addFilter("name", Relation.LIKE, name);
         }
         if (minAge != null) {
-            request.addFilter("age", Relation.GTE, minAge);
+            request.addFilter("age", Relation.GREATER_THAN_EQUAL, minAge);
         }
 
         // 委托 FastRepository 自动构建查询
@@ -101,7 +105,7 @@ public MultiResponse<User> list(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "20") int size) {
     Page<User> result = userQueryService.listUsers(name, minAge, page, size);
-    return ResponseUtils.toMultiResponse(result);
+    return MultiResponse.of(result);
 }
 ```
 
