@@ -56,6 +56,17 @@ public class SQLExecuteState {
         return aliasContext.getColumnName(tableName, columnName);
     }
 
+    /**
+     * 联合解析结果集列的（表名, 字段名）到物理表字段（含派生表归因，见 Issue #212）
+     *
+     * @param tableName 元数据表名（或别名）
+     * @param columnName 元数据字段名（或别名）
+     * @return [物理表名, 物理字段名]
+     */
+    public String[] resolveTableNameAndColumn(String tableName, String columnName) {
+        return aliasContext.resolveTableNameAndColumn(tableName, columnName);
+    }
+
     public String getSql() {
         if (intercept) {
             return newSql;
