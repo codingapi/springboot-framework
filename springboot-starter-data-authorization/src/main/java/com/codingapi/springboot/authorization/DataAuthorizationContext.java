@@ -63,8 +63,9 @@ public class DataAuthorizationContext {
      */
     public <T> T columnAuthorization(SQLExecuteState interceptState, String tableName, String columnName, T value) {
         if (interceptState != null && interceptState.hasIntercept()) {
-            String realTableName = interceptState.getTableName(tableName);
-            String realColumnName = interceptState.getColumnName(tableName,columnName);
+            String[] resolved = interceptState.resolveTableNameAndColumn(tableName, columnName);
+            String realTableName = resolved[0];
+            String realColumnName = resolved[1];
 
             for (DataAuthorizationFilter filter : filters) {
                 if (filter.supportColumnAuthorization(realTableName, realColumnName, value)) {
