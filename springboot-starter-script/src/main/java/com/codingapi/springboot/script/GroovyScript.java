@@ -1,5 +1,8 @@
 package com.codingapi.springboot.script;
 
+import com.codingapi.springboot.framework.event.EventPusher;
+import com.codingapi.springboot.script.cache.GroovyScriptCacheEvent;
+import com.codingapi.springboot.script.cache.GroovyScriptCacheSyncContext;
 import com.codingapi.springboot.script.temp.TempGroovyScriptContext;
 import com.codingapi.springboot.script.meta.GroovyMetadata;
 import com.codingapi.springboot.script.repository.GroovyScriptRepositoryContext;
@@ -161,21 +164,33 @@ public class GroovyScript {
 
     /**
      * 保存对象
+     * 保存后发布缓存变更事件，其他实例收到事件后失效本地缓存
      */
     public void save() {
         this.updateTime = System.currentTimeMillis();
         GroovyScriptRepositoryContext.getInstance().save(this);
         // 清理临时数据
         TempGroovyScriptContext.getInstance().remove(this.getKey());
+        // 发布脚本缓存变更事件：跨进程广播由 SPI 实现，进程内监听由框架事件分发
+        GroovyScriptCacheEvent event = GroovyScriptCacheEvent.save(this.getKey(),
+                GroovyScriptCacheSyncContext.getInstance().getId(), this.updateTime);
+        GroovyScriptCacheSyncContext.getInstance().publish(event);
+        EventPusher.push(event);
     }
 
     /**
      * 删除对象
+     * 删除后发布缓存变更事件，其他实例收到事件后失效本地缓存
      */
     public void remove() {
         GroovyScriptRepositoryContext.getInstance().delete(this.getKey());
         // 清理临时数据
         TempGroovyScriptContext.getInstance().remove(this.getKey());
+        // 发布脚本缓存变更事件：跨进程广播由 SPI 实现，进程内监听由框架事件分发
+        GroovyScriptCacheEvent event = GroovyScriptCacheEvent.remove(this.getKey(),
+                GroovyScriptCacheSyncContext.getInstance().getId());
+        GroovyScriptCacheSyncContext.getInstance().publish(event);
+        EventPusher.push(event);
     }
 
     /**
