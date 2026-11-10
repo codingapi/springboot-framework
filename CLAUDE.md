@@ -119,6 +119,92 @@ codingapi.data-authorization.show-sql=false      # 打印拦截后的 SQL
 
 见根 `pom.xml` 的 `<properties>` 区块。主要版本：Groovy 4.0.24、JSqlParser 5.0、Fastjson 2.0.53、JJWT 0.12.6、H2 1.4.200。
 
+## 开发规范
+
+本仓库同时维护 **8.x（JDK 8 / Spring Boot 2.7.x / `javax.*`，当前分支）与 17.x（JDK 17 / Spring Boot 3.x / `jakarta.*`）两条版本线**，各自独立交付，没有 `dev` 分支。8.x 分支不包含 `example/` 与 `frontend/`。
+
+### GitHub Issue 标准处理流程
+
+处理任何来自 GitHub 的 issue 时，必须遵循 [docs/conventions/workflow/github-issue.md](./docs/conventions/workflow/github-issue.md)：
+
+1. **定位阶段**可只读代码分析，不必创建 worktree；
+2. **先确认影响版本线**（8.x / 17.x / 两者），定位完成后先回复 issue，说明根因、影响版本与处理方案；
+3. **实际改代码必须使用 git worktree + 特性分支**，基线按版本线选择：8.x 用 `8.2.x`，17.x 用 `17.3.x`；不得在主工作区直接修改；
+4. 修复需测试先行，并使用对应版本线的 JDK 完成本地编译/测试验证；双版本 issue 必须两条线分别验证；
+5. 完成后**只推送该 issue 的特性分支到 GitHub**：提交内容、推送与 issue 关联均以该特性分支为准，**不合并版本分支**；是否合并由人工决定，任务完成时仅提示分支与 PR 链接（PR 目标为 `8.2.x` 或 `17.3.x`）；
+6. 提交信息使用 `Closes #<issue编号>` 关联 issue；仅当进入默认分支 `main` 时自动关闭，未自动关闭时需用户确认后手动关闭（8.x 合并到 `8.2.x` 不会自动关闭）；
+7. **特性分支推送到 GitHub 后再回复 issue**，说明修复内容、验证结果与推送分支/提交；未推送前不得发布完成回复（定位回复不受此限）。
+
+### 基本规范
+
+- **与用户沟通及编写文档时，所有内容必须使用中文表述**
+- **在每次修改代码以后，要执行本地化的编译验证确保代码没有错误**
+- Java 代码遵循 Spring Boot 规范
+- 8.x 使用 `javax.*` 与 JDK 8，17.x 使用 `jakarta.*` 与 JDK 17，两条线的修复不得直接 cherry-pick，必须做命名空间与代际适配
+- 编码规范见 `docs/conventions`：方法命名 [java/naming-convention](./docs/conventions/java/naming-convention.md)、测试设计 [java/test-design-convention](./docs/conventions/java/test-design-convention.md)、领域建模 [java/domain-modeling-convention](./docs/conventions/java/domain-modeling-convention.md)、静态方法 [java/static-method-convention](./docs/conventions/java/static-method-convention.md)
+
+### 测试规范
+
+本项目后端采用 JUnit 5 进行单元测试。两条版本线测试命令一致，但需切换到对应 JDK（8.x 用 JDK 8，17.x 用 JDK 17）。
+
+**测试文件位置：**
+
+- 测试文件放在各模块 `src/test/java/` 目录下，包路径与源码保持一致
+- 测试文件命名：`*Test.java`
+
+**测试编写流程：**
+
+1. **Red（红灯）**：先编写测试用例，明确预期行为
+2. **Green（绿灯）**：编写最小代码使测试通过
+3. **Refactor（重构）**：优化代码结构，运行全部测试确认不回归
+
+**测试用例设计要求：**
+
+- 每个测试用例需明确：测试目标、前置条件、执行步骤、期望断言
+- 优先测试核心业务逻辑（DTO、事件系统、动态查询、SQL 拦截、脚本引擎等）
+- 测试应该有确定性结果，避免依赖外部状态
+
+**测试命令：**
+
+```bash
+# 运行所有测试（与 CI 一致）
+./mvnw clean test -P travis
+
+# 运行特定模块的测试
+./mvnw test -pl springboot-starter
+
+# 运行特定的测试类
+./mvnw test -pl springboot-starter -Dtest=ResponseTest
+```
+
+**示例（基于 springboot-starter 的响应封装测试，8.x 版本线）：**
+
+```java
+package com.codingapi.springboot.framework.dto;
+
+import com.codingapi.springboot.framework.dto.response.SingleResponse;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class SingleResponseTest {
+
+    @Test
+    void should_wrap_single_data() {
+        // given
+        String data = "hello";
+
+        // when
+        SingleResponse<String> response = SingleResponse.of(data);
+
+        // then
+        assertTrue(response.isSuccess());
+        assertEquals(data, response.getData());
+    }
+}
+```
+
 <!-- PKR-START -->
 ## PKR 知识查阅（编码前必须）
 

@@ -40,3 +40,6 @@ build/
 
 .flattened-pom.xml
 test.db*
+
+### worktrees ###
+.worktrees/
