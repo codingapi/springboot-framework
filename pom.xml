@@ -49,7 +49,7 @@
         <snakeyaml.version>2.2</snakeyaml.version>
         <apache-groovy.version>4.0.24</apache-groovy.version>
         <h2.version>1.4.200</h2.version>
-        <jsqlparser.version>5.0</jsqlparser.version>
+        <jsqlparser.version>4.9</jsqlparser.version>
     </properties>
 
     <dependencies>

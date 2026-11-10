@@ -363,18 +363,11 @@ class PreparedStatementProxyTest {
     }
 
     @Test
-    void testEnquoteAndWrapperDelegates() throws SQLException {
-        when(preparedStatement.enquoteLiteral("v")).thenReturn("'v'");
-        when(preparedStatement.enquoteIdentifier("id", true)).thenReturn("\"id\"");
-        when(preparedStatement.isSimpleIdentifier("id")).thenReturn(true);
-        when(preparedStatement.enquoteNCharLiteral("v")).thenReturn("N'v'");
+    void testWrapperDelegates() throws SQLException {
+        // enquoteLiteral/enquoteIdentifier/isSimpleIdentifier/enquoteNCharLiteral 为 JDK 9+ 的 Statement API，8.x 版本线不覆盖
         when(preparedStatement.unwrap(String.class)).thenReturn("unwrapped");
         when(preparedStatement.isWrapperFor(String.class)).thenReturn(true);
 
-        assertEquals("'v'", proxy.enquoteLiteral("v"));
-        assertEquals("\"id\"", proxy.enquoteIdentifier("id", true));
-        assertTrue(proxy.isSimpleIdentifier("id"));
-        assertEquals("N'v'", proxy.enquoteNCharLiteral("v"));
         assertEquals("unwrapped", proxy.unwrap(String.class));
         assertTrue(proxy.isWrapperFor(String.class));
     }
