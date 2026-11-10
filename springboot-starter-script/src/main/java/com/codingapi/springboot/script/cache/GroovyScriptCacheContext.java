@@ -6,30 +6,29 @@ import com.codingapi.springboot.script.repository.GroovyScriptRepositoryContext;
 import com.codingapi.springboot.script.temp.TempGroovyScriptContext;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 脚本数据缓存上下文管理对象
+ * 缓存容器支持替换（如 Redis 共享缓存实现），默认为进程内 LRU 缓存
  */
 public class GroovyScriptCacheContext {
 
     @Getter
     private final static GroovyScriptCacheContext instance = new GroovyScriptCacheContext();
 
-    private final Map<String, GroovyScript> cache;
-
-    private final static int MAX_CACHE_SIZE = 10 * 1024;
+    private GroovyScriptCache cache = new DefaultGroovyScriptCache();
 
     private GroovyScriptCacheContext() {
-        this.cache = new LinkedHashMap<String,GroovyScript>(16, 0.75f, true) {
-            @Override
-            protected boolean removeEldestEntry(Map.Entry<String, GroovyScript> eldest) {
-                return size() > MAX_CACHE_SIZE;
-            }
-        };
+    }
+
+    /**
+     * 替换缓存容器实现，入参为 null 时回退为默认 LRU 实现
+     *
+     * @param cache 缓存容器实现
+     */
+    public void setCache(GroovyScriptCache cache) {
+        this.cache = (cache != null) ? cache : new DefaultGroovyScriptCache();
     }
 
     /**
@@ -38,9 +37,7 @@ public class GroovyScriptCacheContext {
      * @param script 脚本对象
      */
     public void save(GroovyScript script) {
-        if (script != null) {
-            this.cache.put(script.getKey(), script);
-        }
+        this.cache.save(script);
     }
 
 
@@ -50,29 +47,24 @@ public class GroovyScriptCacheContext {
      * @param script 脚本对象
      */
     public void cache(GroovyScript script) {
-        if (script != null) {
-            this.cache.put(script.getKey(), script);
-        }
+        this.cache.save(script);
     }
 
 
     /**
-     * 删除脚本
+     * 移除脚本缓存（仅作用于本地缓存容器）
      *
      * @param key 脚本key
      */
     public void remove(String key) {
-        GroovyScript groovyScript = this.getGroovyScript(key);
-        if (groovyScript != null) {
-            this.cache.remove(key);
-        }
+        this.cache.remove(key);
     }
 
     /**
      * 获取脚本keys
      */
     public List<String> keys() {
-        return new ArrayList<>(this.cache.keySet());
+        return this.cache.keys();
     }
 
     /**
@@ -81,7 +73,7 @@ public class GroovyScriptCacheContext {
      * @return 总数量
      */
     public int count() {
-        return this.cache.size();
+        return this.cache.count();
     }
 
     /**
@@ -98,7 +90,7 @@ public class GroovyScriptCacheContext {
             if (groovyScript == null) {
                 groovyScript = GroovyScriptRepositoryContext.getInstance().get(key);
                 if (groovyScript != null) {
-                    this.cache.put(key, groovyScript);
+                    this.cache.save(groovyScript);
                 }
             }
         }
@@ -142,7 +134,7 @@ public class GroovyScriptCacheContext {
         if (scriptList != null) {
             for (GroovyScript script : scriptList) {
                 if (script != null) {
-                    this.cache.put(script.getKey(), script);
+                    this.cache.save(script);
                 }
             }
         }
@@ -154,8 +146,11 @@ public class GroovyScriptCacheContext {
      * @param cache 是否缓存
      */
     public void compileAll(boolean cache) {
-        for (GroovyScript script : this.cache.values()) {
-            script.compile(cache);
+        for (String key : this.cache.keys()) {
+            GroovyScript groovyScript = this.cache.get(key);
+            if (groovyScript != null) {
+                groovyScript.compile(cache);
+            }
         }
     }
 
