@@ -53,3 +53,6 @@ build/
 ### flatten-maven-plugin ###
 .flattened-pom.xml
 test.db*
+
+### worktrees ###
+.worktrees/
