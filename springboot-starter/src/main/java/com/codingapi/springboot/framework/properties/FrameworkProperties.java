@@ -13,9 +13,26 @@ public class FrameworkProperties {
     private int handlerThreadPoolSize = 20;
 
     /**
-     * 同一 trace 内的异步事件是否按推送顺序串行执行，默认 true。
-     * 关闭后退回原有的完全并发行为，适合无顺序依赖且追求极致吞吐的场景。
+     * 事件相关配置。
      */
-    private boolean eventAsyncOrdered = true;
+    private Event event = new Event();
+
+    @Setter
+    @Getter
+    public static class Event {
+
+        private Async async = new Async();
+    }
+
+    @Setter
+    @Getter
+    public static class Async {
+
+        /**
+         * 同一 trace 内的异步事件是否按推送顺序串行执行，默认 true。
+         * 关闭后退回完全并发行为，适合无顺序依赖且追求极致吞吐的场景。
+         */
+        private boolean ordered = true;
+    }
 
 }

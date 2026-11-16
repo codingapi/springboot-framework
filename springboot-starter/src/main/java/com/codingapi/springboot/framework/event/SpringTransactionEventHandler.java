@@ -36,7 +36,7 @@ public class SpringTransactionEventHandler extends SpringEventHandler implements
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = true)
-    public synchronized void dispatch(DomainEvent domainEvent) {
+    public void dispatch(DomainEvent domainEvent) {
         String traceId = domainEvent.getTraceId();
 
         if (domainEvent.isSync()) {
