@@ -1,5 +1,8 @@
 package com.codingapi.springboot.framework.event;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Even推送助手
  */
@@ -23,5 +26,18 @@ public class EventPusher {
      */
     public static void push(IEvent event, boolean hasLoopEvent) {
         DomainEventContext.getInstance().push(event, hasLoopEvent);
+    }
+
+    /**
+     * 批量推送：整批事件共享同一 trace，异步事件将严格按参数顺序串行执行。
+     * 批内同类事件不会被误判为循环调用。
+     *
+     * @param events 事件（按期望的执行顺序排列）
+     */
+    public static void push(IEvent... events) {
+        if (events == null || events.length == 0) {
+            return;
+        }
+        DomainEventContext.getInstance().pushBatch(Arrays.asList(events));
     }
 }
