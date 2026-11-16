@@ -19,7 +19,10 @@ public class SpringTransactionEventHandler extends SpringEventHandler implements
     /**
      * 异步多线程的KEY
      */
-    private  ExecutorService executorService;
+
+    private ExecutorService executorService ;
+
+    private OrderedAsyncDispatcher dispatcher;
 
     public SpringTransactionEventHandler(List<IHandler> handlers) {
         ApplicationHandlerUtils.getInstance().addHandlers(handlers);
@@ -29,6 +32,7 @@ public class SpringTransactionEventHandler extends SpringEventHandler implements
     @Override
     public void afterPropertiesSet() throws Exception {
         executorService = Executors.newFixedThreadPool(PropertiesContext.getInstance().getHandlerThreadPoolSize());
+        dispatcher = new OrderedAsyncDispatcher(executorService, PropertiesContext.getInstance().isEventAsyncOrdered());
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = true)
@@ -43,7 +47,7 @@ public class SpringTransactionEventHandler extends SpringEventHandler implements
                 EventTraceContext.getInstance().checkEventState();
             }
         } else {
-            executorService.execute(() -> {
+            dispatcher.execute(traceId, () -> {
                 try {
                     EventTraceContext.getInstance().createEventKey(traceId);
                     ApplicationHandlerUtils.getInstance().handler(domainEvent.getEvent());
