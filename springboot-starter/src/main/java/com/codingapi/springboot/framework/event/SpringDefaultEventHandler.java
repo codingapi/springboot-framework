@@ -20,6 +20,8 @@ public class SpringDefaultEventHandler extends SpringEventHandler implements Ini
      */
     private ExecutorService executorService;
 
+    private OrderedAsyncDispatcher dispatcher;
+
     public SpringDefaultEventHandler(List<IHandler> handlers) {
         ApplicationHandlerUtils.getInstance().addHandlers(handlers);
         log.info("SpringDefaultEventHandler Success Initial.");
@@ -28,6 +30,7 @@ public class SpringDefaultEventHandler extends SpringEventHandler implements Ini
     @Override
     public void afterPropertiesSet() throws Exception {
         executorService = Executors.newFixedThreadPool(PropertiesContext.getInstance().getHandlerThreadPoolSize());
+        dispatcher = new OrderedAsyncDispatcher(executorService, PropertiesContext.getInstance().isEventAsyncOrdered());
     }
 
     @EventListener
@@ -42,7 +45,7 @@ public class SpringDefaultEventHandler extends SpringEventHandler implements Ini
                 EventTraceContext.getInstance().checkEventState();
             }
         } else {
-            executorService.execute(() -> {
+            dispatcher.execute(traceId, () -> {
                 try {
                     EventTraceContext.getInstance().createEventKey(traceId);
                     ApplicationHandlerUtils.getInstance().handler(domainEvent.getEvent());

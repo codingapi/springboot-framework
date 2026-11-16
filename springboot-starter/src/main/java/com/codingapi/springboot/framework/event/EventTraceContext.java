@@ -4,6 +4,7 @@ import com.codingapi.springboot.framework.utils.RandomGenerator;
 import lombok.Getter;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 事件跟踪上下文
@@ -13,14 +14,14 @@ public class EventTraceContext {
     @Getter
     private final static EventTraceContext instance = new EventTraceContext();
 
-    // trace key
-    private final Set<String> traceKeys = new HashSet<>();
+    // trace key，异步事件由线程池线程并发读写，需使用并发容器
+    private final Set<String> traceKeys = ConcurrentHashMap.newKeySet();
 
     // thread local
     private final ThreadLocal<String> threadLocal = new ThreadLocal<>();
 
-    // event listenerKey state
-    private final Map<String, Boolean> eventKeyState = new HashMap<>();
+    // event listenerKey state，异步事件由线程池线程并发读写，需使用并发容器
+    private final Map<String, Boolean> eventKeyState = new ConcurrentHashMap<>();
 
 
     private EventTraceContext() {

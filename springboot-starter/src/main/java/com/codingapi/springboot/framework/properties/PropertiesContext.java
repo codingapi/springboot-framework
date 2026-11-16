@@ -19,4 +19,8 @@ public class PropertiesContext {
         return properties.getHandlerThreadPoolSize();
     }
 
+    public boolean isEventAsyncOrdered() {
+        return properties.isEventAsyncOrdered();
+    }
+
 }
