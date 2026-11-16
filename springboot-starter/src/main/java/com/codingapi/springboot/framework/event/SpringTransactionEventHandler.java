@@ -1,61 +1,19 @@
 package com.codingapi.springboot.framework.event;
 
-import com.codingapi.springboot.framework.properties.PropertiesContext;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.transaction.event.TransactionPhase;
-import org.springframework.transaction.event.TransactionalEventListener;
-
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
- * handler订阅的Spring触发器,在异步的情况下可配置多线程。
+ * 事务事件处理器的兼容别名。
+ *
+ * @deprecated 自事件分发统一为「事务提交后按 trace 串行」后，本类与
+ * {@link SpringDefaultEventHandler} 行为完全一致。保留仅用于兼容按类名注入的既有代码；
+ * 新代码请直接使用 {@link SpringDefaultEventHandler}。配置
+ * {@code codingapi.framework.event.transaction.enable} 不再产生行为差异。
  */
-@Slf4j
-public class SpringTransactionEventHandler extends SpringEventHandler implements InitializingBean {
-
-    /**
-     * 异步多线程的KEY
-     */
-
-    private ExecutorService executorService ;
-
-    private OrderedAsyncDispatcher dispatcher;
+@Deprecated
+public class SpringTransactionEventHandler extends SpringDefaultEventHandler {
 
     public SpringTransactionEventHandler(List<IHandler> handlers) {
-        ApplicationHandlerUtils.getInstance().addHandlers(handlers);
-        log.info("SpringTransactionEventHandler Success Initial.");
+        super(handlers);
     }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        executorService = Executors.newFixedThreadPool(PropertiesContext.getInstance().getHandlerThreadPoolSize());
-        dispatcher = new OrderedAsyncDispatcher(executorService, PropertiesContext.getInstance().isEventAsyncOrdered());
-    }
-
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = true)
-    public void dispatch(DomainEvent domainEvent) {
-        String traceId = domainEvent.getTraceId();
-
-        if (domainEvent.isSync()) {
-            try {
-                EventTraceContext.getInstance().createEventKey(traceId);
-                ApplicationHandlerUtils.getInstance().handler(domainEvent.getEvent());
-            } finally {
-                EventTraceContext.getInstance().checkEventState();
-            }
-        } else {
-            dispatcher.execute(traceId, () -> {
-                try {
-                    EventTraceContext.getInstance().createEventKey(traceId);
-                    ApplicationHandlerUtils.getInstance().handler(domainEvent.getEvent());
-                } finally {
-                    EventTraceContext.getInstance().checkEventState();
-                }
-            });
-        }
-    }
-
 }

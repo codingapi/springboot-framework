@@ -18,6 +18,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -100,5 +101,19 @@ class EventOrderE2ETest {
         assertEquals(java.util.Arrays.asList("start-B1", "end-B1", "start-B2", "end-B2"), ORDER,
                 "批量内同类事件应串行执行，且不被误判为循环调用");
         assertEquals(1, new HashSet<>(TRACES).size(), "批量事件应共享同一 traceId");
+    }
+
+    @Test
+    void rollback_transaction_does_not_dispatch_events() throws Exception {
+        LATCH = new CountDownLatch(1);
+        TransactionTemplate template = new TransactionTemplate(transactionManager);
+        assertThrows(IllegalStateException.class, () -> template.executeWithoutResult(status -> {
+            EventPusher.push(new OrderedAsyncEvent("R"));
+            throw new IllegalStateException("force rollback");
+        }));
+
+        // AFTER_COMMIT 语义：事务回滚不应触发事件，等待客户端确认无 handler 执行
+        Thread.sleep(300);
+        assertTrue(ORDER.isEmpty(), "事务回滚后事件不应被分发");
     }
 }
