@@ -537,4 +537,5 @@ public class FrameWorkApplication {
 | 配置项 | 说明 | 默认值 |
 |--------|------|--------|
 | `codingapi.framework.handler-thread-pool-size` | 事件异步线程池大小，对应`FrameworkProperties.handlerThreadPoolSize`（绑定前缀`codingapi.framework`） | 20 |
-| `codingapi.framework.event.transaction.enable` | 开启事务事件处理器。配置为`true`时，`SpringHandlerConfiguration`通过`@ConditionalOnProperty`注册`SpringTransactionEventHandler`，否则使用默认的`SpringDefaultEventHandler` | 不开启 |
+| `codingapi.framework.event.async.ordered` | 同一 trace 内的异步事件是否按推送顺序串行执行；关闭后退回去完全并发行为 | true |
+| `codingapi.framework.event.transaction.enable` | 兼容旧配置，现已不再产生行为差异（事件默认即为事务提交后分发）。`SpringTransactionEventHandler` 已废弃，仅为按类名注入的兼容别名 | 不开启 |
