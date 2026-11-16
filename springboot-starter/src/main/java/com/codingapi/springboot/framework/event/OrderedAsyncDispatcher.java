@@ -1,5 +1,6 @@
 package com.codingapi.springboot.framework.event;
 
+import com.codingapi.springboot.framework.exception.EventLoopException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CompletableFuture;
@@ -37,8 +38,9 @@ class OrderedAsyncDispatcher {
      * @param task 任务
      */
     void execute(String key, Runnable task) {
+        Runnable wrapped = wrap(task);
         if (!ordered) {
-            executorService.execute(task);
+            executorService.execute(wrapped);
             return;
         }
 
@@ -46,18 +48,21 @@ class OrderedAsyncDispatcher {
             CompletableFuture<Void> base = previous == null
                     ? CompletableFuture.completedFuture(null)
                     : previous.handle((ignored, throwable) -> null);
-            return base.thenRunAsync(wrap(task), executorService);
+            return base.thenRunAsync(wrapped, executorService);
         });
         tail.whenComplete((ignored, throwable) -> tails.remove(key, tail));
     }
 
     /**
-     * 捕获任务异常，保证异常不会中断同一 trace 的后续任务。
+     * 统一两条路径的异常语义：捕获任务异常并记录，保证异常不会静默消失，
+     * 也不会中断同一 trace 的后续任务。循环事件异常额外给出明确日志。
      */
     private Runnable wrap(Runnable task) {
         return () -> {
             try {
                 task.run();
+            } catch (EventLoopException e) {
+                log.error("event loop detected while executing async event task", e);
             } catch (Exception e) {
                 log.error("async event task execute error", e);
             }

@@ -20,7 +20,7 @@ public class PropertiesContext {
     }
 
     public boolean isEventAsyncOrdered() {
-        return properties.isEventAsyncOrdered();
+        return properties.getEvent().getAsync().isOrdered();
     }
 
 }
