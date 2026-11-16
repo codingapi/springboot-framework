@@ -9,7 +9,6 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -35,9 +34,6 @@ public class EventTraceContext {
      */
     private static final Object TRANSACTION_TRACE_KEY = new Object();
 
-    // trace key，异步事件由线程池线程并发读写，需使用并发容器
-    private final Set<String> traceKeys = ConcurrentHashMap.newKeySet();
-
     // 当前线程正在执行的事件 key（traceId#random）
     private final ThreadLocal<String> threadLocal = new ThreadLocal<>();
 
@@ -54,9 +50,7 @@ public class EventTraceContext {
      * 创建一个全新的 traceId。
      */
     String newTrace() {
-        String traceId = UUID.randomUUID().toString().replaceAll("-", "");
-        traceKeys.add(traceId);
-        return traceId;
+        return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
     /**
@@ -71,7 +65,11 @@ public class EventTraceContext {
         if (batchTrace != null) {
             return batchTrace;
         }
-        if (TransactionSynchronizationManager.isActualTransactionActive()) {
+        // registerSynchronization 要求 synchronization 处于激活状态；
+        // isActualTransactionActive() 为 true 但 synchronization 未激活时（如
+        // SYNCHRONIZATION_NEVER 的事务管理器）必须回退，否则抛 IllegalStateException 打断业务。
+        if (TransactionSynchronizationManager.isActualTransactionActive()
+                && TransactionSynchronizationManager.isSynchronizationActive()) {
             return getOrCreateTransactionTrace();
         }
         return newTrace();
@@ -87,12 +85,18 @@ public class EventTraceContext {
         }
         String traceId = newTrace();
         TransactionSynchronizationManager.bindResource(TRANSACTION_TRACE_KEY, traceId);
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
-            @Override
-            public void afterCompletion(int status) {
-                TransactionSynchronizationManager.unbindResourceIfPossible(TRANSACTION_TRACE_KEY);
-            }
-        });
+        try {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCompletion(int status) {
+                    TransactionSynchronizationManager.unbindResourceIfPossible(TRANSACTION_TRACE_KEY);
+                }
+            });
+        } catch (IllegalStateException e) {
+            // 防御：synchronization 在并发边界失效时解绑资源并回退为独立 trace，绝不影响业务操作
+            TransactionSynchronizationManager.unbindResourceIfPossible(TRANSACTION_TRACE_KEY);
+            return newTrace();
+        }
         return traceId;
     }
 
@@ -143,7 +147,6 @@ public class EventTraceContext {
             Boolean state = eventKeyState.get(eventKey);
             if (state != null && !state) {
                 String traceId = eventKey.split("#")[0];
-                traceKeys.remove(traceId);
                 EventStackContext.getInstance().remove(traceId);
             }
             eventKeyState.remove(eventKey);
@@ -160,11 +163,10 @@ public class EventTraceContext {
     void addEvent(String traceId, IEvent event) {
         if (isNestedPush() && EventStackContext.getInstance().checkEventLoop(traceId, event)) {
             List<Class<?>> stack = EventStackContext.getInstance().getEventClasses(traceId);
-            traceKeys.remove(traceId);
             EventStackContext.getInstance().remove(traceId);
             eventKeyState.remove(traceId);
             threadLocal.remove();
-            throw new EventLoopException(stack == null ? new ArrayList<Class<?>>() : new ArrayList<Class<?>>(stack), event);
+            throw new EventLoopException(stack == null ? new ArrayList<>() : new ArrayList<>(stack), event);
         }
         EventStackContext.getInstance().addEvent(traceId, event);
     }
@@ -176,7 +178,6 @@ public class EventTraceContext {
         String eventKey = threadLocal.get();
         if (eventKey != null) {
             String traceId = eventKey.split("#")[0];
-            traceKeys.remove(traceId);
             EventStackContext.getInstance().remove(traceId);
             eventKeyState.remove(eventKey);
             threadLocal.remove();

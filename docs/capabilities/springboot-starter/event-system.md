@@ -81,30 +81,54 @@ EventPusher.push(new MyEvent(data), true);
 ### 配置项
 
 ```properties
-# 启用事务事件模式（事件在事务提交后触发）
-codingapi.framework.event.transaction.enable=true
+# 同一 trace 内的异步事件是否按推送顺序串行执行（默认值 true）
+# 关闭后退回完全并发行为，适合无顺序依赖、追求极致吞吐的场景
+codingapi.framework.event.async.ordered=true
 
 # 异步事件线程池大小（默认值 20）
 codingapi.framework.handler-thread-pool-size=20
+
+# 兼容旧配置：现已不再产生行为差异（事件默认即为事务提交后分发），可不配置
+codingapi.framework.event.transaction.enable=true
 ```
 
 ### 事件分发模式
 
-框架通过 `SpringHandlerConfiguration` 自动装配事件分发器：
+框架通过 `SpringHandlerConfiguration` 自动装配 `SpringDefaultEventHandler`。事件监听统一使用 `@TransactionalEventListener(phase = AFTER_COMMIT, fallbackExecution = true)`：
 
-- **默认模式**（`SpringDefaultEventHandler`）：使用 Spring `@EventListener` 即时触发，同步事件在当前线程执行，异步事件提交到固定大小线程池。
-- **事务模式**（`SpringTransactionEventHandler`）：当配置 `codingapi.framework.event.transaction.enable=true` 时激活，使用 `@TransactionalEventListener(phase = AFTER_COMMIT)` 确保事件在事务提交后才触发，避免读取到未提交的数据。设置 `fallbackExecution = true` 保证无事务上下文时也能正常执行。
+- **事务提交后分发**：事件在事务提交后才触发，订阅方可读到已提交数据；事务回滚则事件不分发。
+- **无事务上下文**：`fallbackExecution = true` 保证事件即时分发，行为与事务外推送一致。
+- `SpringTransactionEventHandler` 已标记为 `@Deprecated`，仅作为按类名注入的兼容别名保留，与 `SpringDefaultEventHandler` 行为完全一致；`codingapi.framework.event.transaction.enable` 不再产生行为差异。
 
-两种模式互斥，事务模式优先（`@ConditionalOnMissingBean` 兜底默认模式）。
+### 顺序保证与 trace 归属
+
+异步事件的串行维度是 `traceId`，同一 trace 内的异步事件严格按推送顺序串行执行，不同 trace 之间保持并行（线程池大小决定并发 trace 数）。traceId 的归属规则：
+
+1. **handler 内嵌套 push**：复用当前事件链的 traceId；
+2. **批量 push**：调用 `EventPusher.push(e1, e2, ...)`，整批共享一个 traceId，异步事件按参数顺序串行执行；
+3. **事务内连续 push**：共享同一事务级 traceId（`TransactionSynchronizationManager` 绑定，`afterCompletion` 解绑，避免线程复用串 trace）；
+4. **无事务的独立 push**：每次新建独立 traceId，**不保证顺序**。
+
+因此：
+
+> 需要严格顺序时，请将事件置于事务内连续 push，或使用 `EventPusher.push(a, b)` 批量推送；无事务的独立 push 之间不保证顺序。串行维度是 trace（约等于单事务/单批次），**同一聚合在两个并发事务中的事件之间仍无顺序保证**，业务方若要求聚合级串行需自行按聚合键排队。
 
 ### 事件循环检测
 
 框架通过 `EventTraceContext` 和 `EventStackContext` 实现同一条事件链路内的循环检测：
 
 1. 每次推送事件时生成/复用 traceId，将事件类压入该 traceId 对应的事件栈。
-2. 若同一 traceId 下出现相同事件类，立即抛出 `EventLoopException`，并附带完整的事件调用栈信息。
-3. 事件处理完成后自动清理 traceId 和事件栈。
-4. 若确实需要允许循环（如状态机重试），可调用 `EventPusher.push(event, true)` 跳过检测。
+2. **循环检测只对 handler 内嵌套 push 生效**：若同一 traceId 下出现相同事件类，立即抛出 `EventLoopException`，并附带完整的事件调用栈信息。
+3. 业务线程中连续 push 的多个事件（批量或事务内）属于同一批次，即使同类也不会被误判为循环。
+4. 事件处理完成后自动清理 traceId 和事件栈；若确实需要允许 handler 内嵌套循环（如状态机重试），可调用 `EventPusher.push(event, true)` 跳过检测。
+
+### Handler 异常处理策略
+
+当某个 Handler 抛出异常时：
+1. 若异常为 `EventLoopException`，直接向上抛出，终止后续所有 Handler。
+2. 否则调用该 Handler 的 `error(exception)` 回调。
+3. 若 `error()` 也抛出异常，标记为"有异常"并继续执行下一个 Handler。
+4. 所有 Handler 执行完毕后，若存在异常，统一包装为 `EventException` 抛出。
 
 ### Handler 异常处理策略
 
