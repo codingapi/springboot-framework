@@ -40,28 +40,33 @@ class EventOrderE2ETest {
     static final List<String> TRACES = Collections.synchronizedList(new ArrayList<>());
     static volatile CountDownLatch LATCH;
 
+    static class OrderedAsyncEventHandler implements IHandler<OrderedAsyncEvent> {
+        @Override
+        public void handler(OrderedAsyncEvent event) {
+            String eventKey = EventTraceContext.getInstance().getEventKey();
+            synchronized (ORDER) {
+                ORDER.add("start-" + event.name);
+                TRACES.add(eventKey == null ? null : eventKey.split("#")[0]);
+            }
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            synchronized (ORDER) {
+                ORDER.add("end-" + event.name);
+            }
+            if (LATCH != null) {
+                LATCH.countDown();
+            }
+        }
+    }
+
     @TestConfiguration
     static class HandlerConfig {
         @Bean
         IHandler<OrderedAsyncEvent> orderedAsyncEventHandler() {
-            return event -> {
-                String eventKey = EventTraceContext.getInstance().getEventKey();
-                synchronized (ORDER) {
-                    ORDER.add("start-" + event.name);
-                    TRACES.add(eventKey == null ? null : eventKey.split("#")[0]);
-                }
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-                synchronized (ORDER) {
-                    ORDER.add("end-" + event.name);
-                }
-                if (LATCH != null) {
-                    LATCH.countDown();
-                }
-            };
+            return new OrderedAsyncEventHandler();
         }
     }
 

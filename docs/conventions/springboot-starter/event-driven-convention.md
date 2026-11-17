@@ -48,6 +48,8 @@ public interface IHandler<T extends IEvent> {
 }
 ```
 
+> Handler 必须使用**具名类或匿名内部类**实现。框架通过 `ResolvableType` 解析 `IHandler<T>` 的泛型参数确定订阅类型，而 lambda 表达式生成的是原始类型 `IHandler`，无法解析出 `T`。此类 Handler 会被框架跳过并输出告警日志（若按「订阅全部事件」处理，会向 Handler 投递不相关事件并触发 `ClassCastException`）。
+
 ### 规则 3：事件处理器通过 @Service 注解注册为 Spring Bean
 
 Handler 必须标注 `@Service`（或 `@Component`）注解，确保被 Spring 容器管理。未注册为 Bean 的 Handler 不会被框架发现和调用。
